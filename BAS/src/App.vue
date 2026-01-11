@@ -1,35 +1,19 @@
 <script setup>
-import { onMounted } from 'vue'
-import { useTheme } from '@/composables/useTheme'
-
-// Initialize theme system
-const { updateTheme } = useTheme()
-
-onMounted(() => {
-  updateTheme()
-})
+import StudentUpload from './components/StudentUpload.vue'
 </script>
 
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+  <main class="bg-gray-50 min-h-screen">
+    <StudentUpload />
+  </main>
 </template>
 
 <style>
-#app {
+/* You can keep your global styles here or in main.css */
+body {
+  margin: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
 }
 </style>
