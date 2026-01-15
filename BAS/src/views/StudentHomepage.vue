@@ -27,11 +27,20 @@
 
         <!-- Stats Overview -->
         <section class="stats-section">
-          <div class="stats-grid">
+          <div class="section-header">
+            <h2>Attendance Overview</h2>
+          </div>
+          
+          <div v-if="isLoading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading your attendance data...</p>
+          </div>
+          
+          <div v-else class="stats-grid">
             <Card class="stat-card">
               <div class="stat-icon attendance">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v2h-8V9h2z"/>
+                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v2h-8V9h-2z"/>
                 </svg>
               </div>
               <div class="stat-content">
@@ -87,8 +96,17 @@
             </Button>
           </div>
           
-          <div class="activity-list">
-            <Card v-for="activity in recentActivities" :key="activity.id" class="activity-item">
+          <div v-if="isLoading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading activity data...</p>
+          </div>
+          
+          <div v-else-if="recentActivity.length === 0" class="empty-state">
+            <p>No recent activity found</p>
+          </div>
+          
+          <div v-else class="activity-list">
+            <Card v-for="activity in recentActivity" :key="activity.id" class="activity-item">
               <div class="activity-content">
                 <div class="activity-icon" :class="activity.type">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -115,7 +133,16 @@
             <span class="current-date">{{ currentDate }}</span>
           </div>
           
-          <div class="schedule-grid">
+          <div v-if="isLoading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading schedule...</p>
+          </div>
+          
+          <div v-else-if="todaySchedule.length === 0" class="empty-state">
+            <p>No classes scheduled for today</p>
+          </div>
+          
+          <div v-else class="schedule-grid">
             <Card v-for="classItem in todaySchedule" :key="classItem.id" class="schedule-item">
               <div class="schedule-time">
                 <div class="time-start">{{ classItem.startTime }}</div>
@@ -152,14 +179,17 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
+import { supabase } from '@/supabase'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
+const { user } = useAuth()
 
-// Mock data - replace with actual Supabase calls
-const studentName = ref('John Doe')
+// Reactive state
+const studentName = ref('')
 const currentDate = ref(new Date().toLocaleDateString('en-US', { 
   weekday: 'long', 
   year: 'numeric', 
@@ -168,98 +198,157 @@ const currentDate = ref(new Date().toLocaleDateString('en-US', {
 }))
 
 const attendanceStats = ref({
-  overall: 92,
-  present: 138,
-  absent: 12,
-  streak: 7
+  overall: 0,
+  present: 0,
+  absent: 0,
+  late: 0
 })
 
-const recentActivities = ref([
-  {
-    id: 1,
-    course: 'Computer Science 101',
-    date: 'Today',
-    time: '10:00 AM',
-    type: 'present'
-  },
-  {
-    id: 2,
-    course: 'Mathematics 201',
-    date: 'Yesterday',
-    time: '2:00 PM',
-    type: 'present'
-  },
-  {
-    id: 3,
-    course: 'Physics 101',
-    date: 'Dec 10, 2024',
-    time: '11:00 AM',
-    type: 'absent'
-  },
-  {
-    id: 4,
-    course: 'Chemistry Lab',
-    date: 'Dec 9, 2024',
-    time: '3:00 PM',
-    type: 'present'
-  }
-])
+const recentActivity = ref([])
+const todaySchedule = ref([])
+const isLoading = ref(true)
 
-const todaySchedule = ref([
-  {
-    id: 1,
-    course: 'Computer Science 101',
-    lecturer: 'Dr. Smith',
-    room: 'Room 301',
-    startTime: '9:00 AM',
-    endTime: '10:30 AM',
-    status: 'Completed'
-  },
-  {
-    id: 2,
-    course: 'Mathematics 201',
-    lecturer: 'Prof. Johnson',
-    room: 'Room 205',
-    startTime: '11:00 AM',
-    endTime: '12:30 PM',
-    status: 'Upcoming'
-  },
-  {
-    id: 3,
-    course: 'Physics 101',
-    lecturer: 'Dr. Brown',
-    room: 'Lab 102',
-    startTime: '2:00 PM',
-    endTime: '3:30 PM',
-    status: 'Upcoming'
+// Fetch student data
+const fetchStudentData = async () => {
+  try {
+    if (!user.value) return
+
+    // Get student profile
+    const { data: student } = await supabase
+      .from('students')
+      .select('full_name, class_section')
+      .eq('email', user.value.email)
+      .single()
+
+    if (student) {
+      studentName.value = student.full_name
+    }
+
+    // Get attendance statistics
+    const { data: attendanceData } = await supabase
+      .from('attendance')
+      .select('status')
+      .eq('student_id', student.student_id || '')
+
+    if (attendanceData) {
+      const total = attendanceData.length
+      const present = attendanceData.filter(a => a.status === 'Present').length
+      const absent = attendanceData.filter(a => a.status === 'Absent').length
+      const late = attendanceData.filter(a => a.status === 'Late').length
+      
+      attendanceStats.value = {
+        overall: total > 0 ? Math.round((present / total) * 100) : 0,
+        present,
+        absent,
+        late
+      }
+    }
+
+    // Get recent activity
+    const { data: activityData } = await supabase
+      .from('attendance')
+      .select(`
+        status,
+        timestamp,
+        sessions!inner(
+          course_id,
+          session_date,
+          courses!inner(
+            course_name
+          )
+        )
+      `)
+      .eq('student_id', student.student_id || '')
+      .order('timestamp', { ascending: false })
+      .limit(5)
+
+    if (activityData) {
+      recentActivity.value = activityData.map(item => ({
+        id: item.attendance_id,
+        type: item.status === 'Present' ? 'attendance' : 'absence',
+        description: `${item.sessions?.courses?.course_name || 'Class'} - ${item.status}`,
+        time: new Date(item.timestamp).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        status: item.status.toLowerCase()
+      }))
+    }
+
+    // Get today's schedule
+    const today = new Date().toISOString().split('T')[0]
+    const { data: scheduleData } = await supabase
+      .from('sessions')
+      .select(`
+        session_id,
+        session_date,
+        session_time,
+        courses!inner(
+          course_name
+        )
+      `)
+      .eq('session_date', today)
+      .order('session_time', { ascending: true })
+
+    if (scheduleData) {
+      todaySchedule.value = scheduleData.map(item => ({
+        id: item.session_id,
+        courseName: item.courses?.course_name || 'Unknown Course',
+        time: item.session_time || '09:00 AM',
+        location: 'Classroom',
+        status: 'upcoming'
+      }))
+    }
+
+  } catch (error) {
+    console.error('Error fetching student data:', error)
+  } finally {
+    isLoading.value = false
   }
-])
+}
 
 const showBarcodeScanner = () => {
-  // Mock barcode scanner functionality
-  alert('Barcode scanner would open here')
+  // TODO: Implement barcode scanner
+  alert('Barcode scanner feature coming soon!')
 }
 
 const goToReports = () => {
   router.push('/report-page')
 }
 
-const viewAllActivity = () => {
-  // Navigate to full activity page
-  console.log('View all activity')
-}
+const markAttendance = async (classId) => {
+  try {
+    // Mark attendance for this session
+    const { error } = await supabase
+      .from('attendance')
+      .insert({
+        session_id: classId,
+        student_id: user.value?.user_metadata?.student_id,
+        status: 'Present',
+        method: 'Web'
+      })
 
-const markAttendance = (classId) => {
-  // Mock attendance marking
-  const classItem = todaySchedule.value.find(c => c.id === classId)
-  if (classItem) {
-    classItem.status = 'Completed'
-    alert(`Attendance marked for ${classItem.course}`)
+    if (error) throw error
+
+    // Update local state
+    const classItem = todaySchedule.value.find(c => c.id === classId)
+    if (classItem) {
+      classItem.status = 'Completed'
+    }
+
+    // Refresh data
+    await fetchStudentData()
+
+  } catch (error) {
+    console.error('Error marking attendance:', error)
+    alert('Failed to mark attendance. Please try again.')
   }
 }
 
-onMounted(() => {
-  // Load student data from Supabase
+onMounted(async () => {
+  await fetchStudentData()
   console.log('Student homepage loaded')
 })
 </script>
@@ -458,6 +547,32 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--accent-primary);
+  border-top: 2px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 .schedule-item {
