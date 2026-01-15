@@ -111,27 +111,26 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import Input from '@/components/ui/Input.vue'
 
 const router = useRouter()
+const { signIn, isLoading, error } = useAuth()
 
 const formData = reactive({
   studentId: '',
-  password: '',
-  rememberMe: false
+  password: ''
 })
 
 const errors = reactive({
   studentId: '',
   password: ''
 })
-
-const isLoading = ref(false)
 
 const validateForm = () => {
   errors.studentId = ''
@@ -163,28 +162,31 @@ const validateForm = () => {
 const handleLogin = async () => {
   if (!validateForm()) return
   
-  isLoading.value = true
-  
   try {
-    // Mock authentication - replace with actual Supabase call
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    // For now, we'll use student_id as email (you can modify this logic)
+    const email = `${formData.studentId}@student.bas.edu`
     
-    // Mock successful login
-    console.log('Login successful:', formData)
+    await signIn(email, formData.password)
     
     // Redirect to student homepage
     router.push('/student-homepage')
-  } catch (error) {
-    console.error('Login failed:', error)
-    errors.password = 'Invalid student ID or password'
-  } finally {
-    isLoading.value = false
+  } catch (err) {
+    console.error('Login failed:', err)
+    if (err.message.includes('Invalid login credentials')) {
+      errors.password = 'Invalid student ID or password'
+    } else {
+      errors.password = err.message
+    }
   }
 }
 
 const goToSignup = () => {
   router.push('/student-signup')
 }
+
+onMounted(() => {
+  console.log('Student login page loaded')
+})
 </script>
 
 <style scoped>

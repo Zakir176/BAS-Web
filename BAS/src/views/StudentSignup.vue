@@ -82,12 +82,11 @@
               />
               
               <Input
-                v-model="formData.department"
-                label="Department"
+                v-model="formData.classSection"
+                label="Class Section"
                 type="text"
-                placeholder="Computer Science"
-                required
-                :error="errors.department"
+                placeholder="CS101-A"
+                :error="errors.classSection"
               />
               
               <div class="form-row">
@@ -145,24 +144,25 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import Input from '@/components/ui/Input.vue'
 
 const router = useRouter()
+const { signUp, isLoading, error } = useAuth()
 
 const formData = reactive({
   firstName: '',
   lastName: '',
   studentId: '',
   email: '',
-  department: '',
+  classSection: '',
   password: '',
-  confirmPassword: '',
-  agreeToTerms: false
+  confirmPassword: ''
 })
 
 const errors = reactive({
@@ -170,40 +170,36 @@ const errors = reactive({
   lastName: '',
   studentId: '',
   email: '',
-  department: '',
+  classSection: '',
   password: '',
   confirmPassword: ''
 })
 
-const isLoading = ref(false)
-
 const validateForm = () => {
-  // Clear previous errors
-  Object.keys(errors).forEach(key => {
-    errors[key] = ''
-  })
+  // Reset errors
+  Object.keys(errors).forEach(key => errors[key] = '')
   
   let isValid = true
   
-  if (!formData.firstName) {
+  if (!formData.firstName.trim()) {
     errors.firstName = 'First name is required'
     isValid = false
   }
   
-  if (!formData.lastName) {
+  if (!formData.lastName.trim()) {
     errors.lastName = 'Last name is required'
     isValid = false
   }
   
-  if (!formData.studentId) {
+  if (!formData.studentId.trim()) {
     errors.studentId = 'Student ID is required'
     isValid = false
   } else if (formData.studentId.length < 3) {
-    errors.studentId = 'Please enter a valid student ID'
+    errors.studentId = 'Student ID must be at least 3 characters'
     isValid = false
   }
   
-  if (!formData.email) {
+  if (!formData.email.trim()) {
     errors.email = 'Email is required'
     isValid = false
   } else if (!formData.email.includes('@')) {
@@ -211,8 +207,8 @@ const validateForm = () => {
     isValid = false
   }
   
-  if (!formData.department) {
-    errors.department = 'Department is required'
+  if (!formData.classSection.trim()) {
+    errors.classSection = 'Class section is required'
     isValid = false
   }
   
@@ -232,35 +228,43 @@ const validateForm = () => {
     isValid = false
   }
   
-  if (!formData.agreeToTerms) {
-    alert('Please agree to the terms and conditions')
-    isValid = false
-  }
-  
   return isValid
 }
 
 const handleSignup = async () => {
   if (!validateForm()) return
   
-  isLoading.value = true
-  
   try {
-    // Mock registration - replace with actual Supabase call
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await signUp(formData.email, formData.password, {
+      student_id: formData.studentId,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      class_section: formData.classSection || ''
+    })
     
-    // Mock successful registration
-    console.log('Registration successful:', formData)
-    
-    // Redirect to login page
+    // Redirect to login page with success message
     router.push('/student-login')
-  } catch (error) {
-    console.error('Registration failed:', error)
-    alert('Registration failed. Please try again.')
-  } finally {
-    isLoading.value = false
+  } catch (err) {
+    console.error('Signup failed:', err)
+    
+    // Handle specific Supabase errors
+    if (err.message.includes('User already registered')) {
+      errors.email = 'An account with this email already exists'
+    } else if (err.message.includes('duplicate key')) {
+      if (err.message.includes('students_student_id_key')) {
+        errors.studentId = 'This student ID is already registered'
+      } else if (err.message.includes('students_email_key')) {
+        errors.email = 'An account with this email already exists'
+      }
+    } else {
+      errors.password = err.message
+    }
   }
 }
+
+onMounted(() => {
+  console.log('Student signup page loaded')
+})
 </script>
 
 <style scoped>
