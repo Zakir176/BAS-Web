@@ -44,12 +44,12 @@
             
             <form @submit.prevent="handleLogin" class="login-form">
               <Input
-                v-model="formData.studentId"
-                label="Student ID"
-                type="text"
-                placeholder="Enter your student ID"
+                v-model="formData.email"
+                label="Email"
+                type="email"
+                placeholder="Enter your email"
                 required
-                :error="errors.studentId"
+                :error="errors.email"
               />
               
               <Input
@@ -123,26 +123,27 @@ const router = useRouter()
 const { signIn, isLoading, error } = useAuth()
 
 const formData = reactive({
-  studentId: '',
+  email: '',
   password: ''
 })
 
 const errors = reactive({
-  studentId: '',
+  email: '',
   password: ''
 })
 
 const validateForm = () => {
-  errors.studentId = ''
+  errors.email = ''
   errors.password = ''
   
-  if (!formData.studentId) {
-    errors.studentId = 'Student ID is required'
+  if (!formData.email) {
+    errors.email = 'Email is required'
     return false
   }
   
-  if (formData.studentId.length < 3) {
-    errors.studentId = 'Please enter a valid student ID'
+  // Basic email validation
+  if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+    errors.email = 'Please enter a valid email address'
     return false
   }
   
@@ -163,20 +164,14 @@ const handleLogin = async () => {
   if (!validateForm()) return
   
   try {
-    // For now, we'll use student_id as email (you can modify this logic)
-    const email = `${formData.studentId}@student.bas.edu`
+    await signIn(formData.email, formData.password)
     
-    await signIn(email, formData.password)
-    
-    // Redirect to student homepage
+    // Redirect to student homepage on successful login
     router.push('/student-homepage')
   } catch (err) {
     console.error('Login failed:', err)
-    if (err.message.includes('Invalid login credentials')) {
-      errors.password = 'Invalid student ID or password'
-    } else {
-      errors.password = err.message
-    }
+    // Use a generic error message for security
+    errors.password = 'Invalid email or password. Please try again.'
   }
 }
 

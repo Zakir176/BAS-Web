@@ -1,78 +1,74 @@
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { supabase } from '@/supabase'
 
+// Reactive state for auth
 const user = ref(null)
 const isAuthenticated = ref(false)
 const isLoading = ref(false)
 const error = ref(null)
 
 export function useAuth() {
-  // Initialize auth state
-  const init = async () => {
-    try {
-      isLoading.value = true
-      const { data: { session } } = await supabase.auth.getSession()
-      user.value = session?.user || null
-      isAuthenticated.value = !!session?.user
-    } catch (err) {
-      error.value = err.message
-      console.error('Auth initialization error:', err)
-    } finally {
-      isLoading.value = false
+  // Centralized error handling
+  const handleError = (err, message) => {
+    error.value = err ? err.message : message
+    console.error(message, err)
+    isLoading.value = false
+    throw new Error(message)
+  }
+
+  // Set user state
+  const setUser = (sessionUser) => {
+    if (sessionUser) {
+      user.value = {
+        id: sessionUser.id,
+        email: sessionUser.email,
+        role: sessionUser.user_metadata?.role || 'student',
+        ...sessionUser.user_metadata
+      }
+      isAuthenticated.value = true
+    } else {
+      user.value = null
+      isAuthenticated.value = false
     }
   }
 
-  // Sign up student
+  // Secure Sign Up with Supabase Auth
   const signUp = async (email, password, metadata = {}) => {
     try {
       isLoading.value = true
       error.value = null
-      
+
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            role: 'student',
+            full_name: `${metadata.first_name} ${metadata.last_name}`,
+            role: metadata.role || 'student',
             ...metadata
           }
         }
       })
 
       if (signUpError) throw signUpError
-
-      // Store student profile in database (using student_id as primary key)
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('students')
-          .insert({
-            student_id: metadata.student_id,
-            full_name: `${metadata.first_name} ${metadata.last_name}`,
-            email: data.user.email,
-            class_section: metadata.class_section || null,
-            qr_code_value: metadata.student_id, // Use student_id as QR code
-            created_at: new Date().toISOString()
-          })
-
-        if (profileError) throw profileError
-      }
-
+      
+      // The user is signed up but might need to confirm their email.
+      // The onAuthStateChange listener will handle the session once logged in.
       return data
+
     } catch (err) {
-      error.value = err.message
-      console.error('Signup error:', err)
-      throw err
+      handleError(err, 'Signup failed.')
     } finally {
       isLoading.value = false
     }
   }
 
-  // Sign in (student or teacher)
+  // Secure Sign In with Supabase Auth
   const signIn = async (email, password) => {
     try {
       isLoading.value = true
       error.value = null
-      
+
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -80,35 +76,32 @@ export function useAuth() {
 
       if (signInError) throw signInError
 
-      user.value = data.user
-      isAuthenticated.value = true
-
+      // The onAuthStateChange listener will automatically set the user state
+      setUser(data.user)
       return data
+
     } catch (err) {
-      error.value = err.message
-      console.error('Sign in error:', err)
-      throw err
+      handleError(err, 'Sign in failed. Check your credentials.')
     } finally {
       isLoading.value = false
     }
   }
 
-  // Sign out
+  // Secure Sign Out with Supabase Auth
   const signOut = async () => {
     try {
       isLoading.value = true
       error.value = null
       
       const { error: signOutError } = await supabase.auth.signOut()
-      
+
       if (signOutError) throw signOutError
       
-      user.value = null
-      isAuthenticated.value = false
+      // The onAuthStateChange listener will clear the user state
+      setUser(null)
+      
     } catch (err) {
-      error.value = err.message
-      console.error('Sign out error:', err)
-      throw err
+      handleError(err, 'Sign out failed.')
     } finally {
       isLoading.value = false
     }
@@ -126,13 +119,24 @@ export function useAuth() {
       
       return true
     } catch (err) {
-      error.value = err.message
-      console.error('Password reset error:', err)
-      throw err
+      handleError(err, 'Password reset failed.')
     } finally {
       isLoading.value = false
     }
   }
+  
+  // Listen for auth state changes
+  onMounted(() => {
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+      isLoading.value = false
+    })
+
+    // Also check for the initial session on component mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null)
+    })
+  })
 
   // Get current student profile
   const getStudentProfile = async (studentId) => {
@@ -147,6 +151,23 @@ export function useAuth() {
       return data
     } catch (err) {
       console.error('Get student profile error:', err)
+      throw err
+    }
+  }
+
+  // Get current lecturer profile
+  const getLecturerProfile = async (teacherId) => {
+    try {
+      const { data, error } = await supabase
+        .from('teachers')
+        .select('*')
+        .eq('teacher_id', teacherId)
+        .single()
+      
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.error('Get lecturer profile error:', err)
       throw err
     }
   }
@@ -169,29 +190,37 @@ export function useAuth() {
     }
   }
 
-  // Listen to auth changes
-  supabase.auth.onAuthStateChange((event, session) => {
-    user.value = session?.user || null
-    isAuthenticated.value = !!session?.user
-    
-    if (event === 'SIGNED_IN') {
-      console.log('User signed in:', session.user)
-    } else if (event === 'SIGNED_OUT') {
-      console.log('User signed out')
+  // Update lecturer profile
+  const updateLecturerProfile = async (teacherId, updates) => {
+    try {
+      const { data, error } = await supabase
+        .from('teachers')
+        .update(updates)
+        .eq('teacher_id', teacherId)
+        .select()
+        .single()
+      
+      if (error) throw error
+      return data
+    } catch (err) {
+      console.error('Update lecturer profile error:', err)
+      throw err
     }
-  })
+  }
+
 
   return {
     user,
     isAuthenticated,
     isLoading,
     error,
-    init,
     signUp,
     signIn,
     signOut,
     resetPassword,
     getStudentProfile,
-    updateStudentProfile
+    updateStudentProfile,
+    getLecturerProfile,
+    updateLecturerProfile
   }
 }

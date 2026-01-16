@@ -97,14 +97,16 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import Input from '@/components/ui/Input.vue'
 
 const router = useRouter()
+const { signIn, isLoading, error } = useAuth()
 
 const formData = reactive({
   email: '',
@@ -117,8 +119,6 @@ const errors = reactive({
   password: ''
 })
 
-const isLoading = ref(false)
-
 const validateForm = () => {
   errors.email = ''
   errors.password = ''
@@ -127,19 +127,14 @@ const validateForm = () => {
     errors.email = 'Email is required'
     return false
   }
-  
-  if (!formData.email.includes('@')) {
-    errors.email = 'Please enter a valid email'
+
+  if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+    errors.email = 'Please enter a valid email address'
     return false
   }
   
   if (!formData.password) {
     errors.password = 'Password is required'
-    return false
-  }
-  
-  if (formData.password.length < 6) {
-    errors.password = 'Password must be at least 6 characters'
     return false
   }
   
@@ -149,24 +144,21 @@ const validateForm = () => {
 const handleLogin = async () => {
   if (!validateForm()) return
   
-  isLoading.value = true
-  
   try {
-    // Mock authentication - replace with actual Supabase call
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await signIn(formData.email, formData.password)
     
-    // Mock successful login
-    console.log('Login successful:', formData)
-    
-    // Redirect to dashboard (create this route later)
-    router.push('/student-homepage') // Temporary redirect
-  } catch (error) {
-    console.error('Login failed:', error)
-    errors.password = 'Invalid email or password'
-  } finally {
-    isLoading.value = false
+    // Redirect to lecturer dashboard on successful login
+    router.push('/lecturer-dashboard')
+  } catch (err) {
+    console.error('Login failed:', err)
+    // Use a generic error message for security
+    errors.password = 'Invalid email or password. Please try again.'
   }
 }
+
+onMounted(() => {
+  console.log('Lecturer login page loaded')
+})
 </script>
 
 <style scoped>
