@@ -3,12 +3,30 @@
     x:Class="catv1.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:catv1"
-    Title="catv1">
+    xmlns:local="clr-namespace:catv1.Views"
+    Shell.FlyoutBehavior="Disabled">
 
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Title="Login"
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="login" />
+
+    <TabBar Route="student">
+        <Tab Title="Dashboard" Icon="home_icon.png">
+            <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
+        </Tab>
+        <Tab Title="History" Icon="history_icon.png">
+            <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="history" />
+        </Tab>
+    </TabBar>
+
+    <TabBar Route="lecturer">
+        <Tab Title="Class Management" Icon="class_icon.png">
+            <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
+        </Tab>
+        <Tab Title="Scan ID" Icon="scan_icon.png">
+            <ShellContent ContentTemplate="{DataTemplate local:ScanPage}" Route="scan" />
+        </Tab>
+    </TabBar>
 
 </Shell>
