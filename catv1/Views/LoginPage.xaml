@@ -1,131 +1,215 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="catv1.Views.LoginPage"
-             Title="LoginPage"
-             BackgroundColor="#0F172A"
-             Shell.NavBarIsVisible="False">
-    
-    <Grid RowDefinitions="Auto, *, Auto" Padding="20">
+<ContentPage
+    x:Class="catv1.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="LoginPage"
+    BackgroundColor="#0F172A"
+    Shell.NavBarIsVisible="False">
 
-        <HorizontalStackLayout Grid.Row="0" Spacing="10" VerticalOptions="Start" Margin="0,10,0,0">
-            <Frame BackgroundColor="#1E293B" CornerRadius="8" Padding="8" HasShadow="False" HeightRequest="40" WidthRequest="40">
-                 <Label Text="🎓" TextColor="#3B82F6" HorizontalOptions="Center" VerticalOptions="Center" FontSize="18"/>
-            </Frame>
-            <Label Text="Smart Attendance" TextColor="White" VerticalOptions="Center" FontAttributes="Bold" FontSize="16"/>
+    <Grid Padding="20" RowDefinitions="Auto, *, Auto">
+
+        <HorizontalStackLayout
+            Grid.Row="0"
+            Margin="0,10,0,0"
+            Spacing="10"
+            VerticalOptions="Start">
+            <Border
+                BackgroundColor="#1E293B"
+                HeightRequest="40"
+                WidthRequest="40">
+                <Label
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="🎓"
+                    TextColor="#3B82F6"
+                    VerticalOptions="Center" />
+            </Border>
+            <Label
+                FontAttributes="Bold"
+                FontSize="16"
+                Text="Smart Attendance"
+                TextColor="White"
+                VerticalOptions="Center" />
         </HorizontalStackLayout>
 
-        <Border Grid.Row="1" 
-                StrokeThickness="0"
-                BackgroundColor="#1E293B" 
-                StrokeShape="RoundRectangle 15"
-                VerticalOptions="Center"
-                HorizontalOptions="Center"
-                WidthRequest="380">
-            
+        <Border
+            Grid.Row="1"
+            BackgroundColor="#1E293B"
+            HorizontalOptions="Center"
+            StrokeShape="RoundRectangle 15"
+            StrokeThickness="0"
+            VerticalOptions="Center"
+            WidthRequest="380">
+
             <Border.Shadow>
-                <Shadow Brush="Black" Offset="0,10" Radius="20" Opacity="0.5"/>
+                <Shadow
+                    Brush="Black"
+                    Opacity="0.5"
+                    Radius="20"
+                    Offset="0,10" />
             </Border.Shadow>
 
             <VerticalStackLayout Padding="30" Spacing="15">
-                
-                <Border Stroke="#334155" StrokeShape="RoundRectangle 8" BackgroundColor="#0F172A" Padding="2">
+
+                <Border
+                    Padding="2"
+                    BackgroundColor="#0F172A"
+                    Stroke="#334155"
+                    StrokeShape="RoundRectangle 8">
                     <Grid ColumnDefinitions="*,*">
-                        <Button Text="Student" 
-                                BackgroundColor="Transparent" 
-                                TextColor="#94A3B8" 
-                                FontAttributes="Bold"
-                                CornerRadius="6"
-                                Clicked="OnStudentClicked"
-                                x:Name="BtnStudent"/>
-                        <Button Grid.Column="1" 
-                                Text="Lecturer" 
-                                BackgroundColor="#3B82F6" 
-                                TextColor="White" 
-                                FontAttributes="Bold"
-                                CornerRadius="6"
-                                Clicked="OnLecturerClicked"
-                                x:Name="BtnLecturer"/>
+                        <Button
+                            x:Name="BtnStudent"
+                            BackgroundColor="#3B82F6"
+                            Clicked="OnStudentClicked"
+                            CornerRadius="6"
+                            FontAttributes="Bold"
+                            Text="Student"
+                            TextColor="White" />
+
+                        <Button
+                            x:Name="BtnLecturer"
+                            Grid.Column="1"
+                            BackgroundColor="Transparent"
+                            Clicked="OnLecturerClicked"
+                            CornerRadius="6"
+                            FontAttributes="Bold"
+                            Text="Lecturer"
+                            TextColor="#94A3B8" />
                     </Grid>
                 </Border>
 
-                <Label Text="Lecturer Login" 
-                       x:Name="LblWelcomeTitle"
-                       TextColor="White" 
-                       FontSize="22" 
-                       FontAttributes="Bold" 
-                       HorizontalOptions="Center"/>
-                
-                <Label Text="Welcome back. Sign in to manage access." 
-                       TextColor="#94A3B8" 
-                       FontSize="13" 
-                       HorizontalOptions="Center" 
-                       HorizontalTextAlignment="Center"/>
+                <Label
+                    x:Name="LblWelcomeTitle"
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalOptions="Center"
+                    Text="Lecturer Login"
+                    TextColor="White" />
+
+                <Label
+                    FontSize="13"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="Welcome back. Sign in to manage access."
+                    TextColor="#94A3B8" />
 
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="Staff Email" TextColor="#CBD5E1" FontSize="12" FontAttributes="Bold"/>
-                    <Border Stroke="#334155" StrokeThickness="1" BackgroundColor="#0F172A" StrokeShape="RoundRectangle 8" HeightRequest="50">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="Staff Email"
+                        TextColor="#CBD5E1" />
+                    <Border
+                        BackgroundColor="#0F172A"
+                        HeightRequest="50"
+                        Stroke="#334155"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
                         <Grid ColumnDefinitions="50, *">
-                            <Label Text="📧" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#64748B"/>
-                            <Entry Grid.Column="1" 
-                                   Placeholder="name@university.edu" 
-                                   PlaceholderColor="#475569" 
-                                   TextColor="White"
-                                   VerticalOptions="Center"/>
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="📧"
+                                TextColor="#64748B"
+                                VerticalOptions="Center" />
+                            <Entry
+                                Grid.Column="1"
+                                Placeholder="name@university.edu"
+                                PlaceholderColor="#475569"
+                                TextColor="White"
+                                VerticalOptions="Center" />
                         </Grid>
                     </Border>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="8">
-                    <Label Text="Password" TextColor="#CBD5E1" FontSize="12" FontAttributes="Bold"/>
-                    <Border Stroke="#334155" StrokeThickness="1" BackgroundColor="#0F172A" StrokeShape="RoundRectangle 8" HeightRequest="50">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="Password"
+                        TextColor="#CBD5E1" />
+                    <Border
+                        BackgroundColor="#0F172A"
+                        HeightRequest="50"
+                        Stroke="#334155"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
                         <Grid ColumnDefinitions="50, *, 50">
-                            <Label Text="🔒" VerticalOptions="Center" HorizontalOptions="Center" TextColor="#64748B"/>
-                            <Entry Grid.Column="1" 
-                                   Placeholder="Enter your password" 
-                                   PlaceholderColor="#475569" 
-                                   IsPassword="True"
-                                   TextColor="White"
-                                   VerticalOptions="Center"/>
-                            <ImageButton Grid.Column="2" Source="" 
-                                         BackgroundColor="Transparent">
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="🔒"
+                                TextColor="#64748B"
+                                VerticalOptions="Center" />
+                            <Entry
+                                Grid.Column="1"
+                                IsPassword="True"
+                                Placeholder="Enter your password"
+                                PlaceholderColor="#475569"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                            <ImageButton Grid.Column="2" BackgroundColor="Transparent">
                                 <ImageButton.Source>
-                                    <FontImageSource FontFamily="Arial" Glyph="👁" Color="#64748B"/>
+                                    <FontImageSource
+                                        FontFamily="Arial"
+                                        Glyph="👁"
+                                        Color="#64748B" />
                                 </ImageButton.Source>
                             </ImageButton>
                         </Grid>
                     </Border>
                 </VerticalStackLayout>
 
-                <Grid ColumnDefinitions="Auto, *" Margin="0,5">
+                <Grid Margin="0,5" ColumnDefinitions="Auto, *">
                     <HorizontalStackLayout Spacing="10">
-                        <CheckBox Color="#3B82F6"/>
-                        <Label Text="Remember me" TextColor="#94A3B8" VerticalOptions="Center" FontSize="12"/>
+                        <CheckBox Color="#3B82F6" />
+                        <Label
+                            FontSize="12"
+                            Text="Remember me"
+                            TextColor="#94A3B8"
+                            VerticalOptions="Center" />
                     </HorizontalStackLayout>
-                    <Label Grid.Column="1" Text="Forgot Password?" TextColor="#3B82F6" HorizontalOptions="End" VerticalOptions="Center" FontSize="12"/>
+                    <Label
+                        Grid.Column="1"
+                        FontSize="12"
+                        HorizontalOptions="End"
+                        Text="Forgot Password?"
+                        TextColor="#3B82F6"
+                        VerticalOptions="Center" />
                 </Grid>
 
-                <Button Text="Sign In to Dashboard  ➔" 
-                        BackgroundColor="#3B82F6" 
-                        TextColor="White" 
-                        FontAttributes="Bold" 
-                        CornerRadius="8" 
-                        HeightRequest="50"
-                        Clicked="OnLoginClicked"/>
+                <Button
+                    BackgroundColor="#3B82F6"
+                    Clicked="OnLoginClicked"
+                    CornerRadius="8"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Text="Sign In to Dashboard  ➔"
+                    TextColor="White" />
 
-                <Label Text="🔒 SECURE STAFF PORTAL" 
-                       TextColor="#475569" 
-                       FontSize="10" 
-                       FontAttributes="Bold" 
-                       HorizontalOptions="Center" 
-                       LetterSpacing="1"/>
-
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="10"
+                    HorizontalOptions="Center"
+                    Text="🔒 SECURE STAFF PORTAL"
+                    TextColor="#475569" />
             </VerticalStackLayout>
         </Border>
 
-        <VerticalStackLayout Grid.Row="2" Spacing="5" VerticalOptions="End" Margin="0,0,0,20">
-            <Label Text="© 2026 University Smart Attendance System" TextColor="#475569" FontSize="10" HorizontalOptions="Center"/>
-            <Label Text="Version 1.0.2 • Optimized for CS Dept" TextColor="#475569" FontSize="10" HorizontalOptions="Center"/>
+        <VerticalStackLayout
+            Grid.Row="2"
+            Margin="0,0,0,20"
+            Spacing="5"
+            VerticalOptions="End">
+            <Label
+                FontSize="10"
+                HorizontalOptions="Center"
+                Text="© 2026 University Smart Attendance System"
+                TextColor="#475569" />
+            <Label
+                FontSize="10"
+                HorizontalOptions="Center"
+                Text="Version 1.0.2 • Optimized for CS Dept"
+                TextColor="#475569" />
         </VerticalStackLayout>
 
     </Grid>
