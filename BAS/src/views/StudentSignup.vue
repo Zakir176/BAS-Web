@@ -144,7 +144,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import Navbar from '@/components/layout/Navbar.vue'
@@ -153,7 +153,7 @@ import Card from '@/components/ui/Card.vue'
 import Input from '@/components/ui/Input.vue'
 
 const router = useRouter()
-const { signUp, isLoading, error } = useAuth()
+const { signUp, isLoading } = useAuth()
 
 const formData = reactive({
   firstName: '',
@@ -162,7 +162,8 @@ const formData = reactive({
   email: '',
   classSection: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  agreeToTerms: false
 })
 
 const errors = reactive({
@@ -194,15 +195,9 @@ const validateForm = () => {
   if (!formData.studentId.trim()) {
     errors.studentId = 'Student ID is required'
     isValid = false
-  } else if (formData.studentId.length < 3) {
-    errors.studentId = 'Student ID must be at least 3 characters'
-    isValid = false
   }
   
-  if (!formData.email.trim()) {
-    errors.email = 'Email is required'
-    isValid = false
-  } else if (!formData.email.includes('@')) {
+  if (!formData.email.trim() || !/^\S+@\S+\.\S+$/.test(formData.email)) {
     errors.email = 'Please enter a valid email'
     isValid = false
   }
@@ -212,19 +207,19 @@ const validateForm = () => {
     isValid = false
   }
   
-  if (!formData.password) {
-    errors.password = 'Password is required'
-    isValid = false
-  } else if (formData.password.length < 6) {
+  if (formData.password.length < 6) {
     errors.password = 'Password must be at least 6 characters'
     isValid = false
   }
   
-  if (!formData.confirmPassword) {
-    errors.confirmPassword = 'Please confirm your password'
-    isValid = false
-  } else if (formData.password !== formData.confirmPassword) {
+  if (formData.password !== formData.confirmPassword) {
     errors.confirmPassword = 'Passwords do not match'
+    isValid = false
+  }
+  
+  if (!formData.agreeToTerms) {
+    // This could be a more user-friendly error/alert
+    alert('You must agree to the terms and conditions.')
     isValid = false
   }
   
@@ -236,29 +231,22 @@ const handleSignup = async () => {
   
   try {
     await signUp(formData.email, formData.password, {
+      role: 'student', // Explicitly set the role
       student_id: formData.studentId,
       first_name: formData.firstName,
       last_name: formData.lastName,
-      class_section: formData.classSection || ''
+      full_name: `${formData.firstName} ${formData.lastName}`,
+      class_section: formData.classSection
     })
     
-    // Redirect to login page with success message
+    // Redirect to login page with a success message (optional)
+    alert('Signup successful! Please check your email to confirm your account and then sign in.')
     router.push('/student-login')
+
   } catch (err) {
     console.error('Signup failed:', err)
-    
-    // Handle specific Supabase errors
-    if (err.message.includes('User already registered')) {
-      errors.email = 'An account with this email already exists'
-    } else if (err.message.includes('duplicate key')) {
-      if (err.message.includes('students_student_id_key')) {
-        errors.studentId = 'This student ID is already registered'
-      } else if (err.message.includes('students_email_key')) {
-        errors.email = 'An account with this email already exists'
-      }
-    } else {
-      errors.password = err.message
-    }
+    // Display a generic error to the user for security
+    errors.password = 'Signup failed. The email or student ID may already be in use.'
   }
 }
 

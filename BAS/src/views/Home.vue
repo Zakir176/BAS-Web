@@ -21,6 +21,14 @@
                   Lecturer Portal
                 </Button>
               </div>
+              <div class="hero-links">
+                <router-link to="/student-signup" class="signup-link">
+                  New Student? Sign up
+                </router-link>
+                <router-link to="/lecturer-signup" class="signup-link">
+                  New Lecturer? Sign up
+                </router-link>
+              </div>
             </div>
             <div class="hero-visual">
               <div class="barcode-animation">
@@ -80,6 +88,8 @@
           </div>
         </section>
 
+        <HowItWorks />
+
         <section class="stats-section">
           <div class="stats-grid">
             <div class="stat-item">
@@ -100,6 +110,10 @@
             </div>
           </div>
         </section>
+
+        <Cta />
+
+        <Testimonials />
       </div>
     </main>
 
@@ -119,6 +133,28 @@
           <div class="footer-text">
             © 2024 Barcode Attendance System. All rights reserved.
           </div>
+          <div class="footer-links">
+            <a href="#" class="footer-link">About Us</a>
+            <a href="#" class="footer-link">Contact Us</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+          </div>
+          <div class="footer-socials">
+            <a href="#" class="social-link">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2v-2h-2v2zm0-4h2V7h-2v4z"/>
+              </svg>
+            </a>
+            <a href="#" class="social-link">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2v-2h-2v2zm0-4h2V7h-2v4z"/>
+              </svg>
+            </a>
+            <a href="#" class="social-link">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2v-2h-2v2zm0-4h2V7h-2v4z"/>
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
@@ -129,6 +165,9 @@
 import { useRouter } from 'vue-router'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
+import HowItWorks from '@/components/layout/HowItWorks.vue'
+import Testimonials from '@/components/layout/Testimonials.vue'
+import Cta from '@/components/layout/Cta.vue'
 import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
@@ -189,6 +228,26 @@ const goToLecturerLogin = () => {
 .hero-actions {
   display: flex;
   gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.signup-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.signup-link:hover {
+  color: var(--accent-secondary);
+  text-decoration: underline;
 }
 
 .hero-visual {
@@ -259,6 +318,12 @@ const goToLecturerLogin = () => {
 .feature-card {
   text-align: center;
   padding: 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .feature-icon {
@@ -330,6 +395,38 @@ const goToLecturerLogin = () => {
 .footer-text {
   color: var(--text-secondary);
   font-size: 0.875rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.social-link:hover {
+  color: var(--accent-primary);
 }
 
 @media (max-width: 768px) {
