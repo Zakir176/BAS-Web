@@ -1,11 +1,13 @@
+using Microsoft.Maui.Controls;
+
 namespace catv1.Views;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
-	{
-		InitializeComponent();
-	}
+    public LoginPage()
+    {
+        InitializeComponent();
+    }
 
     private void OnStudentClicked(object sender, EventArgs e)
     {
@@ -31,6 +33,15 @@ public partial class LoginPage : ContentPage
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//HomePage");
+        bool isStudent = BtnStudent.BackgroundColor.Equals(Color.FromArgb("#3B82F6"));
+
+        if (isStudent)
+        {
+            await Shell.Current.GoToAsync("//student/home");
+        }
+        else
+        {
+            await Shell.Current.GoToAsync("//lecturer/dashboard");
+        }
     }
 }
