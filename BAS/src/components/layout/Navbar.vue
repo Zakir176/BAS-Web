@@ -20,6 +20,7 @@
           <router-link v-if="!isAuthenticated" to="/student-login" class="nav-link">Student Login</router-link>
           <router-link v-if="!isAuthenticated" to="/lecturer-login" class="nav-link">Lecturer Login</router-link>
           <router-link v-if="isAuthenticated" to="/student-homepage" class="nav-link">Dashboard</router-link>
+          <router-link v-if="isAuthenticated" to="/student-upload-page" class="nav-link">Upload</router-link>
           <router-link v-if="isAuthenticated" to="/report-page" class="nav-link">Reports</router-link>
         </div>
         
@@ -39,12 +40,29 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useTheme } from '@/composables/useTheme'
+import { useAuth } from '@/composables/useAuth'
 
-const { toggleTheme, isDark } = useTheme()
+const router = useRouter()
+const { isDark, toggleTheme } = useTheme()
+const { isAuthenticated, user, signOut } = useAuth()
 
-// Mock authentication state - replace with actual auth logic
-const isAuthenticated = false
+const isMobileMenuOpen = ref(false)
+
+const handleSignOut = async () => {
+  try {
+    await signOut()
+    router.push('/')
+  } catch (error) {
+    console.error('Sign out error:', error)
+  }
+}
+
+onMounted(() => {
+  toggleTheme()
+})
 </script>
 
 <style scoped>
