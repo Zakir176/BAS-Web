@@ -10,17 +10,19 @@ CREATE TABLE IF NOT EXISTS students (
     full_name VARCHAR(100) NOT NULL,
     class_section VARCHAR(20),
     qr_code_value VARCHAR(100) UNIQUE,  -- Used for barcode/QR scanning
-    email VARCHAR(100) UNIQUE,  -- MISSING: Add email column
+    email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  -- MISSING: Add created_at
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()   -- MISSING: Add updated_at
+    password VARCHAR(255) NOT NULL,  -- ADDED: Password for authentication
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Teachers Table: For authentication and ownership
 CREATE TABLE IF NOT EXISTS teachers (
-    teacher_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),  -- FIXED: Use uuid_generate_v4 instead of gen_random_uuid
+    teacher_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,  -- ADDED: Password for authentication
     role VARCHAR(20) DEFAULT 'teacher' CHECK (role IN ('teacher', 'admin')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

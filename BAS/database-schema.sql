@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS students (
     qr_code_value VARCHAR(100) UNIQUE,  -- Used for barcode/QR scanning
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
+    password VARCHAR(255),  -- Added password column for authentication
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS teachers (
     teacher_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255),  -- Added password column for authentication
     role VARCHAR(20) DEFAULT 'teacher' CHECK (role IN ('teacher', 'admin')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -101,6 +103,17 @@ ALTER TABLE absence_warnings ENABLE ROW LEVEL SECURITY;
 -- Note: Students table RLS disabled temporarily for testing
 -- ALTER TABLE students ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies to prevent duplicates
+DROP POLICY IF EXISTS "Teachers can view own profile" ON teachers;
+DROP POLICY IF EXISTS "Teachers can update own profile" ON teachers;
+DROP POLICY IF EXISTS "Teachers can view their courses" ON courses;
+DROP POLICY IF EXISTS "Teachers can update their courses" ON courses;
+DROP POLICY IF EXISTS "Teachers can manage their sessions" ON sessions;
+DROP POLICY IF EXISTS "Teachers can manage attendance for their sessions" ON attendance;
+DROP POLICY IF EXISTS "Teachers can view enrollments for their courses" ON enrollments;
+DROP POLICY IF EXISTS "Teachers can manage enrollments for their courses" ON enrollments;
+DROP POLICY IF EXISTS "Teachers can manage warnings for their courses" ON absence_warnings;
+
 -- RLS Policies for teachers table (for authentication)
 CREATE POLICY "Teachers can view own profile" ON teachers
   FOR SELECT USING (auth.uid() = teacher_id);
@@ -109,6 +122,8 @@ CREATE POLICY "Teachers can update own profile" ON teachers
   FOR UPDATE USING (auth.uid() = teacher_id);
 
 -- RLS Policies for courses table
+DROP POLICY IF EXISTS "Teachers can view their courses" ON courses;
+DROP POLICY IF EXISTS "Teachers can update their courses" ON courses;
 CREATE POLICY "Teachers can view their courses" ON courses
   FOR SELECT USING (auth.uid() = teacher_id);
 
@@ -116,6 +131,7 @@ CREATE POLICY "Teachers can update their courses" ON courses
   FOR UPDATE USING (auth.uid() = teacher_id);
 
 -- RLS Policies for sessions table
+DROP POLICY IF EXISTS "Teachers can manage their sessions" ON sessions;
 CREATE POLICY "Teachers can manage their sessions" ON sessions
   FOR ALL USING (
     EXISTS (
@@ -126,6 +142,7 @@ CREATE POLICY "Teachers can manage their sessions" ON sessions
   );
 
 -- RLS Policies for attendance table
+DROP POLICY IF EXISTS "Teachers can manage attendance for their sessions" ON attendance;
 CREATE POLICY "Teachers can manage attendance for their sessions" ON attendance
   FOR ALL USING (
     EXISTS (
@@ -141,6 +158,8 @@ CREATE POLICY "Teachers can manage attendance for their sessions" ON attendance
   );
 
 -- RLS Policies for enrollments table
+DROP POLICY IF EXISTS "Teachers can view enrollments for their courses" ON enrollments;
+DROP POLICY IF EXISTS "Teachers can manage enrollments for their courses" ON enrollments;
 CREATE POLICY "Teachers can view enrollments for their courses" ON enrollments
   FOR SELECT USING (
     EXISTS (
@@ -160,6 +179,7 @@ CREATE POLICY "Teachers can manage enrollments for their courses" ON enrollments
   );
 
 -- RLS Policies for absence_warnings
+DROP POLICY IF EXISTS "Teachers can manage warnings for their courses" ON absence_warnings;
 CREATE POLICY "Teachers can manage warnings for their courses" ON absence_warnings
   FOR ALL USING (
     EXISTS (
@@ -240,6 +260,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Drop existing triggers to prevent duplicates
+DROP TRIGGER IF EXISTS trigger_update_absence_warnings ON attendance;
+
 -- Trigger to update warnings when attendance is recorded
 CREATE TRIGGER trigger_update_absence_warnings
     AFTER INSERT OR UPDATE ON attendance
@@ -253,6 +276,11 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Drop existing triggers to prevent duplicates
+DROP TRIGGER IF EXISTS update_students_updated_at ON students;
+DROP TRIGGER IF EXISTS update_teachers_updated_at ON teachers;
+DROP TRIGGER IF EXISTS update_courses_updated_at ON courses;
 
 -- Create triggers for updated_at
 CREATE TRIGGER update_students_updated_at BEFORE UPDATE ON students
