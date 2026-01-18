@@ -44,9 +44,9 @@
                             </Image.Source>
                         </Image>
                         
-                        <Label Text="TAP TO SHOW ID" 
+                        <Label Text="SHOW ID" 
                                TextColor="White" 
-                               Opacity="0.8" 
+                               Opacity="1.0" 
                                FontSize="12" 
                                FontAttributes="Bold" 
                                VerticalOptions="Start" 
