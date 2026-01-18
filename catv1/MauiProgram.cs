@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 
 namespace catv1;
 
@@ -10,7 +10,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
-			.UseZXingNetMaui()
+			.UseBarcodeReader()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
