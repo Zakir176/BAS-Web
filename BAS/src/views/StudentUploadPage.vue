@@ -176,23 +176,6 @@ const handleDragLeave = (event) => {
   isDragOver.value = false
 }
 
-const validateAndSetFile = (file) => {
-  const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-  const maxSize = 5 * 1024 * 1024 // 5MB
-  
-  if (!allowedTypes.includes(file.type)) {
-    alert('Please upload a PDF, DOC, or DOCX file')
-    return
-  }
-  
-  if (file.size > maxSize) {
-    alert('File size must be less than 5MB')
-    return
-  }
-  
-  selectedFile.value = file
-}
-
 const removeFile = () => {
   selectedFile.value = null
   if (fileInput.value) {
@@ -209,26 +192,49 @@ const formatFileSize = (bytes) => {
 }
 
 const uploadFile = async () => {
-  if (!selectedFile.value) return
+  if (!selectedFile.value || !user.value?.student_id) {
+    alert('No file selected or user not logged in.')
+    return
+  }
   
+  // Re-validate before upload in case file was selected without drag/drop or input change
+  if (!validateAndSetFile(selectedFile.value)) {
+    return
+  }
+
   isUploading.value = true
   
   try {
-    // Mock upload - replace with actual Supabase storage call
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    const file = selectedFile.value
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${user.value.student_id}_${Date.now()}.${fileExt}`
+    const filePath = `uploads/${fileName}`
+
+    // 1. Upload to Supabase Storage (Bucket name: student-documents)
+    const { error: uploadError } = await supabase.storage
+      .from('student-documents')
+      .upload(filePath, file)
+
+    if (uploadError) throw uploadError
+
+    // 2. Insert metadata into student_uploads table
+    const { error: dbError } = await supabase
+      .from('student_uploads')
+      .insert({
+        student_id: user.value.student_id,
+        file_name: file.name,
+        file_path: filePath,
+        file_size: file.size,
+        file_type: file.type,
+        status: 'completed'
+      })
+
+    if (dbError) throw dbError
     
-    // Add to recent uploads
-    const newUpload = {
-      id: Date.now(),
-      name: selectedFile.value.name,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      size: formatFileSize(selectedFile.value.size),
-      status: 'completed'
-    }
+    // Refresh list
+    await fetchRecentUploads()
     
-    recentUploads.value.unshift(newUpload)
-    
-    // Clear selected file
+    // Clear selection
     selectedFile.value = null
     if (fileInput.value) {
       fileInput.value.value = ''
@@ -236,15 +242,16 @@ const uploadFile = async () => {
     
     alert('File uploaded successfully!')
   } catch (error) {
-    console.error('Upload failed:', error)
-    alert('Upload failed. Please try again.')
+    console.error('Upload failed:', error.message)
+    alert(`Upload failed: ${error.message}`)
   } finally {
     isUploading.value = false
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   console.log('Student upload page loaded')
+  await fetchRecentUploads()
 })
 </script>
 

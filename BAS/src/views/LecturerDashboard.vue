@@ -214,6 +214,20 @@
         <Button @click="closeBarcodeScanner">Cancel</Button>
       </template>
     </Modal>
+
+    <!-- Create Course Modal -->
+    <CreateCourseModal 
+      :is-open="isCreateCourseModalOpen" 
+      @close="isCreateCourseModalOpen = false"
+      @course-created="handleCourseCreated"
+    />
+
+    <!-- Create Session Modal -->
+    <CreateSessionModal 
+      :is-open="isCreateSessionModalOpen" 
+      @close="isCreateSessionModalOpen = false"
+      @session-created="handleSessionCreated"
+    />
   </div>
 </template>
 
@@ -227,6 +241,8 @@ import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import Modal from '@/components/ui/Modal.vue'
 import BarcodeScanner from '@/components/BarcodeScanner.vue'
+import CreateCourseModal from '@/components/CreateCourseModal.vue'
+import CreateSessionModal from '@/components/CreateSessionModal.vue'
 
 const router = useRouter()
 const { user } = useAuth()
@@ -243,6 +259,24 @@ const stats = ref({
 const courses = ref([])
 const recentSessions = ref([])
 const isScannerOpen = ref(false)
+const isCreateCourseModalOpen = ref(false)
+const isCreateSessionModalOpen = ref(false)
+
+const showCreateCourse = () => {
+  isCreateCourseModalOpen.value = true
+}
+
+const showCreateSession = () => {
+  isCreateSessionModalOpen.value = true
+}
+
+const handleCourseCreated = async () => {
+  await fetchLecturerData()
+}
+
+const handleSessionCreated = async () => {
+  await fetchLecturerData()
+}
 
 const showBarcodeScanner = () => {
   isScannerOpen.value = true
@@ -271,13 +305,26 @@ const handleBarcodeDetected = async (barcode) => {
       return
     }
 
-    // Mark the student as present
+    // 2. Verify student exists
+    const { data: student, error: studentError } = await supabase
+      .from('students')
+      .select('full_name')
+      .eq('student_id', studentId)
+      .single()
+
+    if (studentError || !student) {
+      alert(`Student ID ${studentId} not found in database.`)
+      return
+    }
+
+    // 3. Mark the student as present
     const { error: attendanceError } = await supabase
       .from('attendance')
       .insert({
         session_id: activeSession.session_id,
         student_id: studentId,
-        is_present: true
+        status: 'Present',
+        method: 'Barcode'
       })
 
     if (attendanceError) {
@@ -286,7 +333,7 @@ const handleBarcodeDetected = async (barcode) => {
       return
     }
 
-    alert(`Student ${studentId} marked as present.`)
+    alert(`Student ${student.full_name} (${studentId}) marked as present.`)
     closeBarcodeScanner()
 
   } catch (error) {
@@ -373,16 +420,6 @@ const fetchLecturerData = async () => {
   } finally {
     isLoading.value = false
   }
-}
-
-const showCreateCourse = () => {
-  // TODO: Implement course creation modal
-  alert('Course creation feature coming soon!')
-}
-
-const showCreateSession = () => {
-  // TODO: Implement session creation
-  alert('Session creation feature coming soon!')
 }
 
 const manageCourse = (courseId) => {

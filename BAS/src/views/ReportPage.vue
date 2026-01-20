@@ -45,10 +45,9 @@
                 <label class="filter-label">Course</label>
                 <select v-model="filters.course" class="filter-select">
                   <option value="all">All Courses</option>
-                  <option value="cs101">Computer Science 101</option>
-                  <option value="math201">Mathematics 201</option>
-                  <option value="phys101">Physics 101</option>
-                  <option value="chem101">Chemistry 101</option>
+                  <option v-for="course in courses" :key="course.course_id" :value="course.course_id">
+                    {{ course.course_name }}
+                  </option>
                 </select>
               </div>
               
@@ -185,7 +184,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="record in filteredRecords" :key="record.id">
+                  <tr v-for="record in paginatedRecords" :key="record.id">
                     <td>{{ record.date }}</td>
                     <td>{{ record.course }}</td>
                     <td>{{ record.time }}</td>
@@ -223,117 +222,180 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { supabase } from '@/supabase'
+import { useAuth } from '@/composables/useAuth'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import Input from '@/components/ui/Input.vue'
 
-// Mock data - replace with actual Supabase calls
+const { user } = useAuth()
+
+// Filter state
 const filters = ref({
   dateRange: 'month',
   course: 'all',
   status: 'all'
 })
 
+// Data state
+const courses = ref([])
 const summaryStats = ref({
-  totalClasses: 150,
-  present: 138,
-  absent: 12,
-  percentage: 92
+  totalClasses: 0,
+  present: 0,
+  absent: 0,
+  percentage: 0
 })
-
+const attendanceRecords = ref([])
+const isLoading = ref(true)
 const searchQuery = ref('')
 const currentPage = ref(1)
-const totalPages = ref(5)
+const itemsPerPage = 10
 
-const attendanceRecords = ref([
-  {
-    id: 1,
-    date: '2024-12-11',
-    course: 'Computer Science 101',
-    time: '10:00 AM',
-    lecturer: 'Dr. Smith',
-    status: 'Present'
-  },
-  {
-    id: 2,
-    date: '2024-12-10',
-    course: 'Mathematics 201',
-    time: '2:00 PM',
-    lecturer: 'Prof. Johnson',
-    status: 'Present'
-  },
-  {
-    id: 3,
-    date: '2024-12-09',
-    course: 'Physics 101',
-    time: '11:00 AM',
-    lecturer: 'Dr. Brown',
-    status: 'Absent'
-  },
-  {
-    id: 4,
-    date: '2024-12-08',
-    course: 'Chemistry Lab',
-    time: '3:00 PM',
-    lecturer: 'Dr. Davis',
-    status: 'Present'
-  },
-  {
-    id: 5,
-    date: '2024-12-07',
-    course: 'Computer Science 101',
-    time: '10:00 AM',
-    lecturer: 'Dr. Smith',
-    status: 'Late'
+// Fetch courses for the filter dropdown
+const fetchCourses = async () => {
+  if (!user.value) return
+  const { data, error } = await supabase
+    .from('courses')
+    .select('course_id, course_name')
+    .eq('teacher_id', user.value.id)
+
+  if (error) {
+    console.error('Error fetching courses:', error.message)
+    return
   }
-])
+  courses.value = data
+}
+
+// Fetch attendance reports based on filters
+const fetchReportData = async () => {
+  if (!user.value) return
+  isLoading.value = true
+  
+  try {
+    // 1. Build query for records
+    let query = supabase
+      .from('attendance')
+      .select(`
+        attendance_id,
+        status,
+        timestamp,
+        sessions!inner(
+          session_date,
+          session_time,
+          courses!inner(
+            course_name,
+            teacher_id
+          )
+        )
+      `)
+      .eq('sessions.courses.teacher_id', user.value.id)
+
+    // Apply filters
+    if (filters.value.course !== 'all') {
+      query = query.eq('sessions.course_id', filters.value.course)
+    }
+    
+    if (filters.value.status !== 'all') {
+      query = query.eq('status', filters.value.status.charAt(0).toUpperCase() + filters.value.status.slice(1))
+    }
+
+    // Date range filter
+    const now = new Date()
+    let startDate = new Date()
+    if (filters.value.dateRange === 'week') {
+      startDate.setDate(now.getDate() - 7)
+      query = query.gte('timestamp', startDate.toISOString())
+    } else if (filters.value.dateRange === 'month') {
+      startDate.setMonth(now.getMonth() - 1)
+      query = query.gte('timestamp', startDate.toISOString())
+    }
+
+    const { data, error } = await query.order('timestamp', { ascending: false })
+
+    if (error) throw error
+
+    // Transform data for the table
+    attendanceRecords.value = data.map(record => ({
+      id: record.attendance_id,
+      date: new Date(record.sessions.session_date).toLocaleDateString(),
+      course: record.sessions.courses.course_name,
+      time: record.sessions.session_time || 'N/A',
+      lecturer: 'Me', // Since it's the lecturer's report page
+      status: record.status
+    }))
+
+    // 2. Calculate summary stats
+    const total = attendanceRecords.value.length
+    const present = attendanceRecords.value.filter(r => r.status === 'Present').length
+    const absent = attendanceRecords.value.filter(r => r.status === 'Absent').length
+    
+    summaryStats.value = {
+      totalClasses: total,
+      present: present,
+      absent: absent,
+      percentage: total > 0 ? Math.round((present / total) * 100) : 0
+    }
+
+  } catch (err) {
+    console.error('Error fetching report data:', err.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const totalPages = computed(() => Math.ceil(filteredRecords.value.length / itemsPerPage) || 1)
 
 const filteredRecords = computed(() => {
   let records = [...attendanceRecords.value]
   
   if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
     records = records.filter(record => 
-      record.course.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      record.lecturer.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      record.date.includes(searchQuery.value)
-    )
-  }
-  
-  if (filters.value.course !== 'all') {
-    records = records.filter(record => 
-      record.course.toLowerCase().includes(filters.value.course)
-    )
-  }
-  
-  if (filters.value.status !== 'all') {
-    records = records.filter(record => 
-      record.status.toLowerCase() === filters.value.status
+      record.course.toLowerCase().includes(query) ||
+      record.date.includes(query) ||
+      record.status.toLowerCase().includes(query)
     )
   }
   
   return records
 })
 
+const paginatedRecords = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredRecords.value.slice(start, end)
+})
+
 const applyFilters = () => {
-  console.log('Applying filters:', filters.value)
-  // Apply filters logic here
+  currentPage.value = 1
+  fetchReportData()
 }
 
 const exportReport = () => {
-  console.log('Exporting report...')
-  // Export logic here
-  alert('Report would be exported as PDF/Excel')
+  // Simple CSV export for now
+  const headers = ['Date', 'Course', 'Time', 'Status']
+  const rows = attendanceRecords.value.map(r => [r.date, r.course, r.time, r.status])
+  
+  let csvContent = "data:text/csv;charset=utf-8," 
+    + headers.join(",") + "\n"
+    + rows.map(e => e.join(",")).join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `attendance_report_${filters.value.dateRange}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 const refreshData = () => {
-  console.log('Refreshing data...')
-  // Refresh data from Supabase
+  fetchReportData()
 }
 
 const viewDetails = (recordId) => {
   console.log('Viewing details for record:', recordId)
-  // View record details
 }
 
 const previousPage = () => {
@@ -348,8 +410,9 @@ const nextPage = () => {
   }
 }
 
-onMounted(() => {
-  console.log('Report page loaded')
+onMounted(async () => {
+  await fetchCourses()
+  await fetchReportData()
 })
 </script>
 

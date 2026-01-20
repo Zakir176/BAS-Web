@@ -291,3 +291,26 @@ CREATE TRIGGER update_teachers_updated_at BEFORE UPDATE ON teachers
 
 CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+-- Student Uploads: For managing student document uploads
+CREATE TABLE IF NOT EXISTS student_uploads (
+    upload_id SERIAL PRIMARY KEY,
+    student_id VARCHAR(20) NOT NULL REFERENCES students(student_id),
+    file_name TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    file_size BIGINT,
+    file_type VARCHAR(50),
+    status VARCHAR(20) DEFAULT 'completed' CHECK (status IN ('pending', 'completed', 'failed')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Index for performance
+CREATE INDEX IF NOT EXISTS idx_student_uploads_student ON student_uploads(student_id);
+
+-- RLS for student_uploads
+ALTER TABLE student_uploads ENABLE ROW LEVEL SECURITY;
+
+-- Note: In a real app, you'd link auth.uid() to student_id. 
+-- For this simplified schema, we'll allow all for now or mock the check.
+CREATE POLICY "Enable all for development student uploads" ON student_uploads
+  FOR ALL USING (true);

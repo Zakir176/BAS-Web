@@ -125,18 +125,18 @@ export function useAuth() {
     }
   }
   
-  // Listen for auth state changes
-  onMounted(() => {
+  const init = async () => {
     supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null)
       isLoading.value = false
     })
 
     // Also check for the initial session on component mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null)
-    })
-  })
+    const { data: { session } } = await supabase.auth.getSession()
+    setUser(session?.user || null)
+  }
+  
+
 
   // Get current student profile
   const getStudentProfile = async (studentId) => {
@@ -221,6 +221,7 @@ export function useAuth() {
     getStudentProfile,
     updateStudentProfile,
     getLecturerProfile,
-    updateLecturerProfile
+    updateLecturerProfile,
+    init
   }
 }
