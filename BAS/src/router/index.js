@@ -65,6 +65,14 @@ const routes = [
     name: 'ReportPage',
     component: ReportPage,
     meta: { requiresAuth: true, role: 'lecturer' }
+  },
+  {
+    path: '/lecturer-homepage',
+    redirect: '/lecturer-dashboard'
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 
