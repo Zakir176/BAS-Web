@@ -18,9 +18,6 @@
                 </svg>
                 Mark Attendance
               </Button>
-              <Button variant="secondary" size="lg" @click="goToReports">
-                View Reports
-              </Button>
             </div>
           </div>
         </section>
@@ -312,10 +309,6 @@ const fetchStudentData = async () => {
 const showBarcodeScanner = () => {
   // TODO: Implement barcode scanner
   alert('Barcode scanner feature coming soon!')
-}
-
-const goToReports = () => {
-  router.push('/report-page')
 }
 
 const markAttendance = async (classId) => {
