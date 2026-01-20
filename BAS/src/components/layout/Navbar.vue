@@ -17,11 +17,21 @@
         
         <div class="navbar-menu">
           <router-link to="/" class="nav-link">Home</router-link>
-          <router-link v-if="!isAuthenticated" to="/student-login" class="nav-link">Student Login</router-link>
-          <router-link v-if="!isAuthenticated" to="/lecturer-login" class="nav-link">Lecturer Login</router-link>
-          <router-link v-if="isAuthenticated" to="/student-homepage" class="nav-link">Dashboard</router-link>
-          <router-link v-if="isAuthenticated" to="/student-upload-page" class="nav-link">Upload</router-link>
-          <router-link v-if="isAuthenticated" to="/report-page" class="nav-link">Reports</router-link>
+          <template v-if="!isAuthenticated">
+            <router-link to="/student-login" class="nav-link">Student Login</router-link>
+            <router-link to="/lecturer-login" class="nav-link">Lecturer Login</router-link>
+          </template>
+          <template v-else>
+            <router-link 
+              :to="user?.role === 'lecturer' ? '/lecturer-dashboard' : '/student-homepage'" 
+              class="nav-link"
+            >
+              Dashboard
+            </router-link>
+            <router-link v-if="user?.role === 'student'" to="/student-upload-page" class="nav-link">Upload</router-link>
+            <router-link v-if="user?.role === 'lecturer'" to="/report-page" class="nav-link">Reports</router-link>
+            <button @click="handleSignOut" class="nav-link sign-out-btn">Sign Out</button>
+          </template>
         </div>
         
         <div class="navbar-actions">
@@ -128,6 +138,15 @@ onMounted(() => {
   right: 0;
   height: 2px;
   background-color: var(--accent-primary);
+}
+
+.sign-out-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
 }
 
 .navbar-actions {
