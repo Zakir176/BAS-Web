@@ -15,6 +15,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
     "exceljs": "^4.4.0",
+    "quagga": "^0.12.1",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
   },
