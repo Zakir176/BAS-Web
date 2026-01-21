@@ -1,160 +1,128 @@
 <template>
-  <div class="home-page">
+  <div class="landing-page">
     <Navbar />
     
-    <main class="main-content">
-      <div class="container">
-        <section class="hero-section">
-          <div class="hero-content">
-            <div class="hero-text">
-              <h1 class="hero-title">
-                Barcode Attendance System
-              </h1>
-              <p class="hero-subtitle">
-                Seamless attendance tracking for modern educational institutions
+    <main>
+      <!-- Hero Section -->
+      <section class="hero-v2">
+        <div class="hero-bg-overlay"></div>
+        <div class="container relative">
+          <div class="hero-flex">
+            <div class="hero-left">
+              <span class="badge-new">NEW VERSION 2.0</span>
+              <h1 class="display-title">Simplify Campus <br/><span class="text-gradient">Attendance.</span></h1>
+              <p class="lead-text">
+                The most advanced barcode-based tracking system for modern universities. Secure, fast, and remarkably easy to use.
               </p>
-              <div class="hero-actions">
-                <Button variant="primary" size="lg" @click="goToStudentLogin">
-                  Student Portal
+              <div class="hero-cta-group">
+                <Button variant="primary" size="lg" @click="goToStudentLogin" class="premium-btn">
+                  Start Scanning
                 </Button>
-                <Button variant="secondary" size="lg" @click="goToLecturerLogin">
-                  Lecturer Portal
-                </Button>
-              </div>
-              <div class="hero-links">
-                <router-link to="/student-signup" class="signup-link">
-                  New Student? Sign up
-                </router-link>
-                <router-link to="/lecturer-signup" class="signup-link">
-                  New Lecturer? Sign up
-                </router-link>
-              </div>
-            </div>
-            <div class="hero-visual">
-              <div class="barcode-animation">
-                <div class="barcode-lines">
-                  <div class="line"></div>
-                  <div class="line"></div>
-                  <div class="line"></div>
-                  <div class="line"></div>
-                  <div class="line"></div>
+                <div class="avatars-group">
+                  <div class="avatar-stack">
+                    <img src="https://i.pravatar.cc/100?u=1" alt="U">
+                    <img src="https://i.pravatar.cc/100?u=2" alt="U">
+                    <img src="https://i.pravatar.cc/100?u=3" alt="U">
+                  </div>
+                  <span class="avatar-text">Join 2,000+ students</span>
                 </div>
-                <div class="scanner"></div>
+              </div>
+            </div>
+            <div class="hero-right">
+              <div class="hero-mockup-floating">
+                <div class="mockup-card">
+                  <div class="mockup-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                  </div>
+                  <div class="mockup-body">
+                    <div class="barcode-skeleton"></div>
+                    <div class="text-skeleton-group">
+                      <div class="text-skeleton long"></div>
+                      <div class="text-skeleton short"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="features-section">
-          <div class="features-grid">
-            <Card class="feature-card">
-              <div class="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <rect width="48" height="48" rx="12" fill="var(--accent-primary)" opacity="0.1"/>
-                  <path d="M16 8h16v4H16V8zm0 8h16v4H16v-4zm0 8h16v4H16v-4zm0 8h16v4H16v-4z" fill="var(--accent-primary)"/>
-                </svg>
-              </div>
-              <h3 class="feature-title">Quick Scanning</h3>
-              <p class="feature-description">
-                Fast barcode scanning for instant attendance recording
-              </p>
-            </Card>
-
-            <Card class="feature-card">
-              <div class="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <rect width="48" height="48" rx="12" fill="var(--success)" opacity="0.1"/>
-                  <path d="M24 8l8 8-8 8-8-8 8-8zm0 16l8 8-8 8-8-8 8-8z" fill="var(--success)"/>
-                </svg>
-              </div>
-              <h3 class="feature-title">Real-time Tracking</h3>
-              <p class="feature-description">
-                Live attendance monitoring and instant updates
-              </p>
-            </Card>
-
-            <Card class="feature-card">
-              <div class="feature-icon">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <rect width="48" height="48" rx="12" fill="var(--warning)" opacity="0.1"/>
-                  <path d="M12 12h24v4H12v-4zm0 8h24v4H12v-4zm0 8h24v4H12v-4z" fill="var(--warning)"/>
-                </svg>
-              </div>
-              <h3 class="feature-title">Detailed Reports</h3>
-              <p class="feature-description">
-                Comprehensive attendance analytics and reporting
-              </p>
-            </Card>
+      <!-- Trusted By Section -->
+      <section class="trust-section">
+        <div class="container">
+          <p class="trust-label">TRUSTED BY LEADING DEPARTMENTS</p>
+          <div class="logo-cloud">
+            <span class="dept-logo">BIOLOGY</span>
+            <span class="dept-logo">ENGINEERING</span>
+            <span class="dept-logo">MATHEMATICS</span>
+            <span class="dept-logo">COMPUTING</span>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <HowItWorks />
-
-        <section class="stats-section">
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-number">10K+</div>
-              <div class="stat-label">Students Enrolled</div>
+      <!-- Features Grid -->
+      <section class="features-v2">
+        <div class="container">
+          <div class="section-intro">
+            <h2>Everything you need for <br/><span>perfect records.</span></h2>
+          </div>
+          <div class="features-grid-v2">
+            <div class="feature-card-v2">
+              <div class="feat-icon-box">⚡</div>
+              <h3>Instant Scan</h3>
+              <p>Detect barcodes in milliseconds with sub-pixel precision under any lighting.</p>
             </div>
-            <div class="stat-item">
-              <div class="stat-number">500+</div>
-              <div class="stat-label">Lecturers</div>
+            <div class="feature-card-v2">
+              <div class="feat-icon-box">📊</div>
+              <h3>Live Dashboards</h3>
+              <p>Visualize attendance trends with real-time analytics for every course.</p>
             </div>
-            <div class="stat-item">
-              <div class="stat-number">99.9%</div>
-              <div class="stat-label">Uptime</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">24/7</div>
-              <div class="stat-label">Support</div>
+            <div class="feature-card-v2">
+              <div class="feat-icon-box">🛡️</div>
+              <h3>Secure Access</h3>
+              <p>Enterprise-grade security ensuring student data remains private and protected.</p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <Cta />
-
-        <Testimonials />
-      </div>
+      <!-- CTA Section -->
+      <section class="final-cta">
+        <div class="container">
+          <div class="cta-inner">
+            <h2>Ready to transform your classroom?</h2>
+            <p>Get started with Smart Attendance today and save hours every week.</p>
+            <Button variant="white" size="lg" @click="goToLecturerLogin">Get Started Now</Button>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer-v2">
       <div class="container">
-        <div class="footer-content">
+        <div class="footer-top">
           <div class="footer-brand">
-            <div class="logo">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect width="24" height="24" rx="6" fill="var(--accent-primary)"/>
-                <path d="M6 9h12v6H6z" fill="white"/>
-                <path d="M9 6v12h6V6H9z" fill="var(--accent-primary)"/>
-              </svg>
+            <span class="brand-text">Smart Attendance</span>
+            <p>Modernizing academic administration.</p>
+          </div>
+          <div class="footer-nav">
+            <div class="nav-col">
+              <h4>System</h4>
+              <router-link to="/student-login">Student Portal</router-link>
+              <router-link to="/lecturer-login">Lecturer Portal</router-link>
             </div>
-            <span>BAS</span>
+            <div class="nav-col">
+              <h4>Company</h4>
+              <a href="#">About</a>
+              <a href="#">Privacy</a>
+            </div>
           </div>
-          <div class="footer-text">
-            © 2024 Barcode Attendance System. All rights reserved.
-          </div>
-          <div class="footer-links">
-            <a href="#" class="footer-link">About Us</a>
-            <a href="#" class="footer-link">Contact Us</a>
-            <a href="#" class="footer-link">Terms of Service</a>
-          </div>
-          <div class="footer-socials">
-            <a href="#" class="social-link">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2v-2h-2v2zm0-4h2V7h-2v4z"/>
-              </svg>
-            </a>
-            <a href="#" class="social-link">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2v-2h-2v2zm0-4h2V7h-2v4z"/>
-              </svg>
-            </a>
-            <a href="#" class="social-link">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-5h2v-2h-2v2zm0-4h2V7h-2v4z"/>
-              </svg>
-            </a>
-          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2024 Smart Attendance System. Built for higher education.</p>
         </div>
       </div>
     </footer>
@@ -165,302 +133,335 @@
 import { useRouter } from 'vue-router'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
-import HowItWorks from '@/components/layout/HowItWorks.vue'
-import Testimonials from '@/components/layout/Testimonials.vue'
-import Cta from '@/components/layout/Cta.vue'
-import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
-
-const goToStudentLogin = () => {
-  router.push('/student-login')
-}
-
-const goToLecturerLogin = () => {
-  router.push('/lecturer-login')
-}
+const goToStudentLogin = () => router.push('/student-login')
+const goToLecturerLogin = () => router.push('/lecturer-login')
 </script>
 
 <style scoped>
-.home-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.landing-page {
+  background-color: white;
 }
 
-.main-content {
-  flex: 1;
+/* Hero V2 */
+.hero-v2 {
+  position: relative;
+  padding: 8rem 0 10rem;
+  background-color: #f8fafc;
+  overflow: hidden;
 }
 
-.hero-section {
-  padding: 4rem 0;
-  text-align: center;
+.hero-v2::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  z-index: 1;
 }
 
-.hero-content {
+.hero-flex {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 4rem;
+  z-index: 2;
+  position: relative;
 }
 
-.hero-text {
-  text-align: left;
+.badge-new {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #dbeafe;
+  color: #2563eb;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 2rem;
 }
 
-.hero-title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
+.display-title {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1.05;
+  color: #0f172a;
   margin-bottom: 1.5rem;
-  line-height: 1.1;
 }
 
-.hero-subtitle {
+.text-gradient {
+  background: linear-gradient(to right, #2563eb, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lead-text {
   font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin-bottom: 2.5rem;
+  color: #64748b;
+  margin-bottom: 3rem;
+  max-width: 580px;
   line-height: 1.6;
 }
 
-.hero-actions {
+.hero-cta-group {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  align-items: center;
+  gap: 2.5rem;
 }
 
-.hero-links {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
+.premium-btn {
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
 }
 
-.signup-link {
-  color: var(--accent-primary);
-  text-decoration: none;
+.avatars-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-stack {
+  display: flex;
+  margin-left: 0.5rem;
+}
+
+.avatar-stack img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -10px;
+}
+
+.avatar-text {
   font-size: 0.875rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-weight: 700;
+  color: #1e293b;
 }
 
-.signup-link:hover {
-  color: var(--accent-secondary);
-  text-decoration: underline;
+/* Floating Mockup */
+.hero-mockup-floating {
+  animation: float 6s ease-in-out infinite;
 }
 
-.hero-visual {
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.mockup-card {
+  background: white;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+  width: 400px;
+}
+
+.mockup-header {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: 6px;
+  margin-bottom: 2rem;
 }
 
-.barcode-animation {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.red { background: #ff5f56; }
+.yellow { background: #ffbd2e; }
+.green { background: #27c93f; }
 
-.barcode-lines {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.line {
-  width: 8px;
+.barcode-skeleton {
   height: 120px;
-  background: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
-  border-radius: 4px;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.line:nth-child(2) { animation-delay: 0.2s; }
-.line:nth-child(3) { animation-delay: 0.4s; }
-.line:nth-child(4) { animation-delay: 0.6s; }
-.line:nth-child(5) { animation-delay: 0.8s; }
-
-.scanner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-  animation: scan 3s ease-in-out infinite;
-  border-radius: 2px;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; transform: scaleY(1); }
-  50% { opacity: 1; transform: scaleY(1.1); }
-}
-
-@keyframes scan {
-  0% { top: 0; }
-  50% { top: calc(100% - 4px); }
-  100% { top: 0; }
-}
-
-.features-section {
-  padding: 4rem 0;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.feature-card {
-  text-align: center;
-  padding: 2rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.feature-icon {
+  background: repeating-linear-gradient(90deg, #f1f5f9, #f1f5f9 2px, transparent 2px, transparent 8px);
   margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.text-skeleton {
+  height: 12px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.text-skeleton.long { width: 80%; }
+.text-skeleton.short { width: 50%; }
+
+/* Trust */
+.trust-section {
+  padding: 4rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+.trust-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+}
+
+.logo-cloud {
   display: flex;
   justify-content: center;
+  gap: 4rem;
+  opacity: 0.6;
 }
 
-.feature-title {
+.dept-logo {
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: #cbd5e1;
+}
+
+/* Features V2 */
+.features-v2 {
+  padding: 10rem 0;
+}
+
+.section-intro {
+  text-align: center;
+  margin-bottom: 6rem;
+}
+
+.section-intro h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.section-intro span { color: #2563eb; }
+
+.features-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+}
+
+.feature-card-v2 {
+  padding: 3rem;
+  background: #f8fafc;
+  border-radius: 24px;
+  transition: all 0.3s;
+}
+
+.feature-card-v2:hover {
+  background: white;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  transform: translateY(-5px);
+}
+
+.feat-icon-box {
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+}
+
+.feature-card-v2 h3 {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 800;
   margin-bottom: 1rem;
 }
 
-.feature-description {
-  color: var(--text-secondary);
+.feature-card-v2 p {
+  color: #64748b;
   line-height: 1.6;
 }
 
-.stats-section {
-  padding: 4rem 0;
-  background-color: var(--bg-secondary);
+/* Final CTA */
+.final-cta {
+  padding-bottom: 10rem;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+.cta-inner {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  padding: 6rem;
+  border-radius: 40px;
   text-align: center;
+  color: white;
 }
 
-.stat-item {
-  padding: 1rem;
+.cta-inner h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
 }
 
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent-primary);
-  margin-bottom: 0.5rem;
+.cta-inner p {
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  opacity: 0.9;
 }
 
-.stat-label {
-  color: var(--text-secondary);
-  font-size: 1rem;
+/* Footer V2 */
+.footer-v2 {
+  padding: 8rem 0 4rem;
+  background: #0f172a;
+  color: white;
 }
 
-.footer {
-  background-color: var(--bg-tertiary);
-  padding: 2rem 0;
-  border-top: 1px solid var(--border-primary);
-}
-
-.footer-content {
+.footer-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-bottom: 6rem;
 }
 
-.footer-brand {
+.footer-brand .brand-text {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.footer-brand p { color: #94a3b8; }
+
+.footer-nav {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  gap: 6rem;
 }
 
-.footer-text {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
+.nav-col h4 {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #475569;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
 }
 
-.footer-links {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.footer-link {
-  color: var(--text-secondary);
+.nav-col a {
+  display: block;
+  color: #94a3b8;
   text-decoration: none;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.nav-col a:hover { color: white; }
+
+.footer-bottom {
+  padding-top: 4rem;
+  border-top: 1px solid #1e293b;
+  color: #475569;
   font-size: 0.875rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-weight: 600;
 }
 
-.footer-link:hover {
-  color: var(--accent-primary);
-  text-decoration: underline;
-}
-
-.footer-socials {
-  display: flex;
-  gap: 1rem;
-}
-
-.social-link {
-  color: var(--text-secondary);
-  transition: color 0.2s ease;
-}
-
-.social-link:hover {
-  color: var(--accent-primary);
-}
-
-@media (max-width: 768px) {
-  .hero-content {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-  
-  .hero-text {
-    text-align: center;
-  }
-  
-  .hero-title {
-    font-size: 2.5rem;
-  }
-  
-  .hero-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .footer-content {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
+@media (max-width: 1024px) {
+  .hero-flex { grid-template-columns: 1fr; text-align: center; }
+  .hero-left { display: flex; flex-direction: column; align-items: center; }
+  .display-title { font-size: 3rem; }
+  .hero-right { display: none; }
+  .features-grid-v2 { grid-template-columns: 1fr; }
+  .cta-inner { padding: 4rem 2rem; }
 }
 </style>

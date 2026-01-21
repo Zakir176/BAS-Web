@@ -39,7 +39,7 @@ CREATE TABLE students (
     qr_code_value VARCHAR(100) UNIQUE,  -- Used for barcode/QR scanning
     email VARCHAR(100) UNIQUE,
     phone VARCHAR(20),
-    password VARCHAR(255) NOT NULL,  -- Password for authentication
+    phone VARCHAR(20),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -49,7 +49,6 @@ CREATE TABLE teachers (
     teacher_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,  -- Password for authentication
     role VARCHAR(20) DEFAULT 'teacher' CHECK (role IN ('teacher', 'admin')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -214,9 +213,25 @@ CREATE POLICY "Teachers can view own profile" ON teachers
 CREATE POLICY "Teachers can update own profile" ON teachers
   FOR UPDATE USING (auth.uid() = teacher_id);
 
+-- RLS Policies for students table
+CREATE POLICY "Students can view own profile" ON students
+  FOR SELECT USING (auth.email() = email);
+
+CREATE POLICY "Students can update own profile" ON students
+  FOR UPDATE USING (auth.email() = email);
+
 -- RLS Policies for courses table
 CREATE POLICY "Teachers can view their courses" ON courses
   FOR SELECT USING (auth.uid() = teacher_id);
+
+CREATE POLICY "Students can view enrolled courses" ON courses
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM enrollments 
+      WHERE enrollments.course_id = courses.course_id 
+      AND enrollments.student_id IN (SELECT student_id FROM students WHERE email = auth.email())
+    )
+  );
 
 CREATE POLICY "Teachers can update their courses" ON courses
   FOR UPDATE USING (auth.uid() = teacher_id);
