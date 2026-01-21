@@ -6,7 +6,7 @@
 
 <script setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue'
-import Quagga from 'quagga'
+import Quagga from '@ericblade/quagga2'
 
 const scanner = ref(null)
 const emit = defineEmits(['detected'])
@@ -50,8 +50,15 @@ onMounted(() => {
     Quagga.start()
   })
 
+  let lastEmitTime = 0
+  const cooldown = 2000 // 2 seconds
+
   Quagga.onDetected((data) => {
-    emit('detected', data.codeResult.code)
+    const now = Date.now()
+    if (now - lastEmitTime > cooldown) {
+      lastEmitTime = now
+      emit('detected', data.codeResult.code)
+    }
   })
 })
 
