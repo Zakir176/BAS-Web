@@ -1,48 +1,52 @@
 <template>
-  <nav class="navbar">
-    <div class="container">
-      <div class="navbar-content">
-        <div class="navbar-brand">
+  <nav class="navbar shadow-sm">
+    <div class="container container-wide">
+      <div class="navbar-inner">
+        <!-- Logo -->
+        <div class="brand-zone">
           <router-link to="/" class="brand-link">
-            <div class="logo">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="8" fill="var(--accent-primary)"/>
-                <path d="M8 12h16v8H8z" fill="white"/>
-                <path d="M12 8v16h8V8h-8z" fill="var(--accent-primary)"/>
-              </svg>
+            <div class="brand-icon-box">
+              <span class="icon">🎓</span>
             </div>
-            <span class="brand-text">BAS</span>
+            <div class="brand-meta">
+              <span class="brand-title">Smart Attendance</span>
+              <span class="brand-tagline">Academic System</span>
+            </div>
           </router-link>
         </div>
-        
-        <div class="navbar-menu">
-          <router-link to="/" class="nav-link">Home</router-link>
-          <template v-if="!isAuthenticated">
-            <router-link to="/student-login" class="nav-link">Student Login</router-link>
-            <router-link to="/lecturer-login" class="nav-link">Lecturer Login</router-link>
-          </template>
-          <template v-else>
+
+        <!-- Links -->
+        <div class="nav-links">
+          <router-link to="/" class="nav-item">Home</router-link>
+          <template v-if="isAuthenticated">
             <router-link 
               :to="user?.role === 'lecturer' ? '/lecturer-dashboard' : '/student-homepage'" 
-              class="nav-link"
+              class="nav-item"
             >
               Dashboard
             </router-link>
-            <router-link v-if="user?.role === 'student'" to="/student-upload-page" class="nav-link">Upload</router-link>
-            <router-link v-if="user?.role === 'lecturer'" to="/report-page" class="nav-link">Reports</router-link>
-            <button @click="handleSignOut" class="nav-link sign-out-btn">Sign Out</button>
+            <router-link v-if="user?.role === 'student'" to="/student-upload-page" class="nav-item">Upload</router-link>
+            <router-link v-if="user?.role === 'lecturer'" to="/report-page" class="nav-item">Reports</router-link>
           </template>
         </div>
-        
-        <div class="navbar-actions">
-          <button @click="toggleTheme" class="theme-toggle">
-            <svg v-if="isDark" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
-            </svg>
-            <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-            </svg>
+
+        <!-- Actions -->
+        <div class="user-actions">
+          <button @click="toggleTheme" class="action-circle-btn theme-btn" :title="isDark ? 'Light Mode' : 'Dark Mode'">
+            <span v-if="isDark">☀️</span>
+            <span v-else>🌙</span>
           </button>
+          
+          <template v-if="isAuthenticated">
+            <div class="divider"></div>
+            <button @click="handleSignOut" class="logout-btn">
+              <span>Logout</span>
+              <span class="icon">⏻</span>
+            </button>
+          </template>
+          <template v-else>
+            <router-link to="/student-login" class="nav-auth-btn">Sign In</router-link>
+          </template>
         </div>
       </div>
     </div>
@@ -50,7 +54,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTheme } from '@/composables/useTheme'
 import { useAuth } from '@/composables/useAuth'
@@ -58,8 +61,6 @@ import { useAuth } from '@/composables/useAuth'
 const router = useRouter()
 const { isDark, toggleTheme } = useTheme()
 const { isAuthenticated, user, signOut } = useAuth()
-
-const isMobileMenuOpen = ref(false)
 
 const handleSignOut = async () => {
   try {
@@ -69,109 +70,172 @@ const handleSignOut = async () => {
     console.error('Sign out error:', error)
   }
 }
-
-onMounted(() => {
-  toggleTheme()
-})
 </script>
 
 <style scoped>
 .navbar {
-  background-color: var(--card-bg);
-  border-bottom: 1px solid var(--border-primary);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   position: sticky;
   top: 0;
-  z-index: 50;
-  backdrop-filter: blur(8px);
-  background-color: rgba(var(--card-bg), 0.8);
-}
-
-.navbar-content {
+  z-index: 1000;
+  height: 72px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 4rem;
 }
 
-.navbar-brand {
-  flex-shrink: 0;
+.container-wide {
+  max-width: 1400px;
+}
+
+.navbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .brand-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   text-decoration: none;
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: 1.25rem;
 }
 
-.brand-text {
-  color: var(--accent-primary);
-}
-
-.navbar-menu {
+.brand-icon-box {
+  width: 44px;
+  height: 44px;
+  background: var(--primary);
+  border-radius: 12px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.brand-icon-box .icon {
+  font-size: 1.5rem;
+}
+
+.brand-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-weight: 800;
+  color: #1e293b;
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+
+.brand-tagline {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #3b82f6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-links {
+  display: flex;
   gap: 2rem;
 }
 
-.nav-link {
-  color: var(--text-secondary);
+.nav-item {
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-weight: 700;
+  color: #64748b;
+  font-size: 0.9375rem;
+  padding: 0.5rem 0.25rem;
   position: relative;
+  transition: all 0.2s;
 }
 
-.nav-link:hover,
-.nav-link.router-link-active {
-  color: var(--accent-primary);
+.nav-item:hover {
+  color: #1e293b;
 }
 
-.nav-link.router-link-active::after {
+.nav-item.router-link-active {
+  color: var(--primary);
+}
+
+.nav-item.router-link-active::after {
   content: '';
   position: absolute;
-  bottom: -1rem;
+  bottom: -4px;
   left: 0;
-  right: 0;
+  width: 100%;
   height: 2px;
-  background-color: var(--accent-primary);
+  background: var(--primary);
+  border-radius: 2px;
 }
 
-.sign-out-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
-  font-size: inherit;
-  cursor: pointer;
-}
-
-.navbar-actions {
+.user-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
-.theme-toggle {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
+.action-circle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: white;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s;
 }
 
-.theme-toggle:hover {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
+.action-circle-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: #e2e8f0;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fef2f2;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+.nav-auth-btn {
+  background: var(--primary);
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
 }
 
 @media (max-width: 768px) {
-  .navbar-menu {
+  .nav-links, .brand-tagline {
     display: none;
   }
 }
