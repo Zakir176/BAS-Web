@@ -1,93 +1,60 @@
 <template>
-  <div class="lecturer-signup">
-    <div class="signup-container">
-      <div class="signup-card">
-        <div class="signup-header">
-          <h1>Lecturer Registration</h1>
-          <p>Create your account to manage courses and track attendance</p>
-        </div>
+  <div class="auth-page lecturer-signup-theme">
+    <div class="auth-overlay"></div>
+    <main class="auth-main">
+      <div class="auth-card-wrapper">
+        <div class="auth-card">
+          <div class="auth-header">
+            <div class="auth-brand">👨‍🏫</div>
+            <h2>Lecturer <span class="text-gradient">Portal.</span></h2>
+            <p>Empowering educators with smart tools.</p>
+          </div>
 
-        <form @submit.prevent="handleSignup" class="signup-form">
-          <div class="form-row">
-            <Input
-              v-model="formData.firstName"
-              label="First Name"
-              type="text"
-              placeholder="Enter your first name"
-              required
-              :error="errors.firstName"
-            />
-            
-            <Input
-              v-model="formData.lastName"
-              label="Last Name"
-              type="text"
-              placeholder="Enter your last name"
-              required
-              :error="errors.lastName"
-            />
-          </div>
-          
-          <Input
-            v-model="formData.email"
-            label="Email Address"
-            type="email"
-            placeholder="lecturer@university.edu"
-            required
-            :error="errors.email"
-          />
-          
-          <Input
-            v-model="formData.department"
-            label="Department"
-            type="text"
-            placeholder="Computer Science"
-            required
-            :error="errors.department"
-          />
-          
-          <div class="form-row">
-            <Input
-              v-model="formData.password"
-              label="Password"
-              type="password"
-              placeholder="Create a strong password"
-              required
-              :error="errors.password"
-            />
-            
-            <Input
-              v-model="formData.confirmPassword"
-              label="Confirm Password"
-              type="password"
-              placeholder="Confirm your password"
-              required
-              :error="errors.confirmPassword"
-            />
-          </div>
-          
-          <div class="form-actions">
-            <Button 
-              type="submit" 
-              variant="primary" 
-              size="lg"
-              :disabled="isLoading"
-              class="submit-button"
-            >
-              <span v-if="!isLoading">Create Account</span>
-              <span v-else>Creating Account...</span>
+          <form @submit.prevent="handleSignup" class="auth-form">
+            <div class="form-row-v2">
+              <div class="input-group-v2">
+                <input v-model="formData.firstName" type="text" placeholder=" " required />
+                <label>First Name</label>
+              </div>
+              <div class="input-group-v2">
+                <input v-model="formData.lastName" type="text" placeholder=" " required />
+                <label>Last Name</label>
+              </div>
+            </div>
+
+            <div class="input-group-v2">
+              <input v-model="formData.email" type="email" placeholder=" " required />
+              <label>Official Email</label>
+            </div>
+
+            <div class="input-group-v2">
+              <input v-model="formData.department" type="text" placeholder=" " required />
+              <label>Department</label>
+            </div>
+
+            <div class="form-row-v2">
+              <div class="input-group-v2">
+                <input v-model="formData.password" type="password" placeholder=" " required />
+                <label>Password</label>
+              </div>
+              <div class="input-group-v2">
+                <input v-model="formData.confirmPassword" type="password" placeholder=" " required />
+                <label>Confirm</label>
+              </div>
+            </div>
+
+            <Button type="submit" variant="primary" size="lg" full-width class="auth-btn" :disabled="isLoading">
+              <span v-if="!isLoading">Register as Lecturer</span>
+              <span v-else>Registering...</span>
             </Button>
-          </div>
-        </form>
+          </form>
 
-        <div class="signup-footer">
-          <p>Already have an account?</p>
-          <router-link to="/lecturer-login" class="login-link">
-            Sign In
-          </router-link>
+          <footer class="auth-footer">
+            <p>Already registered? <router-link to="/lecturer-login">Sign In</router-link></p>
+          </footer>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -95,7 +62,6 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
-import Input from '@/components/ui/Input.vue'
 import Button from '@/components/ui/Button.vue'
 
 const router = useRouter()
@@ -110,57 +76,16 @@ const formData = reactive({
   confirmPassword: ''
 })
 
-const errors = reactive({
-  firstName: '',
-  lastName: '',
-  email: '',
-  department: '',
-  password: '',
-  confirmPassword: ''
-})
-
 const validateForm = () => {
-  // Reset errors
-  Object.keys(errors).forEach(key => errors[key] = '')
-  
-  let isValid = true
-  
-  if (!formData.firstName.trim()) {
-    errors.firstName = 'First name is required'
-    isValid = false
-  }
-  
-  if (!formData.lastName.trim()) {
-    errors.lastName = 'Last name is required'
-    isValid = false
-  }
-  
-  if (!formData.email.trim() || !/^\S+@\S+\.\S+$/.test(formData.email)) {
-    errors.email = 'Please enter a valid email'
-    isValid = false
-  }
-  
-  if (!formData.department.trim()) {
-    errors.department = 'Department is required'
-    isValid = false
-  }
-  
-  if (formData.password.length < 6) {
-    errors.password = 'Password must be at least 6 characters'
-    isValid = false
-  }
-  
   if (formData.password !== formData.confirmPassword) {
-    errors.confirmPassword = 'Passwords do not match'
-    isValid = false
+    alert('Passwords do not match')
+    return false
   }
-  
-  return isValid
+  return true
 }
 
 const handleSignup = async () => {
   if (!validateForm()) return
-  
   try {
     await signUp(formData.email, formData.password, {
       role: 'lecturer',
@@ -169,107 +94,132 @@ const handleSignup = async () => {
       full_name: `${formData.firstName} ${formData.lastName}`,
       department: formData.department
     })
-    
-    // Show success message and redirect
-    alert('Signup successful! Please check your email to confirm your account and then sign in.')
+    alert('Signup successful! Please verify email.')
     router.push('/lecturer-login')
-
   } catch (err) {
-    console.error('Signup failed:', err)
-    // Display a generic error message
-    errors.password = 'Signup failed. This email may already be registered.'
+    console.error(err)
+    alert('Signup failed.')
   }
 }
 </script>
 
 <style scoped>
-.lecturer-signup {
+.auth-page {
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  background-size: cover;
+  background-position: center;
 }
 
-.signup-container {
+.lecturer-signup-theme {
+  background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop');
+}
+
+.auth-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(6,78,59,0.8), rgba(30,58,138,0.8));
+  backdrop-filter: blur(10px);
+}
+
+.auth-card-wrapper {
+  position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: 520px;
+  padding: 1.5rem;
+  z-index: 10;
 }
 
-.signup-card {
-  background-color: var(--card-bg);
-  border-radius: 1rem;
-  padding: 2.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+.auth-card {
+  background: rgba(255, 255, 255, 0.98);
+  padding: 3rem;
+  border-radius: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
 }
 
-.signup-header {
+.auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
-.signup-header h1 {
+.auth-brand {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.auth-header h2 {
   font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-weight: 900;
+  color: #064e3b;
   margin-bottom: 0.5rem;
 }
 
-.signup-header p {
-  color: var(--text-secondary);
-  margin: 0;
+.text-gradient {
+  background: linear-gradient(to right, #059669, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.signup-form {
+.auth-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.form-row {
+.form-row-v2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
-.form-actions {
-  margin-top: 1rem;
+.input-group-v2 {
+  position: relative;
 }
 
-.submit-button {
+.input-group-v2 input {
   width: 100%;
+  padding: 1rem;
+  background: #f0fdf4;
+  border: 2px solid #dcfce7;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
-.signup-footer {
-  text-align: center;
+.input-group-v2 label {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  color: #64748b;
+  pointer-events: none;
+  transition: all 0.2s;
+}
+
+.input-group-v2 input:focus ~ label,
+.input-group-v2 input:not(:placeholder-shown) ~ label {
+  top: -1.4rem;
+  left: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #059669;
+}
+
+.auth-btn {
+  margin-top: 1rem;
+  background: #059669;
+  border-radius: 14px;
+}
+
+.auth-footer {
   margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-primary);
+  text-align: center;
+  font-weight: 600;
+  color: #64748b;
 }
 
-.signup-footer p {
-  color: var(--text-secondary);
-  margin: 0 0 0.5rem 0;
-}
-
-.login-link {
-  color: var(--accent-primary);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.login-link:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 640px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .signup-card {
-    padding: 1.5rem;
-  }
-}
+.auth-footer a { color: #059669; font-weight: 800; }
 </style>

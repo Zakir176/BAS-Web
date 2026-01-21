@@ -4,214 +4,180 @@
     
     <main class="main-content">
       <div class="container">
-        <!-- Welcome Section -->
-        <section class="welcome-section">
-          <div class="welcome-content">
-            <div class="welcome-text">
-              <h1>Welcome back, {{ lecturerName }}!</h1>
-              <p class="welcome-subtitle">Manage your courses and track student attendance</p>
-            </div>
-            <div class="welcome-actions">
-              <Button variant="primary" size="lg" @click="showCreateCourse">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
-                </svg>
-                Create Course
-              </Button>
-              <Button variant="secondary" size="lg" @click="showCreateSession">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 1v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/>
-                </svg>
-                Start Session
-              </Button>
-              <Button variant="success" size="lg" @click="showBarcodeScanner">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm2-2v2h12V4H4zm0 4v6h2V8H4zm4 0v6h2V8H8zm4 0v6h2V8h-2zm4 0v6h2V8h-2z"/>
-                </svg>
-                Scan Barcode
-              </Button>
-            </div>
+        <!-- Welcome Header -->
+        <header class="dashboard-header">
+          <div class="header-left">
+            <h1>Welcome back, <span class="highlight">{{ lecturerName }}</span></h1>
+            <p>You have {{ stats.todaySessions }} sessions scheduled for today</p>
           </div>
-        </section>
-
-        <!-- Stats Overview -->
-        <section class="stats-section">
-          <div class="section-header">
-            <h2>Overview</h2>
-          </div>
-          
-          <div v-if="isLoading" class="loading-state">
-            <div class="loading-spinner"></div>
-            <p>Loading dashboard data...</p>
-          </div>
-          
-          <div v-else class="stats-grid">
-            <Card class="stat-card">
-              <div class="stat-icon courses">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M4 4h24v4H4V4zm0 6h24v4H4v-4zm0 6h24v4H4v-4zm0 6h24v4H4v-4z"/>
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ stats.totalCourses }}</div>
-                <div class="stat-label">Total Courses</div>
-              </div>
-            </Card>
-
-            <Card class="stat-card">
-              <div class="stat-icon students">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v-2h-6V9h-2z"/>
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ stats.totalStudents }}</div>
-                <div class="stat-label">Total Students</div>
-              </div>
-            </Card>
-
-            <Card class="stat-card">
-              <div class="stat-icon sessions">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"/>
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ stats.todaySessions }}</div>
-                <div class="stat-label">Today's Sessions</div>
-              </div>
-            </Card>
-
-            <Card class="stat-card">
-              <div class="stat-icon attendance">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v2h-8V9h-2z"/>
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ stats.avgAttendance }}%</div>
-                <div class="stat-label">Avg Attendance</div>
-              </div>
-            </Card>
-          </div>
-        </section>
-
-        <!-- My Courses -->
-        <section class="courses-section">
-          <div class="section-header">
-            <h2>My Courses</h2>
-            <Button variant="secondary" size="sm" @click="viewAllCourses">
-              View All
+          <div class="header-right">
+            <Button variant="primary" @click="showCreateSession" class="action-btn">
+              <span class="icon">➕</span> New Session
+            </Button>
+            <Button variant="success" @click="showBarcodeScanner" class="scan-btn">
+              <span class="icon">📷</span> Start Scanning
             </Button>
           </div>
-          
-          <div v-if="isLoading" class="loading-state">
-            <div class="loading-spinner"></div>
-            <p>Loading courses...</p>
-          </div>
-          
-          <div v-else-if="courses.length === 0" class="empty-state">
-            <p>No courses found. Create your first course to get started!</p>
-          </div>
-          
-          <div v-else class="courses-grid">
-            <Card v-for="course in courses" :key="course.course_id" class="course-card">
-              <div class="course-header">
-                <h3>{{ course.course_name }}</h3>
-                <div class="course-status" :class="course.status">
-                  {{ course.status }}
-                </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <section class="stats-overview">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-main">
+                <span class="stat-label">TOTAL COURSES</span>
+                <div class="stat-value">{{ stats.totalCourses }}</div>
               </div>
-              <div class="course-stats">
-                <div class="course-stat">
-                  <span class="stat-label">Students</span>
-                  <span class="stat-value">{{ course.student_count || 0 }}</span>
-                </div>
-                <div class="course-stat">
-                  <span class="stat-label">Sessions</span>
-                  <span class="stat-value">{{ course.session_count || 0 }}</span>
-                </div>
-                <div class="course-stat">
-                  <span class="stat-label">Attendance</span>
-                  <span class="stat-value">{{ course.attendance_rate || 0 }}%</span>
-                </div>
+              <div class="stat-icon courses">🎓</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-main">
+                <span class="stat-label">ENROLLED STUDENTS</span>
+                <div class="stat-value">{{ stats.totalStudents }}</div>
               </div>
-              <div class="course-actions">
-                <Button variant="primary" size="sm" @click="manageCourse(course.course_id)">
-                  Manage
-                </Button>
-                <Button variant="secondary" size="sm" @click="viewAttendance(course.course_id)">
-                  Attendance
-                </Button>
+              <div class="stat-icon students">👥</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-main">
+                <span class="stat-label">AVG. ATTENDANCE</span>
+                <div class="stat-value">{{ stats.avgAttendance }}%</div>
               </div>
-            </Card>
+              <div class="stat-icon attendance">📈</div>
+            </div>
           </div>
         </section>
 
-        <!-- Recent Sessions -->
-        <section class="sessions-section">
-          <div class="section-header">
-            <h2>Recent Sessions</h2>
-            <Button variant="secondary" size="sm" @click="viewAllSessions">
-              View All
-            </Button>
-          </div>
-          
-          <div v-if="isLoading" class="loading-state">
-            <div class="loading-spinner"></div>
-            <p>Loading sessions...</p>
-          </div>
-          
-          <div v-else-if="recentSessions.length === 0" class="empty-state">
-            <p>No recent sessions found</p>
-          </div>
-          
-          <div v-else class="sessions-list">
-            <Card v-for="session in recentSessions" :key="session.session_id" class="session-item">
-              <div class="session-time">
-                <div class="date">{{ formatDate(session.session_date) }}</div>
-                <div class="time">{{ session.session_time || '09:00 AM' }}</div>
-              </div>
-              <div class="session-details">
-                <h4>{{ session.course_name }}</h4>
-                <p>{{ session.student_count || 0 }} students enrolled</p>
-                <div class="session-status" :class="session.status">
-                  {{ session.status }}
+        <!-- Main Content Area -->
+        <div class="dashboard-layout">
+          <!-- Courses Grid -->
+          <section class="content-section">
+            <div class="section-header">
+              <h2>My Courses</h2>
+              <button class="text-link" @click="viewAllCourses">See all</button>
+            </div>
+            <div class="courses-grid" v-if="!isLoading">
+              <div v-for="course in courses" :key="course.course_id" class="course-card-premium">
+                <div class="card-header">
+                  <h3>{{ course.course_name }}</h3>
+                  <span class="badge active">Active</span>
+                </div>
+                <div class="card-body">
+                  <div class="detail-row">
+                    <span>Students</span>
+                    <strong>{{ course.student_count }}</strong>
+                  </div>
+                  <div class="detail-row">
+                    <span>Performance</span>
+                    <div class="mini-progress">
+                      <div class="fill" :style="{ width: course.attendance_rate + '%' }"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="manage-btn" @click="manageCourse(course.course_id)">Manage Course</button>
                 </div>
               </div>
-              <div class="session-action">
-                <Button 
-                  v-if="session.status === 'active'" 
-                  variant="success" 
-                  size="sm"
-                  @click="viewLiveSession(session.session_id)"
-                >
-                  View Live
-                </Button>
-                <Button 
-                  v-else 
-                  variant="primary" 
-                  size="sm"
-                  @click="viewSessionDetails(session.session_id)"
-                >
-                  Details
-                </Button>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Class Roster Section -->
+        <section class="content-section py-8">
+          <div class="section-header">
+            <div class="header-titles">
+              <h2>Active Session Roster</h2>
+              <p v-if="activeSessionName">Monitoring: <span class="highlight-alt">{{ activeSessionName }}</span></p>
+            </div>
+            <div class="roster-actions">
+              <span class="roster-stats">
+                <strong>{{ presentCount }}</strong> Present / {{ activeRoster.length }} Total
+              </span>
+            </div>
+          </div>
+
+          <div class="roster-grid-v2" v-if="activeRoster.length > 0">
+            <div v-for="student in activeRoster" :key="student.student_id" class="student-card-v2" :class="{ 'is-present': student.present }">
+              <div class="student-avatar-mini">
+                {{ student.full_name?.charAt(0) }}
               </div>
-            </Card>
+              <div class="student-info-mini">
+                <div class="name">{{ student.full_name }}</div>
+                <div class="sid">{{ student.student_id }}</div>
+              </div>
+              <div class="student-status-action">
+                <span v-if="student.present" class="status-icon-check">✓</span>
+                <button v-else class="mark-btn-v2" @click="markAsPresent(student.student_id)">
+                  <span class="icon">📍</span> Mark
+                </button>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="!isLoading" class="empty-roster shadow-soft">
+            <div class="empty-icon">📂</div>
+            <p>No active session found. Start scanning to see your roster.</p>
           </div>
         </section>
       </div>
     </main>
 
-    <Modal :is-open="isScannerOpen" @close="closeBarcodeScanner">
-      <template #header>
-        <h3 class="modal-title">Scan Student Barcode</h3>
-      </template>
+    <!-- Scan Barcode Modal (Full Screen Overlay Style) -->
+    <Modal :is-open="isScannerOpen" @close="closeBarcodeScanner" class="scanner-modal-fullscreen">
       <template #default>
-        <BarcodeScanner v-if="isScannerOpen" @detected="handleBarcodeDetected" />
-      </template>
-      <template #footer>
-        <Button @click="closeBarcodeScanner">Cancel</Button>
+        <div class="scanner-interface">
+          <!-- Scanner Header -->
+          <div class="scanner-header-overlay">
+            <div class="session-badge">
+              <span class="pulse"></span> LIVE RECORDING
+            </div>
+            <div class="session-title-large">
+              <h2>Morning Biology - Section A</h2>
+              <p>Scan student ID to mark attendance</p>
+            </div>
+            <button class="dismiss-btn" @click="closeBarcodeScanner">✕</button>
+          </div>
+
+          <!-- Camera Feed Placeholder -->
+          <div class="camera-viewport">
+            <BarcodeScanner v-if="isScannerOpen" @detected="handleBarcodeDetected" />
+            <div class="scan-overlay-guides">
+              <div class="guide-corner top-left"></div>
+              <div class="guide-corner top-right"></div>
+              <div class="guide-corner bottom-left"></div>
+              <div class="guide-corner bottom-right"></div>
+            </div>
+          </div>
+
+          <!-- Scan Status & Counter -->
+          <div class="scanner-footer-overlay">
+            <div class="stats-row">
+              <div class="counter-box">
+                <span class="label">ATTENDANCE LOGGED</span>
+                <div class="count">{{ scannedCount }}</div>
+              </div>
+              <div class="progress-box">
+                <div class="progress-labels">
+                  <span>Present ({{ (scannedCount/stats.totalStudents*100).toFixed(0) }}%)</span>
+                  <span>Absent</span>
+                </div>
+                <div class="master-progress">
+                  <div class="present-bar" :style="{ width: (scannedCount/stats.totalStudents*100) + '%' }"></div>
+                  <div class="absent-bar" :style="{ width: (100 - (scannedCount/stats.totalStudents*100)) + '%' }"></div>
+                </div>
+              </div>
+            </div>
+            
+            <transition name="slide-up">
+              <div v-if="lastScanned" class="scan-feedback-toast" :class="scanStatus">
+                <div class="feedback-icon">{{ scanStatus === 'success' ? '✓' : '!' }}</div>
+                <div class="feedback-text">
+                  <span class="name">{{ lastScanned }}</span>
+                  <span class="msg">{{ scanStatus === 'success' ? 'Attendance Recorded' : 'Scan Failed' }}</span>
+                </div>
+              </div>
+            </transition>
+          </div>
+        </div>
       </template>
     </Modal>
 
@@ -232,13 +198,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { supabase } from '@/supabase'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
 import Modal from '@/components/ui/Modal.vue'
 import BarcodeScanner from '@/components/BarcodeScanner.vue'
 import CreateCourseModal from '@/components/CreateCourseModal.vue'
@@ -247,7 +212,6 @@ import CreateSessionModal from '@/components/CreateSessionModal.vue'
 const router = useRouter()
 const { user } = useAuth()
 
-// Reactive state
 const lecturerName = ref('')
 const isLoading = ref(true)
 const stats = ref({
@@ -258,251 +222,312 @@ const stats = ref({
 })
 const courses = ref([])
 const recentSessions = ref([])
+const activeRoster = ref([])
+const activeSessionName = ref('')
 const isScannerOpen = ref(false)
+const lastScanned = ref('')
+const scanStatus = ref('success')
+const scannedCount = ref(0)
 const isCreateCourseModalOpen = ref(false)
 const isCreateSessionModalOpen = ref(false)
 
-const showCreateCourse = () => {
-  isCreateCourseModalOpen.value = true
-}
+const presentCount = computed(() => activeRoster.value.filter(s => s.present).length)
 
-const showCreateSession = () => {
-  isCreateSessionModalOpen.value = true
-}
-
-const handleCourseCreated = async () => {
-  await fetchLecturerData()
-}
-
-const handleSessionCreated = async () => {
-  await fetchLecturerData()
-}
-
-const showBarcodeScanner = () => {
-  isScannerOpen.value = true
-}
+const showCreateCourse = () => { isCreateCourseModalOpen.value = true }
+const showCreateSession = () => { isCreateSessionModalOpen.value = true }
+const handleCourseCreated = async () => { await fetchLecturerData() }
+const handleSessionCreated = async () => { await fetchLecturerData() }
+const showBarcodeScanner = () => { isScannerOpen.value = true }
 
 const closeBarcodeScanner = () => {
   isScannerOpen.value = false
+  lastScanned.value = ''
+  scannedCount.value = 0
 }
 
 const handleBarcodeDetected = async (barcode) => {
   try {
-    // Assuming the barcode is the student's ID
     const studentId = barcode
+    if (lastScanned.value.includes(studentId)) return
 
-    // Get the active session
-    // This is a simplified example, you might need to select a session
-    const { data: activeSession, error: sessionError } = await supabase
+    const { data: activeSession } = await supabase
       .from('sessions')
       .select('session_id')
-      .eq('status', 'active')
       .eq('teacher_id', user.value.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
       .single()
 
-    if (sessionError || !activeSession) {
-      alert('No active session found.')
+    if (!activeSession) {
+      lastScanned.value = 'No active session'
+      scanStatus.value = 'error'
       return
     }
 
-    // 2. Verify student exists
-    const { data: student, error: studentError } = await supabase
+    const { data: student } = await supabase
       .from('students')
       .select('full_name')
       .eq('student_id', studentId)
       .single()
 
-    if (studentError || !student) {
-      alert(`Student ID ${studentId} not found in database.`)
+    if (!student) {
+      lastScanned.value = `ID ${studentId} not found`
+      scanStatus.value = 'error'
       return
     }
 
-    // 3. Mark the student as present
-    const { error: attendanceError } = await supabase
-      .from('attendance')
-      .insert({
-        session_id: activeSession.session_id,
-        student_id: studentId,
-        status: 'Present',
-        method: 'Barcode'
-      })
+    await supabase.from('attendance').upsert({
+      session_id: activeSession.session_id,
+      student_id: studentId,
+      status: 'Present',
+      method: 'Barcode',
+      timestamp: new Date().toISOString()
+    })
 
-    if (attendanceError) {
-      alert('Error marking attendance.')
-      console.error(attendanceError)
-      return
-    }
+    lastScanned.value = student.full_name
+    scanStatus.value = 'success'
+    scannedCount.value++
+    
+    // Update local roster if student is in it
+    const index = activeRoster.value.findIndex(s => s.student_id === studentId)
+    if (index !== -1) activeRoster.value[index].present = true
 
-    alert(`Student ${student.full_name} (${studentId}) marked as present.`)
-    closeBarcodeScanner()
-
+    setTimeout(() => { lastScanned.value = '' }, 3000)
   } catch (error) {
-    alert('An error occurred.')
     console.error(error)
   }
 }
 
+const markAsPresent = async (studentId) => {
+  try {
+    const { data: activeSession } = await supabase
+      .from('sessions')
+      .select('session_id')
+      .eq('teacher_id', user.value.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
 
-// Fetch lecturer data
+    if (!activeSession) return
+
+    await supabase.from('attendance').upsert({
+      session_id: activeSession.session_id,
+      student_id: studentId,
+      status: 'Present',
+      method: 'Manual',
+      timestamp: new Date().toISOString()
+    })
+
+    const index = activeRoster.value.findIndex(s => s.student_id === studentId)
+    if (index !== -1) activeRoster.value[index].present = true
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 const fetchLecturerData = async () => {
   try {
     if (!user.value) return
+    isLoading.value = true
 
-    // Get lecturer profile
+    // Fetch lecturer profile
     const { data: lecturer } = await supabase
       .from('teachers')
       .select('full_name')
       .eq('email', user.value.email)
       .single()
 
-    if (lecturer) {
-      lecturerName.value = lecturer.full_name
-    }
+    if (lecturer) lecturerName.value = lecturer.full_name
 
-    // Get lecturer's courses
+    // Fetch courses with counts
     const { data: coursesData } = await supabase
       .from('courses')
-      .select(`
-        course_id,
-        course_name,
-        max_absences_allowed,
-        created_at,
-        enrollments(count),
-        sessions(count)
-      `)
+      .select('*, enrollments(count), sessions(session_id)')
       .eq('teacher_id', user.value.id)
 
     if (coursesData) {
-      courses.value = coursesData.map(course => ({
-        ...course,
-        student_count: course.enrollments?.length || 0,
-        session_count: course.sessions?.length || 0,
-        status: 'active'
-      }))
+      courses.value = await Promise.all(coursesData.map(async (c) => {
+        const studentCount = c.enrollments?.[0]?.count || 0
+        const sessionIds = c.sessions?.map(s => s.session_id) || []
+        
+        let attendanceRate = 0
+        if (studentCount > 0 && sessionIds.length > 0) {
+          const { count: attendanceCount } = await supabase
+            .from('attendance')
+            .select('*', { count: 'exact', head: true })
+            .in('session_id', sessionIds)
+          
+          attendanceRate = Math.round((attendanceCount / (studentCount * sessionIds.length)) * 100)
+        }
 
+        return {
+          ...c,
+          student_count: studentCount,
+          attendance_rate: attendanceRate
+        }
+      }))
+      
       stats.value.totalCourses = coursesData.length
-      stats.value.totalStudents = coursesData.reduce((sum, course) => sum + (course.enrollments?.length || 0), 0)
+      stats.value.totalStudents = courses.value.reduce((s, c) => s + c.student_count, 0)
+      
+      const totalPossible = courses.value.reduce((s, c) => s + (c.student_count * (c.sessions?.length || 0)), 0)
+      if (totalPossible > 0) {
+        const { count: totalAttendance } = await supabase
+          .from('attendance')
+          .select('*', { count: 'exact', head: true })
+        stats.value.avgAttendance = Math.round((totalAttendance / totalPossible) * 100)
+      } else {
+        stats.value.avgAttendance = 0
+      }
     }
 
-    // Get recent sessions
+    // Fetch recent sessions with actual student counts
     const { data: sessionsData } = await supabase
       .from('sessions')
-      .select(`
-        session_id,
-        session_date,
-        session_time,
-        courses!inner(
-          course_name
-        ),
-        enrollments(count)
-      `)
-      .in('course_id', coursesData.map(c => c.course_id))
+      .select('*, courses(course_name), attendance(count)')
+      .eq('teacher_id', user.value.id)
       .order('session_date', { ascending: false })
-      .limit(5)
+      .limit(8)
 
     if (sessionsData) {
-      recentSessions.value = sessionsData.map(session => ({
-        ...session,
-        student_count: session.enrollments?.length || 0,
-        status: new Date(session.session_date) > new Date() ? 'upcoming' : 'completed'
+      recentSessions.value = sessionsData.map(s => ({
+        ...s,
+        course_name: s.courses?.course_name,
+        student_count: s.attendance?.[0]?.count || 0,
+        status: new Date(s.session_date) > new Date() ? 'upcoming' : 'completed'
       }))
-
-      // Calculate today's sessions
-      const today = new Date().toISOString().split('T')[0]
-      stats.value.todaySessions = sessionsData.filter(s => s.session_date === today).length
+      stats.value.todaySessions = sessionsData.filter(s => s.session_date === new Date().toISOString().split('T')[0]).length
     }
 
-    // Calculate average attendance (mock for now)
-    stats.value.avgAttendance = 85
+    // Fetch roster for most recent session
+    const { data: latestSession } = await supabase
+      .from('sessions')
+      .select('*, courses(course_name)')
+      .eq('teacher_id', user.value.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
 
+    if (latestSession) {
+      activeSessionName.value = latestSession.courses?.course_name
+      const { data: enrolledStudents } = await supabase
+        .from('enrollments')
+        .select('student_id, students(full_name)')
+        .eq('course_id', latestSession.course_id)
+      
+      const { data: attendanceData } = await supabase
+        .from('attendance')
+        .select('student_id')
+        .eq('session_id', latestSession.session_id)
+
+      const attendedIds = new Set(attendanceData?.map(a => a.student_id) || [])
+
+      activeRoster.value = enrolledStudents.map(e => ({
+        student_id: e.student_id,
+        full_name: e.students?.full_name,
+        present: attendedIds.has(e.student_id)
+      }))
+    }
   } catch (error) {
-    console.error('Error fetching lecturer data:', error)
+    console.error('Error fetching dashboard data:', error)
   } finally {
     isLoading.value = false
   }
 }
 
-const manageCourse = (courseId) => {
-  router.push(`/course/${courseId}`)
-}
+const formatDate = (d) => new Date(d).toLocaleDateString()
+const manageCourse = (id) => router.push(`/course/${id}`)
+const viewAllCourses = () => router.push('/courses')
 
-const viewAttendance = (courseId) => {
-  router.push(`/attendance/${courseId}`)
-}
-
-const viewAllCourses = () => {
-  router.push('/courses')
-}
-
-const viewAllSessions = () => {
-  router.push('/sessions')
-}
-
-const viewLiveSession = (sessionId) => {
-  router.push(`/session/${sessionId}/live`)
-}
-
-const viewSessionDetails = (sessionId) => {
-  router.push(`/session/${sessionId}`)
-}
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
-
-onMounted(async () => {
-  await fetchLecturerData()
-})
+onMounted(fetchLecturerData)
 </script>
 
 <style scoped>
 .lecturer-dashboard {
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  background-color: #f1f5f9;
 }
 
 .main-content {
-  padding: 2rem 0;
+  padding: 2.5rem 0;
 }
 
-.welcome-section {
-  margin-bottom: 3rem;
-}
-
-.welcome-content {
+.dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 2rem;
+  margin-bottom: 2.5rem;
 }
 
-.welcome-text h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
+.header-left h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
 }
 
-.welcome-subtitle {
-  font-size: 1.125rem;
-  color: var(--text-secondary);
-  margin: 0;
+.highlight { color: var(--primary); }
+
+.header-left p {
+  color: #64748b;
+  font-weight: 500;
 }
 
-.welcome-actions {
+.header-right {
   display: flex;
   gap: 1rem;
 }
 
-.stats-section,
-.courses-section,
-.sessions-section {
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
   margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-icon.courses { background: #eff6ff; color: #3b82f6; }
+.stat-icon.students { background: #f0fdf4; color: #22c55e; }
+.stat-icon.attendance { background: #faf5ff; color: #a855f7; }
+
+/* Layout */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2.5rem;
 }
 
 .section-header {
@@ -513,255 +538,356 @@ onMounted(async () => {
 }
 
 .section-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 800;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-}
-
-.stat-icon {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.stat-icon.courses {
-  background-color: var(--accent-primary);
-}
-
-.stat-icon.students {
-  background-color: var(--success);
-}
-
-.stat-icon.sessions {
-  background-color: var(--warning);
-}
-
-.stat-icon.attendance {
-  background-color: var(--info);
-}
-
-.stat-content {
-  flex: 1;
-}
-
-.stat-number {
-  font-size: 2rem;
+.text-link {
+  background: none;
+  border: none;
+  color: var(--primary);
   font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
-}
-
-.stat-label {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
-.loading-state {
-  text-align: center;
-  padding: 2rem;
-}
-
-.loading-spinner {
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid var(--accent-primary);
-  border-top: 2px solid var(--accent-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  color: var(--text-secondary);
-  font-style: italic;
+  cursor: pointer;
 }
 
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-.course-card {
+.course-card-premium {
+  background: white;
   padding: 1.5rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
 }
 
-.course-header {
+.card-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.course-header h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
+.badge {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
 }
 
-.course-status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  background-color: var(--success);
-  color: white;
-}
+.badge.active { background: #dcfce7; color: #166534; }
 
-.course-stats {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.course-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.course-stat .stat-label {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.25rem;
-}
-
-.course-stat .stat-value {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.course-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.sessions-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.session-item {
+.detail-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
-.session-time {
-  min-width: 120px;
+.mini-progress {
+  width: 100px;
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.mini-progress .fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+.manage-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 2px solid #f1f5f9;
+  background: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.manage-btn:hover { background: #f8fafc; border-color: #e2e8f0; }
+
+/* Timeline */
+.sessions-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.session-item-compact {
+  padding: 1rem;
+  background: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.session-meta {
+  width: 60px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
   text-align: center;
 }
 
-.session-time .date {
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.session-time .time {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.session-details {
-  flex: 1;
-  margin-left: 1.5rem;
-}
-
-.session-details h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.session-details p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin: 0;
-}
+.session-info h4 { font-size: 0.9rem; font-weight: 800; }
+.session-info p { font-size: 0.8rem; color: #64748b; }
 
 .session-status {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: auto;
+}
+
+.session-status.completed { background: #cbd5e1; }
+.session-status.upcoming { background: #3b82f6; }
+
+/* Scanner Overlays */
+.scanner-interface {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.scanner-header-overlay {
+  padding: 2rem;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 10;
+}
+
+.session-badge {
+  background: #7c3aed;
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pulse {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.dismiss-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.camera-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-overlay-guides {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  pointer-events: none;
+}
+
+.guide-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 4px solid white;
+}
+
+.top-left { top: 0; left: 0; border-right: none; border-bottom: none; }
+.top-right { top: 0; right: 0; border-left: none; border-bottom: none; }
+.bottom-left { bottom: 0; left: 0; border-right: none; border-top: none; }
+.bottom-right { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+.scanner-footer-overlay {
+  padding: 2rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+  color: white;
+}
+
+.counter-box .count {
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.master-progress {
+  height: 12px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  display: flex;
+  overflow: hidden;
   margin-top: 0.5rem;
 }
 
-.session-status.active {
-  background-color: var(--success);
+.present-bar { background: #22c55e; transition: width 0.3s; }
+.absent-bar { background: rgba(255,255,255,0.1); }
+
+/* Feedback Toast */
+.scan-feedback-toast {
+  position: fixed;
+  bottom: 12rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 1rem 2rem;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.scan-feedback-toast.success { border-left: 8px solid #22c55e; }
+.scan-feedback-toast .name { color: #1e293b; font-weight: 800; font-size: 1.1rem; }
+.scan-feedback-toast .msg { color: #64748b; font-size: 0.8rem; display: block; }
+
+.slide-up-enter-active, .slide-up-leave-active { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.slide-up-enter-from { opacity: 0; transform: translate(-50%, 40px); }
+.slide-up-leave-to { opacity: 0; transform: translate(-50%, -40px); }
+
+/* Roster Styles */
+.roster-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.student-card-v2 {
+  background: white;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s;
+}
+
+.student-card-v2.is-present {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.student-avatar-mini {
+  width: 40px;
+  height: 40px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.student-card-v2.is-present .student-avatar-mini {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.student-info-mini .name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.student-info-mini .sid {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.student-status-action {
+  margin-left: auto;
+}
+
+.status-icon-check {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  background: #22c55e;
   color: white;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.9rem;
 }
 
-.session-status.upcoming {
-  background-color: var(--warning);
-  color: white;
+.mark-btn-v2 {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.session-status.completed {
-  background-color: var(--text-secondary);
-  color: white;
+.mark-btn-v2:hover {
+  background: #f1f5f9;
+  color: #1e293b;
 }
 
-.session-action {
-  min-width: 100px;
-  text-align: right;
+.highlight-alt {
+  color: #7c3aed;
+  font-weight: 800;
 }
 
-@media (max-width: 768px) {
-  .welcome-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
-  
-  .courses-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .session-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .session-action {
-    width: 100%;
-    text-align: left;
-  }
+.empty-roster {
+  background: white;
+  padding: 4rem;
+  text-align: center;
+  border-radius: 24px;
 }
+
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-roster p { color: #64748b; font-weight: 600; }
+
+.header-titles h2 { margin-bottom: 0.25rem; }
+.header-titles p { font-size: 0.85rem; color: #64748b; font-weight: 600; }
+
+.roster-stats {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.roster-stats strong { color: #1e293b; font-weight: 800; }
 </style>
