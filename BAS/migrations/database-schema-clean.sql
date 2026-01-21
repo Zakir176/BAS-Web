@@ -2,19 +2,31 @@
 -- Drops everything and rebuilds from scratch
 -- Run this if you want to completely reset the database
 
--- Drop all existing objects with CASCADE to handle dependencies automatically
-DROP TABLE IF EXISTS absence_warnings CASCADE;
-DROP TABLE IF EXISTS attendance CASCADE;
-DROP TABLE IF EXISTS enrollments CASCADE;
-DROP TABLE IF EXISTS sessions CASCADE;
-DROP TABLE IF EXISTS academic_progression CASCADE;
-DROP TABLE IF EXISTS course_prerequisites CASCADE;
-DROP TABLE IF EXISTS student_grades CASCADE;
-DROP TABLE IF EXISTS course_enrollments CASCADE;
-DROP TABLE IF EXISTS courses CASCADE;
-DROP TABLE IF EXISTS teachers CASCADE;
-DROP TABLE IF EXISTS students CASCADE;
-DROP VIEW IF EXISTS student_absence_summary CASCADE;
+-- Drop all existing objects in reverse order of dependencies
+DROP TRIGGER IF EXISTS trigger_update_absence_warnings ON attendance;
+DROP TRIGGER IF EXISTS update_students_updated_at ON students;
+DROP TRIGGER IF EXISTS update_teachers_updated_at ON teachers;
+DROP TRIGGER IF EXISTS update_courses_updated_at ON courses;
+
+DROP POLICY IF EXISTS "Teachers can manage warnings for their courses" ON absence_warnings;
+DROP POLICY IF EXISTS "Teachers can manage enrollments for their courses" ON enrollments;
+DROP POLICY IF EXISTS "Teachers can view enrollments for their courses" ON enrollments;
+DROP POLICY IF EXISTS "Teachers can manage attendance for their sessions" ON attendance;
+DROP POLICY IF EXISTS "Teachers can manage their sessions" ON sessions;
+DROP POLICY IF EXISTS "Teachers can update their courses" ON courses;
+DROP POLICY IF EXISTS "Teachers can view their courses" ON courses;
+DROP POLICY IF EXISTS "Teachers can update own profile" ON teachers;
+DROP POLICY IF EXISTS "Teachers can view own profile" ON teachers;
+
+DROP VIEW IF EXISTS student_absence_summary;
+
+DROP TABLE IF EXISTS absence_warnings;
+DROP TABLE IF EXISTS attendance;
+DROP TABLE IF EXISTS enrollments;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS courses;
+DROP TABLE IF EXISTS teachers;
+DROP TABLE IF EXISTS students;
 
 -- Enable UUID extension for teacher IDs
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -26,6 +38,7 @@ CREATE TABLE students (
     class_section VARCHAR(20),
     qr_code_value VARCHAR(100) UNIQUE,  -- Used for barcode/QR scanning
     email VARCHAR(100) UNIQUE,
+    phone VARCHAR(20),
     phone VARCHAR(20),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
