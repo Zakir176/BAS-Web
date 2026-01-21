@@ -1,98 +1,209 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="catv1.Views.StudentHomePage"
-             Title="Dashboard"
-             BackgroundColor="#0F172A"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    x:Class="catv1.Views.StudentHomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Dashboard"
+    BackgroundColor="#0F172A"
+    Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="Auto, *">
-        
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="25,30,25,10">
+
+        <Grid
+            Grid.Row="0"
+            Padding="25,30,25,10"
+            ColumnDefinitions="*, Auto">
             <VerticalStackLayout Spacing="2">
-                <Label Text="Welcome back," TextColor="#94A3B8" FontSize="14"/>
-                <Label Text="STEEZY" TextColor="White" FontSize="26" FontAttributes="Bold"/>
+                <Label
+                    FontSize="14"
+                    Text="Welcome back,"
+                    TextColor="#94A3B8" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="26"
+                    Text="HARRISON"
+                    TextColor="White" />
             </VerticalStackLayout>
-            
-            <Border Grid.Column="1" StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" StrokeThickness="0" BackgroundColor="#1E293B">
-                <Label Text="S" TextColor="#3B82F6" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+            <Border
+                Grid.Column="1"
+                BackgroundColor="#1E293B"
+                HeightRequest="50"
+                StrokeShape="RoundRectangle 25"
+                StrokeThickness="0"
+                WidthRequest="50">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="S"
+                    TextColor="#3B82F6"
+                    VerticalOptions="Center" />
             </Border>
         </Grid>
 
         <ScrollView Grid.Row="1" Padding="25">
             <VerticalStackLayout Spacing="20">
 
-                <Border BackgroundColor="#1E293B" StrokeShape="RoundRectangle 15" StrokeThickness="0" Padding="20">
+                <Border
+                    Padding="20"
+                    BackgroundColor="#1E293B"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="0">
                     <Grid ColumnDefinitions="*, Auto">
                         <VerticalStackLayout Spacing="5">
-                            <Label Text="Current Status" TextColor="#94A3B8" FontSize="12"/>
-                            <Label Text="Excellent" TextColor="#10B981" FontSize="22" FontAttributes="Bold"/> <Label Text="You're on track! Keep it up." TextColor="#64748B" FontSize="11"/>
+                            <Label
+                                FontSize="12"
+                                Text="Current Status"
+                                TextColor="#94A3B8" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="22"
+                                Text="Excellent"
+                                TextColor="#10B981" /> 
+                            <Label
+                                FontSize="11"
+                                Text="You're on track! Keep it up."
+                                TextColor="#64748B" />
                         </VerticalStackLayout>
-                        <Label Grid.Column="1" Text="94%" TextColor="White" FontSize="30" FontAttributes="Bold" VerticalOptions="Center"/>
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="30"
+                            Text="94%"
+                            TextColor="White"
+                            VerticalOptions="Center" />
                     </Grid>
                 </Border>
 
-                <Border BackgroundColor="#3B82F6" StrokeShape="RoundRectangle 15" StrokeThickness="0" HeightRequest="160">
+                <Border
+                    BackgroundColor="#3B82F6"
+                    HeightRequest="160"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="0">
                     <Border.Shadow>
-                        <Shadow Brush="#3B82F6" Offset="0,10" Radius="20" Opacity="0.4"/>
+                        <Shadow
+                            Brush="#3B82F6"
+                            Opacity="0.4"
+                            Radius="20"
+                            Offset="0,10" />
                     </Border.Shadow>
-                    
-                    <Grid RowDefinitions="*,Auto" Padding="20">
+
+                    <Grid Padding="20" RowDefinitions="*,Auto">
                         <Image>
                             <Image.Source>
-                                <FontImageSource Glyph="📷" Color="White" Size="40"/>
+                                <FontImageSource
+                                    Glyph="📷"
+                                    Size="40"
+                                    Color="White" />
                             </Image.Source>
                         </Image>
-                        
-                        <Label Text="SHOW ID" 
-                               TextColor="White" 
-                               Opacity="1.0" 
-                               FontSize="12" 
-                               FontAttributes="Bold" 
-                               VerticalOptions="Start" 
-                               HorizontalOptions="End"/>
+
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            HorizontalOptions="End"
+                            Opacity="1.0"
+                            Text="SHOW ID"
+                            TextColor="White"
+                            VerticalOptions="Start" />
 
                         <VerticalStackLayout Grid.Row="1" VerticalOptions="End">
-                            <Label Text="Digital Class ID" TextColor="White" FontSize="20" FontAttributes="Bold"/>
-                            <Label Text="#210984 • CS Dept" TextColor="#BFDBFE" FontSize="12"/>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="Digital Class ID"
+                                TextColor="White" />
+                            <Label
+                                FontSize="12"
+                                Text="#210984 • CS Dept"
+                                TextColor="#BFDBFE" />
                         </VerticalStackLayout>
                     </Grid>
-                    
+
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnShowIdClicked"/>
+                        <TapGestureRecognizer Tapped="OnShowIdClicked" />
                     </Border.GestureRecognizers>
                 </Border>
 
-                <Grid ColumnDefinitions="*,*" RowDefinitions="120, 120" ColumnSpacing="15" RowSpacing="15">
-                    
-                    <Border Grid.Row="0" Grid.Column="0" BackgroundColor="#1E293B" StrokeShape="RoundRectangle 15" StrokeThickness="0">
-                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnHistoryClicked"/>
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="15"
+                    RowDefinitions="120, 120"
+                    RowSpacing="15">
+
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnHistoryClicked" />
                         </Border.GestureRecognizers>
-                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                            <Label Text="📅" FontSize="30"/>
-                            <Label Text="History" TextColor="White" FontAttributes="Bold"/>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text="📅" />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="History"
+                                TextColor="White" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="1" BackgroundColor="#1E293B" StrokeShape="RoundRectangle 15" StrokeThickness="0">
-                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                            <Label Text="⏰" FontSize="30"/>
-                            <Label Text="Timetable" TextColor="White" FontAttributes="Bold"/>
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text="⏰" />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="Timetable"
+                                TextColor="White" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <Border Grid.Row="1" Grid.Column="0" BackgroundColor="#1E293B" StrokeShape="RoundRectangle 15" StrokeThickness="0">
-                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                            <Label Text="🔔" FontSize="30"/>
-                            <Label Text="Alerts" TextColor="White" FontAttributes="Bold"/>
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text="🔔" />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="Alerts"
+                                TextColor="White" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <Border Grid.Row="1" Grid.Column="1" BackgroundColor="#1E293B" StrokeShape="RoundRectangle 15" StrokeThickness="0">
-                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                            <Label Text="⚙" FontSize="30"/>
-                            <Label Text="Settings" TextColor="White" FontAttributes="Bold"/>
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text="⚙" />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="Settings"
+                                TextColor="White" />
                         </VerticalStackLayout>
                     </Border>
                 </Grid>
