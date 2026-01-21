@@ -63,7 +63,7 @@
                                 TextColor="#10B981" /> 
                             <Label
                                 FontSize="11"
-                                Text="You're on track! Keep it up."
+                                Text="Your attendance is on track! Keep it up."
                                 TextColor="#64748B" />
                         </VerticalStackLayout>
                         <Label
