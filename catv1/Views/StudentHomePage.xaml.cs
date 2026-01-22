@@ -2,10 +2,10 @@ namespace catv1.Views;
 
 public partial class StudentHomePage : ContentPage
 {
-	public StudentHomePage()
-	{
-		InitializeComponent();
-	}
+    public StudentHomePage()
+    {
+        InitializeComponent();
+    }
 
     private async void OnShowIdClicked(object sender, EventArgs e)
     {
@@ -14,11 +14,11 @@ public partial class StudentHomePage : ContentPage
         await DisplayAlertAsync("Digital ID", "Showing ID for Student #210984...", "Close");
     }
 
-    private async void OnHistoryClicked(object sender, EventArgs e)
+    /*private async void OnHistoryClicked(object sender, EventArgs e)
     {
         // Navigate to the History Page
         // We use "///" to ensure we switch tabs properly if it's in a TabBar
         // OR if you want to push it onto the stack:
         await Shell.Current.GoToAsync("//student/history");
-    }
+    }*/
 }

@@ -60,7 +60,7 @@
                                 FontAttributes="Bold"
                                 FontSize="22"
                                 Text="Excellent"
-                                TextColor="#10B981" /> 
+                                TextColor="#10B981" />
                             <Label
                                 FontSize="11"
                                 Text="Your attendance is on track! Keep it up."
@@ -132,7 +132,7 @@
                     RowDefinitions="120, 120"
                     RowSpacing="15">
 
-                    <Border
+                    <!--Border
                         Grid.Row="0"
                         Grid.Column="0"
                         BackgroundColor="#1E293B"
@@ -151,7 +151,7 @@
                                 Text="History"
                                 TextColor="White" />
                         </VerticalStackLayout>
-                    </Border>
+                    </Border-->
 
                     <Border
                         Grid.Row="0"
