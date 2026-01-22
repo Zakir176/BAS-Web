@@ -98,7 +98,7 @@
                     <Label
                         FontAttributes="Bold"
                         FontSize="12"
-                        Text="Staff Email"
+                        Text="Email"
                         TextColor="#CBD5E1" />
                     <Border
                         BackgroundColor="#0F172A"
