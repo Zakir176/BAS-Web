@@ -1,3 +1,4 @@
+import { createRouter, createWebHistory } from 'vue-router'
 import { supabase } from '@/supabase'
 import { useUserStore } from '@/stores/userStore'
 
