@@ -164,7 +164,7 @@
                         <CheckBox Color="#3B82F6" />
                         <Label
                             FontSize="12"
-                            Text="Remember me"
+                            Text="Remember me!"
                             TextColor="#94A3B8"
                             VerticalOptions="Center" />
                     </HorizontalStackLayout>
@@ -190,7 +190,7 @@
                     FontAttributes="Bold"
                     FontSize="10"
                     HorizontalOptions="Center"
-                    Text="🔒 SECURE STAFF PORTAL"
+                    Text="🔒 LECTURER PORTAL"
                     TextColor="#475569" />
             </VerticalStackLayout>
         </Border>
