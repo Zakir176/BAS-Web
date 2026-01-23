@@ -114,7 +114,7 @@
                                 VerticalOptions="Center" />
                             <Entry
                                 Grid.Column="1"
-                                Placeholder="name@university.edu"
+                                Placeholder="uniname@university.edu"
                                 PlaceholderColor="#475569"
                                 TextColor="White"
                                 VerticalOptions="Center" />
