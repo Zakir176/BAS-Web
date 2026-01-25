@@ -132,7 +132,8 @@
                     RowDefinitions="120, 120"
                     RowSpacing="15">
 
-                    <!--Border
+                    <!-- History section!
+                    <Border
                         Grid.Row="0"
                         Grid.Column="0"
                         BackgroundColor="#1E293B"
@@ -151,7 +152,8 @@
                                 Text="History"
                                 TextColor="White" />
                         </VerticalStackLayout>
-                    </Border-->
+                    </Border>
+                    -->
 
                     <Border
                         Grid.Row="0"
