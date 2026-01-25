@@ -208,7 +208,7 @@
             <Label
                 FontSize="10"
                 HorizontalOptions="Center"
-                Text="Version 1.0.2 • Optimized for CS Dept"
+                Text="Version 1.0 • Optimized for SICT"
                 TextColor="#475569" />
         </VerticalStackLayout>
 
