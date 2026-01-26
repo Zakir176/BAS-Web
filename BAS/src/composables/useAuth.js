@@ -6,6 +6,7 @@ const user = ref(null)
 const isAuthenticated = ref(false)
 const isLoading = ref(false)
 const error = ref(null)
+const role = ref(null)
 
 export function useAuth() {
   // Centralized error handling
@@ -26,9 +27,11 @@ export function useAuth() {
         ...sessionUser.user_metadata
       }
       isAuthenticated.value = true
+      role.value = sessionUser.user_metadata?.role || 'student'
     } else {
       user.value = null
       isAuthenticated.value = false
+      role.value = null
     }
   }
 
@@ -234,6 +237,7 @@ export function useAuth() {
     isAuthenticated,
     isLoading,
     error,
+    role,
     signUp,
     signIn,
     signOut,
