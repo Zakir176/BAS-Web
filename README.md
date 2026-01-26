@@ -103,4 +103,3 @@ The application will be available at the local address provided by Vite (e.g., `
         *   `views/`: Page-level components that correspond to specific routes.
 *   `docs/`: Contains UI design images and project documentation.
 
-This project was developed by [Gemini](https://gemini.google.com/).
