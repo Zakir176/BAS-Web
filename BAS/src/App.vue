@@ -1,15 +1,15 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useTheme } from '@/composables/useTheme'
-import { useUserStore } from '@/stores/userStore'
+import { useAuth } from '@/composables/useAuth'
 
 // Initialize theme and auth systems
-const { updateTheme } = useTheme()
-const userStore = useUserStore()
+const { theme, toggleTheme, updateTheme } = useTheme()
+const { init } = useAuth()
 
 onMounted(async () => {
   updateTheme()
-  await userStore.initialize()
+  await init()
 })
 </script>
 
