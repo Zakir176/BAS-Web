@@ -55,24 +55,27 @@ export function useAuth() {
 
       if (signUpError) throw signUpError
 
-      // 2. Create a corresponding student profile in the public.students table
-      // This is a critical step that was missing.
-      const { error: profileError } = await supabase.from('students').insert({
-        student_id: metadata.student_id,
-        full_name: metadata.full_name,
-        email: email, // Use the email from the form
-        class_section: metadata.class_section,
-        // The password should NOT be stored here. Supabase auth handles it.
-        // We are intentionally leaving the 'password' column empty.
-        // It's recommended to remove that column from the 'students' table.
-        qr_code_value: metadata.student_id // Using student_id as QR value
-      });
-
-      if (profileError) {
-        // If profile creation fails, we should ideally delete the auth user
-        // to avoid orphaned auth entries. This is a more advanced transactional
-        // approach, but for now, we'll just throw the error.
-        throw profileError;
+      // 2. Create a corresponding profile in the database
+      if (metadata.role === 'lecturer') {
+        // Create lecturer profile
+        const { error: profileError } = await supabase.from('teachers').insert({
+          full_name: metadata.full_name,
+          email: email,
+          role: 'teacher' // Database constraint only allows 'teacher' or 'admin'
+        });
+        
+        if (profileError) throw profileError;
+      } else {
+        // Create student profile
+        const { error: profileError } = await supabase.from('students').insert({
+          student_id: metadata.student_id,
+          full_name: metadata.full_name,
+          email: email,
+          class_section: metadata.class_section,
+          qr_code_value: metadata.student_id
+        });
+        
+        if (profileError) throw profileError;
       }
       
       // The user is signed up but might need to confirm their email.
