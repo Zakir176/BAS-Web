@@ -15,7 +15,7 @@
             </div>
             <div class="profile-text">
               <h1 class="student-name">{{ studentName }}</h1>
-              <p class="student-meta">ID: {{ profile?.student_id || 'STU-001' }} | Class: {{ classSection }}</p>
+              <p class="student-meta">ID: {{ studentProfile?.student_id || 'STU-001' }} | Class: {{ classSection }}</p>
             </div>
           </div>
           <div class="header-actions">
@@ -51,7 +51,7 @@
 
         <!-- Main Action Area -->
         <section class="action-area">
-          <Button variant="primary" full-width size="xl" class="contact-button">
+          <Button variant="primary" full-width size="lg" class="contact-button">
             <span class="btn-icon">✉️</span> Contact Parent
           </Button>
           <button class="fab-edit">✎</button>
@@ -114,8 +114,13 @@ const fetchStudentData = async () => {
     if (!user.value) return
     isLoading.value = true
 
-    // 1. Get student profile details using useAuth
-    const studentData = await getStudentProfile(user.value.email)
+    // 1. Get student profile details using email
+    const { data: studentData, error } = await supabase
+      .from('students')
+      .select('*')
+      .eq('email', user.value.email)
+      .single()
+    
     if (studentData) {
       studentProfile.value = studentData
       studentName.value = studentData.full_name
