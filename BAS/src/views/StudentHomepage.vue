@@ -87,16 +87,15 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
-import { useUserStore } from '@/stores/userStore'
 import { supabase } from '@/supabase'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import AttendanceCalendar from '@/components/AttendanceCalendar.vue'
 
 const router = useRouter()
-const { user } = useAuth()
-const { profile } = useUserStore()
+const { user, getStudentProfile } = useAuth()
 
+const studentProfile = ref(null)
 const studentName = ref('')
 const classSection = ref('10A') // Default/Placeholder
 
@@ -115,20 +114,16 @@ const fetchStudentData = async () => {
     if (!user.value) return
     isLoading.value = true
 
-    // 1. Get student profile details
-    const { data: student } = await supabase
-      .from('students')
-      .select('*')
-      .eq('email', user.value.email)
-      .single()
-
-    if (student) {
-      studentName.value = student.full_name
-      classSection.value = student.class_section || '10A'
+    // 1. Get student profile details using useAuth
+    const studentData = await getStudentProfile(user.value.email)
+    if (studentData) {
+      studentProfile.value = studentData
+      studentName.value = studentData.full_name
+      classSection.value = studentData.class_section || '10A'
     }
 
     // 2. Fetch specific attendance records
-    const studentId = student?.student_id || profile.value?.student_id
+    const studentId = studentProfile.value?.student_id
     if (!studentId) return
 
     const { data: attendanceData } = await supabase
