@@ -97,26 +97,30 @@ router.beforeEach(async (to, from, next) => {
 
   if (requiresGuest && isAuthenticated.value) {
     // Guest page (like login), but user is already logged in
-    if (role.value === 'lecturer') {
+    const userRole = role.value || user.value?.user_metadata?.role
+    if (userRole === 'lecturer') {
       return next({ name: 'LecturerDashboard' })
     }
-    if (role.value === 'student') {
+    if (userRole === 'student') {
       return next({ name: 'StudentHomepage' })
     }
     return next({ name: 'Home' })
   }
 
-  if (requiresAuth && requiredRole && role.value !== requiredRole) {
-    // Has role requirement, but user's role does not match
-    console.warn(`Role mismatch: User with role '${role.value}' tried to access '${to.path}' which requires '${requiredRole}'`)
-    // Redirect to their respective dashboards
-    if (role.value === 'lecturer') {
-      return next({ name: 'LecturerDashboard' })
+  if (requiresAuth && requiredRole) {
+    const userRole = role.value || user.value?.user_metadata?.role
+    if (userRole !== requiredRole) {
+      // Has role requirement, but user's role does not match
+      console.warn(`Role mismatch: User with role '${userRole}' tried to access '${to.path}' which requires '${requiredRole}'`)
+      // Redirect to their respective dashboards
+      if (userRole === 'lecturer') {
+        return next({ name: 'LecturerDashboard' })
+      }
+      if (userRole === 'student') {
+        return next({ name: 'StudentHomepage' })
+      }
+      return next({ name: 'Home' })
     }
-    if (role.value === 'student') {
-      return next({ name: 'StudentHomepage' })
-    }
-    return next({ name: 'Home' })
   }
 
   // All checks passed

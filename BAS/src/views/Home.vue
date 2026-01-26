@@ -18,6 +18,10 @@
                 <Button variant="primary" size="lg" @click="goToStudentLogin" class="premium-btn">
                   Start Scanning
                 </Button>
+                <div class="hero-links">
+                  <router-link to="/student-signup" class="signup-link">Student Signup</router-link>
+                  <router-link to="/lecturer-signup" class="signup-link">Lecturer Signup</router-link>
+                </div>
                 <div class="avatars-group">
                   <div class="avatar-stack">
                     <img src="https://i.pravatar.cc/100?u=1" alt="U">
@@ -394,6 +398,29 @@ const goToLecturerLogin = () => router.push('/lecturer-login')
   font-size: 3rem;
   font-weight: 900;
   margin-bottom: 1.5rem;
+}
+
+.hero-links {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  justify-content: center;
+}
+
+.signup-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.signup-link:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
 }
 
 .cta-inner p {
