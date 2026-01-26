@@ -91,7 +91,7 @@
                     FontSize="13"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
-                    Text="Welcome back. Sign in to manage access."
+                    Text="Welcome back, Sign in to manage access."
                     TextColor="#94A3B8" />
 
                 <VerticalStackLayout Spacing="8">
@@ -151,7 +151,7 @@
                                 <ImageButton.Source>
                                     <FontImageSource
                                         FontFamily="Arial"
-                                        Glyph="👁"
+                                        Glyph=" 👁 "
                                         Color="#64748B" />
                                 </ImageButton.Source>
                             </ImageButton>
@@ -183,7 +183,7 @@
                     CornerRadius="8"
                     FontAttributes="Bold"
                     HeightRequest="50"
-                    Text="Sign In to Dashboard  ➔"
+                    Text="Sign In to The Dashboard  ➔"
                     TextColor="White" />
 
                 <Label
@@ -208,7 +208,7 @@
             <Label
                 FontSize="10"
                 HorizontalOptions="Center"
-                Text="Version 1.0 • Optimized for SICT"
+                Text="Version 1.0 • Optimized for SICT."
                 TextColor="#475569" />
         </VerticalStackLayout>
 
