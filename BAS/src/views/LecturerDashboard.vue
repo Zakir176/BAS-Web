@@ -11,6 +11,9 @@
             <p>You have {{ stats.todaySessions }} sessions scheduled for today</p>
           </div>
           <div class="header-right">
+            <Button variant="secondary" @click="showCreateCourse" class="action-btn">
+              <span class="icon">📘</span> New Course
+            </Button>
             <Button variant="primary" @click="showCreateSession" class="action-btn">
               <span class="icon">➕</span> New Session
             </Button>
