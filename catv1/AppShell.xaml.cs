@@ -2,8 +2,10 @@
 
 public partial class AppShell : Shell
 {
-	public AppShell()
-	{
-		InitializeComponent();
-	}
+    public AppShell()
+    {
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: AppShell Constructor Start");
+        InitializeComponent();
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: AppShell Constructor End");
+    }
 }

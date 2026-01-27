@@ -8,8 +8,10 @@ public partial class LoginPage : ContentPage
 
     public LoginPage()
     {
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: LoginPage Constructor Start");
         InitializeComponent();
         UpdateUI(); // Set initial state
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: LoginPage Constructor End");
     }
 
     private void OnStudentClicked(object sender, EventArgs e)

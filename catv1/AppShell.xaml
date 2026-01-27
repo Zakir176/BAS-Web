@@ -12,7 +12,7 @@
         Route="login" />
 
     <TabBar Route="student">
-        <Tab Title="Dashboard" Icon="home_icon.png">
+        <Tab Title="Dashboard" Icon="Resources/Images/home_icon.png">
             <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
         </Tab>
         <!--<Tab Title="History" Icon="history_icon.png">
@@ -21,10 +21,10 @@
     </TabBar>
 
     <TabBar Route="lecturer">
-        <Tab Title="Class Management" Icon="class_icon.png">
+        <Tab Title="Class Management" Icon="Resources/Images/class_icon.png">
             <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
         </Tab>
-        <Tab Title="Scan ID" Icon="scan_icon.png">
+        <Tab Title="Scan ID" Icon="Resources/Images/scan_icon.png">
             <ShellContent ContentTemplate="{DataTemplate local:ScanPage}" Route="scan" />
         </Tab>
     </TabBar>
