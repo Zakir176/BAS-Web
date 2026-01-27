@@ -62,10 +62,12 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
 
 const router = useRouter()
 const { signUp, isLoading } = useAuth()
+const { toast } = useToast()
 
 const formData = reactive({
   firstName: '',
@@ -78,14 +80,21 @@ const formData = reactive({
 
 const validateForm = () => {
   if (formData.password !== formData.confirmPassword) {
-    alert('Passwords do not match')
+    toast.error('Passwords do not match')
     return false
   }
+  
+  if (!formData.firstName || !formData.lastName || !formData.email || !formData.department || !formData.password) {
+    toast.error('Please fill in all required fields')
+    return false
+  }
+  
   return true
 }
 
 const handleSignup = async () => {
   if (!validateForm()) return
+  
   try {
     await signUp(formData.email, formData.password, {
       role: 'lecturer',
@@ -94,11 +103,13 @@ const handleSignup = async () => {
       full_name: `${formData.firstName} ${formData.lastName}`,
       department: formData.department
     })
-    alert('Signup successful! Please verify email.')
-    router.push('/lecturer-login')
+    toast.success('Lecturer account created successfully! Please check your email for verification.')
+    setTimeout(() => {
+      router.push('/lecturer-login')
+    }, 2000)
   } catch (err) {
-    console.error(err)
-    alert('Signup failed.')
+    console.error('Signup error:', err)
+    toast.error('Signup failed. Please check your details and try again.')
   }
 }
 </script>
@@ -173,6 +184,25 @@ const handleSignup = async () => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+/* Mobile responsive - single column on small screens */
+@media (max-width: 640px) {
+  .form-row-v2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .auth-card {
+    padding: 2rem;
+  }
+  
+  .auth-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .auth-brand {
+    font-size: 2.5rem;
+  }
 }
 
 .input-group-v2 {
