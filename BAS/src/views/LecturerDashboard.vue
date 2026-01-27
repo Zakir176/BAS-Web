@@ -204,6 +204,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 import { supabase } from '@/supabase'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
@@ -214,6 +215,7 @@ import CreateSessionModal from '@/components/CreateSessionModal.vue'
 
 const router = useRouter()
 const { user } = useAuth()
+const { toast } = useToast()
 
 const lecturerName = ref('')
 const isLoading = ref(true)
@@ -264,6 +266,7 @@ const handleBarcodeDetected = async (barcode) => {
     if (!activeSession) {
       lastScanned.value = 'No active session'
       scanStatus.value = 'error'
+      toast.error('No active session found. Please start a session first.')
       return
     }
 
@@ -276,6 +279,7 @@ const handleBarcodeDetected = async (barcode) => {
     if (!student) {
       lastScanned.value = `ID ${studentId} not found`
       scanStatus.value = 'error'
+      toast.error(`Student ID ${studentId} not found in system`)
       return
     }
 
@@ -291,13 +295,16 @@ const handleBarcodeDetected = async (barcode) => {
     scanStatus.value = 'success'
     scannedCount.value++
     
+    toast.success(`${student.full_name} marked as present!`)
+    
     // Update local roster if student is in it
     const index = activeRoster.value.findIndex(s => s.student_id === studentId)
     if (index !== -1) activeRoster.value[index].present = true
 
     setTimeout(() => { lastScanned.value = '' }, 3000)
   } catch (error) {
-    console.error(error)
+    console.error('Barcode scan error:', error)
+    toast.error('Failed to record attendance. Please try again.')
   }
 }
 
@@ -448,7 +455,7 @@ onMounted(fetchLecturerData)
 <style scoped>
 .lecturer-dashboard {
   min-height: 100vh;
-  background-color: #f1f5f9;
+  background-color: var(--bg-main);
 }
 
 .main-content {
@@ -465,14 +472,14 @@ onMounted(fetchLecturerData)
 .header-left h1 {
   font-size: 2rem;
   font-weight: 800;
-  color: #1e293b;
+  color: var(--text-main);
   margin-bottom: 0.25rem;
 }
 
 .highlight { color: var(--primary); }
 
 .header-left p {
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -486,11 +493,44 @@ onMounted(fetchLecturerData)
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  margin-bottom: 3rem;
+}
+
+/* Mobile responsive - adapt grid layout */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  
+  .header-right {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .scan-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .stat-card {
-  background: white;
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 24px;
   box-shadow: var(--shadow-soft);
@@ -502,14 +542,14 @@ onMounted(fetchLecturerData)
 .stat-label {
   font-size: 0.75rem;
   font-weight: 800;
-  color: #64748b;
+  color: var(--text-muted);
   letter-spacing: 0.05em;
 }
 
 .stat-value {
   font-size: 2rem;
   font-weight: 800;
-  color: #1e293b;
+  color: var(--text-main);
 }
 
 .stat-icon {
@@ -560,7 +600,7 @@ onMounted(fetchLecturerData)
 }
 
 .course-card-premium {
-  background: white;
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 24px;
   box-shadow: var(--shadow-card);
@@ -591,7 +631,7 @@ onMounted(fetchLecturerData)
 .mini-progress {
   width: 100px;
   height: 8px;
-  background: #f1f5f9;
+  background: var(--bg-main);
   border-radius: 4px;
 }
 
@@ -605,14 +645,15 @@ onMounted(fetchLecturerData)
   width: 100%;
   padding: 0.75rem;
   border-radius: 12px;
-  border: 2px solid #f1f5f9;
-  background: white;
+  border: 2px solid var(--border-light);
+  background: var(--bg-card);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  color: var(--text-main);
 }
 
-.manage-btn:hover { background: #f8fafc; border-color: #e2e8f0; }
+.manage-btn:hover { background: var(--bg-main); border-color: var(--border-medium); }
 
 /* Timeline */
 .sessions-list-compact {
@@ -623,7 +664,7 @@ onMounted(fetchLecturerData)
 
 .session-item-compact {
   padding: 1rem;
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -634,12 +675,12 @@ onMounted(fetchLecturerData)
   width: 60px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--text-muted);
   text-align: center;
 }
 
 .session-info h4 { font-size: 0.9rem; font-weight: 800; }
-.session-info p { font-size: 0.8rem; color: #64748b; }
+.session-info p { font-size: 0.8rem; color: var(--text-muted); }
 
 .session-status {
   width: 8px;
@@ -762,7 +803,7 @@ onMounted(fetchLecturerData)
   bottom: 12rem;
   left: 50%;
   transform: translateX(-50%);
-  background: white;
+  background: var(--bg-card);
   padding: 1rem 2rem;
   border-radius: 100px;
   display: flex;
@@ -772,8 +813,8 @@ onMounted(fetchLecturerData)
 }
 
 .scan-feedback-toast.success { border-left: 8px solid #22c55e; }
-.scan-feedback-toast .name { color: #1e293b; font-weight: 800; font-size: 1.1rem; }
-.scan-feedback-toast .msg { color: #64748b; font-size: 0.8rem; display: block; }
+.scan-feedback-toast .name { color: var(--text-main); font-weight: 800; font-size: 1.1rem; }
+.scan-feedback-toast .msg { color: var(--text-muted); font-size: 0.8rem; display: block; }
 
 .slide-up-enter-active, .slide-up-leave-active { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .slide-up-enter-from { opacity: 0; transform: translate(-50%, 40px); }
@@ -787,49 +828,48 @@ onMounted(fetchLecturerData)
 }
 
 .student-card-v2 {
-  background: white;
-  padding: 1rem 1.25rem;
-  border-radius: 18px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  border: 1px solid #f1f5f9;
+  gap: 0.75rem;
   transition: all 0.2s;
 }
 
 .student-card-v2.is-present {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  background: var(--success-bg);
+  border-color: var(--success);
 }
 
 .student-avatar-mini {
   width: 40px;
   height: 40px;
-  background: #f1f5f9;
   border-radius: 12px;
+  background: var(--bg-main);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .student-card-v2.is-present .student-avatar-mini {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--success);
+  color: var(--text-inverse);
 }
 
 .student-info-mini .name {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #1e293b;
+  color: var(--text-main);
 }
 
 .student-info-mini .sid {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .student-status-action {
@@ -864,8 +904,8 @@ onMounted(fetchLecturerData)
 }
 
 .mark-btn-v2:hover {
-  background: #f1f5f9;
-  color: #1e293b;
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
 .highlight-alt {
@@ -874,23 +914,23 @@ onMounted(fetchLecturerData)
 }
 
 .empty-roster {
-  background: white;
+  background: var(--bg-card);
   padding: 4rem;
   text-align: center;
   border-radius: 24px;
 }
 
 .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
-.empty-roster p { color: #64748b; font-weight: 600; }
+.empty-roster p { color: var(--text-muted); font-weight: 600; }
 
 .header-titles h2 { margin-bottom: 0.25rem; }
-.header-titles p { font-size: 0.85rem; color: #64748b; font-weight: 600; }
+.header-titles p { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
 
 .roster-stats {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
-.roster-stats strong { color: #1e293b; font-weight: 800; }
+.roster-stats strong { color: var(--text-main); font-weight: 800; }
 </style>
