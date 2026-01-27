@@ -11,7 +11,7 @@ public partial class StudentHomePage : ContentPage
     {
         // For now, just show a pop-up. 
         // Later, this could navigate to a full-screen QR code page.
-        await DisplayAlert("Digital ID", "Showing ID for Student #210984...", "Close");
+        await DisplayAlertAsync("Digital ID", "Showing ID for Student #210984...", "Close");
     }
 
     private async void OnHistoryClicked(object sender, EventArgs e)

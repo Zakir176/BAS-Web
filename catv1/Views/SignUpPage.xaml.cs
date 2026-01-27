@@ -2,16 +2,14 @@ using Microsoft.Maui.Controls;
 
 namespace catv1.Views;
 
-public partial class LoginPage : ContentPage
+public partial class SignUpPage : ContentPage
 {
     private bool _isStudent = true; // Default to Student
 
-    public LoginPage()
+    public SignUpPage()
     {
-        System.Diagnostics.Debug.WriteLine("CAT_LOG: LoginPage Constructor Start");
         InitializeComponent();
-        UpdateUI(); // Set initial state
-        System.Diagnostics.Debug.WriteLine("CAT_LOG: LoginPage Constructor End");
+        UpdateUI();
     }
 
     private void OnStudentClicked(object sender, EventArgs e)
@@ -36,7 +34,7 @@ public partial class LoginPage : ContentPage
             BtnLecturer.BackgroundColor = Colors.Transparent;
             BtnLecturer.TextColor = Color.FromArgb("#94A3B8"); // Gray
 
-            LblWelcomeTitle.Text = "Student Login";
+            LblSignUpTitle.Text = "Create Student Account";
         }
         else
         {
@@ -46,12 +44,17 @@ public partial class LoginPage : ContentPage
             BtnStudent.BackgroundColor = Colors.Transparent;
             BtnStudent.TextColor = Color.FromArgb("#94A3B8"); // Gray
 
-            LblWelcomeTitle.Text = "Lecturer Login";
+            LblSignUpTitle.Text = "Create Lecturer Account";
         }
     }
 
-    private async void OnLoginClicked(object sender, EventArgs e)
+    private async void OnSignUpClicked(object sender, EventArgs e)
     {
+        // Here you would add the logic to create the account.
+        // For now, we'll just simulate success and go to the dashboard.
+
+        await DisplayAlertAsync("Success", "Account created successfully!", "OK");
+
         if (_isStudent)
         {
             await Shell.Current.GoToAsync("//student/dashboardTab/home");
@@ -62,8 +65,9 @@ public partial class LoginPage : ContentPage
         }
     }
 
-    private async void OnSignUpClicked(object sender, EventArgs e)
+    private async void OnLoginClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("signup");
+        // Go back to the login page (which is the default route //login)
+        await Shell.Current.GoToAsync("//login");
     }
 }

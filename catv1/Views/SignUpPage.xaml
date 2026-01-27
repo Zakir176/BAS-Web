@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="catv1.Views.LoginPage"
+    x:Class="catv1.Views.SignUpPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="LoginPage"
+    Title="Sign Up"
     BackgroundColor="#0F172A"
     Shell.NavBarIsVisible="False">
 
@@ -80,19 +80,47 @@
                 </Border>
 
                 <Label
-                    x:Name="LblWelcomeTitle"
+                    x:Name="LblSignUpTitle"
                     FontAttributes="Bold"
                     FontSize="22"
                     HorizontalOptions="Center"
-                    Text="Lecturer Login"
+                    Text="Create Student Account"
                     TextColor="White" />
 
                 <Label
                     FontSize="13"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
-                    Text="Welcome back, Sign in to manage access."
+                    Text="Sign up to get started."
                     TextColor="#94A3B8" />
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="Full Name"
+                        TextColor="#CBD5E1" />
+                    <Border
+                        BackgroundColor="#0F172A"
+                        HeightRequest="50"
+                        Stroke="#334155"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Grid ColumnDefinitions="50, *">
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="👤"
+                                TextColor="#64748B"
+                                VerticalOptions="Center" />
+                            <Entry
+                                Grid.Column="1"
+                                Placeholder="John Doe"
+                                PlaceholderColor="#475569"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="8">
                     <Label
@@ -143,7 +171,7 @@
                             <Entry
                                 Grid.Column="1"
                                 IsPassword="True"
-                                Placeholder="Enter your password"
+                                Placeholder="Create a password"
                                 PlaceholderColor="#475569"
                                 TextColor="White"
                                 VerticalOptions="Center" />
@@ -159,31 +187,50 @@
                     </Border>
                 </VerticalStackLayout>
 
-                <Grid Margin="0,5" ColumnDefinitions="Auto, *">
-                    <HorizontalStackLayout Spacing="10">
-                        <CheckBox Color="#3B82F6" />
-                        <Label
-                            FontSize="12"
-                            Text="Remember me!"
-                            TextColor="#94A3B8"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
+                <VerticalStackLayout Spacing="8">
                     <Label
-                        Grid.Column="1"
+                        FontAttributes="Bold"
                         FontSize="12"
-                        HorizontalOptions="End"
-                        Text="Forgot Password?"
-                        TextColor="#3B82F6"
-                        VerticalOptions="Center" />
-                </Grid>
+                        Text="Confirm Password"
+                        TextColor="#CBD5E1" />
+                    <Border
+                        BackgroundColor="#0F172A"
+                        HeightRequest="50"
+                        Stroke="#334155"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Grid ColumnDefinitions="50, *, 50">
+                            <Label
+                                HorizontalOptions="Center"
+                                Text="🔒"
+                                TextColor="#64748B"
+                                VerticalOptions="Center" />
+                            <Entry
+                                Grid.Column="1"
+                                IsPassword="True"
+                                Placeholder="Confirm your password"
+                                PlaceholderColor="#475569"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                            <ImageButton Grid.Column="2" BackgroundColor="Transparent">
+                                <ImageButton.Source>
+                                    <FontImageSource
+                                        FontFamily="Arial"
+                                        Glyph=" 👁 "
+                                        Color="#64748B" />
+                                </ImageButton.Source>
+                            </ImageButton>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
 
                 <Button
-                    BackgroundColor="#3B82F6"
-                    Clicked="OnLoginClicked"
+                    BackgroundColor="#10B981"
+                    Clicked="OnSignUpClicked"
                     CornerRadius="8"
                     FontAttributes="Bold"
                     HeightRequest="50"
-                    Text="Sign In to The Dashboard  ➔"
+                    Text="Create Account  ➔"
                     TextColor="White" />
 
                 <Label
@@ -192,25 +239,19 @@
                     VerticalOptions="Center">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="Don't have an account? " TextColor="#94A3B8" />
+                            <Span Text="Already have an account? " TextColor="#94A3B8" />
                             <Span
                                 FontAttributes="Bold"
-                                Text="Sign Up"
-                                TextColor="#10B981">
+                                Text="Login here"
+                                TextColor="#3B82F6">
                                 <Span.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnSignUpClicked" />
+                                    <TapGestureRecognizer Tapped="OnLoginClicked" />
                                 </Span.GestureRecognizers>
                             </Span>
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
 
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="10"
-                    HorizontalOptions="Center"
-                    Text="🔒 LECTURER PORTAL"
-                    TextColor="#475569" />
             </VerticalStackLayout>
         </Border>
 

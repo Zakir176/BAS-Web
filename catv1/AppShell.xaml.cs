@@ -6,6 +6,7 @@ public partial class AppShell : Shell
     {
         System.Diagnostics.Debug.WriteLine("CAT_LOG: AppShell Constructor Start");
         InitializeComponent();
+        Routing.RegisterRoute("signup", typeof(Views.SignUpPage));
         System.Diagnostics.Debug.WriteLine("CAT_LOG: AppShell Constructor End");
     }
 }
