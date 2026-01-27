@@ -7,9 +7,11 @@ import LecturerSignup from '../views/LecturerSignup.vue'
 import StudentLogin from '../views/StudentLogin.vue'
 import StudentSignup from '../views/StudentSignup.vue'
 import StudentHomepage from '../views/StudentHomepage.vue'
-import StudentUploadPage from '../views/StudentUploadPage.vue'
+
 import ReportPage from '../views/ReportPage.vue'
 import LecturerDashboard from '../views/LecturerDashboard.vue'
+import DebugLogin from '../views/DebugLogin.vue'
+import ToastDemo from '../views/ToastDemo.vue'
 
 const routes = [
   {
@@ -37,6 +39,18 @@ const routes = [
     meta: { requiresAuth: true, role: 'lecturer' }
   },
   {
+    path: '/debug-login',
+    name: 'DebugLogin',
+    component: DebugLogin,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/toast-demo',
+    name: 'ToastDemo',
+    component: ToastDemo,
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/student-login',
     name: 'StudentLogin',
     component: StudentLogin,
@@ -54,12 +68,7 @@ const routes = [
     component: StudentHomepage,
     meta: { requiresAuth: true, role: 'student' }
   },
-  {
-    path: '/student-upload-page',
-    name: 'StudentUploadPage',
-    component: StudentUploadPage,
-    meta: { requiresAuth: true, role: 'student' }
-  },
+
   {
     path: '/report-page',
     name: 'ReportPage',
