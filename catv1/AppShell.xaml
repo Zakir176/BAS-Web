@@ -15,9 +15,9 @@
         <Tab Title="Dashboard" Icon="home_icon.png">
             <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
         </Tab>
-        <Tab Title="History" Icon="history_icon.png">
+        <!--<Tab Title="History" Icon="history_icon.png">
             <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="history" />
-        </Tab>
+        </Tab>-->
     </TabBar>
 
     <TabBar Route="lecturer">
