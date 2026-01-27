@@ -57,12 +57,12 @@ public partial class SignUpPage : ContentPage
         // Basic validation
         if (string.IsNullOrWhiteSpace(EntryId.Text))
         {
-            await DisplayAlert("Error", "Please enter your ID.", "OK");
+            await DisplayAlertAsync("Error", "Please enter your ID.", "OK");
             return;
         }
 
         // Simulate success
-        await DisplayAlert("Success", "Account created successfully!", "OK");
+        await DisplayAlertAsync("Success", "Account created successfully!", "OK");
 
         if (_isStudent)
         {
