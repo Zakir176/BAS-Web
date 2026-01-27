@@ -87,14 +87,15 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 import { supabase } from '@/supabase'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import AttendanceCalendar from '@/components/AttendanceCalendar.vue'
 
 const router = useRouter()
-const { user, getStudentProfile } = useAuth()
-
+const { user } = useAuth()
+const { toast } = useToast()
 const studentProfile = ref(null)
 const studentName = ref('')
 const classSection = ref('10A') // Default/Placeholder
@@ -111,7 +112,11 @@ const isLoading = ref(true)
 
 const fetchStudentData = async () => {
   try {
-    if (!user.value) return
+    if (!user.value) {
+      toast.error('User not found. Please login again.')
+      return
+    }
+    
     isLoading.value = true
 
     // 1. Get student profile details using email
@@ -121,15 +126,27 @@ const fetchStudentData = async () => {
       .eq('email', user.value.email)
       .single()
     
+    if (error) {
+      toast.error('Failed to fetch student profile')
+      console.error('Student profile error:', error)
+      return
+    }
+    
     if (studentData) {
       studentProfile.value = studentData
       studentName.value = studentData.full_name
       classSection.value = studentData.class_section || '10A'
+      toast.success(`Welcome back, ${studentData.full_name}!`)
+    } else {
+      toast.warning('Student profile not found')
     }
 
     // 2. Fetch specific attendance records
     const studentId = studentProfile.value?.student_id
-    if (!studentId) return
+    if (!studentId) {
+      toast.warning('Student ID not found')
+      return
+    }
 
     const { data: attendanceData } = await supabase
       .from('attendance')
@@ -265,6 +282,37 @@ onMounted(() => {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
+}
+
+/* Mobile responsive - stack stats on small screens */
+@media (max-width: 640px) {
+  .stats-row {
+    flex-direction: column;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .header-actions {
+    justify-content: center;
+  }
+  
+  .student-name {
+    font-size: 1.5rem;
+  }
+  
+  .action-area {
+    position: relative;
+  }
+  
+  .fab-edit {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+  }
 }
 
 .stat-card {

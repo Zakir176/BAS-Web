@@ -89,11 +89,13 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
 const { signIn, isLoading } = useAuth()
+const { toast } = useToast()
 const showPassword = ref(false)
 
 const formData = reactive({
@@ -103,12 +105,20 @@ const formData = reactive({
 })
 
 const handleLogin = async () => {
+  if (!formData.email || !formData.password) {
+    toast.error('Please fill in all fields')
+    return
+  }
+
   try {
     await signIn(formData.email, formData.password)
-    router.push('/student-homepage')
+    toast.success('Welcome back! Redirecting to dashboard...')
+    setTimeout(() => {
+      router.push('/student-homepage')
+    }, 1500)
   } catch (err) {
     console.error('Login failed:', err)
-    alert('Invalid credentials')
+    toast.error('Invalid credentials. Please check your email and password.')
   }
 }
 </script>
