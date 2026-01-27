@@ -8,6 +8,25 @@
     BackgroundColor="#0F172A">
     <Grid>
         <zxing:CameraBarcodeReaderView x:Name="cameraBarcodeReaderView" IsDetecting="True" />
+
+        <ImageButton
+            Margin="20"
+            BackgroundColor="#1E293B"
+            Clicked="OnBackClicked"
+            CornerRadius="20"
+            HeightRequest="40"
+            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            WidthRequest="40">
+            <ImageButton.Source>
+                <FontImageSource
+                    FontFamily="Arial"
+                    Glyph="⬅"
+                    Size="24"
+                    Color="White" />
+            </ImageButton.Source>
+        </ImageButton>
+
         <Label
             Margin="0,0,0,50"
             HorizontalOptions="Center"

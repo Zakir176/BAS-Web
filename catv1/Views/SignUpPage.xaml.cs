@@ -32,9 +32,11 @@ public partial class SignUpPage : ContentPage
             BtnStudent.TextColor = Colors.White;
 
             BtnLecturer.BackgroundColor = Colors.Transparent;
-            BtnLecturer.TextColor = Color.FromArgb("#94A3B8"); // Gray
+            BtnLecturer.TextColor = Color.FromArgb("#64748B"); // Gray
 
-            LblSignUpTitle.Text = "Create Student Account";
+            LblSignUpTitle.Text = "Student Registration";
+            LblIdField.Text = "STUDENT ID (SIN)";
+            EntryId.Placeholder = "e.g. 210984";
         }
         else
         {
@@ -42,18 +44,25 @@ public partial class SignUpPage : ContentPage
             BtnLecturer.TextColor = Colors.White;
 
             BtnStudent.BackgroundColor = Colors.Transparent;
-            BtnStudent.TextColor = Color.FromArgb("#94A3B8"); // Gray
+            BtnStudent.TextColor = Color.FromArgb("#64748B"); // Gray
 
-            LblSignUpTitle.Text = "Create Lecturer Account";
+            LblSignUpTitle.Text = "Lecturer Registration";
+            LblIdField.Text = "LECTURER ID";
+            EntryId.Placeholder = "e.g. L00123";
         }
     }
 
     private async void OnSignUpClicked(object sender, EventArgs e)
     {
-        // Here you would add the logic to create the account.
-        // For now, we'll just simulate success and go to the dashboard.
+        // Basic validation
+        if (string.IsNullOrWhiteSpace(EntryId.Text))
+        {
+            await DisplayAlert("Error", "Please enter your ID.", "OK");
+            return;
+        }
 
-        await DisplayAlertAsync("Success", "Account created successfully!", "OK");
+        // Simulate success
+        await DisplayAlert("Success", "Account created successfully!", "OK");
 
         if (_isStudent)
         {

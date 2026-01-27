@@ -5,10 +5,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="History"
     BackgroundColor="#0F172A">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Welcome to History Page!"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid RowDefinitions="Auto, *">
+        <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *">
+            <ImageButton
+                BackgroundColor="Transparent"
+                Clicked="OnBackClicked"
+                HeightRequest="40"
+                WidthRequest="40">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="Arial"
+                        Glyph="⬅"
+                        Size="24"
+                        Color="White" />
+                </ImageButton.Source>
+            </ImageButton>
+            <Label
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="History"
+                TextColor="White"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="1">
+            <Label
+                HorizontalOptions="Center"
+                Text="Welcome to History Page!"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

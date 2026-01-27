@@ -21,4 +21,9 @@ public partial class StudentHomePage : ContentPage
         // OR if you want to push it onto the stack:
         await Shell.Current.GoToAsync("//student/historyTab/history");
     }
+
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//login");
+    }
 }

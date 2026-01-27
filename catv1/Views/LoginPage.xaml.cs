@@ -8,10 +8,8 @@ public partial class LoginPage : ContentPage
 
     public LoginPage()
     {
-        System.Diagnostics.Debug.WriteLine("CAT_LOG: LoginPage Constructor Start");
         InitializeComponent();
         UpdateUI(); // Set initial state
-        System.Diagnostics.Debug.WriteLine("CAT_LOG: LoginPage Constructor End");
     }
 
     private void OnStudentClicked(object sender, EventArgs e)
@@ -34,9 +32,11 @@ public partial class LoginPage : ContentPage
             BtnStudent.TextColor = Colors.White;
 
             BtnLecturer.BackgroundColor = Colors.Transparent;
-            BtnLecturer.TextColor = Color.FromArgb("#94A3B8"); // Gray
+            BtnLecturer.TextColor = Color.FromArgb("#64748B"); // Gray
 
             LblWelcomeTitle.Text = "Student Login";
+            LblIdField.Text = "STUDENT ID (SIN)";
+            EntryId.Placeholder = "e.g. 210984";
         }
         else
         {
@@ -44,14 +44,23 @@ public partial class LoginPage : ContentPage
             BtnLecturer.TextColor = Colors.White;
 
             BtnStudent.BackgroundColor = Colors.Transparent;
-            BtnStudent.TextColor = Color.FromArgb("#94A3B8"); // Gray
+            BtnStudent.TextColor = Color.FromArgb("#64748B"); // Gray
 
             LblWelcomeTitle.Text = "Lecturer Login";
+            LblIdField.Text = "LECTURER ID";
+            EntryId.Placeholder = "e.g. L00123";
         }
     }
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
+        // Simple validation visualization (optional)
+        if (string.IsNullOrWhiteSpace(EntryId.Text))
+        {
+            await DisplayAlert("Error", "Please enter your ID.", "OK");
+            return;
+        }
+
         if (_isStudent)
         {
             await Shell.Current.GoToAsync("//student/dashboardTab/home");
