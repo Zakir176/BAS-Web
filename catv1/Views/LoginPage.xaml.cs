@@ -54,11 +54,11 @@ public partial class LoginPage : ContentPage
     {
         if (_isStudent)
         {
-            await Shell.Current.GoToAsync("//student/home");
+            await Shell.Current.GoToAsync("//student/dashboardTab/home");
         }
         else
         {
-            await Shell.Current.GoToAsync("//lecturer/dashboard");
+            await Shell.Current.GoToAsync("//lecturer/dashboardTab/dashboard");
         }
     }
 }

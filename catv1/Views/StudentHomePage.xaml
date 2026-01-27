@@ -115,7 +115,7 @@
                                 Text="Digital Class ID"
                                 TextColor="White" />
                             <Label
-                                 FontSize="12"
+                                FontSize="12"
                                 Text="#210984 • SICT"
                                 TextColor="#BFDBFE" />
                         </VerticalStackLayout>
@@ -132,7 +132,7 @@
                     RowDefinitions="120, 120"
                     RowSpacing="15">
 
-                    <!-- History section!
+                    <!--  History section!  -->
                     <Border
                         Grid.Row="0"
                         Grid.Column="0"
@@ -153,7 +153,6 @@
                                 TextColor="White" />
                         </VerticalStackLayout>
                     </Border>
-                    -->
 
                     <Border
                         Grid.Row="0"
