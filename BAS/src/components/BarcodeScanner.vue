@@ -18,29 +18,23 @@ onMounted(() => {
       type: "LiveStream",
       target: scanner.value,
       constraints: {
-        width: 480,
-        height: 320,
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
         facingMode: "environment"
       },
+      area: { // Focus scanning on the center area
+        top: "20%",
+        right: "20%",
+        left: "20%",
+        bottom: "20%"
+      }
     },
     decoder: {
       readers: [
         "code_128_reader",
         "ean_reader",
-        "ean_8_reader",
-        "code_39_reader",
-        "code_39_vin_reader",
-        "codabar_reader",
-        "upc_reader",
-        "upc_e_reader",
-        "i2of5_reader"
-      ],
-      debug: {
-        drawBoundingBox: true,
-        showFrequency: true,
-        drawScanline: true,
-        showPattern: true
-      }
+        "code_39_reader"
+      ]
     },
   }, (err) => {
     if (err) {
@@ -69,16 +63,29 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .barcode-scanner {
-  position: relative;
   width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .scanner-viewport {
   width: 100%;
-  height: auto;
-  overflow: hidden;
-  border-radius: 8px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.scanner-viewport :deep(video) {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important; /* contain is safer for maintaining aspect ratio on desktop */
+}
+
+.scanner-viewport :deep(canvas) {
+  display: none;
 }
 </style>

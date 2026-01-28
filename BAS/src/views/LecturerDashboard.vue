@@ -340,14 +340,23 @@ const fetchLecturerData = async () => {
     if (!user.value) return
     isLoading.value = true
 
-    // Fetch lecturer profile
-    const { data: lecturer } = await supabase
+    // Fetch lecturer profile - Use UID for more reliable matching
+    const { data: lecturer, error: profileError } = await supabase
       .from('teachers')
       .select('full_name')
-      .eq('email', user.value.email)
-      .single()
+      .eq('teacher_id', user.value.id)
+      .maybeSingle()
 
-    if (lecturer) lecturerName.value = lecturer.full_name
+    if (profileError) {
+      console.warn('Dashboard: Could not fetch profile:', profileError)
+    }
+
+    if (lecturer) {
+      lecturerName.value = lecturer.full_name
+    } else {
+      // Use fallback from metadata
+      lecturerName.value = user.value.user_metadata?.full_name || user.value.email.split('@')[0]
+    }
 
     // Fetch courses with counts
     const { data: coursesData } = await supabase
@@ -391,11 +400,11 @@ const fetchLecturerData = async () => {
       }
     }
 
-    // Fetch recent sessions with actual student counts
+    // Fetch recent sessions - Need to filter through courses to get correct teacher's sessions
     const { data: sessionsData } = await supabase
       .from('sessions')
-      .select('*, courses(course_name), attendance(count)')
-      .eq('teacher_id', user.value.id)
+      .select('*, courses!inner(course_name, teacher_id), attendance(count)')
+      .eq('courses.teacher_id', user.value.id)
       .order('session_date', { ascending: false })
       .limit(8)
 
@@ -409,14 +418,14 @@ const fetchLecturerData = async () => {
       stats.value.todaySessions = sessionsData.filter(s => s.session_date === new Date().toISOString().split('T')[0]).length
     }
 
-    // Fetch roster for most recent session
+    // Fetch roster for most recent session - Join courses to filter by teacher_id
     const { data: latestSession } = await supabase
       .from('sessions')
-      .select('*, courses(course_name)')
-      .eq('teacher_id', user.value.id)
+      .select('*, courses!inner(course_name, teacher_id)')
+      .eq('courses.teacher_id', user.value.id)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
 
     if (latestSession) {
       activeSessionName.value = latestSession.courses?.course_name
@@ -703,13 +712,34 @@ onMounted(fetchLecturerData)
 }
 
 .scanner-header-overlay {
-  padding: 2rem;
+  padding: 1.5rem;
   background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
   color: white;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   z-index: 10;
+}
+
+.camera-viewport {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .camera-viewport {
+    max-width: 800px;
+    max-height: 600px;
+    margin: auto;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
 }
 
 .session-badge {
@@ -750,16 +780,19 @@ onMounted(fetchLecturerData)
   flex: 1;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .scan-overlay-guides {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  margin: auto;
   width: 280px;
   height: 280px;
   pointer-events: none;
+  z-index: 5;
 }
 
 .guide-corner {

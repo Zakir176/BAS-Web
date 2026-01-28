@@ -9,8 +9,11 @@ const { theme, toggleTheme, updateTheme } = useTheme()
 const { init } = useAuth()
 
 onMounted(async () => {
+  console.log('App: Component mounted, initializing...')
   updateTheme()
+  console.log('App: Theme updated')
   await init()
+  console.log('App: Auth initialization finished')
 })
 </script>
 

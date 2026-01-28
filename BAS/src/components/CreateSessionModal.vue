@@ -98,7 +98,6 @@ const createSession = async () => {
       .from('sessions')
       .insert({
         course_id: selectedCourseId.value,
-        teacher_id: user.value.id,
         session_date: sessionDate.value,
         session_time: sessionTime.value
       })

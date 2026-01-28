@@ -4,26 +4,20 @@ test.describe('Lecturer Login', () => {
   const testLecturerEmail = 'lecturer@example.com';
   const testPassword = 'password123';
 
-  test('should show "Invalid credentials" for incorrect login', async ({ page }) => {
+  test('should show error toast for incorrect login', async ({ page }) => {
     await page.goto('/lecturer-login');
 
     // Fill in incorrect credentials
-    await page.fill('input[type="email"]', testLecturerEmail);
-    await page.fill('input[type="password"]', testPassword);
-
-    // Set up a listener for the dialog/alert
-    page.on('dialog', async dialog => {
-      // Assert the message of the dialog
-      expect(dialog.message()).toBe('Invalid credentials');
-      // Accept the dialog
-      await dialog.accept();
-    });
+    await page.fill('input[type="email"]', 'incorrect@example.com');
+    await page.fill('input[type="password"]', 'wrongpassword');
 
     // Click the login button
     await page.click('button[type="submit"]');
 
-    // Wait for the dialog to be handled
-    await page.waitForEvent('dialog');
+    // Check for toast notification
+    const toast = page.locator('.toast-error');
+    await expect(toast).toBeVisible();
+    await expect(toast).toContainText('credentials');
 
     // Assert that the URL has not changed
     await expect(page).toHaveURL('/lecturer-login');

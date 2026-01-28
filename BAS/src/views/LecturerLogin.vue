@@ -57,7 +57,7 @@
                 <span class="checkmark"></span>
                 Remember me
               </label>
-              <a href="#" class="forgot-link">Forgot Password?</a>
+              <router-link to="/forgot-password" class="forgot-link">Forgot Password?</router-link>
             </div>
 
             <Button
@@ -78,6 +78,13 @@
             <div class="secure-badge">
               <span>🛡️</span> SECURE FACULTY PORTAL
             </div>
+            <button 
+              @click="handleClearSession" 
+              class="clear-session-btn"
+              title="Fix login issues by clearing stale credentials"
+            >
+              Stuck? Clear Auth Session
+            </button>
           </div>
         </Card>
       </div>
@@ -94,7 +101,7 @@ import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
-const { signIn, isLoading } = useAuth()
+const { signIn, signOut, isLoading } = useAuth()
 const { toast } = useToast()
 const showPassword = ref(false)
 
@@ -118,7 +125,23 @@ const handleLogin = async () => {
     }, 1500)
   } catch (err) {
     console.error('Login failed:', err)
-    toast.error('Invalid credentials. Please check your email and password.')
+    toast.error(err.message || 'Invalid credentials. Please check your email and password.')
+  }
+}
+
+const handleClearSession = async () => {
+  try {
+    isLoading.value = true
+    await signOut()
+    localStorage.clear()
+    toast.success('Session cleared. Please try logging in again.')
+    window.location.reload()
+  } catch (err) {
+    console.error('Clear session failed:', err)
+    localStorage.clear()
+    window.location.reload()
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
@@ -314,6 +337,25 @@ const handleLogin = async () => {
   color: #64748b;
   letter-spacing: 0.1em;
   border: 1px solid #e2e8f0;
+  margin-bottom: 1rem;
+}
+
+.clear-session-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  opacity: 0.6;
+  margin-top: 1rem;
+}
+
+.clear-session-btn:hover {
+  color: var(--error);
+  opacity: 1;
 }
 
 @keyframes slideUp {
