@@ -144,6 +144,18 @@ export function useToast() {
     })
   }
 
+  const toastMethods = {
+    success,
+    error,
+    warning,
+    info,
+    promise,
+    confirm,
+    add: addToast,
+    remove: removeToast,
+    clear: clearAllToasts
+  }
+
   return {
     toasts,
     addToast,
@@ -154,6 +166,7 @@ export function useToast() {
     warning,
     info,
     promise,
-    confirm
+    confirm,
+    toast: toastMethods
   }
 }
