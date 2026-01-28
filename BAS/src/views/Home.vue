@@ -25,15 +25,18 @@
             
             <div class="hero-stats">
               <article class="stat-item">
-                <span class="stat-number">{{ stats.students || '2,000+' }}</span>
+                <Skeleton v-if="isLoading" width="120px" height="3rem" />
+                <span v-else class="stat-number">{{ stats.students || '0' }}</span>
                 <span class="stat-label">Active Students</span>
               </article>
               <article class="stat-item">
-                <span class="stat-number">{{ stats.courses || '150+' }}</span>
+                <Skeleton v-if="isLoading" width="120px" height="3rem" />
+                <span v-else class="stat-number">{{ stats.courses || '0' }}</span>
                 <span class="stat-label">University Courses</span>
               </article>
               <article class="stat-item">
-                <span class="stat-number">{{ stats.accuracy }}</span>
+                <Skeleton v-if="isLoading" width="120px" height="3rem" />
+                <span v-else class="stat-number">{{ stats.accuracy }}</span>
                 <span class="stat-label">Accuracy Rate</span>
               </article>
             </div>
@@ -111,26 +114,35 @@
             </div>
 
             <div class="features-mini-grid">
-              <article class="feature-mini-card">
-                <span class="icon">📱</span>
-                <h3>Barcode Entry</h3>
-                <p>Lightning fast scanning using student ID cards.</p>
-              </article>
-              <article class="feature-mini-card">
-                <span class="icon">⚡</span>
-                <h3>Live Sync</h3>
-                <p>Attendance updates across all devices in real-time.</p>
-              </article>
-              <article class="feature-mini-card">
-                <span class="icon">📊</span>
-                <h3>Analytics</h3>
-                <p>Track student performance through attendance trends.</p>
-              </article>
-              <article class="feature-mini-card">
-                <span class="icon">🔗</span>
-                <h3>Integration</h3>
-                <p>Easy data export for university records.</p>
-              </article>
+              <template v-if="isLoading">
+                <article v-for="i in 4" :key="i" class="feature-mini-card">
+                  <Skeleton width="40px" height="40px" shape="circle" style="margin-bottom: 1rem" />
+                  <Skeleton width="60%" height="1.5rem" style="margin-bottom: 0.5rem" />
+                  <Skeleton width="100%" height="3rem" />
+                </article>
+              </template>
+              <template v-else>
+                <article class="feature-mini-card">
+                  <span class="icon">📱</span>
+                  <h3>Barcode Entry</h3>
+                  <p>Lightning fast scanning using student ID cards.</p>
+                </article>
+                <article class="feature-mini-card">
+                  <span class="icon">⚡</span>
+                  <h3>Live Sync</h3>
+                  <p>Attendance updates across all devices in real-time.</p>
+                </article>
+                <article class="feature-mini-card">
+                  <span class="icon">📊</span>
+                  <h3>Analytics</h3>
+                  <p>Track student performance through attendance trends.</p>
+                </article>
+                <article class="feature-mini-card">
+                  <span class="icon">🔗</span>
+                  <h3>Integration</h3>
+                  <p>Easy data export for university records.</p>
+                </article>
+              </template>
             </div>
           </div>
         </div>
@@ -197,15 +209,18 @@
               </p>
               <div class="brand-stats">
                 <div class="mini-stat">
-                  <span class="number">{{ stats.students || '0' }}</span>
+                  <Skeleton v-if="isLoading" width="40px" height="1.5rem" />
+                  <span v-else class="number">{{ stats.students || '0' }}</span>
                   <span class="label">Students</span>
                 </div>
                 <div class="mini-stat">
-                  <span class="number">{{ stats.courses || '0' }}</span>
+                  <Skeleton v-if="isLoading" width="40px" height="1.5rem" />
+                  <span v-else class="number">{{ stats.courses || '0' }}</span>
                   <span class="label">Courses</span>
                 </div>
                 <div class="mini-stat">
-                  <span class="number">{{ stats.accuracy }}</span>
+                  <Skeleton v-if="isLoading" width="40px" height="1.5rem" />
+                  <span v-else class="number">{{ stats.accuracy }}</span>
                   <span class="label">Accuracy</span>
                 </div>
               </div>
@@ -318,10 +333,12 @@ import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
 import Navbar from '@/components/layout/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
+import Skeleton from '@/components/ui/Skeleton.vue'
 
 const router = useRouter()
 const { isAuthenticated, user, role } = useAuth()
 
+const isLoading = ref(true)
 const scrollY = ref(0)
 const handleScroll = () => {
   scrollY.value = window.scrollY
@@ -351,6 +368,8 @@ const fetchStats = async () => {
     stats.value.sessions = sessionCount || 0
   } catch (err) {
     console.error('Error fetching global stats:', err)
+  } finally {
+    isLoading.value = false
   }
 }
 
