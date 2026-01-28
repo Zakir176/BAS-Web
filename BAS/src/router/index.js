@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { watch } from 'vue'
 
 import Home from '../views/Home.vue'
 import LecturerLogin from '../views/LecturerLogin.vue'
@@ -80,6 +81,18 @@ const routes = [
     redirect: '/lecturer-dashboard'
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('../views/ForgotPassword.vue'),
+    meta: { requiresAuth: false, requiresGuest: true }
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: () => import('../views/ResetPassword.vue'),
+    meta: { requiresAuth: false } // Supabase handles auth state during reset link callback
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/'
   }
@@ -92,7 +105,17 @@ const router = createRouter({
 
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
-  const { user, isAuthenticated, role } = useAuth()
+  const auth = useAuth()
+
+  // Wait for auth to initialize (max 3s timeout internally)
+  console.log(`Router: Entering ${to.path}, initialized: ${auth.isInitialized.value}`)
+  if (!auth.isInitialized.value) {
+    console.log('Router: Waiting for auth initialization...')
+    await auth.init()
+  }
+
+  const { user, isAuthenticated, role } = auth
+  console.log('Router: Auth ready. User:', user.value?.email, 'Role:', role.value)
 
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest)
@@ -106,8 +129,11 @@ router.beforeEach(async (to, from, next) => {
 
   if (requiresGuest && isAuthenticated.value) {
     // Guest page (like login), but user is already logged in
-    const userRole = role.value || user.value?.user_metadata?.role
-    if (userRole === 'teacher' || userRole === 'lecturer') {
+    let userRole = role.value || user.value?.user_metadata?.role || 'student'
+    // Normalize role
+    if (userRole === 'teacher' || userRole === 'admin') userRole = 'lecturer'
+
+    if (userRole === 'lecturer') {
       return next({ name: 'LecturerDashboard' })
     }
     if (userRole === 'student') {
@@ -117,11 +143,14 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (requiresAuth && requiredRole) {
-    const userRole = role.value || user.value?.user_metadata?.role
+    let userRole = role.value || user.value?.user_metadata?.role || 'student'
+    // Normalize role
+    if (userRole === 'teacher' || userRole === 'admin') userRole = 'lecturer'
+
     // Handle both 'teacher' and 'lecturer' for lecturer routes
     const isLecturerRoute = requiredRole === 'lecturer'
     const isUserLecturer = userRole === 'teacher' || userRole === 'lecturer'
-    
+
     if (isLecturerRoute && !isUserLecturer) {
       console.warn(`Role mismatch: User with role '${userRole}' tried to access '${to.path}' which requires '${requiredRole}'`)
       return next({ name: 'Home' })
@@ -130,7 +159,7 @@ router.beforeEach(async (to, from, next) => {
       console.warn(`Role mismatch: User with role '${userRole}' tried to access '${to.path}' which requires '${requiredRole}'`)
       return next({ name: 'Home' })
     }
-    
+
     // Redirect to their respective dashboards if role mismatch
     if (isUserLecturer && !isLecturerRoute) {
       return next({ name: 'LecturerDashboard' })
