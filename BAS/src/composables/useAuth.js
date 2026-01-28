@@ -7,6 +7,8 @@ const isAuthenticated = ref(false)
 const isLoading = ref(false)
 const error = ref(null)
 const role = ref(null)
+const isInitialized = ref(false)
+let initPromise = null
 
 export function useAuth() {
   // Centralized error handling
@@ -20,14 +22,18 @@ export function useAuth() {
   // Set user state
   const setUser = (sessionUser) => {
     if (sessionUser) {
+      let rawRole = sessionUser.user_metadata?.role || 'student'
+      // Normalize 'teacher' to 'lecturer' for frontend consistency
+      const normalizedRole = rawRole === 'teacher' || rawRole === 'admin' ? 'lecturer' : rawRole
+
       user.value = {
         id: sessionUser.id,
         email: sessionUser.email,
-        role: sessionUser.user_metadata?.role || 'student',
+        role: normalizedRole,
         ...sessionUser.user_metadata
       }
       isAuthenticated.value = true
-      role.value = sessionUser.user_metadata?.role || 'student'
+      role.value = normalizedRole
     } else {
       user.value = null
       isAuthenticated.value = false
@@ -40,9 +46,10 @@ export function useAuth() {
     try {
       isLoading.value = true
       error.value = null
+      const sanitizedEmail = email.trim()
 
       const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
+        email: sanitizedEmail,
         password,
         options: {
           data: {
@@ -54,32 +61,35 @@ export function useAuth() {
       })
 
       if (signUpError) throw signUpError
+      if (!data.user) throw new Error('Signup succeeded but no user data returned')
 
-      // 2. Create a corresponding profile in the database
+      // 2. Create a corresponding profile in the database using the Auth ID
+      const userId = data.user.id
+
       if (metadata.role === 'lecturer') {
-        // Create lecturer profile
+        // Create lecturer profile using the Auth UUID
         const { error: profileError } = await supabase.from('teachers').insert({
+          teacher_id: userId,
           full_name: metadata.full_name,
-          email: email,
+          email: sanitizedEmail,
           role: 'teacher' // Database constraint only allows 'teacher' or 'admin'
         });
-        
+
         if (profileError) throw profileError;
       } else {
-        // Create student profile
+        // Create student profile using the Auth UUID
+        // Note: We use the Auth UUID as the primary key to ensure RLS works
         const { error: profileError } = await supabase.from('students').insert({
-          student_id: metadata.student_id,
+          student_id: userId,
           full_name: metadata.full_name,
-          email: email,
+          email: sanitizedEmail,
           class_section: metadata.class_section,
-          qr_code_value: metadata.student_id
+          qr_code_value: metadata.student_id || userId // Fallback to userId if student_id not provided
         });
-        
+
         if (profileError) throw profileError;
       }
-      
-      // The user is signed up but might need to confirm their email.
-      // The onAuthStateChange listener will handle the session once logged in.
+
       return data
 
     } catch (err) {
@@ -89,25 +99,91 @@ export function useAuth() {
     }
   }
 
+  // Track ongoing repairs to avoid race conditions
+  const ongoingRepairs = new Set()
+
+  // Ensure teacher profile exists (Account Repair)
+  const ensureTeacherProfile = async (authUser) => {
+    if (!authUser || ongoingRepairs.has(authUser.id)) return null
+    ongoingRepairs.add(authUser.id)
+
+    try {
+      // 1. Check if profile exists and matches
+      const { data: currentProfile } = await supabase
+        .from('teachers')
+        .select('teacher_id, role')
+        .eq('teacher_id', authUser.id)
+        .maybeSingle()
+
+      if (currentProfile) {
+        console.log('Auth: Profile verified for', authUser.email)
+        return currentProfile.role === 'admin' ? 'admin' : 'lecturer'
+      }
+
+      // 2. Profile missing or ID mismatch - Perform robust upsert by email
+      console.log('Auth: Running account repair/sync for', authUser.email)
+      const { error: repairError } = await supabase
+        .from('teachers')
+        .upsert({
+          teacher_id: authUser.id,
+          email: authUser.email,
+          full_name: authUser.user_metadata?.full_name || authUser.email.split('@')[0],
+          role: 'teacher' // Default role for new profiles
+        }, {
+          onConflict: 'email',
+          ignoreDuplicates: false
+        })
+
+      if (!repairError) {
+        console.log('Auth: Account repair successful')
+        // Sync role to Auth metadata for UI consistency
+        await supabase.auth.updateUser({ data: { role: 'lecturer' } })
+        return 'lecturer'
+      } else {
+        console.error('Auth: Account repair failed:', repairError)
+      }
+    } catch (err) {
+      console.error('Auth: Repair logic exception:', err)
+    } finally {
+      ongoingRepairs.delete(authUser.id)
+    }
+    return null
+  }
+
   // Secure Sign In with Supabase Auth
   const signIn = async (email, password) => {
     try {
       isLoading.value = true
       error.value = null
+      const sanitizedEmail = email.trim()
 
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
+        email: sanitizedEmail,
         password
       })
 
-      if (signInError) throw signInError
+      if (signInError) {
+        if (signInError.message === 'Invalid login credentials') {
+          throw new Error('Invalid email or password. Please check your credentials and try again.')
+        }
+        throw signInError
+      }
 
-      // The onAuthStateChange listener will automatically set the user state
+      // Account Repair & Role Discovery
+      const detectedRole = await ensureTeacherProfile(data.user)
+
+      if (detectedRole) {
+        // Re-fetch user to get updated metadata if we just synced it
+        const { data: { user: updatedUser } } = await supabase.auth.getUser()
+        setUser(updatedUser)
+        return { ...data, user: updatedUser }
+      }
+
       setUser(data.user)
       return data
 
     } catch (err) {
-      handleError(err, 'Sign in failed. Check your credentials.')
+      handleError(err, err.message || 'Sign in failed. Check your credentials.')
     } finally {
       isLoading.value = false
     }
@@ -118,14 +194,14 @@ export function useAuth() {
     try {
       isLoading.value = true
       error.value = null
-      
+
       const { error: signOutError } = await supabase.auth.signOut()
 
       if (signOutError) throw signOutError
-      
+
       // The onAuthStateChange listener will clear the user state
       setUser(null)
-      
+
     } catch (err) {
       handleError(err, 'Sign out failed.')
     } finally {
@@ -133,35 +209,94 @@ export function useAuth() {
     }
   }
 
-  // Reset password
+  // Reset password - sends email
   const resetPassword = async (email) => {
     try {
       isLoading.value = true
       error.value = null
-      
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email)
-      
+
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`
+      })
+
       if (resetError) throw resetError
-      
+
       return true
     } catch (err) {
-      handleError(err, 'Password reset failed.')
+      handleError(err, 'Password reset request failed.')
     } finally {
       isLoading.value = false
     }
   }
-  
-  const init = async () => {
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null)
+
+  // Update password - for use after following reset link
+  const updatePassword = async (newPassword) => {
+    try {
+      isLoading.value = true
+      error.value = null
+
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword
+      })
+
+      if (updateError) throw updateError
+
+      return true
+    } catch (err) {
+      handleError(err, 'Password update failed.')
+    } finally {
       isLoading.value = false
+    }
+  }
+
+
+  const init = async () => {
+    if (initPromise) return initPromise
+
+    console.log('Auth: Starting initialization...')
+
+    // Set up auth state change listener once
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log(`Auth: State change event: ${event}`)
+      if (session?.user) {
+        // Run profile repair in background
+        ensureTeacherProfile(session.user)
+      }
+      setUser(session?.user || null)
+      isInitialized.value = true
     })
 
-    // Also check for the initial session on component mount
-    const { data: { session } } = await supabase.auth.getSession()
-    setUser(session?.user || null)
+    initPromise = (async () => {
+      try {
+        // Use a timeout for getSession to prevent hangs
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise((resolve) =>
+          setTimeout(() => resolve({ data: { session: null }, error: new Error('Timeout') }), 3000)
+        )
+
+        const result = await Promise.race([sessionPromise, timeoutPromise])
+        const session = result?.data?.session
+
+        if (session?.user) {
+          console.log('Auth: Initial session found for', session.user.email)
+          await ensureTeacherProfile(session.user)
+          setUser(session.user)
+        } else {
+          console.log('Auth: No initial session found')
+          setUser(null)
+        }
+      } catch (err) {
+        console.warn('Auth: Initial check failed:', err)
+        setUser(null)
+      } finally {
+        isInitialized.value = true
+        console.log('Auth: Initialization complete')
+      }
+    })()
+
+    return initPromise
   }
-  
+
 
 
   // Get current student profile
@@ -172,7 +307,7 @@ export function useAuth() {
         .select('*')
         .eq('student_id', studentId)
         .single()
-      
+
       if (error) throw error
       return data
     } catch (err) {
@@ -189,7 +324,7 @@ export function useAuth() {
         .select('*')
         .eq('teacher_id', teacherId)
         .single()
-      
+
       if (error) throw error
       return data
     } catch (err) {
@@ -207,7 +342,7 @@ export function useAuth() {
         .eq('student_id', studentId)
         .select()
         .single()
-      
+
       if (error) throw error
       return data
     } catch (err) {
@@ -225,7 +360,7 @@ export function useAuth() {
         .eq('teacher_id', teacherId)
         .select()
         .single()
-      
+
       if (error) throw error
       return data
     } catch (err) {
@@ -245,10 +380,11 @@ export function useAuth() {
     signIn,
     signOut,
     resetPassword,
+    updatePassword,
     getStudentProfile,
     updateStudentProfile,
-    getLecturerProfile,
     updateLecturerProfile,
-    init
+    init,
+    isInitialized
   }
 }
