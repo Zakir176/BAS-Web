@@ -60,7 +60,7 @@ To get the frontend running locally, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/BAS-Web.git
+    git clone https://github.com/Zakir176/BAS-Web.git
     cd BAS-Web
     ```
 
