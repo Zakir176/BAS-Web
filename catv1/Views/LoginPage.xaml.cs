@@ -57,7 +57,7 @@ public partial class LoginPage : ContentPage
         // Simple validation visualization (optional)
         if (string.IsNullOrWhiteSpace(EntryId.Text))
         {
-            await DisplayAlertAsync("Error", "Please enter your ID.", "OK");
+            await DisplayAlert("Error", "Please enter your ID.", "OK");
             return;
         }
 

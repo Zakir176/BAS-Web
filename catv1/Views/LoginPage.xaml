@@ -194,19 +194,16 @@
                                         PlaceholderColor="#475569"
                                         TextColor="White"
                                         VerticalOptions="Center" />
-                                    <ImageButton
+                                    <Label
                                         Grid.Column="2"
-                                        BackgroundColor="Transparent"
+                                        FontFamily="Arial"
+                                        FontSize="18"
                                         HeightRequest="40"
-                                        WidthRequest="40">
-                                        <ImageButton.Source>
-                                            <FontImageSource
-                                                FontFamily="Arial"
-                                                Glyph="👁"
-                                                Size="18"
-                                                Color="#64748B" />
-                                        </ImageButton.Source>
-                                    </ImageButton>
+                                        HorizontalTextAlignment="Center"
+                                        Text="👁"
+                                        TextColor="#64748B"
+                                        VerticalTextAlignment="Center"
+                                        WidthRequest="40" />
                                 </Grid>
                             </Border>
                         </VerticalStackLayout>

@@ -30,7 +30,7 @@
         <Label
             Margin="0,0,0,50"
             HorizontalOptions="Center"
-            Text="Scan QR Code"
+            Text="Scan barcode"
             TextColor="White"
             VerticalOptions="End" />
     </Grid>

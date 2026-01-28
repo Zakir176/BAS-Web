@@ -7,19 +7,19 @@
     BackgroundColor="#0F172A">
     <Grid RowDefinitions="Auto, *">
         <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *">
-            <ImageButton
-                BackgroundColor="Transparent"
-                Clicked="OnBackClicked"
+            <Label
+                FontFamily="Arial"
+                FontSize="24"
                 HeightRequest="40"
+                HorizontalTextAlignment="Center"
+                Text="⬅"
+                TextColor="White"
+                VerticalTextAlignment="Center"
                 WidthRequest="40">
-                <ImageButton.Source>
-                    <FontImageSource
-                        FontFamily="Arial"
-                        Glyph="⬅"
-                        Size="24"
-                        Color="White" />
-                </ImageButton.Source>
-            </ImageButton>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackClicked" />
+                </Label.GestureRecognizers>
+            </Label>
             <Label
                 Grid.Column="1"
                 Margin="10,0,0,0"
