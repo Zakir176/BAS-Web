@@ -139,7 +139,7 @@
                                 x:Name="LblIdField"
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="STUDENT ID (SIN)"
+                                Text="USER SIN"
                                 TextColor="#CBD5E1" />
                             <Border
                                 BackgroundColor="#0F172A"
@@ -200,7 +200,7 @@
                                         FontSize="18"
                                         HeightRequest="40"
                                         HorizontalTextAlignment="Center"
-                                        Text="👁"
+                                        Text="👁️"
                                         TextColor="#64748B"
                                         VerticalTextAlignment="Center"
                                         WidthRequest="40" />
