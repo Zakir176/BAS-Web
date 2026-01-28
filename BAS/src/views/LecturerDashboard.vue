@@ -96,6 +96,16 @@
               <span class="roster-stats">
                 <strong>{{ presentCount }}</strong> Present / {{ activeRoster.length }} Total
               </span>
+              <Button 
+                v-if="activeSessionId" 
+                variant="danger" 
+                size="sm" 
+                @click="completeSession"
+                :disabled="isEndingSession"
+                class="ml-4"
+              >
+                {{ isEndingSession ? 'Ending...' : 'Complete Session' }}
+              </Button>
             </div>
           </div>
 
@@ -228,7 +238,9 @@ const stats = ref({
 const courses = ref([])
 const recentSessions = ref([])
 const activeRoster = ref([])
+const activeSessionId = ref(null)
 const activeSessionName = ref('')
+const isEndingSession = ref(false)
 const isScannerOpen = ref(false)
 const lastScanned = ref('')
 const scanStatus = ref('success')
@@ -250,18 +262,51 @@ const closeBarcodeScanner = () => {
   scannedCount.value = 0
 }
 
+const completeSession = async () => {
+  if (!activeSessionId.value) return
+  
+  if (!confirm('Are you sure you want to end this session? This will clear the active roster.')) {
+    return
+  }
+
+  isEndingSession.value = true
+  try {
+    const { error } = await supabase
+      .from('sessions')
+      .update({ is_completed: true })
+      .eq('session_id', activeSessionId.value)
+
+    if (error) throw error
+
+    toast.success('Session completed successfully')
+    // Reset active session state
+    activeSessionId.value = null
+    activeSessionName.value = ''
+    activeRoster.value = []
+    
+    // Refresh dashboard stats
+    await fetchLecturerData()
+  } catch (err) {
+    console.error('Error completing session:', err)
+    toast.error('Failed to complete session')
+  } finally {
+    isEndingSession.value = false
+  }
+}
+
 const handleBarcodeDetected = async (barcode) => {
   try {
-    const studentId = barcode
+    const studentId = barcode.trim()
     if (lastScanned.value.includes(studentId)) return
 
     const { data: activeSession } = await supabase
       .from('sessions')
-      .select('session_id')
-      .eq('teacher_id', user.value.id)
+      .select('session_id, courses!inner(teacher_id)')
+      .eq('courses.teacher_id', user.value.id)
+      .eq('is_completed', false)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
 
     if (!activeSession) {
       lastScanned.value = 'No active session'
@@ -274,7 +319,7 @@ const handleBarcodeDetected = async (barcode) => {
       .from('students')
       .select('full_name')
       .eq('student_id', studentId)
-      .single()
+      .maybeSingle()
 
     if (!student) {
       lastScanned.value = `ID ${studentId} not found`
@@ -312,13 +357,17 @@ const markAsPresent = async (studentId) => {
   try {
     const { data: activeSession } = await supabase
       .from('sessions')
-      .select('session_id')
-      .eq('teacher_id', user.value.id)
+      .select('session_id, courses!inner(teacher_id)')
+      .eq('courses.teacher_id', user.value.id)
+      .eq('is_completed', false)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
 
-    if (!activeSession) return
+    if (!activeSession) {
+      toast.error('No active session found')
+      return
+    }
 
     await supabase.from('attendance').upsert({
       session_id: activeSession.session_id,
@@ -413,7 +462,7 @@ const fetchLecturerData = async () => {
         ...s,
         course_name: s.courses?.course_name,
         student_count: s.attendance?.[0]?.count || 0,
-        status: new Date(s.session_date) > new Date() ? 'upcoming' : 'completed'
+        status: s.is_completed ? 'completed' : (new Date(s.session_date) > new Date() ? 'upcoming' : 'active')
       }))
       stats.value.todaySessions = sessionsData.filter(s => s.session_date === new Date().toISOString().split('T')[0]).length
     }
@@ -423,11 +472,13 @@ const fetchLecturerData = async () => {
       .from('sessions')
       .select('*, courses!inner(course_name, teacher_id)')
       .eq('courses.teacher_id', user.value.id)
+      .eq('is_completed', false) // Only show non-completed sessions in live roster
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
 
     if (latestSession) {
+      activeSessionId.value = latestSession.session_id
       activeSessionName.value = latestSession.courses?.course_name
       const { data: enrolledStudents } = await supabase
         .from('enrollments')
