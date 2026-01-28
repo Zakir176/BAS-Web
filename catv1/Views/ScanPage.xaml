@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="catv1.Views.ScanPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+    Title="Scan ID"
+    BackgroundColor="#0F172A">
+    <Grid>
+        <zxing:CameraBarcodeReaderView x:Name="cameraBarcodeReaderView" IsDetecting="True" />
+
+        <ImageButton
+            Margin="20"
+            BackgroundColor="#1E293B"
+            Clicked="OnBackClicked"
+            CornerRadius="20"
+            HeightRequest="40"
+            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            WidthRequest="40">
+            <ImageButton.Source>
+                <FontImageSource
+                    FontFamily="Arial"
+                    Glyph="⬅"
+                    Size="24"
+                    Color="White" />
+            </ImageButton.Source>
+        </ImageButton>
+
+        <Label
+            Margin="0,0,0,50"
+            HorizontalOptions="Center"
+            Text="Scan barcode"
+            TextColor="White"
+            VerticalOptions="End" />
+    </Grid>
+</ContentPage>

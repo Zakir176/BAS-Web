@@ -12,7 +12,7 @@
         <Grid
             Grid.Row="0"
             Padding="25,30,25,10"
-            ColumnDefinitions="*, Auto">
+            ColumnDefinitions="*, Auto, Auto">
             <VerticalStackLayout Spacing="2">
                 <Label
                     FontSize="14"
@@ -40,6 +40,23 @@
                     TextColor="#3B82F6"
                     VerticalOptions="Center" />
             </Border>
+
+            <ImageButton
+                Grid.Column="2"
+                Margin="15,0,0,0"
+                BackgroundColor="#1E293B"
+                Clicked="OnLogoutClicked"
+                CornerRadius="20"
+                HeightRequest="40"
+                WidthRequest="40">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="Arial"
+                        Glyph="🚪"
+                        Size="20"
+                        Color="#EF4444" />
+                </ImageButton.Source>
+            </ImageButton>
         </Grid>
 
         <ScrollView Grid.Row="1" Padding="25">
@@ -115,7 +132,7 @@
                                 Text="Digital Class ID"
                                 TextColor="White" />
                             <Label
-                                 FontSize="12"
+                                FontSize="12"
                                 Text="#210984 • SICT"
                                 TextColor="#BFDBFE" />
                         </VerticalStackLayout>
@@ -132,7 +149,7 @@
                     RowDefinitions="120, 120"
                     RowSpacing="15">
 
-                    <!-- History section!
+                    <!--  History section!  -->
                     <Border
                         Grid.Row="0"
                         Grid.Column="0"
@@ -153,7 +170,6 @@
                                 TextColor="White" />
                         </VerticalStackLayout>
                     </Border>
-                    -->
 
                     <Border
                         Grid.Row="0"
