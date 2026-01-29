@@ -57,7 +57,7 @@
                 <span class="checkmark"></span>
                 Remember me
               </label>
-              <a href="#" class="forgot-link">Forgot Password?</a>
+              <router-link to="/forgot-password" class="forgot-link">Forgot Password?</router-link>
             </div>
 
             <Button

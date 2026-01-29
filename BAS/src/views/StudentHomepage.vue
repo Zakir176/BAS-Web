@@ -9,18 +9,21 @@
           <div class="profile-main">
             <div class="avatar-container">
               <div class="avatar-ring">
-                <img :src="`https://ui-avatars.com/api/?name=${studentName}&background=random&size=128`" alt="Avatar" class="avatar-img">
+                <Skeleton v-if="isLoading" width="100px" height="100px" shape="circle" />
+                <img v-else :src="`https://ui-avatars.com/api/?name=${studentName || 'Student'}&background=random&size=128`" alt="Avatar" class="avatar-img">
                 <div class="status-indicator online"></div>
               </div>
             </div>
             <div class="profile-text">
-              <h1 class="student-name">{{ studentName }}</h1>
-              <p class="student-meta">ID: {{ studentProfile?.student_id || 'STU-001' }} | Class: {{ classSection }}</p>
+              <Skeleton v-if="isLoading" width="200px" height="2rem" style="margin: 0 auto 0.5rem" />
+              <h1 v-else class="student-name">{{ studentName }}</h1>
+              <Skeleton v-if="isLoading" width="150px" height="1rem" style="margin: 0 auto" />
+              <p v-else class="student-meta">ID: {{ studentProfile?.student_id || 'STU-001' }} | Class: {{ classSection }}</p>
             </div>
           </div>
           <div class="header-actions">
-            <button class="icon-btn">📄</button>
-            <button class="icon-btn">⋮</button>
+            <button class="icon-btn" title="View Profile">👤</button>
+            <button class="icon-btn" title="Settings">⚙️</button>
           </div>
         </header>
 
@@ -29,11 +32,13 @@
           <div class="stats-row">
             <div class="stat-card blue-card">
               <span class="label">ATTENDANCE</span>
-              <div class="value">{{ attendanceStats.overall }}%</div>
+              <Skeleton v-if="isLoading" width="60px" height="2rem" />
+              <div v-else class="value">{{ attendanceStats.overall }}%</div>
             </div>
             <div class="stat-card white-card">
               <span class="label">ABSENCES</span>
-              <div class="value danger">{{ attendanceStats.absent }}</div>
+              <Skeleton v-if="isLoading" width="60px" height="2rem" />
+              <div v-else class="value danger">{{ attendanceStats.absent }}</div>
             </div>
           </div>
         </section>
@@ -51,10 +56,16 @@
 
         <!-- Main Action Area -->
         <section class="action-area">
-          <Button variant="primary" full-width size="lg" class="contact-button">
-            <span class="btn-icon">✉️</span> Contact Parent
+          <Button 
+            variant="primary" 
+            full-width 
+            size="lg" 
+            class="contact-button"
+            @click="handleContactParent"
+          >
+            <span class="btn-icon">✉️</span> Contact Counselor
           </Button>
-          <button class="fab-edit">✎</button>
+          <button class="fab-edit" @click="toast.info('Profile editing coming soon!')">✎</button>
         </section>
 
         <!-- History Timeline -->
@@ -63,20 +74,37 @@
             <h3>Recent Activity</h3>
           </div>
           <div class="timeline">
-            <div v-for="item in recentActivity" :key="item.id" class="timeline-item shadow-sm">
-              <div class="item-icon-box" :class="item.status">
-                <span class="icon">{{ item.status === 'present' ? '✓' : '✕' }}</span>
-              </div>
-              <div class="item-content">
-                <div class="item-top">
-                  <span class="item-status">{{ item.status.toUpperCase() }}</span>
-                  <span class="badge" :class="item.status">{{ item.status === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
+            <template v-if="isLoading">
+              <div v-for="i in 3" :key="i" class="timeline-item shadow-sm">
+                <Skeleton width="40px" height="40px" radius="12px" />
+                <div class="item-content">
+                  <Skeleton width="100px" height="1rem" style="margin-bottom: 0.5rem" />
+                  <Skeleton width="150px" height="0.75rem" />
                 </div>
-                <div class="item-meta">{{ item.time }}</div>
               </div>
-            </div>
+            </template>
+            <template v-else>
+              <div v-for="item in visibleActivity" :key="item.id" class="timeline-item shadow-sm">
+                <div class="item-icon-box" :class="item.status">
+                  <span class="icon">{{ item.status === 'present' ? '✓' : '✕' }}</span>
+                </div>
+                <div class="item-content">
+                  <div class="item-top">
+                    <span class="item-status">{{ item.status.toUpperCase() }}</span>
+                    <span class="badge" :class="item.status">{{ item.status === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
+                  </div>
+                  <div class="item-meta">{{ item.time }}</div>
+                </div>
+              </div>
+            </template>
           </div>
-          <button class="view-all-link">View All History</button>
+          <button 
+            v-if="!isLoading && recentActivity.length > 5" 
+            class="view-all-link"
+            @click="showAllHistory = !showAllHistory"
+          >
+            {{ showAllHistory ? 'Show Less' : 'View All History' }}
+          </button>
         </section>
       </div>
     </main>
@@ -89,9 +117,10 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import { supabase } from '@/supabase'
-import Navbar from '@/components/layout/Navbar.vue'
+import Navbar from '@/components/common/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
-import AttendanceCalendar from '@/components/AttendanceCalendar.vue'
+import Skeleton from '@/components/ui/Skeleton.vue'
+import AttendanceCalendar from '@/components/student/AttendanceCalendar.vue'
 
 const router = useRouter()
 const { user } = useAuth()
@@ -109,6 +138,18 @@ const attendanceStats = ref({
 const recentActivity = ref([])
 const attendanceRecords = ref([])
 const isLoading = ref(true)
+const showAllHistory = ref(false)
+
+const visibleActivity = computed(() => {
+  if (showAllHistory.value) return recentActivity.value
+  return recentActivity.value.slice(0, 5)
+})
+
+const handleContactParent = () => {
+  const subject = encodeURIComponent(`Inquiry regarding student ${studentName.value}`)
+  const body = encodeURIComponent(`Hello,\n\nI am inquiring about the attendance status for student ID: ${studentProfile.value?.student_id}.`)
+  window.location.href = `mailto:advisor@university.edu?subject=${subject}&body=${body}`
+}
 
 const fetchStudentData = async () => {
   try {

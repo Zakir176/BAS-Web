@@ -90,42 +90,64 @@
             </div>
           </div>
           
-          <div class="table-responsive">
-            <table class="premium-table">
-              <thead>
-                <tr>
-                  <th>DATE</th>
-                  <th>COURSE UNIT</th>
-                  <th>SESSION TIME</th>
-                  <th>STATUS</th>
-                  <th class="text-right">ACTION</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="record in paginatedRecords" :key="record.id">
-                  <td><span class="date-txt">{{ record.date }}</span></td>
-                  <td><span class="course-name-txt">{{ record.course }}</span></td>
-                  <td><span class="time-txt">{{ record.time }}</span></td>
-                  <td>
-                    <span class="status-pill-v2" :class="record.status.toLowerCase()">
-                      {{ record.status }}
-                    </span>
-                  </td>
-                  <td class="text-right">
-                    <button class="action-btn-circle" @click="viewDetails(record.id)">⋯</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="pagination-v2">
-            <span class="page-count">Page {{ currentPage }} of {{ totalPages }}</span>
-            <div class="page-btns">
-              <button @click="previousPage" :disabled="currentPage === 1">←</button>
-              <button @click="nextPage" :disabled="currentPage === totalPages">→</button>
+          <template v-if="isLoading">
+            <div class="p-8">
+              <Skeleton v-for="i in 5" :key="i" width="100%" height="3rem" style="margin-bottom: 1rem" />
             </div>
-          </div>
+          </template>
+
+          <template v-else-if="filteredRecords.length === 0">
+            <EmptyState 
+              icon="📊"
+              title="No Attendance Data"
+              description="We couldn't find any records for the selected filters. Try broadening your timeframe or selecting a different course."
+            >
+              <template #action>
+                <Button variant="secondary" @click="filters = { dateRange: 'semester', course: 'all', status: 'all' }">
+                  Reset Filters
+                </Button>
+              </template>
+            </EmptyState>
+          </template>
+
+          <template v-else>
+            <div class="table-responsive">
+              <table class="premium-table">
+                <thead>
+                  <tr>
+                    <th>DATE</th>
+                    <th>COURSE UNIT</th>
+                    <th>SESSION TIME</th>
+                    <th>STATUS</th>
+                    <th class="text-right">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="record in paginatedRecords" :key="record.id">
+                    <td><span class="date-txt">{{ record.date }}</span></td>
+                    <td><span class="course-name-txt">{{ record.course }}</span></td>
+                    <td><span class="time-txt">{{ record.time }}</span></td>
+                    <td>
+                      <span class="status-pill-v2" :class="record.status.toLowerCase()">
+                        {{ record.status }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <button class="action-btn-circle" @click="viewDetails(record.id)">⋯</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination-v2">
+              <span class="page-count">Page {{ currentPage }} of {{ totalPages }}</span>
+              <div class="page-btns">
+                <button @click="previousPage" :disabled="currentPage === 1">←</button>
+                <button @click="nextPage" :disabled="currentPage === totalPages">→</button>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </main>
@@ -136,8 +158,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
-import Navbar from '@/components/layout/Navbar.vue'
+import Navbar from '@/components/common/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
+import Skeleton from '@/components/ui/Skeleton.vue'
 
 const { user } = useAuth()
 const filters = ref({ dateRange: 'month', course: 'all', status: 'all' })
@@ -207,7 +231,36 @@ const paginatedRecords = computed(() => {
 
 const applyFilters = () => { currentPage.value = 1; fetchReportData() }
 const refreshData = () => fetchReportData()
-const exportReport = () => { /* CSV logic */ }
+
+const exportReport = () => {
+  if (attendanceRecords.value.length === 0) {
+    alert('No data to export.')
+    return
+  }
+
+  const headers = ['Date', 'Course', 'Time', 'Status']
+  const rows = attendanceRecords.value.map(r => [
+    r.date,
+    `"${r.course.replace(/"/g, '""')}"`, // Escape quotes
+    r.time,
+    r.status
+  ])
+
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n')
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.setAttribute('href', url)
+  link.setAttribute('download', `CAT_Report_${new Date().toISOString().split('T')[0]}.csv`)
+  link.style.visibility = 'hidden'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 const previousPage = () => { if (currentPage.value > 1) currentPage.value-- }
 const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++ }
 

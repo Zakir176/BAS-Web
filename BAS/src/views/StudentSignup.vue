@@ -143,7 +143,7 @@ const handleSignup = async () => {
     }, 2000)
   } catch (err) {
     console.error('Signup error:', err)
-    toast.error('Signup failed. Please check your details and try again.')
+    toast.error(err.message)
   }
 }
 </script>
@@ -205,6 +205,7 @@ const handleSignup = async () => {
 .text-gradient {
   background: linear-gradient(to right, #2563eb, #7c3aed);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -285,7 +286,12 @@ const handleSignup = async () => {
   cursor: pointer;
 }
 
-.premium-checkbox input { display: none; }
+.premium-checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 .premium-checkbox .box {
   width: 20px;
   height: 20px;

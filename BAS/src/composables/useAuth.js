@@ -14,9 +14,17 @@ export function useAuth() {
   // Centralized error handling
   const handleError = (err, message) => {
     error.value = err ? err.message : message
+    console.error('Auth Error Details:', {
+      message: err?.message,
+      details: err?.details,
+      hint: err?.hint,
+      code: err?.code
+    })
     console.error(message, err)
     isLoading.value = false
-    throw new Error(message)
+    // Propagate the actual error message so the UI can display it in the toast
+    // If it's a Supabase error (err.message), use it. Otherwise fall back to the generic message.
+    throw new Error(err?.message || message)
   }
 
   // Set user state
@@ -80,11 +88,11 @@ export function useAuth() {
         // Create student profile using the Auth UUID
         // Note: We use the Auth UUID as the primary key to ensure RLS works
         const { error: profileError } = await supabase.from('students').insert({
-          student_id: userId,
+          student_id: metadata.student_id,
           full_name: metadata.full_name,
           email: sanitizedEmail,
           class_section: metadata.class_section,
-          qr_code_value: metadata.student_id || userId // Fallback to userId if student_id not provided
+          qr_code_value: metadata.student_id
         });
 
         if (profileError) throw profileError;
@@ -103,8 +111,14 @@ export function useAuth() {
   const ongoingRepairs = new Set()
 
   // Ensure teacher profile exists (Account Repair)
+  // ONLY runs if the user is NOT a student (or explicit intent to be teacher)
   const ensureTeacherProfile = async (authUser) => {
     if (!authUser || ongoingRepairs.has(authUser.id)) return null
+
+    // Safety check: Never run teacher repair for student accounts
+    const role = authUser.user_metadata?.role
+    if (role === 'student') return null
+
     ongoingRepairs.add(authUser.id)
 
     try {
@@ -116,12 +130,10 @@ export function useAuth() {
         .maybeSingle()
 
       if (currentProfile) {
-        console.log('Auth: Profile verified for', authUser.email)
         return currentProfile.role === 'admin' ? 'admin' : 'lecturer'
       }
 
       // 2. Profile missing or ID mismatch - Perform robust upsert by email
-      console.log('Auth: Running account repair/sync for', authUser.email)
       const { error: repairError } = await supabase
         .from('teachers')
         .upsert({
@@ -135,7 +147,6 @@ export function useAuth() {
         })
 
       if (!repairError) {
-        console.log('Auth: Account repair successful')
         // Sync role to Auth metadata for UI consistency
         await supabase.auth.updateUser({ data: { role: 'lecturer' } })
         return 'lecturer'
@@ -253,11 +264,9 @@ export function useAuth() {
   const init = async () => {
     if (initPromise) return initPromise
 
-    console.log('Auth: Starting initialization...')
 
     // Set up auth state change listener once
     supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(`Auth: State change event: ${event}`)
       if (session?.user) {
         // Run profile repair in background
         ensureTeacherProfile(session.user)
@@ -278,11 +287,9 @@ export function useAuth() {
         const session = result?.data?.session
 
         if (session?.user) {
-          console.log('Auth: Initial session found for', session.user.email)
           await ensureTeacherProfile(session.user)
           setUser(session.user)
         } else {
-          console.log('Auth: No initial session found')
           setUser(null)
         }
       } catch (err) {
@@ -290,7 +297,6 @@ export function useAuth() {
         setUser(null)
       } finally {
         isInitialized.value = true
-        console.log('Auth: Initialization complete')
       }
     })()
 

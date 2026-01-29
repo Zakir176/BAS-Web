@@ -38,9 +38,9 @@
 
 <script setup>
 import { ref } from 'vue'
-import Modal from './ui/Modal.vue'
-import Button from './ui/Button.vue'
-import Input from './ui/Input.vue'
+import Modal from '@/components/ui/Modal.vue'
+import Button from '@/components/ui/Button.vue'
+import Input from '@/components/ui/Input.vue'
 import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
 
