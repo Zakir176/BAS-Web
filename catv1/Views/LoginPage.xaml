@@ -188,6 +188,7 @@
                                         TextColor="#64748B"
                                         VerticalOptions="Center" />
                                     <Entry
+                                        x:Name="EntryPassword"
                                         Grid.Column="1"
                                         IsPassword="True"
                                         Placeholder="••••••••"
@@ -203,7 +204,11 @@
                                         Text="👁️"
                                         TextColor="#64748B"
                                         VerticalTextAlignment="Center"
-                                        WidthRequest="40" />
+                                        WidthRequest="40">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnTogglePasswordClicked" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
                                 </Grid>
                             </Border>
                         </VerticalStackLayout>
@@ -212,6 +217,9 @@
                     <!--  Options  -->
                     <Grid ColumnDefinitions="Auto, *">
                         <HorizontalStackLayout Spacing="10">
+                            <HorizontalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRememberMeClicked" />
+                            </HorizontalStackLayout.GestureRecognizers>
                             <!--  Custom Checkbox Look  -->
                             <Border
                                 BackgroundColor="#0F172A"
@@ -221,8 +229,10 @@
                                 StrokeThickness="1"
                                 WidthRequest="20">
                                 <Label
+                                    x:Name="LblRememberMeCheck"
                                     FontSize="14"
                                     HorizontalOptions="Center"
+                                    IsVisible="False"
                                     Text="✓"
                                     TextColor="#3B82F6"
                                     VerticalOptions="Center" />
@@ -239,7 +249,11 @@
                             HorizontalOptions="End"
                             Text="Forgot Password?"
                             TextColor="#3B82F6"
-                            VerticalOptions="Center" />
+                            VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnForgotPasswordClicked" />
+                            </Label.GestureRecognizers>
+                        </Label>
                     </Grid>
 
                     <!--  Action Button  -->
