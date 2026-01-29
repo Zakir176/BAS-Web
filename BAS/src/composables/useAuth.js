@@ -95,7 +95,12 @@ export function useAuth() {
           qr_code_value: metadata.student_id
         });
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          if (profileError.code === '23505') {
+            throw new Error('This Student ID or Email is already registered. Please Log In.')
+          }
+          throw profileError
+        }
       }
 
       return data
