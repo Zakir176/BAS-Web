@@ -59,20 +59,63 @@
           </button>
         </div>
 
-        <!-- Mobile Nav Menu -->
-        <div class="nav-links-mobile" :class="{ 'mobile-open': isMobileMenuOpen }">
-          <router-link to="/" class="nav-item" @click="closeMobileMenu">Home</router-link>
-          <template v-if="isAuthenticated">
-            <router-link 
-              :to="user?.role === 'lecturer' ? '/lecturer-dashboard' : '/student-homepage'" 
-              class="nav-item"
-              @click="closeMobileMenu"
-            >
-              Dashboard
-            </router-link>
+        <!-- Mobile Nav Drawer -->
+        <div class="mobile-nav-overlay" :class="{ 'open': isMobileMenuOpen }" @click="closeMobileMenu"></div>
+        
+        <div class="mobile-nav-drawer" :class="{ 'open': isMobileMenuOpen }">
+          <div class="drawer-header">
+            <div v-if="isAuthenticated && user" class="user-profile-mobile">
+              <div class="mobile-avatar">
+                <img :src="`https://ui-avatars.com/api/?name=${user.user_metadata?.full_name || 'User'}&background=3b82f6&color=fff`" alt="Avatar">
+              </div>
+              <div class="mobile-user-info">
+                <span class="mobile-user-name">{{ user.user_metadata?.full_name || 'Student' }}</span>
+                <span class="mobile-user-role">{{ user.role }}</span>
+              </div>
+            </div>
+            <div v-else class="brand-zone-mobile">
+              <span class="brand-title">CAT</span>
+              <span class="brand-tagline">Class Attendance</span>
+            </div>
+            
+            <button class="close-btn" @click="closeMobileMenu">✕</button>
+          </div>
 
-            <router-link v-if="user?.role === 'lecturer'" to="/report-page" class="nav-item" @click="closeMobileMenu">Reports</router-link>
-          </template>
+          <div class="drawer-content">
+            <router-link to="/" class="drawer-item" @click="closeMobileMenu">
+              <span class="icon">🏠</span> Home
+            </router-link>
+            
+            <template v-if="isAuthenticated">
+              <router-link 
+                :to="user?.role === 'lecturer' ? '/lecturer-dashboard' : '/student-homepage'" 
+                class="drawer-item"
+                @click="closeMobileMenu"
+              >
+                <span class="icon">📊</span> Dashboard
+              </router-link>
+
+              <router-link v-if="user?.role === 'lecturer'" to="/report-page" class="drawer-item" @click="closeMobileMenu">
+                 <span class="icon">📑</span> Reports
+              </router-link>
+            </template>
+            <template v-else>
+               <router-link to="/student-login" class="drawer-item highlight" @click="closeMobileMenu">
+                <span class="icon">🔐</span> Sign In
+              </router-link>
+            </template>
+          </div>
+
+          <div class="drawer-footer">
+            <button @click="toggleTheme" class="drawer-action-btn">
+              <span class="icon">{{ isDark ? '☀️' : '🌙' }}</span>
+              {{ isDark ? 'Light Mode' : 'Dark Mode' }}
+            </button>
+            
+            <button v-if="isAuthenticated" @click="() => { handleSignOut(); closeMobileMenu() }" class="drawer-action-btn logout">
+              <span class="icon">⏻</span> Logout
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -318,18 +361,7 @@ const handleSignOut = async () => {
   box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
 }
 
-.mobile-menu-toggle {
-  display: none;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 24px;
-  height: 24px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  z-index: 1001;
-}
+/* Old definition moved below */
 
 .mobile-menu-toggle span {
   width: 20px;
@@ -353,46 +385,196 @@ const handleSignOut = async () => {
   transform: rotate(-45deg);
 }
 
-.nav-links-mobile {
-  display: none;
-  position: absolute;
-  top: 72px;
-  left: 0;
-  right: 0;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border-light);
-  box-shadow: var(--shadow-card);
-  flex-direction: column;
-  padding: 1rem 0;
-  z-index: 999;
-  animation: slideDown 0.3s ease-out;
-}
-
-.nav-links-mobile.mobile-open {
-  display: flex;
-}
-
-.nav-links-mobile .nav-item {
-  padding: 0.75rem 1.5rem;
-  text-align: center;
-  border-bottom: 1px solid var(--border-light);
+/* Mobile Drawer Styles */
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1050;
   opacity: 0;
-  animation: slideDown 0.5s ease-out forwards;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
-.nav-links-mobile.mobile-open .nav-item:nth-child(1) { animation-delay: 0.1s; }
-.nav-links-mobile.mobile-open .nav-item:nth-child(2) { animation-delay: 0.15s; }
-.nav-links-mobile.mobile-open .nav-item:nth-child(3) { animation-delay: 0.2s; }
-.nav-links-mobile.mobile-open .nav-item:nth-child(4) { animation-delay: 0.25s; }
-
-
-.nav-links-mobile .nav-item:last-child {
-  border-bottom: none;
+.mobile-nav-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.nav-links-mobile .nav-item:hover {
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80%;
+  max-width: 320px;
+  background: var(--bg-navbar); /* Use semi-transparent backdrop */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1051;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  border-left: 1px solid var(--border-light);
+}
+
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 40px; /* Larger touch target */
+  height: 40px;
+  background: var(--bg-card); /* Background for contrast */
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1001;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.mobile-menu-toggle span {
+  width: 100%;
+  height: 2px;
+  background: var(--text-main);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: 1px;
+}
+
+.mobile-nav-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-profile-mobile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.mobile-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-user-name {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.mobile-user-role {
+  font-size: 0.75rem;
+  color: var(--primary);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.drawer-content {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.drawer-item .icon {
+  font-size: 1.25rem;
+  width: 24px;
+  text-align: center;
+}
+
+.drawer-item:hover, .drawer-item.router-link-active {
+  background: var(--bg-main);
+  color: var(--primary);
+}
+
+.drawer-item.highlight {
+  background: var(--primary);
+  color: white;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.drawer-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.drawer-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: none;
+  border: 1px solid var(--border-medium);
+  border-radius: 12px;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.drawer-action-btn:hover {
   background: var(--bg-main);
 }
+
+.drawer-action-btn.logout {
+  border-color: var(--danger-border);
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
 
 @media (max-width: 920px) {
   .nav-links-desktop {
@@ -400,7 +582,8 @@ const handleSignOut = async () => {
   }
   
   .mobile-menu-toggle {
-    display: flex;
+    display: flex !important;
+    z-index: 1002;
   }
 }
 

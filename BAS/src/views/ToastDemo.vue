@@ -105,7 +105,7 @@
 
 <script setup>
 import { useToast } from '@/composables/useToast'
-import Navbar from '@/components/layout/Navbar.vue'
+import Navbar from '@/components/common/Navbar.vue'
 
 const { toasts, success, error, warning, info, addToast, clearAllToasts } = useToast()
 

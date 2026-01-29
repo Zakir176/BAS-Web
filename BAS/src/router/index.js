@@ -13,6 +13,8 @@ import ReportPage from '../views/ReportPage.vue'
 import LecturerDashboard from '../views/LecturerDashboard.vue'
 import DebugLogin from '../views/DebugLogin.vue'
 import ToastDemo from '../views/ToastDemo.vue'
+import PrivacyPolicy from '../views/PrivacyPolicy.vue'
+import TermsOfService from '../views/TermsOfService.vue'
 
 const routes = [
   {
@@ -77,6 +79,18 @@ const routes = [
     meta: { requiresAuth: true, role: 'lecturer' }
   },
   {
+    path: '/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicy,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/terms-of-service',
+    name: 'TermsOfService',
+    component: TermsOfService,
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/lecturer-homepage',
     redirect: '/lecturer-dashboard'
   },
@@ -108,14 +122,11 @@ router.beforeEach(async (to, from, next) => {
   const auth = useAuth()
 
   // Wait for auth to initialize (max 3s timeout internally)
-  console.log(`Router: Entering ${to.path}, initialized: ${auth.isInitialized.value}`)
   if (!auth.isInitialized.value) {
-    console.log('Router: Waiting for auth initialization...')
     await auth.init()
   }
 
   const { user, isAuthenticated, role } = auth
-  console.log('Router: Auth ready. User:', user.value?.email, 'Role:', role.value)
 
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest)

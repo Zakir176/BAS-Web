@@ -9,18 +9,21 @@
           <div class="profile-main">
             <div class="avatar-container">
               <div class="avatar-ring">
-                <img :src="`https://ui-avatars.com/api/?name=${studentName}&background=random&size=128`" alt="Avatar" class="avatar-img">
+                <Skeleton v-if="isLoading" width="100px" height="100px" shape="circle" />
+                <img v-else :src="`https://ui-avatars.com/api/?name=${studentName || 'Student'}&background=random&size=128`" alt="Avatar" class="avatar-img">
                 <div class="status-indicator online"></div>
               </div>
             </div>
             <div class="profile-text">
-              <h1 class="student-name">{{ studentName }}</h1>
-              <p class="student-meta">ID: {{ studentProfile?.student_id || 'STU-001' }} | Class: {{ classSection }}</p>
+              <Skeleton v-if="isLoading" width="200px" height="2rem" style="margin: 0 auto 0.5rem" />
+              <h1 v-else class="student-name">{{ studentName }}</h1>
+              <Skeleton v-if="isLoading" width="150px" height="1rem" style="margin: 0 auto" />
+              <p v-else class="student-meta">ID: {{ studentProfile?.student_id || 'STU-001' }} | Class: {{ classSection }}</p>
             </div>
           </div>
           <div class="header-actions">
-            <button class="icon-btn">📄</button>
-            <button class="icon-btn">⋮</button>
+            <button class="icon-btn" title="View Profile">👤</button>
+            <button class="icon-btn" title="Settings">⚙️</button>
           </div>
         </header>
 
@@ -29,11 +32,13 @@
           <div class="stats-row">
             <div class="stat-card blue-card">
               <span class="label">ATTENDANCE</span>
-              <div class="value">{{ attendanceStats.overall }}%</div>
+              <Skeleton v-if="isLoading" width="60px" height="2rem" />
+              <div v-else class="value">{{ attendanceStats.overall }}%</div>
             </div>
             <div class="stat-card white-card">
               <span class="label">ABSENCES</span>
-              <div class="value danger">{{ attendanceStats.absent }}</div>
+              <Skeleton v-if="isLoading" width="60px" height="2rem" />
+              <div v-else class="value danger">{{ attendanceStats.absent }}</div>
             </div>
           </div>
         </section>
@@ -51,10 +56,16 @@
 
         <!-- Main Action Area -->
         <section class="action-area">
-          <Button variant="primary" full-width size="lg" class="contact-button">
-            <span class="btn-icon">✉️</span> Contact Parent
+          <Button 
+            variant="primary" 
+            full-width 
+            size="lg" 
+            class="contact-button"
+            @click="handleContactParent"
+          >
+            <span class="btn-icon">✉️</span> Contact Counselor
           </Button>
-          <button class="fab-edit">✎</button>
+          <button class="fab-edit" @click="toast.info('Profile editing coming soon!')">✎</button>
         </section>
 
         <!-- History Timeline -->
@@ -63,20 +74,37 @@
             <h3>Recent Activity</h3>
           </div>
           <div class="timeline">
-            <div v-for="item in recentActivity" :key="item.id" class="timeline-item shadow-sm">
-              <div class="item-icon-box" :class="item.status">
-                <span class="icon">{{ item.status === 'present' ? '✓' : '✕' }}</span>
-              </div>
-              <div class="item-content">
-                <div class="item-top">
-                  <span class="item-status">{{ item.status.toUpperCase() }}</span>
-                  <span class="badge" :class="item.status">{{ item.status === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
+            <template v-if="isLoading">
+              <div v-for="i in 3" :key="i" class="timeline-item shadow-sm">
+                <Skeleton width="40px" height="40px" radius="12px" />
+                <div class="item-content">
+                  <Skeleton width="100px" height="1rem" style="margin-bottom: 0.5rem" />
+                  <Skeleton width="150px" height="0.75rem" />
                 </div>
-                <div class="item-meta">{{ item.time }}</div>
               </div>
-            </div>
+            </template>
+            <template v-else>
+              <div v-for="item in visibleActivity" :key="item.id" class="timeline-item shadow-sm">
+                <div class="item-icon-box" :class="item.status">
+                  <span class="icon">{{ item.status === 'present' ? '✓' : '✕' }}</span>
+                </div>
+                <div class="item-content">
+                  <div class="item-top">
+                    <span class="item-status">{{ item.status.toUpperCase() }}</span>
+                    <span class="badge" :class="item.status">{{ item.status === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
+                  </div>
+                  <div class="item-meta">{{ item.time }}</div>
+                </div>
+              </div>
+            </template>
           </div>
-          <button class="view-all-link">View All History</button>
+          <button 
+            v-if="!isLoading && recentActivity.length > 5" 
+            class="view-all-link"
+            @click="showAllHistory = !showAllHistory"
+          >
+            {{ showAllHistory ? 'Show Less' : 'View All History' }}
+          </button>
         </section>
       </div>
     </main>
@@ -89,9 +117,10 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import { supabase } from '@/supabase'
-import Navbar from '@/components/layout/Navbar.vue'
+import Navbar from '@/components/common/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
-import AttendanceCalendar from '@/components/AttendanceCalendar.vue'
+import Skeleton from '@/components/ui/Skeleton.vue'
+import AttendanceCalendar from '@/components/student/AttendanceCalendar.vue'
 
 const router = useRouter()
 const { user } = useAuth()
@@ -109,6 +138,18 @@ const attendanceStats = ref({
 const recentActivity = ref([])
 const attendanceRecords = ref([])
 const isLoading = ref(true)
+const showAllHistory = ref(false)
+
+const visibleActivity = computed(() => {
+  if (showAllHistory.value) return recentActivity.value
+  return recentActivity.value.slice(0, 5)
+})
+
+const handleContactParent = () => {
+  const subject = encodeURIComponent(`Inquiry regarding student ${studentName.value}`)
+  const body = encodeURIComponent(`Hello,\n\nI am inquiring about the attendance status for student ID: ${studentProfile.value?.student_id}.`)
+  window.location.href = `mailto:advisor@university.edu?subject=${subject}&body=${body}`
+}
 
 const fetchStudentData = async () => {
   try {
@@ -232,7 +273,7 @@ onMounted(() => {
   width: 100px;
   height: 100px;
   padding: 4px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 50%;
   box-shadow: var(--shadow-card);
 }
@@ -250,8 +291,8 @@ onMounted(() => {
   right: 4px;
   width: 16px;
   height: 16px;
-  background: #10b981;
-  border: 3px solid white;
+  background: var(--success);
+  border: 3px solid var(--bg-card);
   border-radius: 50%;
 }
 
@@ -276,6 +317,7 @@ onMounted(() => {
   cursor: pointer;
   padding: 0.5rem;
 }
+
 
 /* Stats */
 .stats-row {
@@ -331,8 +373,8 @@ onMounted(() => {
 }
 
 .white-card {
-  background: white;
-  color: #111827;
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
 .stat-card .label {
@@ -359,6 +401,7 @@ onMounted(() => {
 .calendar-surface {
   padding: 1.5rem;
   border: none;
+  background: var(--bg-card);
 }
 
 .section-header {
@@ -371,14 +414,14 @@ onMounted(() => {
 .section-header h3 {
   font-size: 1.125rem;
   font-weight: 800;
-  color: #111827;
+  color: var(--text-main);
 }
 
 .selector {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 600;
-  background: #f1f5f9;
+  background: var(--bg-main);
   padding: 0.25rem 0.75rem;
   border-radius: 8px;
 }
@@ -402,10 +445,11 @@ onMounted(() => {
   height: 3.5rem;
   border-radius: 16px;
   border: none;
-  background: #f1f5f9;
-  color: #111827;
+  background: var(--bg-card);
+  color: var(--text-main);
   font-size: 1.25rem;
   cursor: pointer;
+  box-shadow: var(--shadow-soft);
 }
 
 /* History */
@@ -417,6 +461,7 @@ onMounted(() => {
   font-size: 1.125rem;
   font-weight: 800;
   margin-bottom: 1rem;
+  color: var(--text-main);
 }
 
 .timeline {
@@ -426,7 +471,7 @@ onMounted(() => {
 }
 
 .timeline-item {
-  background: white;
+  background: var(--bg-card);
   padding: 1rem;
   border-radius: 18px;
   display: flex;
@@ -444,8 +489,8 @@ onMounted(() => {
   font-weight: 900;
 }
 
-.item-icon-box.present { background: #ecfdf5; color: #10b981; }
-.item-icon-box.absent { background: #fef2f2; color: #ef4444; }
+.item-icon-box.present { background: var(--success-bg); color: var(--success); }
+.item-icon-box.absent { background: var(--error-bg); color: var(--error); }
 
 .item-content { flex: 1; }
 
@@ -459,7 +504,7 @@ onMounted(() => {
 .item-status {
   font-weight: 800;
   font-size: 0.9rem;
-  color: #111827;
+  color: var(--text-main);
 }
 
 .badge {
@@ -469,12 +514,12 @@ onMounted(() => {
   border-radius: 6px;
 }
 
-.badge.present { background: #d1fae5; color: #065f46; }
-.badge.absent { background: #fee2e2; color: #991b1b; }
+.badge.present { background: var(--success-bg); color: var(--success); }
+.badge.absent { background: var(--error-bg); color: var(--error); }
 
 .item-meta {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -483,18 +528,19 @@ onMounted(() => {
   width: 100%;
   margin-top: 1.5rem;
   padding: 1rem;
-  background: #f8fafc;
-  border: 1.5px dashed #cbd5e1;
+  background: var(--bg-card);
+  border: 1.5px dashed var(--border-medium);
   border-radius: 16px;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .view-all-link:hover {
-  background: #f1f5f9;
+  background: var(--bg-main);
   border-color: var(--primary);
   color: var(--primary);
 }
+
 </style>

@@ -20,25 +20,35 @@ onMounted(() => {
       constraints: {
         width: { ideal: 1280 },
         height: { ideal: 720 },
-        facingMode: "environment"
+        facingMode: { ideal: "environment" }
       },
-      area: { // Focus scanning on the center area
-        top: "20%",
-        right: "20%",
-        left: "20%",
-        bottom: "20%"
-      }
+    },
+    locator: {
+      patchSize: "large",
+      halfSample: true
     },
     decoder: {
       readers: [
         "code_128_reader",
         "ean_reader",
-        "code_39_reader"
+        "ean_8_reader",
+        "code_39_reader",
+        "code_39_vin_reader",
+        "codabar_reader",
+        "upc_reader",
+        "upc_e_reader",
+        "i2of5_reader",
+        "code_93_reader"
       ]
     },
+    frequency: 10
   }, (err) => {
     if (err) {
-      console.error(err)
+      console.error('Quagga init failed:', err)
+      // Fallback for desktop/specific devices
+      if (err.name === "OverconstrainedError" || err.name === "NotAllowedError") {
+        alert("Camera access failed. Please check permissions.")
+      }
       return
     }
     Quagga.start()
@@ -48,9 +58,12 @@ onMounted(() => {
   const cooldown = 2000 // 2 seconds
 
   Quagga.onDetected((data) => {
+    if (!data.codeResult || !data.codeResult.code) return
+    
     const now = Date.now()
     if (now - lastEmitTime > cooldown) {
       lastEmitTime = now
+      console.log('Barcode detected:', data.codeResult.code)
       emit('detected', data.codeResult.code)
     }
   })
