@@ -3,9 +3,14 @@
     x:Class="catv1.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:catv1.ViewModels"
     Title="Login"
     BackgroundColor="#0F172A"
     Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:LoginViewModel />
+    </ContentPage.BindingContext>
 
     <Grid>
         <!--  Background Decoration  -->
@@ -93,25 +98,25 @@
                         <Grid ColumnDefinitions="*,*">
                             <Button
                                 x:Name="BtnStudent"
-                                BackgroundColor="#3B82F6"
-                                Clicked="OnStudentClicked"
+                                BackgroundColor="{Binding StudentBtnBgColor}"
+                                Command="{Binding StudentCommand}"
                                 CornerRadius="8"
                                 FontAttributes="Bold"
                                 FontSize="14"
                                 HeightRequest="40"
                                 Text="Student"
-                                TextColor="White" />
+                                TextColor="{Binding StudentBtnTextColor}" />
                             <Button
                                 x:Name="BtnLecturer"
                                 Grid.Column="1"
-                                BackgroundColor="Transparent"
-                                Clicked="OnLecturerClicked"
+                                BackgroundColor="{Binding LecturerBtnBgColor}"
+                                Command="{Binding LecturerCommand}"
                                 CornerRadius="8"
                                 FontAttributes="Bold"
                                 FontSize="14"
                                 HeightRequest="40"
                                 Text="Lecturer"
-                                TextColor="#64748B" />
+                                TextColor="{Binding LecturerBtnTextColor}" />
                         </Grid>
                     </Border>
 
@@ -122,7 +127,7 @@
                             FontAttributes="Bold"
                             FontSize="20"
                             HorizontalOptions="Center"
-                            Text="Student Login"
+                            Text="{Binding WelcomeTitle}"
                             TextColor="White" />
                         <Label
                             FontSize="13"
@@ -139,7 +144,7 @@
                                 x:Name="LblIdField"
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="USER SIN"
+                                Text="{Binding IdFieldLabel}"
                                 TextColor="#CBD5E1" />
                             <Border
                                 BackgroundColor="#0F172A"
@@ -158,8 +163,9 @@
                                     <Entry
                                         x:Name="EntryId"
                                         Grid.Column="1"
-                                        Placeholder="e.g. 210984"
+                                        Placeholder="{Binding IdPlaceholder}"
                                         PlaceholderColor="#475569"
+                                        Text="{Binding IdText}"
                                         TextColor="White"
                                         VerticalOptions="Center" />
                                 </Grid>
@@ -190,9 +196,10 @@
                                     <Entry
                                         x:Name="EntryPassword"
                                         Grid.Column="1"
-                                        IsPassword="True"
+                                        IsPassword="{Binding IsPassword}"
                                         Placeholder="••••••••"
                                         PlaceholderColor="#475569"
+                                        Text="{Binding PasswordText}"
                                         TextColor="White"
                                         VerticalOptions="Center" />
                                     <Label
@@ -206,7 +213,7 @@
                                         VerticalTextAlignment="Center"
                                         WidthRequest="40">
                                         <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnTogglePasswordClicked" />
+                                            <TapGestureRecognizer Command="{Binding TogglePasswordCommand}" />
                                         </Label.GestureRecognizers>
                                     </Label>
                                 </Grid>
@@ -218,7 +225,7 @@
                     <Grid ColumnDefinitions="Auto, *">
                         <HorizontalStackLayout Spacing="10">
                             <HorizontalStackLayout.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnRememberMeClicked" />
+                                <TapGestureRecognizer Command="{Binding RememberMeCommand}" />
                             </HorizontalStackLayout.GestureRecognizers>
                             <!--  Custom Checkbox Look  -->
                             <Border
@@ -232,7 +239,7 @@
                                     x:Name="LblRememberMeCheck"
                                     FontSize="14"
                                     HorizontalOptions="Center"
-                                    IsVisible="False"
+                                    IsVisible="{Binding IsRememberMe}"
                                     Text="✓"
                                     TextColor="#3B82F6"
                                     VerticalOptions="Center" />
@@ -251,7 +258,7 @@
                             TextColor="#3B82F6"
                             VerticalOptions="Center">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnForgotPasswordClicked" />
+                                <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
                             </Label.GestureRecognizers>
                         </Label>
                     </Grid>
@@ -259,7 +266,7 @@
                     <!--  Action Button  -->
                     <Button
                         BackgroundColor="#3B82F6"
-                        Clicked="OnLoginClicked"
+                        Command="{Binding LoginCommand}"
                         CornerRadius="10"
                         FontAttributes="Bold"
                         FontSize="16"
@@ -288,7 +295,7 @@
                                     Text="Create Account"
                                     TextColor="#3B82F6">
                                     <Span.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnSignUpClicked" />
+                                        <TapGestureRecognizer Command="{Binding SignUpCommand}" />
                                     </Span.GestureRecognizers>
                                 </Span>
                             </FormattedString>

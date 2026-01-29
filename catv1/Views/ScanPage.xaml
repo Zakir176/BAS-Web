@@ -3,16 +3,22 @@
     x:Class="catv1.Views.ScanPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:catv1.ViewModels"
     xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
     Title="Scan ID"
     BackgroundColor="#0F172A">
+
+    <ContentPage.BindingContext>
+        <vm:ScanViewModel />
+    </ContentPage.BindingContext>
+
     <Grid>
         <zxing:CameraBarcodeReaderView x:Name="cameraBarcodeReaderView" IsDetecting="True" />
 
         <ImageButton
             Margin="20"
             BackgroundColor="#1E293B"
-            Clicked="OnBackClicked"
+            Command="{Binding BackCommand}"
             CornerRadius="20"
             HeightRequest="40"
             HorizontalOptions="Start"
