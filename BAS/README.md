@@ -1,44 +1,82 @@
-# BAS
+# 🎓 Barcode Attendance System (BAS)
 
-This template should help get you started developing with Vue 3 in Vite.
+A modern, mobile-first web application for university attendance tracking. BAS allows lecturers to manage courses and sessions, while enabling students to track their attendance history and performance.
 
-## Recommended IDE Setup
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## ✨ Key Features
 
-## Recommended Browser Setup
+### 👨‍🏫 Lecturer Portal
+- **Dashboard**: Real-time overview of active courses, student stats, and upcoming sessions.
+- **Barcode Scanner**: Integrated camera scanner (using `Quagga2`) for rapid student check-in.
+- **Session Management**: Create, manage, and "Complete" attendance sessions.
+- **Live Roster**: Watch attendance populate in real-time as students are scanned.
+- **Reports**: Export course data to CSV.
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### 👨‍🎓 Student Portal
+- **Personal Dashboard**: View attendance rates per course.
+- **History**: Full log of present/absent dates.
+- **Mobile Optimized**: Fully responsive interface with a native-like App Drawer navigation.
+- **Contact**: Quick actions to contact parents or faculty.
 
-## Customize configuration
+### 🎨 UI/UX
+- **Glassmorphism**: Premium frosted-glass aesthetics on navigation and overlays.
+- **Dark Mode**: Fully supported system-wide dark theme.
+- **Responsive**: Mobile-first design ensures perfect usability on phones and tablets.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🛠️ Technology Stack
 
-## Project Setup
+- **Frontend**: Vue 3 (Composition API) + Vite
+- **Styling**: Tailwind CSS + Custom CSS Variables
+- **Backend/Auth**: Supabase (PostgreSQL, Auth, Realtime)
+- **State**: Vue Composables (`useAuth.js`)
+- **Scanning**: `@ericblade/quagga2`
 
-```sh
-npm install
-```
+## 🚀 Getting Started
 
-### Compile and Hot-Reload for Development
+### Prerequisites
+- Node.js (v16+)
+- A Supabase project with `students`, `teachers`, `courses`, `sessions`, and `attendance` tables.
 
-```sh
-npm run dev
-```
+### Installation
 
-### Compile and Minify for Production
+1.  **Clone the repository**
+    ```sh
+    git clone https://github.com/yourusername/bas-web.git
+    cd bas-web/BAS
+    ```
 
-```sh
-npm run build
-```
+2.  **Install dependencies**
+    ```sh
+    npm install
+    ```
 
-### Lint with [ESLint](https://eslint.org/)
+3.  **Environment Setup**
+    Create a `.env` file in the root directory:
+    ```env
+    VITE_SUPABASE_URL=your_supabase_project_url
+    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
 
-```sh
-npm run lint
-```
+4.  **Run Locally**
+    ```sh
+    npm run dev
+    ```
+
+## 📂 Project Structure
+
+- `src/components/common`: Shared UI (Navbar, Inputs, Modals).
+- `src/components/lecturer`: Dashboard widgets, Scanner, Create Modals.
+- `src/components/student`: Student-specific views and cards.
+- `src/views`: Top-level page views (Home, Dashboard, Login).
+- `src/composables`: Reusable logic (`useAuth`).
+
+## 🔍 Recent Updates
+- **Robust Scanning**: Refactored session detection to prevent database join errors.
+- **Session Completion**: Lecturers can now finalize sessions directly from the scanner.
+- **Mobile Experience**: Complete redesign of the mobile navigation drawer.
+
+---
+*Developed by Zakir*

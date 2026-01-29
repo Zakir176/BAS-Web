@@ -96,26 +96,4 @@ The application uses the Supabase Database to store and manage data. The followi
     *   `POST /attendance`: Creates a new attendance record.
     *   `PUT /attendance`: Updates an existing attendance record.
 
-### `student_uploads`
-
-*   **Description:** Stores information about files uploaded by students.
-*   **Columns:**
-    *   `upload_id` (SERIAL): The upload's unique ID.
-    *   `student_id` (VARCHAR): The ID of the student who uploaded the file.
-    *   `file_name` (TEXT): The name of the uploaded file.
-    *   `file_path` (TEXT): The path to the uploaded file in Supabase Storage.
-    *   `file_size` (BIGINT): The size of the uploaded file in bytes.
-    *   `file_type` (VARCHAR): The MIME type of the uploaded file.
-*   **API Calls:**
-    *   `GET /student_uploads`: Retrieves a list of uploaded files for a student.
-    *   `POST /student_uploads`: Creates a new file upload record.
-
-## Storage
-
-The application uses Supabase Storage to store files uploaded by students.
-
-| Function | Description |
-| --- | --- |
-| `storage.from(bucket).upload(path, file)` | Uploads a file to the specified bucket and path. |
-| `storage.from(bucket).download(path)` | Downloads a file from the specified bucket and path. |
-| `storage.from(bucket).getPublicUrl(path)` | Gets the public URL for a file. |
+ |
