@@ -5,10 +5,23 @@ namespace catv1.Views;
 public partial class LoginPage : ContentPage
 {
     private bool _isStudent = true; // Default to Student
+    private bool _isRememberMe = false;
+    private const string KeyRememberMe = "RememberMe";
+    private const string KeySavedUserId = "SavedUserId";
 
     public LoginPage()
     {
         InitializeComponent();
+        
+        // Initialize Remember Me state
+        _isRememberMe = Preferences.Get(KeyRememberMe, false);
+        LblRememberMeCheck.IsVisible = _isRememberMe;
+
+        if (_isRememberMe)
+        {
+            EntryId.Text = Preferences.Get(KeySavedUserId, string.Empty);
+        }
+
         UpdateUI(); // Set initial state
     }
 
@@ -61,6 +74,18 @@ public partial class LoginPage : ContentPage
             return;
         }
 
+        // Save or Clear Preferences based on Remember Me
+        if (_isRememberMe)
+        {
+            Preferences.Set(KeyRememberMe, true);
+            Preferences.Set(KeySavedUserId, EntryId.Text);
+        }
+        else
+        {
+            Preferences.Set(KeyRememberMe, false);
+            Preferences.Remove(KeySavedUserId);
+        }
+
         if (_isStudent)
         {
             await Shell.Current.GoToAsync("//student/dashboardTab/home");
@@ -74,5 +99,21 @@ public partial class LoginPage : ContentPage
     private async void OnSignUpClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("signup");
+    }
+
+    private void OnTogglePasswordClicked(object sender, EventArgs e)
+    {
+        EntryPassword.IsPassword = !EntryPassword.IsPassword;
+    }
+
+    private async void OnForgotPasswordClicked(object sender, EventArgs e)
+    {
+        await DisplayAlert("Forgot Password", "Please contact your system administrator to reset your password.\n\nSupport: admin@university.edu", "OK");
+    }
+
+    private void OnRememberMeClicked(object sender, EventArgs e)
+    {
+        _isRememberMe = !_isRememberMe;
+        LblRememberMeCheck.IsVisible = _isRememberMe;
     }
 }
