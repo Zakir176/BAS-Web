@@ -60,7 +60,7 @@ import EmptyState from '@/components/ui/EmptyState.vue'
 defineProps({
   activeRoster: { type: Array, required: true },
   activeSessionName: { type: String, default: '' },
-  activeSessionId: { type: String, default: null },
+  activeSessionId: { type: [String, Number], default: null },
   presentCount: { type: Number, default: 0 },
   isEndingSession: { type: Boolean, default: false },
   isLoading: { type: Boolean, default: true }
