@@ -63,6 +63,7 @@
           :scan-status="scanStatus"
           @close="closeBarcodeScanner"
           @detected="handleBarcodeDetected"
+          @complete="completeSession"
         />
       </template>
     </Modal>
@@ -174,22 +175,44 @@ const handleBarcodeDetected = async (barcode) => {
   try {
     const studentId = barcode.trim()
     if (lastScanned.value.includes(studentId)) return
+    
+    // ---------------------------------------------------------
+    // Refactored: Find Active Session via Iterative Search
+    // ---------------------------------------------------------
+    // 1. Get Teacher's Courses
+    const { data: myCourses } = await supabase
+      .from('courses')
+      .select('course_id')
+      .eq('teacher_id', user.value.id)
+      
+    if (!myCourses?.length) return toast.error('No courses found')
 
-    const { data: activeSession } = await supabase
-      .from('sessions')
-      .select('session_id, courses!inner(teacher_id)')
-      .eq('courses.teacher_id', user.value.id)
-      .eq('is_completed', false)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
+    let foundActiveSession = null
 
-    if (!activeSession) {
+    // 2. Iterate to find first active session (Robust against schema/join errors)
+    for (const c of myCourses) {
+      const { data: session } = await supabase
+        .from('sessions')
+        .select('session_id')
+        .eq('course_id', c.course_id)
+        .eq('is_completed', false)
+        .limit(1)
+        .maybeSingle()
+      
+      if (session) {
+        foundActiveSession = session
+        break
+      }
+    }
+
+    if (!foundActiveSession) {
       lastScanned.value = 'No active session'
       scanStatus.value = 'error'
-      toast.error('No active session found. Please start a session first.')
+      toast.error('No active session found. Please start one.')
       return
     }
+
+    const activeSession = foundActiveSession
 
     const { data: student } = await supabase
       .from('students')
@@ -231,14 +254,29 @@ const handleBarcodeDetected = async (barcode) => {
 
 const markAsPresent = async (studentId) => {
   try {
-    const { data: activeSession } = await supabase
-      .from('sessions')
-      .select('session_id, courses!inner(teacher_id)')
-      .eq('courses.teacher_id', user.value.id)
-      .eq('is_completed', false)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
+    // 1. Get Teacher's Courses
+    const { data: myCourses } = await supabase
+      .from('courses')
+      .select('course_id')
+      .eq('teacher_id', user.value.id)
+      
+    if (!myCourses?.length) return
+    
+    let activeSession = null
+    for (const c of myCourses) {
+       const { data: s } = await supabase
+         .from('sessions')
+         .select('session_id')
+         .eq('course_id', c.course_id)
+         .eq('is_completed', false)
+         .limit(1)
+         .maybeSingle()
+       
+       if (s) {
+         activeSession = s
+         break
+       }
+    }
 
     if (!activeSession) {
       toast.error('No active session found')
@@ -265,106 +303,148 @@ const fetchLecturerData = async () => {
     if (!user.value) return
     isLoading.value = true
 
-    // Fetch lecturer profile - Use UID for more reliable matching
+    // ---------------------------------------------------------
+    // Refactored Data Fetching (Defensive N+1 to fix 400 Errors)
+    // ---------------------------------------------------------
+
+    // 1. Fetch Lecturer Profile
     const { data: lecturer, error: profileError } = await supabase
       .from('teachers')
       .select('full_name')
       .eq('teacher_id', user.value.id)
       .maybeSingle()
 
-    if (profileError) {
-      console.warn('Dashboard: Could not fetch profile:', profileError)
-    }
-
     if (lecturer) {
       lecturerName.value = lecturer.full_name
     } else {
-      // Use fallback from metadata
       lecturerName.value = user.value.user_metadata?.full_name || user.value.email.split('@')[0]
     }
 
-    // Fetch courses with counts
-    const { data: coursesData } = await supabase
+    // 2. Fetch ALL Courses for this teacher
+    const { data: myCourses } = await supabase
       .from('courses')
-      .select('*, enrollments(count), sessions(session_id)')
+      .select('course_id, course_name, enrollments(count)')
       .eq('teacher_id', user.value.id)
 
-    if (coursesData) {
-      courses.value = await Promise.all(coursesData.map(async (c) => {
-        const studentCount = c.enrollments?.[0]?.count || 0
-        const sessionIds = c.sessions?.map(s => s.session_id) || []
-        
-        let attendanceRate = 0
-        if (studentCount > 0 && sessionIds.length > 0) {
-          const { count: attendanceCount } = await supabase
-            .from('attendance')
-            .select('*', { count: 'exact', head: true })
-            .in('session_id', sessionIds)
-          
-          attendanceRate = Math.round((attendanceCount / (studentCount * sessionIds.length)) * 100)
-        }
+    if (!myCourses || myCourses.length === 0) {
+      isLoading.value = false
+      return
+    }
 
-        return {
-          ...c,
-          student_count: studentCount,
-          attendance_rate: attendanceRate
-        }
-      }))
+    // 3. Parallel fetch for deep stats to avoid complex joins
+    const coursesWithStats = await Promise.all(myCourses.map(async (c) => {
+      // Get all sessions for this course
+      const { data: cSessions } = await supabase
+        .from('sessions')
+        .select('session_id')
+        .eq('course_id', c.course_id)
       
-      stats.value.totalCourses = coursesData.length
-      stats.value.totalStudents = courses.value.reduce((s, c) => s + c.student_count, 0)
+      const sessionIds = cSessions?.map(s => s.session_id) || []
+      const studentCount = c.enrollments?.[0]?.count || 0
       
-      const totalPossible = courses.value.reduce((s, c) => s + (c.student_count * (c.sessions?.length || 0)), 0)
-      if (totalPossible > 0) {
-        const { count: totalAttendance } = await supabase
+      let attendanceRate = 0
+      if (studentCount > 0 && sessionIds.length > 0) {
+        // We have to batch this if too many, but for now strict IN query
+        // If this fails with 400, we know the session_id type matches
+        const { count: attendanceCount } = await supabase
           .from('attendance')
           .select('*', { count: 'exact', head: true })
-        stats.value.avgAttendance = Math.round((totalAttendance / totalPossible) * 100)
-      } else {
-        stats.value.avgAttendance = 0
+          .in('session_id', sessionIds)
+        
+        attendanceRate = Math.round((attendanceCount / (studentCount * sessionIds.length)) * 100)
+      }
+
+      return {
+        ...c,
+        sessions: cSessions || [], // Store for later usage
+        student_count: studentCount,
+        attendance_rate: attendanceRate
+      }
+    }))
+    
+    courses.value = coursesWithStats
+    stats.value.totalCourses = coursesWithStats.length
+    stats.value.totalStudents = coursesWithStats.reduce((s, c) => s + c.student_count, 0)
+    
+    // Calculate Avg Attendance
+    const totalPossible = coursesWithStats.reduce((s, c) => s + (c.student_count * c.sessions.length), 0)
+    if (totalPossible > 0) {
+       // Re-sum based on individual rates? Or do a big query?
+       // Let's do a weighted average of the rates we already calculated to save a query
+       const weightedSum = coursesWithStats.reduce((s, c) => s + (c.attendance_rate * (c.student_count * c.sessions.length)), 0)
+       stats.value.avgAttendance = Math.round(weightedSum / totalPossible)
+    } else {
+      stats.value.avgAttendance = 0
+    }
+
+    // 4. Fetch Recent Sessions (Manually Aggregated from Courses)
+    // We already have sessions in 'coursesWithStats', just need details for them
+    // But we need 'is_completed' etc.
+    // Let's re-query recent sessions per course and merge sort
+    const allRecentSessions = await Promise.all(myCourses.map(async (c) => {
+       const { data: sData } = await supabase
+         .from('sessions')
+         .select('*, attendance(count)')
+         .eq('course_id', c.course_id)
+         .order('session_date', { ascending: false })
+         .limit(3) // Get top 3 per course to be safe
+       
+       return sData?.map(s => ({
+         ...s,
+         course_name: c.course_name,
+         student_count: s.attendance?.[0]?.count || 0,
+         status: s.is_completed ? 'completed' : (new Date(s.session_date) > new Date() ? 'upcoming' : 'active')
+       })) || []
+    }))
+
+    // Flatten and sort by date desc
+    const flattenedSessions = allRecentSessions.flat().sort((a, b) => new Date(b.session_date) - new Date(a.session_date))
+    recentSessions.value = flattenedSessions.slice(0, 8)
+    stats.value.todaySessions = flattenedSessions.filter(s => s.session_date === new Date().toISOString().split('T')[0]).length
+
+    // 5. Find Active Session (Latest Non-Completed)
+    // We intentionally iterate because .in() was 400-ing
+    let foundActiveSession = null
+    
+    // Check each course for an active session
+    // Optimization: flattenedSessions might ALREADY have it if it's recent
+    const potentialActive = flattenedSessions.find(s => !s.is_completed)
+    
+    if (potentialActive) {
+      foundActiveSession = potentialActive
+    } else {
+      // Deep search if not in recent
+      for (const course of myCourses) {
+        const { data: deepSession } = await supabase
+          .from('sessions')
+          .select('*')
+          .eq('course_id', course.course_id)
+          .eq('is_completed', false)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+          
+        if (deepSession) {
+          // Found one!
+          foundActiveSession = { ...deepSession, course_name: course.course_name }
+          break // Assume only 1 active session at a time is managed
+        }
       }
     }
 
-    // Fetch recent sessions - Need to filter through courses to get correct teacher's sessions
-    const { data: sessionsData } = await supabase
-      .from('sessions')
-      .select('*, courses!inner(course_name, teacher_id), attendance(count)')
-      .eq('courses.teacher_id', user.value.id)
-      .order('session_date', { ascending: false })
-      .limit(8)
-
-    if (sessionsData) {
-      recentSessions.value = sessionsData.map(s => ({
-        ...s,
-        course_name: s.courses?.course_name,
-        student_count: s.attendance?.[0]?.count || 0,
-        status: s.is_completed ? 'completed' : (new Date(s.session_date) > new Date() ? 'upcoming' : 'active')
-      }))
-      stats.value.todaySessions = sessionsData.filter(s => s.session_date === new Date().toISOString().split('T')[0]).length
-    }
-
-    // Fetch roster for most recent session - Join courses to filter by teacher_id
-    const { data: latestSession } = await supabase
-      .from('sessions')
-      .select('*, courses!inner(course_name, teacher_id)')
-      .eq('courses.teacher_id', user.value.id)
-      .eq('is_completed', false) // Only show non-completed sessions in live roster
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
-
-    if (latestSession) {
-      activeSessionId.value = latestSession.session_id
-      activeSessionName.value = latestSession.courses?.course_name
+    if (foundActiveSession) {
+      activeSessionId.value = foundActiveSession.session_id
+      activeSessionName.value = foundActiveSession.course_name || 'Active Session'
+      
       const { data: enrolledStudents } = await supabase
         .from('enrollments')
         .select('student_id, students(full_name)')
-        .eq('course_id', latestSession.course_id)
+        .eq('course_id', foundActiveSession.course_id)
       
       const { data: attendanceData } = await supabase
         .from('attendance')
         .select('student_id')
-        .eq('session_id', latestSession.session_id)
+        .eq('session_id', foundActiveSession.session_id)
 
       const attendedIds = new Set(attendanceData?.map(a => a.student_id) || [])
 
@@ -373,6 +453,10 @@ const fetchLecturerData = async () => {
         full_name: e.students?.full_name,
         present: attendedIds.has(e.student_id)
       }))
+    } else {
+       activeSessionId.value = null
+       activeSessionName.value = ''
+       activeRoster.value = []
     }
   } catch (error) {
     console.error('Error fetching dashboard data:', error)

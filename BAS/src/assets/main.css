@@ -9,6 +9,7 @@
   --bg-main: #f3f6f9;
   --bg-card: #ffffff;
   --bg-panel: #ffffff;
+  --bg-navbar: rgba(255, 255, 255, 0.95);
   
   --text-main: #111827;
   --text-muted: #6b7280;
@@ -43,12 +44,18 @@
   --bg-main: #0f172a;
   --bg-card: #1e293b;
   --bg-panel: #1e293b;
+  --bg-navbar: rgba(30, 41, 59, 0.95);
   --text-main: #f1f5f9;
   --text-muted: #94a3b8;
   --border-light: #334155;
   --border-medium: #475569;
   --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
   --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  
+  /* Status backgrounds for dark mode */
+  --success-bg: rgba(16, 185, 129, 0.2);
+  --error-bg: rgba(239, 68, 68, 0.2);
+  --warning-bg: rgba(245, 158, 11, 0.2);
 }
 
 * {

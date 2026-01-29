@@ -273,7 +273,7 @@ onMounted(() => {
   width: 100px;
   height: 100px;
   padding: 4px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 50%;
   box-shadow: var(--shadow-card);
 }
@@ -291,8 +291,8 @@ onMounted(() => {
   right: 4px;
   width: 16px;
   height: 16px;
-  background: #10b981;
-  border: 3px solid white;
+  background: var(--success);
+  border: 3px solid var(--bg-card);
   border-radius: 50%;
 }
 
@@ -317,6 +317,7 @@ onMounted(() => {
   cursor: pointer;
   padding: 0.5rem;
 }
+
 
 /* Stats */
 .stats-row {
@@ -372,8 +373,8 @@ onMounted(() => {
 }
 
 .white-card {
-  background: white;
-  color: #111827;
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
 .stat-card .label {
@@ -400,6 +401,7 @@ onMounted(() => {
 .calendar-surface {
   padding: 1.5rem;
   border: none;
+  background: var(--bg-card);
 }
 
 .section-header {
@@ -412,14 +414,14 @@ onMounted(() => {
 .section-header h3 {
   font-size: 1.125rem;
   font-weight: 800;
-  color: #111827;
+  color: var(--text-main);
 }
 
 .selector {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 600;
-  background: #f1f5f9;
+  background: var(--bg-main);
   padding: 0.25rem 0.75rem;
   border-radius: 8px;
 }
@@ -443,10 +445,11 @@ onMounted(() => {
   height: 3.5rem;
   border-radius: 16px;
   border: none;
-  background: #f1f5f9;
-  color: #111827;
+  background: var(--bg-card);
+  color: var(--text-main);
   font-size: 1.25rem;
   cursor: pointer;
+  box-shadow: var(--shadow-soft);
 }
 
 /* History */
@@ -458,6 +461,7 @@ onMounted(() => {
   font-size: 1.125rem;
   font-weight: 800;
   margin-bottom: 1rem;
+  color: var(--text-main);
 }
 
 .timeline {
@@ -467,7 +471,7 @@ onMounted(() => {
 }
 
 .timeline-item {
-  background: white;
+  background: var(--bg-card);
   padding: 1rem;
   border-radius: 18px;
   display: flex;
@@ -485,8 +489,8 @@ onMounted(() => {
   font-weight: 900;
 }
 
-.item-icon-box.present { background: #ecfdf5; color: #10b981; }
-.item-icon-box.absent { background: #fef2f2; color: #ef4444; }
+.item-icon-box.present { background: var(--success-bg); color: var(--success); }
+.item-icon-box.absent { background: var(--error-bg); color: var(--error); }
 
 .item-content { flex: 1; }
 
@@ -500,7 +504,7 @@ onMounted(() => {
 .item-status {
   font-weight: 800;
   font-size: 0.9rem;
-  color: #111827;
+  color: var(--text-main);
 }
 
 .badge {
@@ -510,12 +514,12 @@ onMounted(() => {
   border-radius: 6px;
 }
 
-.badge.present { background: #d1fae5; color: #065f46; }
-.badge.absent { background: #fee2e2; color: #991b1b; }
+.badge.present { background: var(--success-bg); color: var(--success); }
+.badge.absent { background: var(--error-bg); color: var(--error); }
 
 .item-meta {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -524,18 +528,19 @@ onMounted(() => {
   width: 100%;
   margin-top: 1.5rem;
   padding: 1rem;
-  background: #f8fafc;
-  border: 1.5px dashed #cbd5e1;
+  background: var(--bg-card);
+  border: 1.5px dashed var(--border-medium);
   border-radius: 16px;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .view-all-link:hover {
-  background: #f1f5f9;
+  background: var(--bg-main);
   border-color: var(--primary);
   color: var(--primary);
 }
+
 </style>

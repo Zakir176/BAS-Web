@@ -30,15 +30,20 @@
           <span class="label">ATTENDANCE LOGGED</span>
           <div class="count">{{ scannedCount }}</div>
         </div>
-        <div class="progress-box">
-          <div class="progress-labels">
-            <span>Present ({{ progress }}%)</span>
-            <span>Enrolled Students</span>
-          </div>
-          <div class="master-progress">
-            <div class="present-bar" :style="{ width: progress + '%' }"></div>
-            <div class="absent-bar" :style="{ width: (100 - progress) + '%' }"></div>
-          </div>
+        <div class="actions-box">
+           <button class="complete-btn" @click="$emit('complete')">
+             <span class="icon">✓</span> Complete Session
+           </button>
+        </div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-labels">
+          <span>Present ({{ progress }}%)</span>
+          <span>Enrolled Students</span>
+        </div>
+        <div class="master-progress">
+          <div class="present-bar" :style="{ width: progress + '%' }"></div>
+          <div class="absent-bar" :style="{ width: (100 - progress) + '%' }"></div>
         </div>
       </div>
       
@@ -72,7 +77,7 @@ const progress = computed(() => {
   return Math.min(100, Math.round((props.scannedCount / props.totalStudents) * 100))
 })
 
-defineEmits(['close', 'detected'])
+defineEmits(['close', 'detected', 'complete'])
 </script>
 
 <style scoped>
@@ -174,18 +179,41 @@ defineEmits(['close', 'detected'])
 .stats-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .counter-box .label { font-size: 0.7rem; font-weight: 800; opacity: 0.6; }
-.counter-box .count { font-size: 3rem; font-weight: 900; line-height: 1; }
+.counter-box .count { font-size: 2.5rem; font-weight: 900; line-height: 1; }
 
-.progress-box { flex: 1; }
+.actions-box {
+  display: flex;
+  align-items: center;
+}
+
+.complete-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: transform 0.2s;
+}
+
+.complete-btn:active { transform: scale(0.95); }
+
+.progress-container { width: 100%; }
 .progress-labels { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 700; }
 
 .master-progress {
-  height: 12px;
+  height: 8px;
   background: rgba(255,255,255,0.1);
   border-radius: 100px;
   overflow: hidden;
