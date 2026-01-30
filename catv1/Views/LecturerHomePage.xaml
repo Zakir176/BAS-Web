@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="catv1.Views.LecturerHomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Lecturer Dashboard"
+    BackgroundColor="#0F172A">
+    <Grid RowDefinitions="Auto, *">
+        <Grid Padding="20,20,20,10" ColumnDefinitions="*, Auto">
+            <Label
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="Lecturer Dashboard"
+                TextColor="White"
+                VerticalOptions="Center" />
+            <ImageButton
+                Grid.Column="1"
+                BackgroundColor="#1E293B"
+                Clicked="OnLogoutClicked"
+                CornerRadius="20"
+                HeightRequest="40"
+                WidthRequest="40">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="Arial"
+                        Glyph="🚪"
+                        Size="20"
+                        Color="#EF4444" />
+                </ImageButton.Source>
+            </ImageButton>
+        </Grid>
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+            <Label
+                FontSize="50"
+                HorizontalOptions="Center"
+                Text="👨‍🏫" />
+            <Label
+                HorizontalOptions="Center"
+                Text="Class attendance will appear here"
+                TextColor="Gray" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="catv1.Views.StudentHomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Dashboard"
+    BackgroundColor="#0F172A"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <Grid
+            Grid.Row="0"
+            Padding="25,30,25,10"
+            ColumnDefinitions="*, Auto, Auto">
+            <VerticalStackLayout Spacing="2">
+                <Label
+                    FontSize="14"
+                    Text="Welcome back,"
+                    TextColor="#94A3B8" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="26"
+                    Text="HARRISON"
+                    TextColor="White" />
+            </VerticalStackLayout>
+
+            <Border
+                Grid.Column="1"
+                BackgroundColor="#1E293B"
+                HeightRequest="50"
+                StrokeShape="RoundRectangle 25"
+                StrokeThickness="0"
+                WidthRequest="50">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="S"
+                    TextColor="#3B82F6"
+                    VerticalOptions="Center" />
+            </Border>
+
+            <ImageButton
+                Grid.Column="2"
+                Margin="15,0,0,0"
+                BackgroundColor="#1E293B"
+                Clicked="OnLogoutClicked"
+                CornerRadius="20"
+                HeightRequest="40"
+                WidthRequest="40">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="Arial"
+                        Glyph="🚪"
+                        Size="20"
+                        Color="#EF4444" />
+                </ImageButton.Source>
+            </ImageButton>
+        </Grid>
+
+        <ScrollView Grid.Row="1" Padding="25">
+            <VerticalStackLayout Spacing="20">
+
+                <Border
+                    Padding="20"
+                    BackgroundColor="#1E293B"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout Spacing="5">
+                            <Label
+                                FontSize="12"
+                                Text="Current Status"
+                                TextColor="#94A3B8" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="22"
+                                Text="Excellent"
+                                TextColor="#10B981" />
+                            <Label
+                                FontSize="11"
+                                Text="Your attendance is on track! Keep it up."
+                                TextColor="#64748B" />
+                        </VerticalStackLayout>
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="30"
+                            Text="94%"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    BackgroundColor="#3B82F6"
+                    HeightRequest="160"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="0">
+                    <Border.Shadow>
+                        <Shadow
+                            Brush="#3B82F6"
+                            Opacity="0.4"
+                            Radius="20"
+                            Offset="0,10" />
+                    </Border.Shadow>
+
+                    <Grid Padding="20" RowDefinitions="*,Auto">
+                        <Image>
+                            <Image.Source>
+                                <FontImageSource
+                                    Glyph=" 📷 "
+                                    Size="40"
+                                    Color="White" />
+                            </Image.Source>
+                        </Image>
+
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            HorizontalOptions="End"
+                            Opacity="1.0"
+                            Text="SHOW ID"
+                            TextColor="White"
+                            VerticalOptions="Start" />
+
+                        <VerticalStackLayout Grid.Row="1" VerticalOptions="End">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="Digital Class ID"
+                                TextColor="White" />
+                            <Label
+                                FontSize="12"
+                                Text="#210984 • SICT"
+                                TextColor="#BFDBFE" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnShowIdClicked" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="15"
+                    RowDefinitions="120, 120"
+                    RowSpacing="15">
+
+                    <!--  History section!  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnHistoryClicked" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text=" 📅 " />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="History"
+                                TextColor="White" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text=" ⏰ " />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="Timetable"
+                                TextColor="White" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text="🔔" />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="Alerts"
+                                TextColor="White" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        BackgroundColor="#1E293B"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="0">
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Label FontSize="30" Text=" ⚙ " />
+                            <Label
+                                FontAttributes="Bold"
+                                Text="Settings"
+                                TextColor="White" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

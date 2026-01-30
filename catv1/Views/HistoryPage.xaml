@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="catv1.Views.HistoryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="History"
+    BackgroundColor="#0F172A">
+    <Grid RowDefinitions="Auto, *">
+        <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *">
+            <Label
+                FontFamily="Arial"
+                FontSize="24"
+                HeightRequest="40"
+                HorizontalTextAlignment="Center"
+                Text="⬅"
+                TextColor="White"
+                VerticalTextAlignment="Center"
+                WidthRequest="40">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackClicked" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="History"
+                TextColor="White"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="1">
+            <Label
+                HorizontalOptions="Center"
+                Text="Welcome to History Page!"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
