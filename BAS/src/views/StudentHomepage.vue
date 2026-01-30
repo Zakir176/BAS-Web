@@ -27,16 +27,6 @@
           </div>
         </header>
 
-        <!-- Barcode Section -->
-        <section v-if="!isLoading && studentProfile?.student_id" class="barcode-section">
-          <StudentBarcode :student-id="studentProfile.student_id" />
-        </section>
-        <section v-else-if="isLoading" class="barcode-section">
-          <div class="barcode-skeleton">
-            <Skeleton width="100%" height="200px" radius="20px" />
-          </div>
-        </section>
-
         <!-- Stats Overview -->
         <section class="stats-overview">
           <div class="stats-row">
@@ -115,6 +105,16 @@
           >
             {{ showAllHistory ? 'Show Less' : 'View All History' }}
           </button>
+        </section>
+
+        <!-- Barcode Section (Moved to Bottom) -->
+        <section v-if="!isLoading && studentProfile?.student_id" class="barcode-section">
+          <StudentBarcode :student-id="studentProfile.student_id" />
+        </section>
+        <section v-else-if="isLoading" class="barcode-section">
+          <div class="barcode-skeleton">
+            <Skeleton width="100%" height="200px" radius="20px" />
+          </div>
         </section>
       </div>
     </main>
