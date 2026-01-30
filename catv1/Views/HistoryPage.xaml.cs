@@ -5,6 +5,7 @@ public partial class HistoryPage : ContentPage
     public HistoryPage()
     {
         InitializeComponent();
+        BindingContext = new ViewModels.HistoryViewModel();
     }
 
     private async void OnBackClicked(object sender, EventArgs e)
