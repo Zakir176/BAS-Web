@@ -3,7 +3,7 @@
     <Navbar />
     
     <main class="main-content">
-      <div class="container mobile-friendly">
+      <div class="container dashboard-container">
         <!-- Profile Header -->
         <header class="profile-header">
           <div class="profile-main">
@@ -27,95 +27,104 @@
           </div>
         </header>
 
-        <!-- Stats Overview -->
-        <section class="stats-overview">
-          <div class="stats-row">
-            <div class="stat-card blue-card">
-              <span class="label">ATTENDANCE</span>
-              <Skeleton v-if="isLoading" width="60px" height="2rem" />
-              <div v-else class="value">{{ attendanceStats.overall }}%</div>
-            </div>
-            <div class="stat-card white-card">
-              <span class="label">ABSENCES</span>
-              <Skeleton v-if="isLoading" width="60px" height="2rem" />
-              <div v-else class="value danger">{{ attendanceStats.absent }}</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Heatmap Section -->
-        <section class="heatmap-section">
-          <div class="card calendar-surface">
-            <div class="section-header">
-              <h3>Attendance Heatmap</h3>
-              <div class="selector">Term 1 <span>▾</span></div>
-            </div>
-            <AttendanceCalendar :attendance-records="attendanceRecords" />
-          </div>
-        </section>
-
-        <!-- Main Action Area -->
-        <section class="action-area">
-          <Button 
-            variant="primary" 
-            full-width 
-            size="lg" 
-            class="contact-button"
-            @click="handleContactParent"
-          >
-            <span class="btn-icon">✉️</span> Contact Counselor
-          </Button>
-          <button class="fab-edit" @click="toast.info('Profile editing coming soon!')">✎</button>
-        </section>
-
-        <!-- History Timeline -->
-        <section class="history-section">
-          <div class="history-header">
-            <h3>Recent Activity</h3>
-          </div>
-          <div class="timeline">
-            <template v-if="isLoading">
-              <div v-for="i in 3" :key="i" class="timeline-item shadow-sm">
-                <Skeleton width="40px" height="40px" radius="12px" />
-                <div class="item-content">
-                  <Skeleton width="100px" height="1rem" style="margin-bottom: 0.5rem" />
-                  <Skeleton width="150px" height="0.75rem" />
+        <!-- Desktop Grid Layout -->
+        <div class="dashboard-grid">
+          <!-- Left Column (Main Content) -->
+          <div class="grid-main">
+            <!-- Stats Overview -->
+            <section class="stats-overview">
+              <div class="stats-row">
+                <div class="stat-card blue-card">
+                  <span class="label">ATTENDANCE</span>
+                  <Skeleton v-if="isLoading" width="60px" height="2rem" />
+                  <div v-else class="value">{{ attendanceStats.overall }}%</div>
+                </div>
+                <div class="stat-card white-card">
+                  <span class="label">ABSENCES</span>
+                  <Skeleton v-if="isLoading" width="60px" height="2rem" />
+                  <div v-else class="value danger">{{ attendanceStats.absent }}</div>
                 </div>
               </div>
-            </template>
-            <template v-else>
-              <div v-for="item in visibleActivity" :key="item.id" class="timeline-item shadow-sm">
-                <div class="item-icon-box" :class="item.status">
-                  <span class="icon">{{ item.status === 'present' ? '✓' : '✕' }}</span>
+            </section>
+
+            <!-- Heatmap Section -->
+            <section class="heatmap-section">
+              <div class="card calendar-surface">
+                <div class="section-header">
+                  <h3>Attendance Heatmap</h3>
+                  <div class="selector">Term 1 <span>▾</span></div>
                 </div>
-                <div class="item-content">
-                  <div class="item-top">
-                    <span class="item-status">{{ item.status.toUpperCase() }}</span>
-                    <span class="badge" :class="item.status">{{ item.status === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
+                <AttendanceCalendar :attendance-records="attendanceRecords" />
+              </div>
+            </section>
+
+            <!-- History Timeline -->
+            <section class="history-section">
+              <div class="history-header">
+                <h3>Recent Activity</h3>
+              </div>
+              <div class="timeline">
+                <template v-if="isLoading">
+                  <div v-for="i in 3" :key="i" class="timeline-item shadow-sm">
+                    <Skeleton width="40px" height="40px" radius="12px" />
+                    <div class="item-content">
+                      <Skeleton width="100px" height="1rem" style="margin-bottom: 0.5rem" />
+                      <Skeleton width="150px" height="0.75rem" />
+                    </div>
                   </div>
-                  <div class="item-meta">{{ item.time }}</div>
-                </div>
+                </template>
+                <template v-else>
+                  <div v-for="item in visibleActivity" :key="item.id" class="timeline-item shadow-sm">
+                    <div class="item-icon-box" :class="item.status">
+                      <span class="icon">{{ item.status === 'present' ? '✓' : '✕' }}</span>
+                    </div>
+                    <div class="item-content">
+                      <div class="item-top">
+                        <span class="item-status">{{ item.status.toUpperCase() }}</span>
+                        <span class="badge" :class="item.status">{{ item.status === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
+                      </div>
+                      <div class="item-meta">{{ item.time }}</div>
+                    </div>
+                  </div>
+                </template>
               </div>
-            </template>
+              <button 
+                v-if="!isLoading && recentActivity.length > 5" 
+                class="view-all-link"
+                @click="showAllHistory = !showAllHistory"
+              >
+                {{ showAllHistory ? 'Show Less' : 'View All History' }}
+              </button>
+            </section>
           </div>
-          <button 
-            v-if="!isLoading && recentActivity.length > 5" 
-            class="view-all-link"
-            @click="showAllHistory = !showAllHistory"
-          >
-            {{ showAllHistory ? 'Show Less' : 'View All History' }}
-          </button>
-        </section>
 
-        <!-- Barcode Section (Moved to Bottom) -->
-        <section v-if="!isLoading && studentProfile?.student_id" class="barcode-section">
-          <StudentBarcode :student-id="studentProfile.student_id" />
-        </section>
-        <section v-else-if="isLoading" class="barcode-section">
-          <div class="barcode-skeleton">
-            <Skeleton width="100%" height="200px" radius="20px" />
+          <!-- Right Column (Sidebar) -->
+          <div class="grid-sidebar">
+            <!-- Barcode Section -->
+            <section v-if="!isLoading && studentProfile?.student_id" class="barcode-section">
+              <StudentBarcode :student-id="studentProfile.student_id" />
+            </section>
+            <section v-else-if="isLoading" class="barcode-section">
+              <div class="barcode-skeleton">
+                <Skeleton width="100%" height="200px" radius="20px" />
+              </div>
+            </section>
+
+            <!-- Main Action Area -->
+            <section class="action-area">
+              <Button 
+                variant="primary" 
+                full-width 
+                size="lg" 
+                class="contact-button"
+                @click="handleContactParent"
+              >
+                <span class="btn-icon">✉️</span> Contact Counselor
+              </Button>
+              <button class="fab-edit" @click="toast.info('Profile editing coming soon!')">✎</button>
+            </section>
           </div>
-        </section>
+        </div>
       </div>
     </main>
   </div>
@@ -254,10 +263,66 @@ onMounted(() => {
   padding-bottom: 5rem;
 }
 
-.mobile-friendly {
-  max-width: 480px;
+.dashboard-container {
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
+}
+
+/* Desktop Grid Layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.grid-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.grid-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: sticky;
+  top: 90px;
+}
+
+/* Mobile: Single Column */
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .grid-sidebar {
+    position: static;
+    order: 2;
+  }
+  
+  .grid-main {
+    order: 1;
+  }
+}
+
+/* Mobile: Constrained Width */
+@media (max-width: 768px) {
+  .dashboard-container {
+    max-width: 480px;
+    padding: 1rem;
+  }
+  
+  .dashboard-grid {
+    gap: 1.5rem;
+  }
+  
+  .grid-main,
+  .grid-sidebar {
+    gap: 1.5rem;
+  }
 }
 
 /* Header */
@@ -331,7 +396,7 @@ onMounted(() => {
 
 /* Barcode Section */
 .barcode-section {
-  margin-bottom: 2rem;
+  /* Margin handled by grid gap */
 }
 
 .barcode-skeleton {
