@@ -5,6 +5,7 @@ public partial class StudentHomePage : ContentPage
     public StudentHomePage()
     {
         InitializeComponent();
+        BindingContext = new ViewModels.StudentHomeViewModel();
     }
 
     private async void OnShowIdClicked(object sender, EventArgs e)
