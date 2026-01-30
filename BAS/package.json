@@ -16,6 +16,7 @@
     "@ericblade/quagga2": "^1.12.1",
     "@heroicons/vue": "^2.2.0",
     "@supabase/supabase-js": "^2.90.1",
+    "@vercel/analytics": "^1.6.1",
     "exceljs": "^4.4.0",
     "jsbarcode": "^3.12.3",
     "pinia": "^3.0.4",
