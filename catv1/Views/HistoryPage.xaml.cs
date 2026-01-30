@@ -1,11 +1,13 @@
+using catv1.ViewModels;
+
 namespace catv1.Views;
 
 public partial class HistoryPage : ContentPage
 {
-    public HistoryPage()
+    public HistoryPage(HistoryViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new ViewModels.HistoryViewModel();
+        BindingContext = viewModel;
     }
 
     private async void OnBackClicked(object sender, EventArgs e)

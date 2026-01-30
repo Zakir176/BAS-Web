@@ -3,41 +3,423 @@
     x:Class="catv1.Views.ScanPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:catv1.Converters"
     xmlns:vm="clr-namespace:catv1.ViewModels"
     xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
     Title="Scan ID"
     BackgroundColor="#0F172A">
 
-    <ContentPage.BindingContext>
-        <vm:ScanViewModel />
-    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <converters:StatusColorConverter x:Key="StatusColorConverter" />
+        <converters:StatusConverter x:Key="StatusConverter" />
+    </ContentPage.Resources>
 
     <Grid>
-        <zxing:CameraBarcodeReaderView x:Name="cameraBarcodeReaderView" IsDetecting="True" />
+        <!--  SETUP VIEW  -->
+        <Grid
+            Padding="30"
+            IsVisible="{Binding IsSetupVisible}"
+            RowDefinitions="Auto, *, Auto">
 
-        <ImageButton
-            Margin="20"
-            BackgroundColor="#1E293B"
-            Command="{Binding BackCommand}"
-            CornerRadius="20"
-            HeightRequest="40"
-            HorizontalOptions="Start"
-            VerticalOptions="Start"
-            WidthRequest="40">
-            <ImageButton.Source>
-                <FontImageSource
-                    FontFamily="Arial"
-                    Glyph="⬅"
-                    Size="24"
-                    Color="White" />
-            </ImageButton.Source>
-        </ImageButton>
+            <!--  Header  -->
+            <VerticalStackLayout Spacing="5">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="28"
+                    Text="New Session"
+                    TextColor="White" />
+                <Label
+                    FontSize="16"
+                    Text="Select class details to begin scanning."
+                    TextColor="Gray" />
+            </VerticalStackLayout>
 
-        <Label
-            Margin="0,0,0,50"
-            HorizontalOptions="Center"
-            Text="Scan barcode"
-            TextColor="White"
-            VerticalOptions="End" />
+            <!--  Form  -->
+            <VerticalStackLayout
+                Grid.Row="1"
+                Spacing="25"
+                VerticalOptions="Center">
+
+                <!--  Course Selection  -->
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        FontAttributes="Bold"
+                        Text="COURSE"
+                        TextColor="#64748B" />
+                    <Border
+                        BackgroundColor="#1E293B"
+                        HeightRequest="60"
+                        Stroke="#334155"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1">
+                        <Grid Padding="15,0" ColumnDefinitions="*, Auto">
+                            <Entry
+                                Placeholder="Class Name"
+                                Text="{Binding SelectedCourse}"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                Text="▼"
+                                TextColor="Gray"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!--  Date Selection  -->
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        FontAttributes="Bold"
+                        Text="DATE"
+                        TextColor="#64748B" />
+                    <Border
+                        BackgroundColor="#1E293B"
+                        HeightRequest="60"
+                        Stroke="#334155"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1">
+                        <Grid Padding="15,0" ColumnDefinitions="Auto, *">
+                            <Label
+                                FontFamily="Arial"
+                                FontSize="20"
+                                Text="📅"
+                                VerticalOptions="Center" />
+                            <DatePicker
+                                Grid.Column="1"
+                                Date="{Binding SelectedDate}"
+                                Format="ddd, MMM dd yyyy"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+            <!--  Action  -->
+            <Button
+                Grid.Row="2"
+                BackgroundColor="#3B82F6"
+                Command="{Binding StartSessionCommand}"
+                CornerRadius="10"
+                FontAttributes="Bold"
+                FontSize="16"
+                HeightRequest="55"
+                Text="START SCANNING"
+                TextColor="White">
+                <Button.Shadow>
+                    <Shadow
+                        Brush="#3B82F6"
+                        Opacity="0.4"
+                        Radius="10"
+                        Offset="0,4" />
+                </Button.Shadow>
+            </Button>
+        </Grid>
+
+
+        <!--  SCANNING VIEW  -->
+        <Grid IsVisible="{Binding IsSessionActive}" RowDefinitions="Auto, Auto, *">
+
+            <!--  Top Bar  -->
+            <Grid
+                Padding="20"
+                BackgroundColor="#0F172A"
+                ColumnDefinitions="Auto, *, Auto">
+                <ImageButton
+                    BackgroundColor="#1E293B"
+                    Command="{Binding BackCommand}"
+                    CornerRadius="10"
+                    HeightRequest="40"
+                    WidthRequest="40">
+                    <ImageButton.Source>
+                        <FontImageSource
+                            FontFamily="Arial"
+                            Glyph="⬅"
+                            Size="20"
+                            Color="White" />
+                    </ImageButton.Source>
+                </ImageButton>
+
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HorizontalOptions="Center"
+                        Text="{Binding SelectedCourse}"
+                        TextColor="White" />
+                    <Label
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="{Binding DateDisplay}"
+                        TextColor="Gray" />
+                </VerticalStackLayout>
+
+                <ImageButton
+                    Grid.Column="2"
+                    BackgroundColor="Transparent"
+                    HeightRequest="40"
+                    WidthRequest="40">
+                    <ImageButton.Source>
+                        <FontImageSource
+                            FontFamily="Arial"
+                            Glyph="⚙"
+                            Size="24"
+                            Color="Gray" />
+                    </ImageButton.Source>
+                </ImageButton>
+            </Grid>
+
+            <!--  Camera & Stats Section  -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="20" Spacing="20">
+
+                    <!--  Camera Frame  -->
+                    <Border
+                        HeightRequest="250"
+                        Stroke="#06b6d4"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="1">
+                        <Grid>
+                            <zxing:CameraBarcodeReaderView
+                                x:Name="cameraBarcodeReaderView"
+                                IsDetecting="{Binding IsSessionActive}"
+                                IsTorchOn="False" />
+
+                            <!--  Mock Overlay  -->
+                            <Border
+                                Margin="0,0,0,20"
+                                Padding="15,8"
+                                BackgroundColor="#CC000000"
+                                HorizontalOptions="Center"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 20"
+                                VerticalOptions="End">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="SCANNING ACTIVE"
+                                    TextColor="White" />
+                            </Border>
+
+                            <!--  Corner Brackets Mock  -->
+                            <Border
+                                Margin="40"
+                                BackgroundColor="Transparent"
+                                HeightRequest="150"
+                                Stroke="#06b6d4"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="4"
+                                WidthRequest="200" />
+                        </Grid>
+                    </Border>
+
+                    <!--  Feedback Toast  -->
+                    <Border
+                        Padding="15"
+                        BackgroundColor="#111827"
+                        IsVisible="{Binding ShowFeedback}"
+                        Stroke="#10b981"
+                        StrokeShape="RoundRectangle 15"
+                        StrokeThickness="1">
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <Label
+                                FontSize="20"
+                                Text="✔"
+                                TextColor="#10b981"
+                                VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Margin="10,0">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="10"
+                                    Text="ATTENDANCE LOGGED"
+                                    TextColor="#10b981" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    Text="{Binding LastScannedStudent.Name, StringFormat='{0} marked Present'}"
+                                    TextColor="White" />
+                            </VerticalStackLayout>
+                            <Button
+                                Grid.Column="2"
+                                BackgroundColor="#1F2937"
+                                Command="{Binding UndoScanCommand}"
+                                CornerRadius="17"
+                                FontSize="12"
+                                HeightRequest="35"
+                                Text="Undo"
+                                TextColor="White" />
+                        </Grid>
+                    </Border>
+
+                    <!--  Stats Cards  -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        <!--  Present  -->
+                        <Border
+                            Padding="20"
+                            BackgroundColor="#111827"
+                            Stroke="#1F2937"
+                            StrokeShape="RoundRectangle 15"
+                            StrokeThickness="1">
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="10"
+                                    Text="PRESENT"
+                                    TextColor="Gray" />
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="28"
+                                        Text="{Binding PresentCount}"
+                                        TextColor="#10b981" />
+                                    <Label
+                                        FontSize="18"
+                                        Text="{Binding TotalCount, StringFormat='/ {0}'}"
+                                        TextColor="Gray"
+                                        VerticalOptions="End" />
+                                </HorizontalStackLayout>
+                                <ProgressBar Progress="{Binding PresentProgress}" ProgressColor="#10b981" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!--  Absent  -->
+                        <Border
+                            Grid.Column="1"
+                            Padding="20"
+                            BackgroundColor="#111827"
+                            Stroke="#1F2937"
+                            StrokeShape="RoundRectangle 15"
+                            StrokeThickness="1">
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="10"
+                                    Text="ABSENT"
+                                    TextColor="Gray" />
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="28"
+                                        Text="{Binding AbsentCount}"
+                                        TextColor="#ef4444" />
+                                    <Label
+                                        FontSize="18"
+                                        Text="{Binding TotalCount, StringFormat='/ {0}'}"
+                                        TextColor="Gray"
+                                        VerticalOptions="End" />
+                                </HorizontalStackLayout>
+                                <ProgressBar Progress="{Binding AbsentProgress}" ProgressColor="#ef4444" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Label
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="Scan history and manual override below"
+                        TextColor="Gray" />
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!--  Roster List (Bottom Sheet-ish)  -->
+            <Grid
+                Grid.Row="2"
+                BackgroundColor="#0F172A"
+                RowDefinitions="Auto, *">
+                <Border
+                    Padding="15"
+                    BackgroundColor="#1E293B"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="CLASS ROSTER"
+                            TextColor="#64748B"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="📶 FILTERS"
+                            TextColor="#06b6d4"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <CollectionView Grid.Row="1" ItemsSource="{Binding Roster}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Padding="15,10"
+                                BackgroundColor="#0F172A"
+                                ColumnDefinitions="Auto, *, Auto">
+                                <!--  Initials Avatar  -->
+                                <Border
+                                    BackgroundColor="#1E293B"
+                                    HeightRequest="40"
+                                    StrokeShape="RoundRectangle 20"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center"
+                                    WidthRequest="40">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding Initials}"
+                                        TextColor="#06b6d4"
+                                        VerticalOptions="Center" />
+                                </Border>
+
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    Margin="15,0"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        Text="{Binding Name}"
+                                        TextColor="White" />
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding Id}"
+                                        TextColor="Gray" />
+                                </VerticalStackLayout>
+
+                                <!--  Status Button  -->
+                                <Button
+                                    Grid.Column="2"
+                                    Padding="10,0"
+                                    BackgroundColor="{Binding IsPresent, Converter={StaticResource StatusConverter}, ConverterParameter='Color'}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ScanViewModel}}, Path=MarkStudentCommand}"
+                                    CommandParameter="{Binding .}"
+                                    CornerRadius="15"
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    HeightRequest="30"
+                                    Text="{Binding IsPresent, Converter={StaticResource StatusConverter}, ConverterParameter='Text'}"
+                                    TextColor="#0F172A" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!--  Floating Action Button for Finish  -->
+                <Button
+                    Grid.Row="1"
+                    Margin="20"
+                    BackgroundColor="#06b6d4"
+                    Command="{Binding FinishSessionCommand}"
+                    CornerRadius="25"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    HeightRequest="50"
+                    HorizontalOptions="Center"
+                    Text="✓ FINISH SESSION"
+                    TextColor="#0F172A"
+                    VerticalOptions="End"
+                    WidthRequest="200" />
+            </Grid>
+        </Grid>
+
     </Grid>
 </ContentPage>

@@ -5,40 +5,118 @@ namespace catv1.ViewModels;
 
 public class StudentHomeViewModel : BaseViewModel
 {
-    public string Name { get; set; } = "John Doe";
-    public string Id { get; set; } = "STU001";
-    public string ClassName { get; set; } = "Class 10A";
+    private readonly Supabase.Client _supabase;
+
+    private string _name = "Loading...";
+    public string Name
+    {
+        get => _name;
+        set => SetProperty(ref _name, value);
+    }
+
+    private string _id = "---";
+    public string Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
+
+    private string _className = "---";
+    public string ClassName
+    {
+        get => _className;
+        set => SetProperty(ref _className, value);
+    }
+
     public string Avatar { get; set; } = "dotnet_bot.png";
 
     public string IdLine => $"ID: {Id} | {ClassName}";
 
-    public double AttendancePercentage { get; set; } = 0.94;
-    public int AbsencesCount { get; set; } = 3;
+    private double _attendancePercentage;
+    public double AttendancePercentage
+    {
+        get => _attendancePercentage;
+        set
+        {
+            if (SetProperty(ref _attendancePercentage, value))
+                OnPropertyChanged(nameof(AttendanceDisplay));
+        }
+    }
+
+    private int _absencesCount;
+    public int AbsencesCount
+    {
+        get => _absencesCount;
+        set => SetProperty(ref _absencesCount, value);
+    }
 
     public string AttendanceDisplay => $"{AttendancePercentage:P0}";
 
     public ObservableCollection<ActivityLog> RecentActivity { get; set; }
 
-    // For the heatmap, we'll just simulate days for now. 
-    // In a real app, this would be a collection of Day objects with status.
     public ObservableCollection<int> CalendarDays { get; }
 
-    public StudentHomeViewModel()
+    public StudentHomeViewModel(Supabase.Client supabase)
     {
-        // Dummy Activity Data
-        RecentActivity = new ObservableCollection<ActivityLog>
-        {
-            new ActivityLog { Status = "Present", DateTime = new DateTime(2023, 9, 15, 8, 30, 0), IsVerified = true },
-            new ActivityLog { Status = "Absent", DateTime = new DateTime(2023, 9, 14, 8, 0, 0), IsVerified = false, IsExcused = false }, // Unexcused
-            new ActivityLog { Status = "Absent", DateTime = new DateTime(2023, 9, 13), IsVerified = false, IsExcused = true }, // Excused
-            new ActivityLog { Status = "Present", DateTime = new DateTime(2023, 9, 12, 8, 28, 0), IsVerified = true }
-        };
-
-        // Dummy Calendar Data (Numbers 1-30)
+        _supabase = supabase;
+        RecentActivity = new ObservableCollection<ActivityLog>();
         CalendarDays = new ObservableCollection<int>();
+
+        // Dummy Calendar Data
         for (int i = 1; i <= 30; i++)
         {
             CalendarDays.Add(i);
+        }
+    }
+
+    public async Task LoadDataAsync()
+    {
+        if (IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+
+            var user = _supabase.Auth.CurrentUser;
+            if (user == null) return;
+
+            // Fetch Student Profile
+            // Assumption: students table has a column 'id' that matches user.Id or some lookup
+            // For now, fetching by email or assuming the Id in students matches user identity
+            var studentResponse = await _supabase.From<Student>()
+                .Where(s => s.Id == user.Id) // Adjust if mapping is different
+                .Single();
+
+            if (studentResponse != null)
+            {
+                Name = studentResponse.Name;
+                Id = studentResponse.Id;
+                // ClassName might need another field or join
+            }
+
+            // Fetch Recent Activity
+            var logsResponse = await _supabase.From<ActivityLog>()
+                .Order("date_time", Supabase.Postgrest.Constants.Ordering.Descending)
+                .Limit(5)
+                .Get();
+
+            RecentActivity.Clear();
+            foreach (var log in logsResponse.Models)
+            {
+                RecentActivity.Add(log);
+            }
+
+            // Calculate attendance dummy for now or fetch stats
+            AttendancePercentage = 0.95;
+            AbsencesCount = 2;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"LoadData Error: {ex}");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }
