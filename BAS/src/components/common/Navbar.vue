@@ -320,11 +320,9 @@ const handleSignOut = async () => {
 .drawer-footer { padding: 1.5rem; border-top: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 1rem; }
 .drawer-action-btn { display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid var(--border-medium); background: none; color: var(--text-main); font-weight: 600; cursor: pointer; }
 
-/* Desktop Hide Logic */
-@media (max-width: 920px) {
-  .nav-links-desktop,
-  .user-actions {
-    display: none; /* Hide the overlapping desktop buttons */
+@media (max-width: 1024px) {
+  .nav-links-desktop {
+    display: none;
   }
   
   .mobile-menu-toggle {

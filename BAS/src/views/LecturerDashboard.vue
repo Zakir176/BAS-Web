@@ -509,7 +509,7 @@ onMounted(fetchLecturerData)
 }
 
 /* Mobile responsive - adapt grid layout */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .dashboard-header {
     flex-direction: column;
     gap: 1.5rem;
@@ -517,18 +517,77 @@ onMounted(fetchLecturerData)
   }
   
   .header-right {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  
+  .action-btn, .scan-btn {
+    flex: 1;
+    min-width: 140px;
+  }
+  
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+  }
+  
+  .header-left h1 {
+    font-size: 1.5rem;
+  }
+  
+  .header-left p {
+    font-size: 0.875rem;
+  }
+  
+  .header-right {
     flex-direction: column;
     gap: 0.75rem;
   }
   
-  .action-btn {
+  .action-btn, .scan-btn {
     width: 100%;
     justify-content: center;
+    padding: 0.875rem 1rem;
   }
   
-  .scan-btn {
-    width: 100%;
-    justify-content: center;
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-header {
+    padding: 1rem 0.75rem;
+  }
+  
+  .header-left h1 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+  
+  .header-left p {
+    font-size: 0.8rem;
+  }
+  
+  .header-right {
+    gap: 0.5rem;
+  }
+  
+  .action-btn, .scan-btn {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+  }
+  
+  .container {
+    padding: 0 0.75rem;
   }
 }
 
