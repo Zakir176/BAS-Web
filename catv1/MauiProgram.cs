@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
+using catv1.ViewModels;
 
 namespace catv1;
 
@@ -17,6 +18,18 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
+
+        builder.Services.AddSingleton(provider => new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key));
+
+        // ViewModels
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<StudentHomeViewModel>();
+        // Add others if needed...
+
+        // Pages
+        builder.Services.AddTransient<Views.LoginPage>();
+        builder.Services.AddTransient<Views.StudentHomePage>();
+        // Add others if needed...
 
 #if DEBUG
         builder.Logging.AddDebug();

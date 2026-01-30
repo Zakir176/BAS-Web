@@ -21,8 +21,11 @@ public class LoginViewModel : BaseViewModel
     private const string KeyRememberMe = "RememberMe";
     private const string KeySavedUserId = "SavedUserId";
 
-    public LoginViewModel()
+    private readonly Supabase.Client _supabase;
+
+    public LoginViewModel(Supabase.Client supabase)
     {
+        _supabase = supabase;
         // Initialize state
         _isStudent = true;
         _isPassword = true; // Default to hidden password
@@ -38,7 +41,7 @@ public class LoginViewModel : BaseViewModel
         // Initialize Commands
         StudentCommand = new Command(OnStudentClicked);
         LecturerCommand = new Command(OnLecturerClicked);
-        LoginCommand = new Command(OnLoginClicked);
+        LoginCommand = new Command(async () => await OnLoginClicked());
         SignUpCommand = new Command(OnSignUpClicked);
         TogglePasswordCommand = new Command(OnTogglePasswordClicked);
         ForgotPasswordCommand = new Command(OnForgotPasswordClicked);
@@ -175,38 +178,73 @@ public class LoginViewModel : BaseViewModel
         }
     }
 
-    private async void OnLoginClicked()
+    private async Task OnLoginClicked()
     {
         if (string.IsNullOrWhiteSpace(IdText))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "Please enter your ID.", "OK");
+            await Shell.Current.DisplayAlert("Error", "Please enter your ID.", "OK");
             return;
         }
 
-        if (IsRememberMe)
+        if (string.IsNullOrWhiteSpace(PasswordText))
         {
-            Preferences.Set(KeyRememberMe, true);
-            Preferences.Set(KeySavedUserId, IdText);
-        }
-        else
-        {
-            Preferences.Set(KeyRememberMe, false);
-            Preferences.Remove(KeySavedUserId);
+            await Shell.Current.DisplayAlert("Error", "Please enter your password.", "OK");
+            return;
         }
 
-        if (_isStudent)
+        try
         {
-            await Shell.Current.GoToAsync("//student/dashboardTab/home");
+            IsBusy = true;
+
+            // Note: If your partner is using SIN as the username/email in Supabase Auth,
+            // this will work. If they use a different format, we may need to adjust this.
+            var session = await _supabase.Auth.SignInWithPassword(IdText, PasswordText);
+
+            if (session != null)
+            {
+                if (IsRememberMe)
+                {
+                    Preferences.Set(KeyRememberMe, true);
+                    Preferences.Set(KeySavedUserId, IdText);
+                }
+                else
+                {
+                    Preferences.Set(KeyRememberMe, false);
+                    Preferences.Remove(KeySavedUserId);
+                }
+
+                if (_isStudent)
+                {
+                    await Shell.Current.GoToAsync("//student/dashboardTab/home");
+                }
+                else
+                {
+                    await Shell.Current.GoToAsync("//lecturer/dashboardTab/dashboard");
+                }
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await Shell.Current.GoToAsync("//lecturer/dashboardTab/dashboard");
+            System.Diagnostics.Debug.WriteLine($"Login Error: {ex}");
+            await Shell.Current.DisplayAlert("Login Error", "Invalid credentials or connection error.", "OK");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 
     private async void OnSignUpClicked()
     {
-        await Shell.Current.GoToAsync("signup");
+        try
+        {
+            await Shell.Current.GoToAsync("signup");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"SignUp Error: {ex}");
+            await Shell.Current.DisplayAlert("Error", "Unable to open sign up page.", "OK");
+        }
     }
 
     private void OnTogglePasswordClicked()
@@ -216,7 +254,7 @@ public class LoginViewModel : BaseViewModel
 
     private async void OnForgotPasswordClicked()
     {
-        await Application.Current.MainPage.DisplayAlert("Forgot Password", "Please contact your system administrator to reset your password.\n\nSupport: admin@university.edu", "OK");
+        await Shell.Current.DisplayAlert("Forgot Password", "Please contact your system administrator to reset your password.\n\nSupport: admin@university.edu", "OK");
     }
 
     private void OnRememberMeClicked()

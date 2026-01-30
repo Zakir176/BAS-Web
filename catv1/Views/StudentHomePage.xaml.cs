@@ -1,11 +1,22 @@
+using catv1.ViewModels;
+
 namespace catv1.Views;
 
 public partial class StudentHomePage : ContentPage
 {
-    public StudentHomePage()
+    public StudentHomePage(StudentHomeViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new ViewModels.StudentHomeViewModel();
+        BindingContext = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is StudentHomeViewModel vm)
+        {
+            await vm.LoadDataAsync();
+        }
     }
 
     private async void OnShowIdClicked(object sender, EventArgs e)
