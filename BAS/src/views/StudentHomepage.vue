@@ -291,7 +291,7 @@ onMounted(() => {
   top: 90px;
 }
 
-/* Mobile: Single Column */
+/* Tablet: Adjusted Layout */
 @media (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -306,12 +306,26 @@ onMounted(() => {
   .grid-main {
     order: 1;
   }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .header-actions {
+    justify-content: center;
+  }
+  
+  .student-name {
+    font-size: 1.75rem;
+  }
 }
 
-/* Mobile: Constrained Width */
+/* Mobile: Optimized Layout */
 @media (max-width: 768px) {
   .dashboard-container {
-    max-width: 480px;
+    max-width: 100%;
     padding: 1rem;
   }
   
@@ -322,6 +336,106 @@ onMounted(() => {
   .grid-main,
   .grid-sidebar {
     gap: 1.5rem;
+  }
+  
+  .profile-header {
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+  }
+  
+  .student-name {
+    font-size: 1.5rem;
+  }
+  
+  .student-meta {
+    font-size: 0.8rem;
+  }
+  
+  .avatar-ring {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .header-actions {
+    gap: 0.5rem;
+  }
+  
+  .icon-btn {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Small Mobile: Compact Layout */
+@media (max-width: 640px) {
+  .dashboard-container {
+    padding: 0.75rem;
+  }
+  
+  .dashboard-grid {
+    gap: 1rem;
+  }
+  
+  .grid-main,
+  .grid-sidebar {
+    gap: 1rem;
+  }
+  
+  .profile-header {
+    padding: 1rem 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .student-name {
+    font-size: 1.25rem;
+  }
+  
+  .student-meta {
+    font-size: 0.75rem;
+  }
+  
+  .avatar-ring {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .status-indicator {
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+  }
+  
+  .header-actions {
+    gap: 0.25rem;
+  }
+  
+  .icon-btn {
+    padding: 0.375rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Extra Small Mobile: Minimal Layout */
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 0.5rem;
+  }
+  
+  .profile-header {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .student-name {
+    font-size: 1.125rem;
+  }
+  
+  .avatar-ring {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .dashboard-grid {
+    gap: 0.75rem;
   }
 }
 
@@ -395,10 +509,6 @@ onMounted(() => {
 }
 
 /* Barcode Section */
-.barcode-section {
-  /* Margin handled by grid gap */
-}
-
 .barcode-skeleton {
   width: 100%;
 }
