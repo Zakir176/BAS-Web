@@ -27,6 +27,16 @@
           </div>
         </header>
 
+        <!-- Barcode Section -->
+        <section v-if="!isLoading && studentProfile?.student_id" class="barcode-section">
+          <StudentBarcode :student-id="studentProfile.student_id" />
+        </section>
+        <section v-else-if="isLoading" class="barcode-section">
+          <div class="barcode-skeleton">
+            <Skeleton width="100%" height="200px" radius="20px" />
+          </div>
+        </section>
+
         <!-- Stats Overview -->
         <section class="stats-overview">
           <div class="stats-row">
@@ -121,6 +131,7 @@ import Navbar from '@/components/common/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Skeleton from '@/components/ui/Skeleton.vue'
 import AttendanceCalendar from '@/components/student/AttendanceCalendar.vue'
+import StudentBarcode from '@/components/student/StudentBarcode.vue'
 
 const router = useRouter()
 const { user } = useAuth()
@@ -316,6 +327,15 @@ onMounted(() => {
   font-size: 1.25rem;
   cursor: pointer;
   padding: 0.5rem;
+}
+
+/* Barcode Section */
+.barcode-section {
+  margin-bottom: 2rem;
+}
+
+.barcode-skeleton {
+  width: 100%;
 }
 
 
