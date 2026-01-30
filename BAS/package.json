@@ -17,6 +17,7 @@
     "@heroicons/vue": "^2.2.0",
     "@supabase/supabase-js": "^2.90.1",
     "exceljs": "^4.4.0",
+    "jsbarcode": "^3.12.3",
     "pinia": "^3.0.4",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
