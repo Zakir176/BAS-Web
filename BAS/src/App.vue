@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useTheme } from '@/composables/useTheme'
 import { useAuth } from '@/composables/useAuth'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
+import { Analytics } from '@vercel/analytics/vue'
 
 // Initialize theme and auth systems
 const { theme, toggleTheme, updateTheme } = useTheme()
@@ -19,6 +20,7 @@ onMounted(async () => {
 
 <template>
   <div id="app">
+    <Analytics />
     <router-view />
     <ToastContainer position="top-right" :max-toasts="5" />
   </div>
