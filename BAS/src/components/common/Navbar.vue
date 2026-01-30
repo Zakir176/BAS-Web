@@ -576,7 +576,7 @@ const handleSignOut = async () => {
 }
 
 
-@media (max-width: 920px) {
+@media (max-width: 1024px) {
   .nav-links-desktop {
     display: none;
   }
