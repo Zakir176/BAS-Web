@@ -1,12 +1,22 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="catv1.Views.HistoryPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:catv1.ViewModels"
     Title="History"
     BackgroundColor="#0F172A">
-    <Grid RowDefinitions="Auto, *">
-        <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *">
+    <ContentPage.Resources>
+        <Style x:Key="FilterPickerStyle" TargetType="Picker">
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="TitleColor" Value="Gray" />
+            <Setter Property="BackgroundColor" Value="#1E293B" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *">
+        <!--  Header  -->
+        <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *, Auto">
             <Label
                 FontFamily="Arial"
                 FontSize="24"
@@ -25,16 +35,229 @@
                 Margin="10,0,0,0"
                 FontAttributes="Bold"
                 FontSize="20"
-                Text="History"
+                HorizontalOptions="Center"
+                Text="History Reports"
                 TextColor="White"
                 VerticalOptions="Center" />
+            <ImageButton
+                Grid.Column="2"
+                HeightRequest="24"
+                Source="dotnet_bot.png"
+                WidthRequest="24" />
         </Grid>
 
-        <VerticalStackLayout Grid.Row="1">
+        <!--  Filters  -->
+        <Grid
+            Grid.Row="1"
+            Margin="20,10"
+            ColumnDefinitions="*,*,*"
+            ColumnSpacing="10">
+            <Border
+                Padding="0"
+                BackgroundColor="#1E293B"
+                Stroke="Gray"
+                StrokeShape="RoundRectangle 20"
+                StrokeThickness="1">
+                <Picker
+                    Title="Grade"
+                    HorizontalTextAlignment="Center"
+                    ItemsSource="{Binding Grades}"
+                    SelectedItem="{Binding SelectedGrade}"
+                    Style="{StaticResource FilterPickerStyle}" />
+            </Border>
+            <Border
+                Grid.Column="1"
+                Padding="0"
+                BackgroundColor="#1E293B"
+                Stroke="Gray"
+                StrokeShape="RoundRectangle 20"
+                StrokeThickness="1">
+                <Picker
+                    Title="Month"
+                    HorizontalTextAlignment="Center"
+                    ItemsSource="{Binding Months}"
+                    SelectedItem="{Binding SelectedMonth}"
+                    Style="{StaticResource FilterPickerStyle}" />
+            </Border>
+            <Border
+                Grid.Column="2"
+                Padding="0"
+                BackgroundColor="#1E293B"
+                Stroke="Gray"
+                StrokeShape="RoundRectangle 20"
+                StrokeThickness="1">
+                <Picker
+                    Title="Year"
+                    HorizontalTextAlignment="Center"
+                    ItemsSource="{Binding Years}"
+                    SelectedItem="{Binding SelectedYear}"
+                    Style="{StaticResource FilterPickerStyle}" />
+            </Border>
+        </Grid>
+
+        <!--  Presence Summary  -->
+        <VerticalStackLayout Grid.Row="2" Padding="20,10">
             <Label
-                HorizontalOptions="Center"
-                Text="Welcome to History Page!"
-                VerticalOptions="Center" />
+                FontAttributes="Bold"
+                FontSize="16"
+                Text="Presence Summary"
+                TextColor="White" />
+
+            <Grid
+                Margin="0,15,0,0"
+                ColumnDefinitions="*,*"
+                ColumnSpacing="15">
+                <!--  Present  -->
+                <Border
+                    Padding="20"
+                    BackgroundColor="#1E293B"
+                    StrokeShape="RoundRectangle 20"
+                    StrokeThickness="0">
+                    <VerticalStackLayout Spacing="10">
+                        <Border
+                            HeightRequest="80"
+                            Stroke="#00E676"
+                            StrokeShape="RoundRectangle 40"
+                            StrokeThickness="4"
+                            WidthRequest="80">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="{Binding PresencePercentageDisplay}"
+                                TextColor="#00E676"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <Label
+                            HorizontalOptions="Center"
+                            Text="Present"
+                            TextColor="Gray" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  Absent  -->
+                <Border
+                    Grid.Column="1"
+                    Padding="20"
+                    BackgroundColor="#1E293B"
+                    StrokeShape="RoundRectangle 20"
+                    StrokeThickness="0">
+                    <VerticalStackLayout Spacing="10">
+                        <Border
+                            HeightRequest="80"
+                            Stroke="#FF5252"
+                            StrokeShape="RoundRectangle 40"
+                            StrokeThickness="4"
+                            WidthRequest="80">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                Text="{Binding AbsencePercentageDisplay}"
+                                TextColor="#FF5252"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <Label
+                            HorizontalOptions="Center"
+                            Text="Absent"
+                            TextColor="Gray" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
         </VerticalStackLayout>
+
+        <!--  Student Statistics  -->
+        <Grid
+            Grid.Row="3"
+            Padding="20,10,20,20"
+            RowDefinitions="Auto, *">
+            <Grid ColumnDefinitions="*, Auto">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Student Statistics"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    FontSize="12"
+                    Text="32 STUDENTS"
+                    TextColor="#3B82F6"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <CollectionView
+                Grid.Row="1"
+                Margin="0,10,0,0"
+                ItemsSource="{Binding Students}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="0,0,0,10"
+                            Padding="10"
+                            BackgroundColor="#1E293B"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0">
+                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <Border
+                                    Grid.Column="0"
+                                    Padding="0"
+                                    HeightRequest="40"
+                                    StrokeShape="RoundRectangle 20"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center"
+                                    WidthRequest="40">
+                                    <Image Aspect="AspectFill" Source="{Binding Avatar}" />
+                                </Border>
+
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    Margin="10,0"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="14"
+                                        Text="{Binding Name}"
+                                        TextColor="White" />
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding Id}"
+                                        TextColor="Gray" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="14"
+                                        HorizontalOptions="End"
+                                        Text="{Binding PresenceRateDisplay}"
+                                        TextColor="#3B82F6" />
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="End"
+                                        Text="{Binding AbsencesDisplay}"
+                                        TextColor="Gray" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--  Bottom Button Overlay  -->
+            <Button
+                Grid.Row="1"
+                Margin="0,20"
+                BackgroundColor="#1E293B"
+                BorderColor="#334155"
+                BorderWidth="1"
+                CornerRadius="25"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                Text="View Full Student List"
+                TextColor="White"
+                VerticalOptions="End" />
+        </Grid>
     </Grid>
 </ContentPage>
