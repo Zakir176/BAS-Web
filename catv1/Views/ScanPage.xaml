@@ -9,9 +9,6 @@
     Title="Scan ID"
     BackgroundColor="#0F172A">
 
-    <ContentPage.BindingContext>
-        <vm:ScanViewModel />
-    </ContentPage.BindingContext>
 
     <ContentPage.Resources>
         <converters:StatusColorConverter x:Key="StatusColorConverter" />

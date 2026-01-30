@@ -19,17 +19,36 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Services.AddSingleton(provider => new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key));
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: Registering Services");
+
+        builder.Services.AddSingleton(provider =>
+        {
+            System.Diagnostics.Debug.WriteLine("CAT_LOG: Creating Supabase Client");
+            return new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key, new Supabase.SupabaseOptions
+            {
+                AutoRefreshToken = true,
+                AutoConnectRealtime = true
+            });
+        });
 
         // ViewModels
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<StudentHomeViewModel>();
-        // Add others if needed...
+        builder.Services.AddTransient<HistoryViewModel>();
+        builder.Services.AddTransient<ScanViewModel>();
 
         // Pages
         builder.Services.AddTransient<Views.LoginPage>();
         builder.Services.AddTransient<Views.StudentHomePage>();
-        // Add others if needed...
+        builder.Services.AddTransient<Views.HistoryPage>();
+        builder.Services.AddTransient<Views.ScanPage>();
+        builder.Services.AddTransient<Views.LecturerHomePage>();
+        builder.Services.AddTransient<Views.SignUpPage>();
+
+        // Shell
+        builder.Services.AddSingleton<AppShell>();
+
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: Services Registered");
 
 #if DEBUG
         builder.Logging.AddDebug();

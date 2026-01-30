@@ -182,13 +182,13 @@ public class LoginViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(IdText))
         {
-            await Shell.Current.DisplayAlert("Error", "Please enter your ID.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your ID.", "OK");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(PasswordText))
         {
-            await Shell.Current.DisplayAlert("Error", "Please enter your password.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your password.", "OK");
             return;
         }
 
@@ -226,7 +226,7 @@ public class LoginViewModel : BaseViewModel
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Login Error: {ex}");
-            await Shell.Current.DisplayAlert("Login Error", "Invalid credentials or connection error.", "OK");
+            await Shell.Current.DisplayAlertAsync("Login Error", "Invalid credentials or connection error.", "OK");
         }
         finally
         {
@@ -243,7 +243,7 @@ public class LoginViewModel : BaseViewModel
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"SignUp Error: {ex}");
-            await Shell.Current.DisplayAlert("Error", "Unable to open sign up page.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Unable to open sign up page.", "OK");
         }
     }
 
@@ -254,7 +254,7 @@ public class LoginViewModel : BaseViewModel
 
     private async void OnForgotPasswordClicked()
     {
-        await Shell.Current.DisplayAlert("Forgot Password", "Please contact your system administrator to reset your password.\n\nSupport: admin@university.edu", "OK");
+        await Shell.Current.DisplayAlertAsync("Forgot Password", "Please contact your system administrator to reset your password.\n\nSupport: admin@university.edu", "OK");
     }
 
     private void OnRememberMeClicked()

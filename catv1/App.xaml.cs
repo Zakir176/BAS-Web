@@ -2,8 +2,11 @@
 
 public partial class App : Application
 {
-    public App()
+    private readonly IServiceProvider _serviceProvider;
+
+    public App(IServiceProvider serviceProvider)
     {
+        _serviceProvider = serviceProvider;
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor Start");
         InitializeComponent();
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor End");
@@ -12,6 +15,7 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState? activationState)
     {
         System.Diagnostics.Debug.WriteLine("CAT_LOG: CreateWindow");
-        return new Window(new AppShell());
+        var shell = _serviceProvider.GetRequiredService<AppShell>();
+        return new Window(shell);
     }
 }

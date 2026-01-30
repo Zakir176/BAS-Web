@@ -8,9 +8,6 @@
     BackgroundColor="#0F172A"
     Shell.NavBarIsVisible="False">
 
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
 
     <ScrollView>
         <Grid>
