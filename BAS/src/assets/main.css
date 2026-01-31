@@ -75,10 +75,6 @@
   --shadow-modal: 0 20px 50px -12px rgba(0, 0, 0, 0.7), 0 10px 20px rgba(59, 130, 246, 0.2);
 }
 
-* {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
@@ -86,6 +82,7 @@ body {
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #app {
