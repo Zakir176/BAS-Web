@@ -196,6 +196,7 @@ const fetchStudentData = async () => {
 
   } catch (error) {
     console.error('Data sync failed:', error)
+    toast.error('Could not load your dashboard data. Please try again later.')
   } finally {
     isLoading.value = false
   }

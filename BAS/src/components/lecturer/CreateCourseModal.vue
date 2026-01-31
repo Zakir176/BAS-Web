@@ -43,6 +43,7 @@ import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
 import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 
 const props = defineProps({
   isOpen: {
@@ -57,14 +58,15 @@ const courseName = ref('')
 const maxAbsencesAllowed = ref(0)
 const isCreating = ref(false)
 const { user } = useAuth()
+const { toast } = useToast()
 
 const createCourse = async () => {
   if (!courseName.value.trim()) {
-    alert('Course name cannot be empty.')
+    toast.error('Course name cannot be empty.')
     return
   }
   if (maxAbsencesAllowed.value < 0) {
-    alert('Maximum absences cannot be negative.')
+    toast.error('Maximum absences cannot be negative.')
     return
   }
 
@@ -84,7 +86,7 @@ const createCourse = async () => {
     }
 
     if (data && data.length > 0) {
-      alert('Course created successfully!')
+      toast.success('Course created successfully!')
       emit('courseCreated', data[0])
       emit('close')
       // Reset form fields
@@ -94,7 +96,7 @@ const createCourse = async () => {
 
   } catch (error) {
     console.error('Error creating course:', error.message)
-    alert(`Error creating course: ${error.message}`)
+    toast.error(`Error creating course: ${error.message}`)
   } finally {
     isCreating.value = false
   }
