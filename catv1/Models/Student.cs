@@ -15,6 +15,7 @@ public class Student : BaseModel, INotifyPropertyChanged
     [Column("name")]
     public string Name { get; set; }
 
+    [Newtonsoft.Json.JsonIgnore]
     public string Initials => !string.IsNullOrEmpty(Name) ? string.Join("", Name.Split(' ').Select(n => n[0])) : "?";
 
     // UI Properties
@@ -29,6 +30,7 @@ public class Student : BaseModel, INotifyPropertyChanged
     [Column("scan_time")]
     public DateTime? ScanTime { get; set; }
 
+    [Newtonsoft.Json.JsonIgnore]
     public string TimeDisplay => IsPresent && ScanTime.HasValue ? ScanTime.Value.ToString("hh:mm tt") : "";
 
     // Helper for property change notification to avoid MVVM bloat for just a model

@@ -8,11 +8,12 @@ public class LoginViewModel : BaseViewModel
     private bool _isStudent = true;
     private bool _isRememberMe;
     private bool _isPassword;
-    private string _idText;
-    private string _passwordText;
-    private string _welcomeTitle;
-    private string _idFieldLabel;
-    private string _idPlaceholder;
+    private string _emailText = string.Empty;
+    private string _idText = string.Empty;
+    private string _passwordText = string.Empty;
+    private string _welcomeTitle = string.Empty;
+    private string _idFieldLabel = string.Empty;
+    private string _idPlaceholder = string.Empty;
     private Color _studentBtnBgColor;
     private Color _studentBtnTextColor;
     private Color _lecturerBtnBgColor;
@@ -52,6 +53,12 @@ public class LoginViewModel : BaseViewModel
     {
         get => _isStudent;
         set => SetProperty(ref _isStudent, value);
+    }
+
+    public string EmailText
+    {
+        get => _emailText;
+        set => SetProperty(ref _emailText, value);
     }
 
     public bool IsRememberMe
@@ -180,6 +187,12 @@ public class LoginViewModel : BaseViewModel
 
     private async Task OnLoginClicked()
     {
+        if (string.IsNullOrWhiteSpace(EmailText))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your email.", "OK");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(IdText))
         {
             await Shell.Current.DisplayAlertAsync("Error", "Please enter your ID.", "OK");
@@ -195,11 +208,8 @@ public class LoginViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-
-            // Note: If your partner is using SIN as the username/email in Supabase Auth,
-            // this will work. If they use a different format, we may need to adjust this.
-            var session = await _supabase.Auth.SignInWithPassword(IdText, PasswordText);
-
+            // Sign in with Email and Password
+            var session = await _supabase.Auth.SignInWithPassword(EmailText, PasswordText);
             if (session != null)
             {
                 if (IsRememberMe)

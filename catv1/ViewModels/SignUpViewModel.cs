@@ -1,0 +1,192 @@
+using System.Windows.Input;
+using catv1.Models;
+using Supabase.Gotrue;
+
+namespace catv1.ViewModels;
+
+public class SignUpViewModel : BaseViewModel
+{
+    private string _fullName = string.Empty;
+    private string _email = string.Empty;
+    private string _id = string.Empty;
+    private string _password = string.Empty;
+    private string _confirmPassword = string.Empty;
+    private bool _isStudent = true;
+    private bool _isPassword = true;
+
+    public string FullName
+    {
+        get => _fullName;
+        set => SetProperty(ref _fullName, value);
+    }
+
+    public string Email
+    {
+        get => _email;
+        set => SetProperty(ref _email, value);
+    }
+
+    public string Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
+
+    public string Password
+    {
+        get => _password;
+        set => SetProperty(ref _password, value);
+    }
+
+    public string ConfirmPassword
+    {
+        get => _confirmPassword;
+        set => SetProperty(ref _confirmPassword, value);
+    }
+
+    public bool IsStudent
+    {
+        get => _isStudent;
+        set
+        {
+            if (SetProperty(ref _isStudent, value))
+            {
+                OnPropertyChanged(nameof(IsLecturer));
+                OnPropertyChanged(nameof(SignUpTitle));
+                OnPropertyChanged(nameof(IdFieldLabel));
+                OnPropertyChanged(nameof(IdPlaceholder));
+                OnPropertyChanged(nameof(StudentBtnBgColor));
+                OnPropertyChanged(nameof(LecturerBtnBgColor));
+                OnPropertyChanged(nameof(StudentBtnTextColor));
+                OnPropertyChanged(nameof(LecturerBtnTextColor));
+            }
+        }
+    }
+
+    public bool IsLecturer => !IsStudent;
+
+    public string SignUpTitle => IsStudent ? "Student Registration" : "Lecturer Registration";
+    public string IdFieldLabel => IsStudent ? "STUDENT ID (SIN)" : "LECTURER ID";
+    public string IdPlaceholder => IsStudent ? "e.g. 210984" : "e.g. L00123";
+
+    public Color StudentBtnBgColor => IsStudent ? Color.FromArgb("#3B82F6") : Colors.Transparent;
+    public Color LecturerBtnBgColor => IsLecturer ? Color.FromArgb("#3B82F6") : Colors.Transparent;
+    public Color StudentBtnTextColor => IsStudent ? Colors.White : Color.FromArgb("#64748B");
+    public Color LecturerBtnTextColor => IsLecturer ? Colors.White : Color.FromArgb("#64748B");
+
+    public bool IsPassword
+    {
+        get => _isPassword;
+        set => SetProperty(ref _isPassword, value);
+    }
+
+    public ICommand StudentCommand { get; }
+    public ICommand LecturerCommand { get; }
+    public ICommand SignUpCommand { get; }
+    public ICommand LoginCommand { get; }
+    public ICommand TogglePasswordCommand { get; }
+
+    private readonly Supabase.Client _supabase;
+
+    public SignUpViewModel(Supabase.Client supabase)
+    {
+        _supabase = supabase;
+
+        StudentCommand = new Command(() => IsStudent = true);
+        LecturerCommand = new Command(() => IsStudent = false);
+        SignUpCommand = new Command(OnSignUpClicked);
+        LoginCommand = new Command(OnLoginClicked);
+        TogglePasswordCommand = new Command(() => IsPassword = !IsPassword);
+    }
+
+    private async void OnSignUpClicked()
+    {
+        if (IsBusy) return;
+
+        if (string.IsNullOrWhiteSpace(FullName))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your full name.", "OK");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Email))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your email.", "OK");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Id))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", $"Please enter your {(IsStudent ? "Student ID" : "Lecturer ID")}.", "OK");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Password))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter a password.", "OK");
+            return;
+        }
+
+        if (Password != ConfirmPassword)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "Passwords do not match.", "OK");
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+
+            var options = new SignUpOptions
+            {
+                Data = new Dictionary<string, object>
+                {
+                    { "full_name", FullName },
+                    { "user_id", Id },
+                    { "role", IsStudent ? "student" : "lecturer" }
+                }
+            };
+
+            var session = await _supabase.Auth.SignUp(Email, Password, options);
+
+            if (session != null)
+            {
+                if (IsStudent)
+                {
+                    var student = new Student
+                    {
+                        Id = Id,
+                        Name = FullName,
+                        IsPresent = false
+                    };
+                    await _supabase.From<Student>().Insert(student);
+                }
+                else
+                {
+                    var lecturerProfile = new LecturerProfile
+                    {
+                        Id = this.Id,
+                        Name = this.FullName
+                    };
+                    await _supabase.From<LecturerProfile>().Insert(lecturerProfile);
+                }
+
+                await Shell.Current.DisplayAlertAsync("Success", "Account created successfully! Please login.", "OK");
+                await Shell.Current.GoToAsync("//login");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Registration Error", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async void OnLoginClicked()
+    {
+        await Shell.Current.GoToAsync("//login");
+    }
+}
