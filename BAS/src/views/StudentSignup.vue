@@ -10,65 +10,65 @@
             <p>Create your student account to get started.</p>
           </div>
 
-          <form @submit.prevent="handleSignup" class="auth-form">
+          <Form @submit="handleSignup" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.firstName" @input="clearError('firstName')" type="text" id="firstName" placeholder=" " required />
+                <Field name="firstName" type="text" id="firstName" placeholder=" " class="input-field" :class="{'is-invalid': errors.firstName}" />
                 <label for="firstName">First Name</label>
-                <p v-if="errors.firstName" class="error-message">{{ errors.firstName }}</p>
+                <ErrorMessage name="firstName" class="error-message" />
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.lastName" @input="clearError('lastName')" type="text" id="lastName" placeholder=" " required />
+                <Field name="lastName" type="text" id="lastName" placeholder=" " class="input-field" :class="{'is-invalid': errors.lastName}" />
                 <label for="lastName">Last Name</label>
-                <p v-if="errors.lastName" class="error-message">{{ errors.lastName }}</p>
+                <ErrorMessage name="lastName" class="error-message" />
               </div>
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.studentId" @input="clearError('studentId')" type="text" id="studentId" placeholder=" " required />
+              <Field name="studentId" type="text" id="studentId" placeholder=" " class="input-field" :class="{'is-invalid': errors.studentId}" />
               <label for="studentId">Student ID Number</label>
-              <p v-if="errors.studentId" class="error-message">{{ errors.studentId }}</p>
+              <ErrorMessage name="studentId" class="error-message" />
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.email" @input="clearError('email')" type="email" id="email" placeholder=" " required />
+              <Field name="email" type="email" id="email" placeholder=" " class="input-field" :class="{'is-invalid': errors.email}" />
               <label for="email">University Email</label>
-              <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
+              <ErrorMessage name="email" class="error-message" />
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.classSection" @input="clearError('classSection')" type="text" id="classSection" placeholder=" " required />
+              <Field name="classSection" type="text" id="classSection" placeholder=" " class="input-field" :class="{'is-invalid': errors.classSection}" />
               <label for="classSection">Class Section (e.g. CS101)</label>
-              <p v-if="errors.classSection" class="error-message">{{ errors.classSection }}</p>
+              <ErrorMessage name="classSection" class="error-message" />
             </div>
 
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.password" @input="clearError('password')" type="password" id="password" placeholder=" " required />
+                <Field name="password" type="password" id="password" placeholder=" " class="input-field" :class="{'is-invalid': errors.password}" />
                 <label for="password">Password</label>
-                <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
+                <ErrorMessage name="password" class="error-message" />
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.confirmPassword" @input="clearError('confirmPassword')" type="password" id="confirmPassword" placeholder=" " required />
+                <Field name="confirmPassword" type="password" id="confirmPassword" placeholder=" " class="input-field" :class="{'is-invalid': errors.confirmPassword}" />
                 <label for="confirmPassword">Confirm</label>
-                <p v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</p>
+                <ErrorMessage name="confirmPassword" class="error-message" />
               </div>
             </div>
 
             <div class="auth-options">
               <label class="premium-checkbox">
-                <input type="checkbox" v-model="formData.agreeToTerms" @change="clearError('agreeToTerms')" id="agreeToTerms" required>
+                <Field name="agreeToTerms" type="checkbox" :value="true" />
                 <span class="box"></span>
                 <span class="label-txt">I accept the terms of service</span>
               </label>
-              <p v-if="errors.agreeToTerms" class="error-message">{{ errors.agreeToTerms }}</p>
+              <ErrorMessage name="agreeToTerms" class="error-message" />
             </div>
 
             <Button type="submit" variant="primary" size="lg" full-width class="auth-btn" :disabled="isLoading">
               <span v-if="!isLoading">Create Student Account</span>
               <span v-else>Registering...</span>
             </Button>
-          </form>
+          </Form>
 
           <footer class="auth-footer">
             <p>Already a member? <router-link to="/student-login">Sign In</router-link></p>
@@ -80,8 +80,9 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
@@ -90,111 +91,28 @@ const router = useRouter()
 const { signUp, isLoading } = useAuth()
 const { toast } = useToast()
 
-const formData = reactive({
-  firstName: '',
-  lastName: '',
-  studentId: '',
-  email: '',
-  classSection: '',
-  password: '',
-  confirmPassword: '',
-  agreeToTerms: false
-})
+const schema = yup.object({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  studentId: yup.string().required('Student ID is required'),
+  email: yup.string().required('Email is required').email('Invalid email format'),
+  classSection: yup.string().required('Class section is required'),
+  password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
+  confirmPassword: yup.string()
+    .required('Please confirm your password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+  agreeToTerms: yup.boolean().oneOf([true], 'You must accept the terms of service'),
+});
 
-const errors = reactive({
-  firstName: '',
-  lastName: '',
-  studentId: '',
-  email: '',
-  classSection: '',
-  password: '',
-  confirmPassword: '',
-  agreeToTerms: ''
-})
-
-const clearError = (field) => {
-  errors[field] = ''
-}
-
-const validateForm = () => {
-  let isValid = true
-  // Reset errors
-  Object.keys(errors).forEach(key => (errors[key] = ''))
-
-  // First Name validation
-  if (!formData.firstName) {
-    errors.firstName = 'First Name is required'
-    isValid = false
-  }
-
-  // Last Name validation
-  if (!formData.lastName) {
-    errors.lastName = 'Last Name is required'
-    isValid = false
-  }
-
-  // Student ID validation
-  if (!formData.studentId) {
-    errors.studentId = 'Student ID is required'
-    isValid = false
-  }
-
-  // Email validation
-  if (!formData.email) {
-    errors.email = 'Email is required'
-    isValid = false
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-    errors.email = 'Invalid email format'
-    isValid = false
-  }
-
-  // Class Section validation
-  if (!formData.classSection) {
-    errors.classSection = 'Class Section is required'
-    isValid = false
-  }
-
-  // Password validation
-  if (!formData.password) {
-    errors.password = 'Password is required'
-    isValid = false
-  } else if (formData.password.length < 8) { // Example: minimum 8 characters for signup
-    errors.password = 'Password must be at least 8 characters'
-    isValid = false
-  }
-
-  // Confirm Password validation
-  if (!formData.confirmPassword) {
-    errors.confirmPassword = 'Confirm Password is required'
-    isValid = false
-  } else if (formData.password !== formData.confirmPassword) {
-    errors.confirmPassword = 'Passwords do not match'
-    isValid = false
-  }
-
-  // Agree to Terms validation
-  if (!formData.agreeToTerms) {
-    errors.agreeToTerms = 'You must agree to the terms of service'
-    isValid = false
-  }
-  
-  return isValid
-}
-
-const handleSignup = async () => {
-  if (!validateForm()) {
-    toast.error('Please correct the errors in the form.')
-    return
-  }
-  
+const handleSignup = async (values) => {
   try {
-    await signUp(formData.email, formData.password, {
+    await signUp(values.email, values.password, {
       role: 'student',
-      student_id: formData.studentId,
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      full_name: `${formData.firstName} ${formData.lastName}`,
-      class_section: formData.classSection
+      student_id: values.studentId,
+      first_name: values.firstName,
+      last_name: values.lastName,
+      full_name: `${values.firstName} ${values.lastName}`,
+      class_section: values.classSection
     })
     toast.success('Account created successfully! Please check your email for verification.')
     setTimeout(() => {
@@ -213,6 +131,11 @@ const handleSignup = async () => {
   font-size: 0.875rem; /* text-sm */
   margin-top: 0.25rem;
 }
+
+.input-field.is-invalid {
+  border-color: #ef4444;
+}
+
 .auth-page {
   min-height: 100vh;
   position: relative;
@@ -308,7 +231,7 @@ const handleSignup = async () => {
   position: relative;
 }
 
-.input-group-v2 input {
+.input-group-v2 .input-field {
   width: 100%;
   padding: 1rem;
   background: #f8fafc;
@@ -319,7 +242,7 @@ const handleSignup = async () => {
   transition: all 0.2s;
 }
 
-.input-group-v2 input:focus {
+.input-group-v2 .input-field:focus {
   border-color: #3b82f6;
   background: white;
   outline: none;
@@ -334,8 +257,8 @@ const handleSignup = async () => {
   transition: all 0.2s;
 }
 
-.input-group-v2 input:focus ~ label,
-.input-group-v2 input:not(:placeholder-shown) ~ label {
+.input-group-v2 .input-field:focus ~ label,
+.input-group-v2 .input-field:not(:placeholder-shown) ~ label {
   top: -1.4rem;
   left: 0.5rem;
   font-size: 0.8rem;

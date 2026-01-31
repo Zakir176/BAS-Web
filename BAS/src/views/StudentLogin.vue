@@ -19,47 +19,45 @@
             <p>Sign in to your account to continue</p>
           </div>
 
-          <form @submit.prevent="handleLogin" class="auth-form">
+          <Form @submit="handleLogin" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
             <div class="form-group">
               <label for="email">Student Email</label>
               <div class="input-wrapper">
                 <span class="input-icon">👤</span>
-                <input 
-                  v-model="formData.email" 
-                  @input="clearError('email')"
+                <Field 
+                  name="email"
                   type="email" 
                   id="email"
                   placeholder="name@university.edu" 
-                  required
                   class="input"
-                >
+                  :class="{ 'is-invalid': errors.email }"
+                />
               </div>
-              <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
+              <ErrorMessage name="email" class="error-message" />
             </div>
 
             <div class="form-group">
               <label for="password">Password</label>
               <div class="input-wrapper">
                 <span class="input-icon">🔒</span>
-                <input 
-                  v-model="formData.password" 
-                  @input="clearError('password')"
+                <Field 
+                  name="password"
                   :type="showPassword ? 'text' : 'password'" 
                   id="password"
                   placeholder="••••••••" 
-                  required
                   class="input"
-                >
+                  :class="{ 'is-invalid': errors.password }"
+                />
                 <button type="button" class="password-toggle" @click="showPassword = !showPassword" aria-label="Toggle password visibility">
                   <span aria-hidden="true">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</span>
                 </button>
               </div>
-              <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
+              <ErrorMessage name="password" class="error-message" />
             </div>
 
             <div class="auth-options">
               <label class="checkbox-container">
-                <input type="checkbox" v-model="formData.rememberMe">
+                <input type="checkbox" v-model="rememberMe">
                 <span class="checkmark"></span>
                 Remember me
               </label>
@@ -77,7 +75,7 @@
               <span v-else>Authenticating...</span>
               <span class="btn-arrow">→</span>
             </Button>
-          </form>
+          </Form>
 
           <div class="auth-footer">
             <p>Are you a faculty member? <router-link to="/lecturer-login">Lecturer Portal</router-link></p>
@@ -92,8 +90,10 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
@@ -103,59 +103,18 @@ const router = useRouter()
 const { signIn, isLoading } = useAuth()
 const { toast } = useToast()
 const showPassword = ref(false)
+const rememberMe = ref(false)
 
-const formData = reactive({
-  email: '',
-  password: '',
-  rememberMe: false
-})
+const schema = yup.object({
+  email: yup.string().required('Email is required').email('Invalid email format'),
+  password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+});
 
-const errors = reactive({
-  email: '',
-  password: ''
-})
-
-const clearError = (field) => {
-  errors[field] = ''
-}
-
-const validateLogin = () => {
-  let isValid = true
-  // Reset errors
-  errors.email = ''
-  errors.password = ''
-
-  // Email validation
-  if (!formData.email) {
-    errors.email = 'Email is required'
-    isValid = false
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-    errors.email = 'Invalid email format'
-    isValid = false
-  }
-
-  // Password validation
-  if (!formData.password) {
-    errors.password = 'Password is required'
-    isValid = false
-  } else if (formData.password.length < 6) { // Example: minimum 6 characters
-    errors.password = 'Password must be at least 6 characters'
-    isValid = false
-  }
-
-  return isValid
-}
-
-const handleLogin = async () => {
-  if (!validateLogin()) {
-    // Optionally show a general toast if validation fails, or rely solely on field errors
-    toast.error('Please correct the errors in the form.')
-    return
-  }
-
+const handleLogin = async (values) => {
   try {
-    await signIn(formData.email, formData.password)
+    await signIn(values.email, values.password)
     toast.success('Welcome back! Redirecting to dashboard...')
+    // In a real app, you might want to handle the 'rememberMe' value here
     setTimeout(() => {
       router.push('/student-homepage')
     }, 1500)
@@ -167,12 +126,14 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-/* Existing styles */
-/* ... */
 .error-message {
   color: #ef4444; /* red-500 */
   font-size: 0.875rem; /* text-sm */
   margin-top: 0.25rem;
+}
+
+.input.is-invalid {
+  border-color: #ef4444; /* red-500 */
 }
 
 .auth-overlay {
