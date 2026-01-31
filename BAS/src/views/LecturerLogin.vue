@@ -21,34 +21,40 @@
 
           <form @submit.prevent="handleLogin" class="auth-form">
             <div class="form-group">
-              <label>Staff Email</label>
+              <label for="email">Staff Email</label>
               <div class="input-wrapper">
                 <span class="input-icon">✉️</span>
                 <input 
                   v-model="formData.email" 
+                  @input="clearError('email')"
                   type="email" 
+                  id="email"
                   placeholder="lecturer@university.edu" 
                   required
                   class="input"
                 >
               </div>
+              <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
             </div>
 
             <div class="form-group">
-              <label>Password</label>
+              <label for="password">Password</label>
               <div class="input-wrapper">
                 <span class="input-icon">🔒</span>
                 <input 
                   v-model="formData.password" 
+                  @input="clearError('password')"
                   :type="showPassword ? 'text' : 'password'" 
+                  id="password"
                   placeholder="••••••••" 
                   required
                   class="input"
                 >
-                <button type="button" class="password-toggle" @click="showPassword = !showPassword">
-                  {{ showPassword ? '👁️' : '👁️‍ق' }}
+                <button type="button" class="password-toggle" @click="showPassword = !showPassword" aria-label="Toggle password visibility">
+                  <span aria-hidden="true">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</span>
                 </button>
               </div>
+              <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
             </div>
 
             <div class="auth-options">
@@ -111,9 +117,45 @@ const formData = reactive({
   rememberMe: false
 })
 
+const errors = reactive({
+  email: '',
+  password: ''
+})
+
+const clearError = (field) => {
+  errors[field] = ''
+}
+
+const validateLogin = () => {
+  let isValid = true
+  // Reset errors
+  errors.email = ''
+  errors.password = ''
+
+  // Email validation
+  if (!formData.email) {
+    errors.email = 'Email is required'
+    isValid = false
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    errors.email = 'Invalid email format'
+    isValid = false
+  }
+
+  // Password validation
+  if (!formData.password) {
+    errors.password = 'Password is required'
+    isValid = false
+  } else if (formData.password.length < 6) { // Example: minimum 6 characters
+    errors.password = 'Password must be at least 6 characters'
+    isValid = false
+  }
+
+  return isValid
+}
+
 const handleLogin = async () => {
-  if (!formData.email || !formData.password) {
-    toast.error('Please fill in all fields')
+  if (!validateLogin()) {
+    toast.error('Please correct the errors in the form.')
     return
   }
 
@@ -147,6 +189,11 @@ const handleClearSession = async () => {
 </script>
 
 <style scoped>
+.error-message {
+  color: #ef4444; /* red-500 */
+  font-size: 0.875rem; /* text-sm */
+  margin-top: 0.25rem;
+}
 .auth-overlay {
   flex: 1;
   display: flex;
