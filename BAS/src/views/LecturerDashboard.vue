@@ -475,7 +475,6 @@ onMounted(fetchLecturerData)
 <style scoped>
 .lecturer-dashboard {
   min-height: 100vh;
-  background-color: var(--bg-main);
 }
 
 .main-content {
