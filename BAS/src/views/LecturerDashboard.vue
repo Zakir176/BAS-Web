@@ -295,6 +295,7 @@ const markAsPresent = async (studentId) => {
     if (index !== -1) activeRoster.value[index].present = true
   } catch (err) {
     console.error(err)
+    toast.error('Failed to mark as present.')
   }
 }
 
@@ -460,6 +461,7 @@ const fetchLecturerData = async () => {
     }
   } catch (error) {
     console.error('Error fetching dashboard data:', error)
+    toast.error('Could not load dashboard data. Please try again.')
   } finally {
     isLoading.value = false
   }
@@ -475,7 +477,6 @@ onMounted(fetchLecturerData)
 <style scoped>
 .lecturer-dashboard {
   min-height: 100vh;
-  background-color: var(--bg-main);
 }
 
 .main-content {

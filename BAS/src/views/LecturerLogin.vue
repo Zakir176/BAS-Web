@@ -19,41 +19,45 @@
             <p>Sign in to manage your classes</p>
           </div>
 
-          <form @submit.prevent="handleLogin" class="auth-form">
+          <Form @submit="handleLogin" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
             <div class="form-group">
-              <label>Staff Email</label>
+              <label for="email">Staff Email</label>
               <div class="input-wrapper">
                 <span class="input-icon">✉️</span>
-                <input 
-                  v-model="formData.email" 
+                <Field 
+                  name="email"
                   type="email" 
+                  id="email"
                   placeholder="lecturer@university.edu" 
-                  required
                   class="input"
-                >
+                  :class="{ 'is-invalid': errors.email }"
+                />
               </div>
+              <ErrorMessage name="email" class="error-message" />
             </div>
 
             <div class="form-group">
-              <label>Password</label>
+              <label for="password">Password</label>
               <div class="input-wrapper">
                 <span class="input-icon">🔒</span>
-                <input 
-                  v-model="formData.password" 
+                <Field 
+                  name="password"
                   :type="showPassword ? 'text' : 'password'" 
+                  id="password"
                   placeholder="••••••••" 
-                  required
                   class="input"
-                >
-                <button type="button" class="password-toggle" @click="showPassword = !showPassword">
-                  {{ showPassword ? '👁️' : '👁️‍ق' }}
+                  :class="{ 'is-invalid': errors.password }"
+                />
+                <button type="button" class="password-toggle" @click="showPassword = !showPassword" aria-label="Toggle password visibility">
+                  <span aria-hidden="true">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</span>
                 </button>
               </div>
+              <ErrorMessage name="password" class="error-message" />
             </div>
 
             <div class="auth-options">
               <label class="checkbox-container">
-                <input type="checkbox" v-model="formData.rememberMe">
+                <input type="checkbox" v-model="rememberMe">
                 <span class="checkmark"></span>
                 Remember me
               </label>
@@ -71,7 +75,7 @@
               <span v-else>Authenticating...</span>
               <span class="btn-arrow">→</span>
             </Button>
-          </form>
+          </Form>
 
           <div class="auth-footer">
             <p>Not a lecturer? <router-link to="/student-login">Student Portal</router-link></p>
@@ -93,8 +97,10 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
@@ -104,21 +110,16 @@ const router = useRouter()
 const { signIn, signOut, isLoading } = useAuth()
 const { toast } = useToast()
 const showPassword = ref(false)
+const rememberMe = ref(false)
 
-const formData = reactive({
-  email: '',
-  password: '',
-  rememberMe: false
-})
+const schema = yup.object({
+  email: yup.string().required('Email is required').email('Invalid email format'),
+  password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+});
 
-const handleLogin = async () => {
-  if (!formData.email || !formData.password) {
-    toast.error('Please fill in all fields')
-    return
-  }
-
+const handleLogin = async (values) => {
   try {
-    await signIn(formData.email, formData.password)
+    await signIn(values.email, values.password)
     toast.success('Welcome back! Redirecting to dashboard...')
     setTimeout(() => {
       router.push('/lecturer-dashboard')
@@ -147,6 +148,16 @@ const handleClearSession = async () => {
 </script>
 
 <style scoped>
+.error-message {
+  color: #ef4444; /* red-500 */
+  font-size: 0.875rem; /* text-sm */
+  margin-top: 0.25rem;
+}
+
+.input.is-invalid {
+  border-color: #ef4444;
+}
+
 .auth-overlay {
   flex: 1;
   display: flex;

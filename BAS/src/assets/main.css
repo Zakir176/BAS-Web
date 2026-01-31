@@ -38,6 +38,10 @@
   
   /* Transitions */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Light mode background pattern */
+  --bg-pattern: radial-gradient(#d1d5db 1px, transparent 1px);
+  --bg-pattern-size: 20px 20px;
 }
 
 [data-theme="dark"] {
@@ -75,10 +79,6 @@
   --shadow-modal: 0 20px 50px -12px rgba(0, 0, 0, 0.7), 0 10px 20px rgba(59, 130, 246, 0.2);
 }
 
-* {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
@@ -86,6 +86,9 @@ body {
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  background-image: var(--bg-pattern);
+  background-size: var(--bg-pattern-size);
 }
 
 #app {
@@ -205,6 +208,9 @@ body {
     background: rgba(96, 165, 250, 0.3);
     color: var(--text-main);
   }
+}
+[data-theme="dark"] body {
+  background-image: none;
 }
 
 /* Glassmorphism Effect Utility */

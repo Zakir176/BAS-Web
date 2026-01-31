@@ -125,7 +125,6 @@ onUnmounted(() => {
 
 <style scoped>
 .university-homepage {
-  background-color: var(--bg-main);
   min-height: 100vh;
   color: var(--text-main);
 }

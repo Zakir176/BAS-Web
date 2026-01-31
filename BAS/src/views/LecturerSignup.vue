@@ -10,36 +10,42 @@
             <p>Empowering educators with smart tools.</p>
           </div>
 
-          <form @submit.prevent="handleSignup" class="auth-form">
+          <Form @submit="handleSignup" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.firstName" type="text" placeholder=" " required />
-                <label>First Name</label>
+                <Field name="firstName" type="text" id="firstName" placeholder=" " class="input-field" :class="{'is-invalid': errors.firstName}" />
+                <label for="firstName">First Name</label>
+                <ErrorMessage name="firstName" class="error-message" />
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.lastName" type="text" placeholder=" " required />
-                <label>Last Name</label>
+                <Field name="lastName" type="text" id="lastName" placeholder=" " class="input-field" :class="{'is-invalid': errors.lastName}" />
+                <label for="lastName">Last Name</label>
+                <ErrorMessage name="lastName" class="error-message" />
               </div>
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.email" type="email" placeholder=" " required />
-              <label>Official Email</label>
+              <Field name="email" type="email" id="email" placeholder=" " class="input-field" :class="{'is-invalid': errors.email}" />
+              <label for="email">Official Email</label>
+              <ErrorMessage name="email" class="error-message" />
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.department" type="text" placeholder=" " required />
-              <label>Department</label>
+              <Field name="department" type="text" id="department" placeholder=" " class="input-field" :class="{'is-invalid': errors.department}" />
+              <label for="department">Department</label>
+              <ErrorMessage name="department" class="error-message" />
             </div>
 
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.password" type="password" placeholder=" " required />
-                <label>Password</label>
+                <Field name="password" type="password" id="password" placeholder=" " class="input-field" :class="{'is-invalid': errors.password}" />
+                <label for="password">Password</label>
+                <ErrorMessage name="password" class="error-message" />
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.confirmPassword" type="password" placeholder=" " required />
-                <label>Confirm</label>
+                <Field name="confirmPassword" type="password" id="confirmPassword" placeholder=" " class="input-field" :class="{'is-invalid': errors.confirmPassword}" />
+                <label for="confirmPassword">Confirm</label>
+                <ErrorMessage name="confirmPassword" class="error-message" />
               </div>
             </div>
 
@@ -47,7 +53,7 @@
               <span v-if="!isLoading">Register as Lecturer</span>
               <span v-else>Registering...</span>
             </Button>
-          </form>
+          </Form>
 
           <footer class="auth-footer">
             <p>Already registered? <router-link to="/lecturer-login">Sign In</router-link></p>
@@ -59,8 +65,9 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
@@ -69,39 +76,25 @@ const router = useRouter()
 const { signUp, isLoading } = useAuth()
 const { toast } = useToast()
 
-const formData = reactive({
-  firstName: '',
-  lastName: '',
-  email: '',
-  department: '',
-  password: '',
-  confirmPassword: ''
-})
+const schema = yup.object({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup.string().required('Email is required').email('Invalid email format'),
+  department: yup.string().required('Department is required'),
+  password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
+  confirmPassword: yup.string()
+    .required('Please confirm your password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+});
 
-const validateForm = () => {
-  if (formData.password !== formData.confirmPassword) {
-    toast.error('Passwords do not match')
-    return false
-  }
-  
-  if (!formData.firstName || !formData.lastName || !formData.email || !formData.department || !formData.password) {
-    toast.error('Please fill in all required fields')
-    return false
-  }
-  
-  return true
-}
-
-const handleSignup = async () => {
-  if (!validateForm()) return
-  
+const handleSignup = async (values) => {
   try {
-    await signUp(formData.email, formData.password, {
+    await signUp(values.email, values.password, {
       role: 'lecturer',
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      full_name: `${formData.firstName} ${formData.lastName}`,
-      department: formData.department
+      first_name: values.firstName,
+      last_name: values.lastName,
+      full_name: `${values.firstName} ${values.lastName}`,
+      department: values.department
     })
     toast.success('Lecturer account created successfully! Please check your email for verification.')
     setTimeout(() => {
@@ -115,6 +108,16 @@ const handleSignup = async () => {
 </script>
 
 <style scoped>
+.error-message {
+  color: #ef4444; /* red-500 */
+  font-size: 0.875rem; /* text-sm */
+  margin-top: 0.25rem;
+}
+
+.input-field.is-invalid {
+  border-color: #ef4444;
+}
+
 .auth-page {
   min-height: 100vh;
   position: relative;
@@ -209,7 +212,7 @@ const handleSignup = async () => {
   position: relative;
 }
 
-.input-group-v2 input {
+.input-group-v2 .input-field {
   width: 100%;
   padding: 1rem;
   background: #f0fdf4;
@@ -229,8 +232,8 @@ const handleSignup = async () => {
   transition: all 0.2s;
 }
 
-.input-group-v2 input:focus ~ label,
-.input-group-v2 input:not(:placeholder-shown) ~ label {
+.input-group-v2 .input-field:focus ~ label,
+.input-group-v2 .input-field:not(:placeholder-shown) ~ label {
   top: -1.4rem;
   left: 0.5rem;
   font-size: 0.8rem;

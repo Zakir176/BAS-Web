@@ -49,12 +49,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Modal from '@/components/ui/Modal.vue'
 import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
 import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
 
 const props = defineProps({
   isOpen: {
@@ -71,24 +72,27 @@ const sessionTime = ref('09:00') // Default time
 const courses = ref([])
 const isCreating = ref(false)
 const { user } = useAuth()
+const { toast } = useToast()
 
 const fetchCourses = async () => {
   if (!user.value) return
-  const { data, error } = await supabase
-    .from('courses')
-    .select('course_id, course_name')
-    .eq('teacher_id', user.value.id)
+  try {
+    const { data, error } = await supabase
+      .from('courses')
+      .select('course_id, course_name')
+      .eq('teacher_id', user.value.id)
 
-  if (error) {
+    if (error) throw error
+    courses.value = data
+  } catch (error) {
+    toast.error('Failed to load courses.')
     console.error('Error fetching courses:', error.message)
-    return
   }
-  courses.value = data
 }
 
 const createSession = async () => {
   if (!selectedCourseId.value || !sessionDate.value || !sessionTime.value) {
-    alert('Please fill in all session details.')
+    toast.error('Please fill in all session details.')
     return
   }
 
@@ -108,7 +112,7 @@ const createSession = async () => {
     }
 
     if (data && data.length > 0) {
-      alert('Session created successfully!')
+      toast.success('Session created successfully!')
       emit('sessionCreated', data[0])
       emit('close')
       // Reset form fields
@@ -119,14 +123,22 @@ const createSession = async () => {
 
   } catch (error) {
     console.error('Error creating session:', error.message)
-    alert(`Error creating session: ${error.message}`)
+    toast.error(`Error creating session: ${error.message}`)
   } finally {
     isCreating.value = false
   }
 }
 
+watch(() => props.isOpen, (newVal) => {
+  if (newVal) {
+    fetchCourses()
+  }
+})
+
 onMounted(() => {
-  fetchCourses()
+  if (props.isOpen) {
+    fetchCourses()
+  }
 })
 </script>
 
