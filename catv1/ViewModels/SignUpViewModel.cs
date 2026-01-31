@@ -149,13 +149,14 @@ public class SignUpViewModel : BaseViewModel
 
             var session = await _supabase.Auth.SignUp(Email, Password, options);
 
-            if (session != null)
+            if (session?.User?.Id != null)
             {
                 if (IsStudent)
                 {
                     var student = new Student
                     {
-                        Id = Id,
+                        Id = session.User.Id, // Auth UUID
+                        StudentNumber = Id,   // SIN
                         Name = FullName,
                         IsPresent = false
                     };
@@ -165,8 +166,9 @@ public class SignUpViewModel : BaseViewModel
                 {
                     var lecturerProfile = new LecturerProfile
                     {
-                        Id = this.Id,
-                        Name = this.FullName
+                        Id = session.User.Id, // Auth UUID
+                        LecturerNumber = Id,  // Lecturer ID
+                        Name = FullName
                     };
                     await _supabase.From<LecturerProfile>().Insert(lecturerProfile);
                 }

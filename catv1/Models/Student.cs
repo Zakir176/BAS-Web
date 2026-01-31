@@ -10,10 +10,13 @@ namespace catv1.Models;
 public class Student : BaseModel, INotifyPropertyChanged
 {
     [PrimaryKey("id", false)]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty; // This will be the Supabase Auth UUID
+
+    [Column("student_number")]
+    public string StudentNumber { get; set; } = string.Empty; // This will be the SIN (e.g. 210984)
 
     [Column("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Newtonsoft.Json.JsonIgnore]
     public string Initials => !string.IsNullOrEmpty(Name) ? string.Join("", Name.Split(' ').Select(n => n[0])) : "?";
@@ -34,8 +37,8 @@ public class Student : BaseModel, INotifyPropertyChanged
     public string TimeDisplay => IsPresent && ScanTime.HasValue ? ScanTime.Value.ToString("hh:mm tt") : "";
 
     // Helper for property change notification to avoid MVVM bloat for just a model
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
