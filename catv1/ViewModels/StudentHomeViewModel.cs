@@ -90,8 +90,8 @@ public class StudentHomeViewModel : BaseViewModel
             if (studentResponse != null)
             {
                 Name = studentResponse.Name;
-                Id = studentResponse.StudentNumber; // Display SIN
-                // ClassName might need another field or join
+                Id = studentResponse.StudentId; // Display SIN
+                ClassName = studentResponse.Department;
             }
 
             // Fetch Recent Activity for THIS student
