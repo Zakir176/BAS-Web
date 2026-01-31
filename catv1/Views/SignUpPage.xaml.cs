@@ -1,82 +1,12 @@
-using Microsoft.Maui.Controls;
+using catv1.ViewModels;
 
 namespace catv1.Views;
 
 public partial class SignUpPage : ContentPage
 {
-    private bool _isStudent = true; // Default to Student
-
-    public SignUpPage()
+    public SignUpPage(SignUpViewModel viewModel)
     {
         InitializeComponent();
-        UpdateUI();
-    }
-
-    private void OnStudentClicked(object sender, EventArgs e)
-    {
-        _isStudent = true;
-        UpdateUI();
-    }
-
-    private void OnLecturerClicked(object sender, EventArgs e)
-    {
-        _isStudent = false;
-        UpdateUI();
-    }
-
-    private void UpdateUI()
-    {
-        if (_isStudent)
-        {
-            BtnStudent.BackgroundColor = Color.FromArgb("#3B82F6"); // Blue
-            BtnStudent.TextColor = Colors.White;
-
-            BtnLecturer.BackgroundColor = Colors.Transparent;
-            BtnLecturer.TextColor = Color.FromArgb("#64748B"); // Gray
-
-            LblSignUpTitle.Text = "Student Registration";
-            LblIdField.Text = "STUDENT ID (SIN)";
-            EntryId.Placeholder = "e.g. 210984";
-        }
-        else
-        {
-            BtnLecturer.BackgroundColor = Color.FromArgb("#3B82F6"); // Blue
-            BtnLecturer.TextColor = Colors.White;
-
-            BtnStudent.BackgroundColor = Colors.Transparent;
-            BtnStudent.TextColor = Color.FromArgb("#64748B"); // Gray
-
-            LblSignUpTitle.Text = "Lecturer Registration";
-            LblIdField.Text = "LECTURER ID";
-            EntryId.Placeholder = "e.g. L00123";
-        }
-    }
-
-    private async void OnSignUpClicked(object sender, EventArgs e)
-    {
-        // Basic validation
-        if (string.IsNullOrWhiteSpace(EntryId.Text))
-        {
-            await DisplayAlert("Error", "Please enter your ID.", "OK");
-            return;
-        }
-
-        // Simulate success
-        await DisplayAlert("Success", "Account created successfully!", "OK");
-
-        if (_isStudent)
-        {
-            await Shell.Current.GoToAsync("//student/dashboardTab/home");
-        }
-        else
-        {
-            await Shell.Current.GoToAsync("//lecturer/dashboardTab/dashboard");
-        }
-    }
-
-    private async void OnLoginClicked(object sender, EventArgs e)
-    {
-        // Go back to the login page (which is the default route //login)
-        await Shell.Current.GoToAsync("//login");
+        BindingContext = viewModel;
     }
 }

@@ -22,7 +22,10 @@ public class ActivityLog : BaseModel
     public bool IsExcused { get; set; }
 
     // Derived properties for display
+    [Newtonsoft.Json.JsonIgnore]
     public string DateDisplay => DateTime.ToString("MMM dd, yyyy");
+    [Newtonsoft.Json.JsonIgnore]
     public string TimeDisplay => Status == "Absent" && IsExcused ? "All Day" : DateTime.ToString("hh:mm tt");
+    [Newtonsoft.Json.JsonIgnore]
     public string FullTimeDisplay => $"{DateDisplay} • {TimeDisplay}";
 }
