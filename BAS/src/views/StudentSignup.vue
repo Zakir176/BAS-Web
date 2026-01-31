@@ -13,49 +13,55 @@
           <form @submit.prevent="handleSignup" class="auth-form">
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.firstName" type="text" placeholder=" " required />
-                <label>First Name</label>
+                <input v-model="formData.firstName" @input="clearError('firstName')" type="text" id="firstName" placeholder=" " required />
+                <label for="firstName">First Name</label>
+                <p v-if="errors.firstName" class="error-message">{{ errors.firstName }}</p>
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.lastName" type="text" placeholder=" " required />
-                <label>Last Name</label>
+                <input v-model="formData.lastName" @input="clearError('lastName')" type="text" id="lastName" placeholder=" " required />
+                <label for="lastName">Last Name</label>
+                <p v-if="errors.lastName" class="error-message">{{ errors.lastName }}</p>
               </div>
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.studentId" type="text" placeholder=" " required />
-              <label>Student ID Number</label>
-              <span class="error-msg" v-if="errors.studentId">{{ errors.studentId }}</span>
+              <input v-model="formData.studentId" @input="clearError('studentId')" type="text" id="studentId" placeholder=" " required />
+              <label for="studentId">Student ID Number</label>
+              <p v-if="errors.studentId" class="error-message">{{ errors.studentId }}</p>
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.email" type="email" placeholder=" " required />
-              <label>University Email</label>
-              <span class="error-msg" v-if="errors.email">{{ errors.email }}</span>
+              <input v-model="formData.email" @input="clearError('email')" type="email" id="email" placeholder=" " required />
+              <label for="email">University Email</label>
+              <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.classSection" type="text" placeholder=" " required />
-              <label>Class Section (e.g. CS101)</label>
+              <input v-model="formData.classSection" @input="clearError('classSection')" type="text" id="classSection" placeholder=" " required />
+              <label for="classSection">Class Section (e.g. CS101)</label>
+              <p v-if="errors.classSection" class="error-message">{{ errors.classSection }}</p>
             </div>
 
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.password" type="password" placeholder=" " required />
-                <label>Password</label>
+                <input v-model="formData.password" @input="clearError('password')" type="password" id="password" placeholder=" " required />
+                <label for="password">Password</label>
+                <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.confirmPassword" type="password" placeholder=" " required />
-                <label>Confirm</label>
+                <input v-model="formData.confirmPassword" @input="clearError('confirmPassword')" type="password" id="confirmPassword" placeholder=" " required />
+                <label for="confirmPassword">Confirm</label>
+                <p v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</p>
               </div>
             </div>
 
             <div class="auth-options">
               <label class="premium-checkbox">
-                <input type="checkbox" v-model="formData.agreeToTerms" required>
+                <input type="checkbox" v-model="formData.agreeToTerms" @change="clearError('agreeToTerms')" id="agreeToTerms" required>
                 <span class="box"></span>
                 <span class="label-txt">I accept the terms of service</span>
               </label>
+              <p v-if="errors.agreeToTerms" class="error-message">{{ errors.agreeToTerms }}</p>
             </div>
 
             <Button type="submit" variant="primary" size="lg" full-width class="auth-btn" :disabled="isLoading">
@@ -100,34 +106,87 @@ const errors = reactive({
   lastName: '',
   studentId: '',
   email: '',
-  password: ''
+  classSection: '',
+  password: '',
+  confirmPassword: '',
+  agreeToTerms: ''
 })
 
+const clearError = (field) => {
+  errors[field] = ''
+}
+
 const validateForm = () => {
-  Object.keys(errors).forEach(k => errors[k] = '')
-  if (formData.password !== formData.confirmPassword) {
-    toast.error('Passwords do not match')
-    return false
+  let isValid = true
+  // Reset errors
+  Object.keys(errors).forEach(key => (errors[key] = ''))
+
+  // First Name validation
+  if (!formData.firstName) {
+    errors.firstName = 'First Name is required'
+    isValid = false
   }
-  return true
+
+  // Last Name validation
+  if (!formData.lastName) {
+    errors.lastName = 'Last Name is required'
+    isValid = false
+  }
+
+  // Student ID validation
+  if (!formData.studentId) {
+    errors.studentId = 'Student ID is required'
+    isValid = false
+  }
+
+  // Email validation
+  if (!formData.email) {
+    errors.email = 'Email is required'
+    isValid = false
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    errors.email = 'Invalid email format'
+    isValid = false
+  }
+
+  // Class Section validation
+  if (!formData.classSection) {
+    errors.classSection = 'Class Section is required'
+    isValid = false
+  }
+
+  // Password validation
+  if (!formData.password) {
+    errors.password = 'Password is required'
+    isValid = false
+  } else if (formData.password.length < 8) { // Example: minimum 8 characters for signup
+    errors.password = 'Password must be at least 8 characters'
+    isValid = false
+  }
+
+  // Confirm Password validation
+  if (!formData.confirmPassword) {
+    errors.confirmPassword = 'Confirm Password is required'
+    isValid = false
+  } else if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = 'Passwords do not match'
+    isValid = false
+  }
+
+  // Agree to Terms validation
+  if (!formData.agreeToTerms) {
+    errors.agreeToTerms = 'You must agree to the terms of service'
+    isValid = false
+  }
+  
+  return isValid
 }
 
 const handleSignup = async () => {
-  if (!formData.agreeToTerms) {
-    toast.error('Please accept the terms of service')
+  if (!validateForm()) {
+    toast.error('Please correct the errors in the form.')
     return
   }
-
-  if (formData.password !== formData.confirmPassword) {
-    toast.error('Passwords do not match')
-    return
-  }
-
-  if (!formData.firstName || !formData.lastName || !formData.email || !formData.studentId || !formData.password) {
-    toast.error('Please fill in all required fields')
-    return
-  }
-
+  
   try {
     await signUp(formData.email, formData.password, {
       role: 'student',
@@ -149,6 +208,11 @@ const handleSignup = async () => {
 </script>
 
 <style scoped>
+.error-message {
+  color: #ef4444; /* red-500 */
+  font-size: 0.875rem; /* text-sm */
+  margin-top: 0.25rem;
+}
 .auth-page {
   min-height: 100vh;
   position: relative;
