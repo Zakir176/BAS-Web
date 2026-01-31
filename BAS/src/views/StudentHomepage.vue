@@ -256,7 +256,6 @@ onMounted(() => {
 <style scoped>
 .student-dashboard {
   min-height: 100vh;
-  background-color: #f8fafc;
 }
 
 .main-content {
