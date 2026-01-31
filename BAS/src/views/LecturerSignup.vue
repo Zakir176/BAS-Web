@@ -13,33 +13,39 @@
           <form @submit.prevent="handleSignup" class="auth-form">
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.firstName" type="text" placeholder=" " required />
-                <label>First Name</label>
+                <input v-model="formData.firstName" @input="clearError('firstName')" type="text" id="firstName" placeholder=" " required />
+                <label for="firstName">First Name</label>
+                <p v-if="errors.firstName" class="error-message">{{ errors.firstName }}</p>
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.lastName" type="text" placeholder=" " required />
-                <label>Last Name</label>
+                <input v-model="formData.lastName" @input="clearError('lastName')" type="text" id="lastName" placeholder=" " required />
+                <label for="lastName">Last Name</label>
+                <p v-if="errors.lastName" class="error-message">{{ errors.lastName }}</p>
               </div>
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.email" type="email" placeholder=" " required />
-              <label>Official Email</label>
+              <input v-model="formData.email" @input="clearError('email')" type="email" id="email" placeholder=" " required />
+              <label for="email">Official Email</label>
+              <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
             </div>
 
             <div class="input-group-v2">
-              <input v-model="formData.department" type="text" placeholder=" " required />
-              <label>Department</label>
+              <input v-model="formData.department" @input="clearError('department')" type="text" id="department" placeholder=" " required />
+              <label for="department">Department</label>
+              <p v-if="errors.department" class="error-message">{{ errors.department }}</p>
             </div>
 
             <div class="form-row-v2">
               <div class="input-group-v2">
-                <input v-model="formData.password" type="password" placeholder=" " required />
-                <label>Password</label>
+                <input v-model="formData.password" @input="clearError('password')" type="password" id="password" placeholder=" " required />
+                <label for="password">Password</label>
+                <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
               </div>
               <div class="input-group-v2">
-                <input v-model="formData.confirmPassword" type="password" placeholder=" " required />
-                <label>Confirm</label>
+                <input v-model="formData.confirmPassword" @input="clearError('confirmPassword')" type="password" id="confirmPassword" placeholder=" " required />
+                <label for="confirmPassword">Confirm</label>
+                <p v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</p>
               </div>
             </div>
 
@@ -78,22 +84,77 @@ const formData = reactive({
   confirmPassword: ''
 })
 
+const errors = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  department: '',
+  password: '',
+  confirmPassword: ''
+})
+
+const clearError = (field) => {
+  errors[field] = ''
+}
+
 const validateForm = () => {
-  if (formData.password !== formData.confirmPassword) {
-    toast.error('Passwords do not match')
-    return false
+  let isValid = true
+  // Reset errors
+  Object.keys(errors).forEach(key => (errors[key] = ''))
+
+  // First Name validation
+  if (!formData.firstName) {
+    errors.firstName = 'First Name is required'
+    isValid = false
+  }
+
+  // Last Name validation
+  if (!formData.lastName) {
+    errors.lastName = 'Last Name is required'
+    isValid = false
+  }
+
+  // Email validation
+  if (!formData.email) {
+    errors.email = 'Email is required'
+    isValid = false
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    errors.email = 'Invalid email format'
+    isValid = false
+  }
+
+  // Department validation
+  if (!formData.department) {
+    errors.department = 'Department is required'
+    isValid = false
+  }
+
+  // Password validation
+  if (!formData.password) {
+    errors.password = 'Password is required'
+    isValid = false
+  } else if (formData.password.length < 8) { // Example: minimum 8 characters for signup
+    errors.password = 'Password must be at least 8 characters'
+    isValid = false
+  }
+
+  // Confirm Password validation
+  if (!formData.confirmPassword) {
+    errors.confirmPassword = 'Confirm Password is required'
+    isValid = false
+  } else if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = 'Passwords do not match'
+    isValid = false
   }
   
-  if (!formData.firstName || !formData.lastName || !formData.email || !formData.department || !formData.password) {
-    toast.error('Please fill in all required fields')
-    return false
-  }
-  
-  return true
+  return isValid
 }
 
 const handleSignup = async () => {
-  if (!validateForm()) return
+  if (!validateForm()) {
+    toast.error('Please correct the errors in the form.')
+    return
+  }
   
   try {
     await signUp(formData.email, formData.password, {
@@ -115,6 +176,13 @@ const handleSignup = async () => {
 </script>
 
 <style scoped>
+/* Existing styles */
+/* ... */
+.error-message {
+  color: #ef4444; /* red-500 */
+  font-size: 0.875rem; /* text-sm */
+  margin-top: 0.25rem;
+}
 .auth-page {
   min-height: 100vh;
   position: relative;
