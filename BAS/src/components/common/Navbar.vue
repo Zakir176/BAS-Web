@@ -32,13 +32,17 @@
 
           <!-- User actions -->
           <div class="user-actions">
-            <button @click="toggleTheme" class="action-circle-btn">
-              {{ isDark ? '☀️' : '🌙' }}
+            <button
+              @click="toggleTheme"
+              class="action-circle-btn"
+              :aria-label="isDark ? 'Activate light mode' : 'Activate dark mode'"
+            >
+              <span aria-hidden="true">{{ isDark ? '☀️' : '🌙' }}</span>
             </button>
 
             <template v-if="isAuthenticated">
               <button @click="handleSignOut" class="logout-btn">
-                Logout <span class="icon">⏻</span>
+                Logout <span class="icon" aria-hidden="true">⏻</span>
               </button>
             </template>
             <template v-else>
@@ -47,7 +51,14 @@
           </div>
 
           <!-- Mobile menu toggle -->
-          <button @click="toggleMobileMenu" class="mobile-menu-toggle" :class="{ 'active': isMobileMenuOpen }">
+          <button
+            @click="toggleMobileMenu"
+            class="mobile-menu-toggle"
+            :class="{ 'active': isMobileMenuOpen }"
+            :aria-expanded="isMobileMenuOpen"
+            aria-controls="mobile-nav-drawer"
+            aria-label="Toggle navigation menu"
+          >
             <span></span><span></span><span></span>
           </button>
         </div>
@@ -56,7 +67,14 @@
         <div class="mobile-nav-overlay" :class="{ 'open': isMobileMenuOpen }" @click="closeMobileMenu"></div>
 
         <!-- Mobile drawer -->
-        <div class="mobile-nav-drawer" :class="{ 'open': isMobileMenuOpen }">
+        <div
+          id="mobile-nav-drawer"
+          class="mobile-nav-drawer"
+          :class="{ 'open': isMobileMenuOpen }"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
+        >
           <div class="drawer-header">
             <div v-if="isAuthenticated && user" class="user-profile-mobile">
               <div class="mobile-avatar">
@@ -73,12 +91,12 @@
             <div v-else class="brand-zone-mobile">
               <span class="brand-title">CAT</span>
             </div>
-            <button class="close-btn" @click="closeMobileMenu">✕</button>
+            <button class="close-btn" @click="closeMobileMenu" aria-label="Close menu">✕</button>
           </div>
 
           <div class="drawer-content">
             <router-link to="/" class="drawer-item" @click="closeMobileMenu">
-              <span class="icon">🏠</span> Home
+              <span class="icon" aria-hidden="true">🏠</span> Home
             </router-link>
 
             <template v-if="isAuthenticated">
@@ -87,26 +105,26 @@
                 class="drawer-item"
                 @click="closeMobileMenu"
               >
-                <span class="icon">📊</span> Dashboard
+                <span class="icon" aria-hidden="true">📊</span> Dashboard
               </router-link>
               <router-link v-if="user?.role === 'lecturer'" to="/report-page" class="drawer-item" @click="closeMobileMenu">
-                <span class="icon">📑</span> Reports
+                <span class="icon" aria-hidden="true">📑</span> Reports
               </router-link>
             </template>
             <template v-else>
               <router-link to="/student-login" class="drawer-item highlight" @click="closeMobileMenu">
-                <span class="icon">🔐</span> Sign In
+                <span class="icon" aria-hidden="true">🔐</span> Sign In
               </router-link>
             </template>
           </div>
 
           <div class="drawer-footer">
             <button @click="toggleTheme" class="drawer-action-btn">
-              <span class="icon">{{ isDark ? '☀️' : '🌙' }}</span>
+              <span class="icon" aria-hidden="true">{{ isDark ? '☀️' : '🌙' }}</span>
               {{ isDark ? 'Light Mode' : 'Dark Mode' }}
             </button>
             <button v-if="isAuthenticated" @click="() => { handleSignOut(); closeMobileMenu() }" class="drawer-action-btn logout">
-              <span class="icon">⏻</span> Logout
+              <span class="icon" aria-hidden="true">⏻</span> Logout
             </button>
           </div>
         </div>
