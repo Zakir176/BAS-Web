@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Microsoft.Maui.Graphics;
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
@@ -10,13 +9,30 @@ namespace catv1.Models;
 public class Student : BaseModel, INotifyPropertyChanged
 {
     [PrimaryKey("id", false)]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty; // Supabase Auth UUID
 
-    [Column("name")]
-    public string Name { get; set; }
+    [Column("student_id")]
+    public string StudentId { get; set; } = string.Empty; // The SIN (e.g. 210984)
+
+    [Column("first_name")]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Column("last_name")]
+    public string LastName { get; set; } = string.Empty;
+
+    [Column("email")]
+    public string Email { get; set; } = string.Empty;
+
+    [Column("department")]
+    public string Department { get; set; } = string.Empty;
 
     [Newtonsoft.Json.JsonIgnore]
-    public string Initials => !string.IsNullOrEmpty(Name) ? string.Join("", Name.Split(' ').Select(n => n[0])) : "?";
+    public string Name => $"{FirstName} {LastName}";
+
+    [Newtonsoft.Json.JsonIgnore]
+    public string Initials => !string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName) 
+        ? $"{FirstName[0]}{LastName[0]}" 
+        : "?";
 
     // UI Properties
     private bool _isPresent;
@@ -33,9 +49,9 @@ public class Student : BaseModel, INotifyPropertyChanged
     [Newtonsoft.Json.JsonIgnore]
     public string TimeDisplay => IsPresent && ScanTime.HasValue ? ScanTime.Value.ToString("hh:mm tt") : "";
 
-    // Helper for property change notification to avoid MVVM bloat for just a model
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    // Helper for property change notification
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

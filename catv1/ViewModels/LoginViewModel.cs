@@ -14,10 +14,10 @@ public class LoginViewModel : BaseViewModel
     private string _welcomeTitle = string.Empty;
     private string _idFieldLabel = string.Empty;
     private string _idPlaceholder = string.Empty;
-    private Color _studentBtnBgColor;
-    private Color _studentBtnTextColor;
-    private Color _lecturerBtnBgColor;
-    private Color _lecturerBtnTextColor;
+    private Color _studentBtnBgColor = Colors.Transparent;
+    private Color _studentBtnTextColor = Colors.Transparent;
+    private Color _lecturerBtnBgColor = Colors.Transparent;
+    private Color _lecturerBtnTextColor = Colors.Transparent;
 
     private const string KeyRememberMe = "RememberMe";
     private const string KeySavedUserId = "SavedUserId";

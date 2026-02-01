@@ -59,8 +59,8 @@ public class StudentHomeViewModel : BaseViewModel
     public StudentHomeViewModel(Supabase.Client supabase)
     {
         _supabase = supabase;
-        RecentActivity = new ObservableCollection<ActivityLog>();
-        CalendarDays = new ObservableCollection<int>();
+        RecentActivity = [];
+        CalendarDays = [];
 
         // Dummy Calendar Data
         for (int i = 1; i <= 30; i++)
@@ -90,12 +90,13 @@ public class StudentHomeViewModel : BaseViewModel
             if (studentResponse != null)
             {
                 Name = studentResponse.Name;
-                Id = studentResponse.Id;
-                // ClassName might need another field or join
+                Id = studentResponse.StudentId; // Display SIN
+                ClassName = studentResponse.Department;
             }
 
-            // Fetch Recent Activity
+            // Fetch Recent Activity for THIS student
             var logsResponse = await _supabase.From<ActivityLog>()
+                .Where(l => l.StudentId == user.Id)
                 .Order("date_time", Supabase.Postgrest.Constants.Ordering.Descending)
                 .Limit(5)
                 .Get();

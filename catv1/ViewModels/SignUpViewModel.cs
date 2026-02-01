@@ -6,18 +6,26 @@ namespace catv1.ViewModels;
 
 public class SignUpViewModel : BaseViewModel
 {
-    private string _fullName = string.Empty;
+    private string _firstName = string.Empty;
+    private string _lastName = string.Empty;
     private string _email = string.Empty;
     private string _id = string.Empty;
+    private string _department = string.Empty;
     private string _password = string.Empty;
     private string _confirmPassword = string.Empty;
     private bool _isStudent = true;
     private bool _isPassword = true;
 
-    public string FullName
+    public string FirstName
     {
-        get => _fullName;
-        set => SetProperty(ref _fullName, value);
+        get => _firstName;
+        set => SetProperty(ref _firstName, value);
+    }
+
+    public string LastName
+    {
+        get => _lastName;
+        set => SetProperty(ref _lastName, value);
     }
 
     public string Email
@@ -30,6 +38,12 @@ public class SignUpViewModel : BaseViewModel
     {
         get => _id;
         set => SetProperty(ref _id, value);
+    }
+
+    public string Department
+    {
+        get => _department;
+        set => SetProperty(ref _department, value);
     }
 
     public string Password
@@ -55,6 +69,8 @@ public class SignUpViewModel : BaseViewModel
                 OnPropertyChanged(nameof(SignUpTitle));
                 OnPropertyChanged(nameof(IdFieldLabel));
                 OnPropertyChanged(nameof(IdPlaceholder));
+                OnPropertyChanged(nameof(DeptFieldLabel));
+                OnPropertyChanged(nameof(DeptPlaceholder));
                 OnPropertyChanged(nameof(StudentBtnBgColor));
                 OnPropertyChanged(nameof(LecturerBtnBgColor));
                 OnPropertyChanged(nameof(StudentBtnTextColor));
@@ -68,6 +84,9 @@ public class SignUpViewModel : BaseViewModel
     public string SignUpTitle => IsStudent ? "Student Registration" : "Lecturer Registration";
     public string IdFieldLabel => IsStudent ? "STUDENT ID (SIN)" : "LECTURER ID";
     public string IdPlaceholder => IsStudent ? "e.g. 210984" : "e.g. L00123";
+
+    public string DeptFieldLabel => IsStudent ? "CLASS SECTION" : "DEPARTMENT";
+    public string DeptPlaceholder => IsStudent ? "CS101" : "e.g. Computer Science";
 
     public Color StudentBtnBgColor => IsStudent ? Color.FromArgb("#3B82F6") : Colors.Transparent;
     public Color LecturerBtnBgColor => IsLecturer ? Color.FromArgb("#3B82F6") : Colors.Transparent;
@@ -103,9 +122,9 @@ public class SignUpViewModel : BaseViewModel
     {
         if (IsBusy) return;
 
-        if (string.IsNullOrWhiteSpace(FullName))
+        if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
         {
-            await Shell.Current.DisplayAlertAsync("Error", "Please enter your full name.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your first and last name.", "OK");
             return;
         }
 
@@ -117,7 +136,13 @@ public class SignUpViewModel : BaseViewModel
 
         if (string.IsNullOrWhiteSpace(Id))
         {
-            await Shell.Current.DisplayAlertAsync("Error", $"Please enter your {(IsStudent ? "Student ID" : "Lecturer ID")}.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", $"Please enter your {(IsStudent ? "Student ID" : "Registration ID")}.", "OK");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Department))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", $"Please enter your {(IsStudent ? "Class Section" : "Department")}.", "OK");
             return;
         }
 
@@ -141,22 +166,27 @@ public class SignUpViewModel : BaseViewModel
             {
                 Data = new Dictionary<string, object>
                 {
-                    { "full_name", FullName },
-                    { "user_id", Id },
+                    { "first_name", FirstName },
+                    { "last_name", LastName },
+                    { "student_id", Id },
                     { "role", IsStudent ? "student" : "lecturer" }
                 }
             };
 
             var session = await _supabase.Auth.SignUp(Email, Password, options);
 
-            if (session != null)
+            if (session?.User?.Id != null)
             {
                 if (IsStudent)
                 {
                     var student = new Student
                     {
-                        Id = Id,
-                        Name = FullName,
+                        Id = session.User.Id,
+                        StudentId = Id,
+                        FirstName = FirstName,
+                        LastName = LastName,
+                        Email = Email,
+                        Department = Department,
                         IsPresent = false
                     };
                     await _supabase.From<Student>().Insert(student);
@@ -165,8 +195,12 @@ public class SignUpViewModel : BaseViewModel
                 {
                     var lecturerProfile = new LecturerProfile
                     {
-                        Id = this.Id,
-                        Name = this.FullName
+                        Id = session.User.Id,
+                        RegistrationId = Id,
+                        FirstName = FirstName,
+                        LastName = LastName,
+                        Email = Email,
+                        Department = Department
                     };
                     await _supabase.From<LecturerProfile>().Insert(lecturerProfile);
                 }

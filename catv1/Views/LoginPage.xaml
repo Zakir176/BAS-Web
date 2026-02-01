@@ -135,7 +135,7 @@
                         </VerticalStackLayout>
 
                         <!--  Input Fields  -->
-                        <VerticalStackLayout Spacing="15">
+                        <VerticalStackLayout Spacing="20">
                             <!--  Email Field  -->
                             <VerticalStackLayout Spacing="8">
                                 <Label
@@ -158,6 +158,8 @@
                                             TextColor="#64748B"
                                             VerticalOptions="Center" />
                                         <Entry
+                                            Grid.Column="1"
+                                            Margin="0,0,10,0"
                                             Keyboard="Email"
                                             Placeholder="e.g. john@example.com"
                                             PlaceholderColor="#475569"
@@ -193,6 +195,7 @@
                                         <Entry
                                             x:Name="EntryId"
                                             Grid.Column="1"
+                                            Margin="0,0,10,0"
                                             Placeholder="{Binding IdPlaceholder}"
                                             PlaceholderColor="#475569"
                                             Text="{Binding IdText}"
@@ -226,6 +229,7 @@
                                         <Entry
                                             x:Name="EntryPassword"
                                             Grid.Column="1"
+                                            Margin="0,0,10,0"
                                             IsPassword="{Binding IsPassword}"
                                             Placeholder="••••••••"
                                             PlaceholderColor="#475569"

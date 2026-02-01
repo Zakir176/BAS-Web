@@ -112,37 +112,52 @@
                             TextColor="White" />
 
                         <!--  Input Fields  -->
-                        <VerticalStackLayout Spacing="15">
-                            <!--  Name Field  -->
-                            <VerticalStackLayout Spacing="8">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="FULL NAME"
-                                    TextColor="#CBD5E1" />
-                                <Border
-                                    BackgroundColor="#0F172A"
-                                    HeightRequest="50"
-                                    Stroke="#334155"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="1">
-                                    <Grid ColumnDefinitions="50, *">
-                                        <Label
-                                            FontFamily="Arial"
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
-                                            Text="👤"
-                                            TextColor="#64748B"
-                                            VerticalOptions="Center" />
+                        <VerticalStackLayout Spacing="20">
+                            <!--  Name Fields  -->
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="12"
+                                        Text="FIRST NAME"
+                                        TextColor="#CBD5E1" />
+                                    <Border
+                                        BackgroundColor="#0F172A"
+                                        HeightRequest="50"
+                                        Stroke="#334155"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="1">
                                         <Entry
-                                            Placeholder="e.g. John Doe"
+                                            Margin="15,0"
+                                            Placeholder="John"
                                             PlaceholderColor="#475569"
-                                            Text="{Binding FullName}"
+                                            Text="{Binding FirstName}"
                                             TextColor="White"
                                             VerticalOptions="Center" />
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
+                                    </Border>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="12"
+                                        Text="LAST NAME"
+                                        TextColor="#CBD5E1" />
+                                    <Border
+                                        BackgroundColor="#0F172A"
+                                        HeightRequest="50"
+                                        Stroke="#334155"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="1">
+                                        <Entry
+                                            Margin="15,0"
+                                            Placeholder="Doe"
+                                            PlaceholderColor="#475569"
+                                            Text="{Binding LastName}"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </Border>
+                                </VerticalStackLayout>
+                            </Grid>
 
                             <!--  Email Field  -->
                             <VerticalStackLayout Spacing="8">
@@ -166,6 +181,8 @@
                                             TextColor="#64748B"
                                             VerticalOptions="Center" />
                                         <Entry
+                                            Grid.Column="1"
+                                            Margin="0,0,10,0"
                                             Keyboard="Email"
                                             Placeholder="e.g. john@example.com"
                                             PlaceholderColor="#475569"
@@ -176,7 +193,7 @@
                                 </Border>
                             </VerticalStackLayout>
 
-                            <!--  ID Field (Replacing Email)  -->
+                            <!--  ID Field  -->
                             <VerticalStackLayout Spacing="8">
                                 <Label
                                     x:Name="LblIdField"
@@ -201,9 +218,43 @@
                                         <Entry
                                             x:Name="EntryId"
                                             Grid.Column="1"
+                                            Margin="0,0,10,0"
                                             Placeholder="{Binding IdPlaceholder}"
                                             PlaceholderColor="#475569"
                                             Text="{Binding Id}"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!--  Department Field  -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="DEPARTMENT"
+                                    TextColor="#CBD5E1" />
+                                <Border
+                                    BackgroundColor="#0F172A"
+                                    HeightRequest="50"
+                                    Stroke="#334155"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="1">
+                                    <Grid ColumnDefinitions="50, *">
+                                        <Label
+                                            FontFamily="Arial"
+                                            FontSize="18"
+                                            HorizontalOptions="Center"
+                                            Text="🏛"
+                                            TextColor="#64748B"
+                                            VerticalOptions="Center" />
+                                        <Entry
+                                            Grid.Column="1"
+                                            Margin="0,0,10,0"
+                                            Placeholder="{Binding DeptPlaceholder}"
+                                            PlaceholderColor="#475569"
+                                            Text="{Binding Department}"
                                             TextColor="White"
                                             VerticalOptions="Center" />
                                     </Grid>
@@ -232,6 +283,8 @@
                                             TextColor="#64748B"
                                             VerticalOptions="Center" />
                                         <Entry
+                                            Grid.Column="1"
+                                            Margin="0,0,10,0"
                                             IsPassword="{Binding IsPassword}"
                                             Placeholder="Create a password"
                                             PlaceholderColor="#475569"
@@ -278,6 +331,8 @@
                                             TextColor="#64748B"
                                             VerticalOptions="Center" />
                                         <Entry
+                                            Grid.Column="1"
+                                            Margin="0,0,10,0"
                                             IsPassword="{Binding IsPassword}"
                                             Placeholder="Confirm password"
                                             PlaceholderColor="#475569"

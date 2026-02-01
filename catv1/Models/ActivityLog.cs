@@ -7,7 +7,10 @@ using Supabase.Postgrest.Models;
 public class ActivityLog : BaseModel
 {
     [PrimaryKey("id", false)]
-    public int Id { get; set; }
+    public long Id { get; set; }
+
+    [Column("student_id")]
+    public string StudentId { get; set; } = string.Empty; // Reference to student's Auth UUID
 
     [Column("status")]
     public string? Status { get; set; } // "Present", "Absent"

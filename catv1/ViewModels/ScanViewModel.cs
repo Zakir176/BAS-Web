@@ -9,8 +9,8 @@ public class ScanViewModel : BaseViewModel
     private bool _isSessionActive;
     private string _selectedCourse = "Morning Biology";
     private DateTime _selectedDate = DateTime.Now;
-    private ObservableCollection<Student> _roster;
-    private Student _lastScannedStudent;
+    private ObservableCollection<Student> _roster = [];
+    private Student? _lastScannedStudent;
     private bool _showFeedback;
 
     public ICommand BackCommand { get; }
@@ -80,7 +80,7 @@ public class ScanViewModel : BaseViewModel
         set => SetProperty(ref _showFeedback, value);
     }
 
-    public Student LastScannedStudent
+    public Student? LastScannedStudent
     {
         get => _lastScannedStudent;
         set => SetProperty(ref _lastScannedStudent, value);
@@ -90,7 +90,7 @@ public class ScanViewModel : BaseViewModel
     {
         if (IsSessionActive)
         {
-            bool confirm = await Application.Current.MainPage.DisplayAlert("End Session?", "This will end the current scanning session.", "End Session", "Cancel");
+            bool confirm = await Shell.Current.DisplayAlertAsync("End Session?", "This will end the current scanning session.", "End Session", "Cancel");
             if (!confirm) return;
             IsSessionActive = false;
             OnPropertyChanged(nameof(IsSetupVisible));
@@ -110,7 +110,7 @@ public class ScanViewModel : BaseViewModel
     private async void OnFinishSession()
     {
         // Here you would save the data to a backend
-        await Application.Current.MainPage.DisplayAlert("Session Complete", $"Attendance marked for {SelectedCourse}.\nPresent: {PresentCount}\nAbsent: {AbsentCount}", "OK");
+        await Shell.Current.DisplayAlertAsync("Session Complete", $"Attendance marked for {SelectedCourse}.\nPresent: {PresentCount}\nAbsent: {AbsentCount}", "OK");
         IsSessionActive = false;
         OnPropertyChanged(nameof(IsSetupVisible));
     }
@@ -132,7 +132,7 @@ public class ScanViewModel : BaseViewModel
             ShowFeedback = true;
 
             // Hide feedback after 3 seconds
-            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+            Application.Current?.Dispatcher.StartTimer(TimeSpan.FromSeconds(3), () =>
             {
                 ShowFeedback = false;
                 return false;
@@ -161,20 +161,20 @@ public class ScanViewModel : BaseViewModel
 
     private void GenerateRoster()
     {
-        Roster = new ObservableCollection<Student>
-            {
-                new Student { Id="2024-001", Name="John Doe" },
-                new Student { Id="2024-002", Name="Jane Smith" },
-                new Student { Id="2024-003", Name="Michael Brown" },
-                new Student { Id="2024-004", Name="Sarah Johnson" },
-                new Student { Id="2024-005", Name="David Wilson" },
-                new Student { Id="2024-006", Name="Emily Davis" },
-                new Student { Id="2024-007", Name="James Miller" },
-                new Student { Id="2024-008", Name="Olivia Taylor" },
-                new Student { Id="2024-009", Name="Robert Anderson" },
-                new Student { Id="2024-010", Name="Sophia Thomas" },
-                new Student { Id="2024-011", Name="William Jackson" },
-                new Student { Id="2024-012", Name="Isabella White" }
-            };
+        Roster =
+            [
+                new Student { Id="2024-001", FirstName="John", LastName="Doe", StudentId="210001" },
+                new Student { Id="2024-002", FirstName="Jane", LastName="Smith", StudentId="210002" },
+                new Student { Id="2024-003", FirstName="Michael", LastName="Brown", StudentId="210003" },
+                new Student { Id="2024-004", FirstName="Sarah", LastName="Johnson", StudentId="210004" },
+                new Student { Id="2024-005", FirstName="David", LastName="Wilson", StudentId="210005" },
+                new Student { Id="2024-006", FirstName="Emily", LastName="Davis", StudentId="210006" },
+                new Student { Id="2024-007", FirstName="James", LastName="Miller", StudentId="210007" },
+                new Student { Id="2024-008", FirstName="Olivia", LastName="Taylor", StudentId="210008" },
+                new Student { Id="2024-009", FirstName="Robert", LastName="Anderson", StudentId="210009" },
+                new Student { Id="2024-010", FirstName="Sophia", LastName="Thomas", StudentId="210010" },
+                new Student { Id="2024-011", FirstName="William", LastName="Jackson", StudentId="210011" },
+                new Student { Id="2024-012", FirstName="Isabella", LastName="White", StudentId="210012" }
+            ];
     }
 }
