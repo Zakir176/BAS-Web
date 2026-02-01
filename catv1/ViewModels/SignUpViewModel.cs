@@ -69,6 +69,8 @@ public class SignUpViewModel : BaseViewModel
                 OnPropertyChanged(nameof(SignUpTitle));
                 OnPropertyChanged(nameof(IdFieldLabel));
                 OnPropertyChanged(nameof(IdPlaceholder));
+                OnPropertyChanged(nameof(DeptFieldLabel));
+                OnPropertyChanged(nameof(DeptPlaceholder));
                 OnPropertyChanged(nameof(StudentBtnBgColor));
                 OnPropertyChanged(nameof(LecturerBtnBgColor));
                 OnPropertyChanged(nameof(StudentBtnTextColor));
@@ -82,6 +84,9 @@ public class SignUpViewModel : BaseViewModel
     public string SignUpTitle => IsStudent ? "Student Registration" : "Lecturer Registration";
     public string IdFieldLabel => IsStudent ? "STUDENT ID (SIN)" : "LECTURER ID";
     public string IdPlaceholder => IsStudent ? "e.g. 210984" : "e.g. L00123";
+
+    public string DeptFieldLabel => IsStudent ? "CLASS SECTION" : "DEPARTMENT";
+    public string DeptPlaceholder => IsStudent ? "CS101" : "e.g. Computer Science";
 
     public Color StudentBtnBgColor => IsStudent ? Color.FromArgb("#3B82F6") : Colors.Transparent;
     public Color LecturerBtnBgColor => IsLecturer ? Color.FromArgb("#3B82F6") : Colors.Transparent;
@@ -137,7 +142,7 @@ public class SignUpViewModel : BaseViewModel
 
         if (string.IsNullOrWhiteSpace(Department))
         {
-            await Shell.Current.DisplayAlertAsync("Error", "Please enter your department.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", $"Please enter your {(IsStudent ? "Class Section" : "Department")}.", "OK");
             return;
         }
 
@@ -194,7 +199,8 @@ public class SignUpViewModel : BaseViewModel
                         RegistrationId = Id,
                         FirstName = FirstName,
                         LastName = LastName,
-                        Email = Email
+                        Email = Email,
+                        Department = Department
                     };
                     await _supabase.From<LecturerProfile>().Insert(lecturerProfile);
                 }

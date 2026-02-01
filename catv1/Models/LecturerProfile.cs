@@ -26,4 +26,8 @@ public class LecturerProfile : BaseModel
     [Column("email")]
     [JsonProperty("email")]
     public string Email { get; set; } = string.Empty;
+
+    [Column("department")]
+    [JsonProperty("department")]
+    public string Department { get; set; } = string.Empty;
 }
