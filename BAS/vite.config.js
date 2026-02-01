@@ -15,4 +15,27 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  test: {
+    globals: true,
+    environment: 'happy-dom',
+    setupFiles: ['./src/test/setup.js'],
+    exclude: [
+      'node_modules/**',
+      'tests/**', // Exclude Playwright tests
+      'dist/**',
+      'coverage/**',
+    ],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        'tests/',
+        '**/*.d.ts',
+        'dist/',
+        'coverage/',
+      ],
+    },
+  },
 })
