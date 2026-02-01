@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useAuthRedirect } from '@/composables/useAuthRedirect'
 import { watch } from 'vue'
 
 import Home from '../views/Home.vue'
@@ -120,10 +121,11 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
   const auth = useAuth()
+  const authRedirect = useAuthRedirect()
 
   // Wait for auth to initialize (max 3s timeout internally)
   if (!auth.isInitialized.value) {
-    await auth.init()
+    await auth.initialize()
   }
 
   const { user, isAuthenticated, role } = auth
@@ -135,6 +137,13 @@ router.beforeEach(async (to, from, next) => {
   if (requiresAuth && !isAuthenticated.value) {
     // Needs auth, but user is not logged in
     console.warn('Unauthorized access attempt to:', to.path)
+    
+    // Save the intended destination before redirecting to login
+    if (authRedirect.shouldRedirectToLogin(to)) {
+      authRedirect.redirectToLogin()
+      return // Don't call next() as we're redirecting
+    }
+    
     return next({ name: 'Home' })
   }
 
