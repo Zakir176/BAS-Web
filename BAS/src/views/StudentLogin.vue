@@ -17,6 +17,10 @@
           <div class="auth-card-header">
             <h2>Welcome back, Scholar</h2>
             <p>Sign in to your account to continue</p>
+            <!-- Show return URL if available -->
+            <div v-if="returnPath && returnPath !== '/student-login'" class="return-url-info">
+              <small>You'll be redirected to: <strong>{{ returnPath }}</strong></small>
+            </div>
           </div>
 
           <Form @submit="handleLogin" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
@@ -91,17 +95,20 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
+import { useAuthRedirect } from '@/composables/useAuthRedirect'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
+const route = useRoute()
 const { signIn, isLoading } = useAuth()
 const { toast } = useToast()
+const { redirectToIntendedDestination, returnPath } = useAuthRedirect()
 const showPassword = ref(false)
 const rememberMe = ref(false)
 
@@ -113,11 +120,12 @@ const schema = yup.object({
 const handleLogin = async (values) => {
   try {
     await signIn(values.email, values.password)
-    toast.success('Welcome back! Redirecting to dashboard...')
-    // In a real app, you might want to handle the 'rememberMe' value here
+    toast.success('Welcome back! Redirecting...')
+    
+    // Redirect to intended destination after successful login
     setTimeout(() => {
-      router.push('/student-homepage')
-    }, 1500)
+      redirectToIntendedDestination('student')
+    }, 1000)
   } catch (err) {
     console.error('Login failed:', err)
     toast.error('Invalid credentials. Please check your email and password.')
@@ -130,6 +138,21 @@ const handleLogin = async (values) => {
   color: #ef4444; /* red-500 */
   font-size: 0.875rem; /* text-sm */
   margin-top: 0.25rem;
+}
+
+.return-url-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(59, 130, 246, 0.1); /* blue-500/10 */
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 6px;
+  color: #3b82f6;
+  font-size: 0.75rem;
+}
+
+.return-url-info strong {
+  color: #1d4ed8;
+  word-break: break-all;
 }
 
 .input.is-invalid {
