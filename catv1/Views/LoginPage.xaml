@@ -130,7 +130,7 @@
                             <Label
                                 FontSize="13"
                                 HorizontalOptions="Center"
-                                Text="Please enter your details to continue."
+                                Text="Enter your details to continue."
                                 TextColor="#94A3B8" />
                         </VerticalStackLayout>
 
@@ -280,7 +280,7 @@
                                 </Border>
                                 <Label
                                     FontSize="13"
-                                    Text="Remember me"
+                                    Text="Remember me!"
                                     TextColor="#94A3B8"
                                     VerticalOptions="Center" />
                             </HorizontalStackLayout>
@@ -288,7 +288,7 @@
                                 Grid.Column="1"
                                 FontSize="13"
                                 HorizontalOptions="End"
-                                Text="Forgot Password?"
+                                Text="Forgot Your Password?"
                                 TextColor="#3B82F6"
                                 VerticalOptions="Center">
                                 <Label.GestureRecognizers>
