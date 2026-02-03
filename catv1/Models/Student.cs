@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
+using Newtonsoft.Json;
 
 namespace catv1.Models;
 
@@ -26,12 +27,12 @@ public class Student : BaseModel, INotifyPropertyChanged
     [Column("department")]
     public string Department { get; set; } = string.Empty;
 
-    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public string Name => $"{FirstName} {LastName}";
 
-    [Newtonsoft.Json.JsonIgnore]
-    public string Initials => !string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName) 
-        ? $"{FirstName[0]}{LastName[0]}" 
+    [JsonIgnore]
+    public string Initials => !string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName)
+        ? $"{FirstName[0]}{LastName[0]}"
         : "?";
 
     // UI Properties
@@ -46,7 +47,7 @@ public class Student : BaseModel, INotifyPropertyChanged
     [Column("scan_time")]
     public DateTime? ScanTime { get; set; }
 
-    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public string TimeDisplay => IsPresent && ScanTime.HasValue ? ScanTime.Value.ToString("hh:mm tt") : "";
 
     // Helper for property change notification
