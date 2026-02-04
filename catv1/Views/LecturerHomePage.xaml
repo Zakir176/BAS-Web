@@ -33,11 +33,23 @@
         <VerticalStackLayout
             Grid.Row="1"
             HorizontalOptions="Center"
+            Spacing="10"
             VerticalOptions="Center">
             <Label
                 FontSize="50"
                 HorizontalOptions="Center"
                 Text="👨‍🏫" />
+            <Label
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="{Binding Name}"
+                TextColor="White" />
+            <Label
+                FontSize="16"
+                HorizontalOptions="Center"
+                Text="{Binding Department}"
+                TextColor="LightGray" />
             <Label
                 HorizontalOptions="Center"
                 Text="Class attendance will appear here"
