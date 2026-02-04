@@ -9,6 +9,12 @@
     Shell.NavBarIsVisible="False">
 
     <Grid>
+        <!--  Background Image  -->
+        <Image
+            Aspect="AspectFill"
+            Opacity="0.15"
+            Source="lecture_room_bg.png" />
+
         <!--  Background Decoration  -->
         <BoxView
             CornerRadius="500"
@@ -58,7 +64,7 @@
                     Grid.Row="1"
                     Margin="0,30,0,20"
                     Padding="25"
-                    BackgroundColor="#1E293B"
+                    BackgroundColor="#E61E293B"
                     Stroke="#334155"
                     StrokeShape="RoundRectangle 20"
                     StrokeThickness="1"
