@@ -50,7 +50,7 @@
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1E293B" BaseSize="128,128" />
 
 		<!-- Images -->
-		<MauiImage Include="Resources\*" />
+		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\splash\splash.svg" Resize="True" BaseSize="300,185" />
 		
 		<!-- Custom Fonts -->
