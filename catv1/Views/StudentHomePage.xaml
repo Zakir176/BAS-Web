@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="catv1.Views.StudentHomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -234,11 +235,6 @@
                                                 StrokeThickness="0"
                                                 WidthRequest="40">
                                                 <Label
-                                                    HorizontalOptions="Center"
-                                                    Text="{Binding Status, StringFormat='{0:0}'}"
-                                                    TextColor="{Binding Status, Converter={StaticResource StatusColorConverter}}"
-                                                    VerticalOptions="Center" />
-                                                <Label
                                                     FontSize="18"
                                                     HorizontalOptions="Center"
                                                     Text="✔"
@@ -319,7 +315,6 @@
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-
                     </VerticalStackLayout>
 
                     <Button
