@@ -6,13 +6,13 @@
     Title="Lecturer Dashboard"
     BackgroundColor="#0F172A">
     <Grid>
-        <!-- Background Image -->
+        <!--  Background Image  -->
         <Image
-            Source="lecture_room_bg.png"
             Aspect="AspectFill"
-            Opacity="0.2" />
-            
-        <!-- Blur/Overlay -->
+            Opacity="0.2"
+            Source="lecture_room_bg.png" />
+
+        <!--  Blur/Overlay  -->
         <BoxView BackgroundColor="#0F172A" Opacity="0.5" />
 
         <Grid RowDefinitions="Auto, *">
@@ -52,14 +52,12 @@
                                         FontSize="22"
                                         Text="{Binding Name}"
                                         TextColor="White" />
-                                    <Label
-                                        Style="{StaticResource LabelCaption}"
-                                        Text="{Binding Department}" />
+                                    <Label Style="{StaticResource LabelCaption}" Text="{Binding Department}" />
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
-                            
+
                             <BoxView HeightRequest="1" Color="#1F2937" />
-                            
+
                             <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
                                 <VerticalStackLayout Spacing="5">
                                     <Label Style="{StaticResource LabelCaption}" Text="AVG ATTENDANCE" />
@@ -86,7 +84,7 @@
                         FontAttributes="Bold"
                         Text="Quick Actions"
                         TextColor="#64748B" />
-                    
+
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
                         <Button
                             BackgroundColor="#3B82F6"
@@ -108,7 +106,7 @@
                         FontAttributes="Bold"
                         Text="Recent Activity"
                         TextColor="#64748B" />
-                    
+
                     <Border Style="{StaticResource StatCard}">
                         <Label
                             HorizontalOptions="Center"
@@ -119,5 +117,4 @@
             </ScrollView>
         </Grid>
     </Grid>
-</ContentPage>
 </ContentPage>

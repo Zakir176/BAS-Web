@@ -8,337 +8,332 @@
     Shell.NavBarIsVisible="False">
 
     <Grid>
-        <!-- Background Image -->
+        <!--  Background Image  -->
         <Image
-            Source="lecture_room_bg.png"
             Aspect="AspectFill"
-            Opacity="0.2" />
-            
-        <!-- Blur/Overlay -->
+            Opacity="0.2"
+            Source="lecture_room_bg.png" />
+
+        <!--  Blur/Overlay  -->
         <BoxView BackgroundColor="#0F172A" Opacity="0.5" />
 
         <Grid RowDefinitions="Auto, *">
-        <!--  Header  -->
-        <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *, Auto, Auto">
-            <Label
-                FontFamily="Arial"
-                FontSize="24"
-                HeightRequest="40"
-                HorizontalTextAlignment="Center"
-                Text="⬅"
-                TextColor="White"
-                VerticalTextAlignment="Center"
-                WidthRequest="40">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnLogoutClicked" />
-                </Label.GestureRecognizers>
-            </Label>
-            <Label
-                Grid.Column="1"
-                Margin="10,0,0,0"
-                FontAttributes="Bold"
-                FontSize="20"
-                HorizontalOptions="Center"
-                Text="Student Detail"
-                TextColor="White"
-                VerticalOptions="Center" />
-            <Label
-                Grid.Column="2"
-                Margin="0,0,15,0"
-                FontSize="24"
-                Text="📥"
-                TextColor="White"
-                VerticalOptions="Center" />
-            <Label
-                Grid.Column="3"
-                FontSize="24"
-                Text="⋮"
-                TextColor="White"
-                VerticalOptions="Center" />
-        </Grid>
+            <!--  Header  -->
+            <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *, Auto, Auto">
+                <Label
+                    FontFamily="Arial"
+                    FontSize="24"
+                    HeightRequest="40"
+                    HorizontalTextAlignment="Center"
+                    Text="⬅"
+                    TextColor="White"
+                    VerticalTextAlignment="Center"
+                    WidthRequest="40">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnLogoutClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Student Detail"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Column="2"
+                    Margin="0,0,15,0"
+                    FontSize="24"
+                    Text="📥"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Column="3"
+                    FontSize="24"
+                    Text="⋮"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </Grid>
 
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20" Spacing="20">
-                <!--  Profile Section  -->
-                <VerticalStackLayout Spacing="5">
-                    <Grid
-                        HeightRequest="100"
-                        HorizontalOptions="Center"
-                        WidthRequest="100">
-                        <Border
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="20" Spacing="20">
+                    <!--  Profile Section  -->
+                    <VerticalStackLayout Spacing="5">
+                        <Grid
                             HeightRequest="100"
-                            Stroke="#1F2937"
-                            StrokeShape="RoundRectangle 50"
-                            StrokeThickness="4"
+                            HorizontalOptions="Center"
                             WidthRequest="100">
-                            <Image
-                                Aspect="AspectFill"
+                            <Border
                                 HeightRequest="100"
-                                Source="{Binding Avatar}"
-                                WidthRequest="100" />
+                                Stroke="#1F2937"
+                                StrokeShape="RoundRectangle 50"
+                                StrokeThickness="4"
+                                WidthRequest="100">
+                                <Image
+                                    Aspect="AspectFill"
+                                    HeightRequest="100"
+                                    Source="{Binding Avatar}"
+                                    WidthRequest="100" />
+                            </Border>
+                            <Border
+                                Margin="0,0,5,5"
+                                BackgroundColor="#00E676"
+                                HeightRequest="20"
+                                HorizontalOptions="End"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="0"
+                                VerticalOptions="End"
+                                WidthRequest="20" />
+                        </Grid>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="22"
+                            HorizontalOptions="Center"
+                            Text="{Binding Name}"
+                            TextColor="White" />
+                        <Label
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            Text="{Binding IdLine}"
+                            TextColor="Gray" />
+                    </VerticalStackLayout>
+
+                    <!--  Stats Cards  -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                        <Border Style="{StaticResource StatCard}">
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="10"
+                                    Text="ATTENDANCE"
+                                    TextColor="Gray" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="24"
+                                    Text="{Binding AttendanceDisplay}"
+                                    TextColor="#3B82F6" />
+                            </VerticalStackLayout>
                         </Border>
-                        <Border
-                            Margin="0,0,5,5"
-                            BackgroundColor="#00E676"
-                            HeightRequest="20"
-                            HorizontalOptions="End"
-                            StrokeShape="RoundRectangle 10"
-                            StrokeThickness="0"
-                            VerticalOptions="End"
-                            WidthRequest="20" />
+                        <Border Grid.Column="1" Style="{StaticResource StatCard}">
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontSize="10"
+                                    Text="ABSENCES"
+                                    TextColor="Gray" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="24"
+                                    Text="{Binding AbsencesCount}"
+                                    TextColor="#FF5252" />
+                            </VerticalStackLayout>
+                        </Border>
                     </Grid>
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="22"
-                        HorizontalOptions="Center"
-                        Text="{Binding Name}"
-                        TextColor="White" />
-                    <Label
-                        FontSize="14"
-                        HorizontalOptions="Center"
-                        Text="{Binding IdLine}"
-                        TextColor="Gray" />
-                </VerticalStackLayout>
 
-                <!--  Stats Cards  -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
-                    <Border
-                        Style="{StaticResource StatCard}">
-                        <VerticalStackLayout Spacing="5">
-                            <Label
-                                FontSize="10"
-                                Text="ATTENDANCE"
-                                TextColor="Gray" />
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="24"
-                                Text="{Binding AttendanceDisplay}"
-                                TextColor="#3B82F6" />
+                    <!--  Heatmap Mockup  -->
+                    <Border Style="{StaticResource GlassCard}">
+                        <VerticalStackLayout Spacing="15">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="Attendance Heatmap"
+                                    TextColor="White" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="12"
+                                    Text="Term 1 ⌄"
+                                    TextColor="Gray" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <Label
+                                    Text="❮"
+                                    TextColor="Gray"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Center"
+                                    Text="September 2023"
+                                    TextColor="White"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="2"
+                                    Text="❯"
+                                    TextColor="Gray"
+                                    VerticalOptions="Center" />
+                            </Grid>
+
+                            <!--  Calendar Grid (Mock)  -->
+                            <CollectionView
+                                HeightRequest="200"
+                                ItemsSource="{Binding CalendarDays}"
+                                VerticalScrollBarVisibility="Never">
+                                <CollectionView.ItemsLayout>
+                                    <GridItemsLayout Orientation="Vertical" Span="7" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Margin="2"
+                                            BackgroundColor="#22c55e"
+                                            HeightRequest="35"
+                                            StrokeShape="RoundRectangle 5"
+                                            StrokeThickness="0"
+                                            WidthRequest="35">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="10"
+                                                HorizontalOptions="Center"
+                                                Text="{Binding .}"
+                                                TextColor="#064e3b"
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
                         </VerticalStackLayout>
                     </Border>
-                    <Border
-                        Grid.Column="1"
-                        Style="{StaticResource StatCard}">
-                        <VerticalStackLayout Spacing="5">
-                            <Label
-                                FontSize="10"
-                                Text="ABSENCES"
-                                TextColor="Gray" />
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="24"
-                                Text="{Binding AbsencesCount}"
-                                TextColor="#FF5252" />
-                        </VerticalStackLayout>
-                    </Border>
-                </Grid>
 
-                <!--  Heatmap Mockup  -->
-                <Border
-                    Style="{StaticResource GlassCard}">
-                    <VerticalStackLayout Spacing="15">
-                        <Grid ColumnDefinitions="*, Auto">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Attendance Heatmap"
-                                TextColor="White" />
-                            <Label
-                                Grid.Column="1"
-                                FontSize="12"
-                                Text="Term 1 ⌄"
-                                TextColor="Gray" />
-                        </Grid>
+                    <!--  Actions  -->
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                        <Button
+                            BackgroundColor="#3B82F6"
+                            CornerRadius="25"
+                            FontAttributes="Bold"
+                            HeightRequest="50"
+                            Text="✉ Contact Parent"
+                            TextColor="White" />
+                        <Button
+                            Grid.Column="1"
+                            BackgroundColor="#1F2937"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            Text="🖊"
+                            TextColor="White"
+                            WidthRequest="50" />
+                    </Grid>
 
-                        <Grid ColumnDefinitions="Auto, *, Auto">
-                            <Label
-                                Text="❮"
-                                TextColor="Gray"
-                                VerticalOptions="Center" />
-                            <Label
-                                Grid.Column="1"
-                                FontAttributes="Bold"
-                                HorizontalOptions="Center"
-                                Text="September 2023"
-                                TextColor="White"
-                                VerticalOptions="Center" />
-                            <Label
-                                Grid.Column="2"
-                                Text="❯"
-                                TextColor="Gray"
-                                VerticalOptions="Center" />
-                        </Grid>
+                    <!--  Recent Activity  -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            Text="Recent Activity"
+                            TextColor="#64748B" />
 
-                        <!--  Calendar Grid (Mock)  -->
-                        <CollectionView
-                            HeightRequest="200"
-                            ItemsSource="{Binding CalendarDays}"
-                            VerticalScrollBarVisibility="Never">
-                            <CollectionView.ItemsLayout>
-                                <GridItemsLayout Orientation="Vertical" Span="7" />
-                            </CollectionView.ItemsLayout>
+                        <CollectionView ItemsSource="{Binding RecentActivity}" VerticalScrollBarVisibility="Never">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border
-                                        Margin="2"
-                                        BackgroundColor="#22c55e"
-                                        HeightRequest="35"
-                                        StrokeShape="RoundRectangle 5"
-                                        StrokeThickness="0"
-                                        WidthRequest="35">
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontSize="10"
-                                            HorizontalOptions="Center"
-                                            Text="{Binding .}"
-                                            TextColor="#064e3b"
-                                            VerticalOptions="Center" />
+                                    <Border Margin="0,0,0,10" Style="{StaticResource StatCard}">
+                                        <Grid ColumnDefinitions="Auto, *, Auto">
+                                            <Border
+                                                BackgroundColor="#1F2937"
+                                                HeightRequest="40"
+                                                StrokeShape="RoundRectangle 20"
+                                                StrokeThickness="0"
+                                                WidthRequest="40">
+                                                <Label
+                                                    HorizontalOptions="Center"
+                                                    Text="{Binding Status, StringFormat='{0:0}'}"
+                                                    TextColor="{Binding Status, Converter={StaticResource StatusColorConverter}}"
+                                                    VerticalOptions="Center" />
+                                                <Label
+                                                    FontSize="18"
+                                                    HorizontalOptions="Center"
+                                                    Text="✔"
+                                                    TextColor="#22c55e"
+                                                    VerticalOptions="Center">
+                                                    <Label.Triggers>
+                                                        <DataTrigger
+                                                            Binding="{Binding Status}"
+                                                            TargetType="Label"
+                                                            Value="Absent">
+                                                            <Setter Property="Text" Value="✖" />
+                                                            <Setter Property="TextColor" Value="#ef4444" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </Border>
+
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Margin="15,0"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    Text="{Binding Status}"
+                                                    TextColor="White" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding FullTimeDisplay}"
+                                                    TextColor="Gray" />
+                                            </VerticalStackLayout>
+
+                                            <Border
+                                                Grid.Column="2"
+                                                Padding="10,5"
+                                                BackgroundColor="#064e3b"
+                                                StrokeShape="RoundRectangle 5"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="10"
+                                                    Text="VERIFIED"
+                                                    TextColor="#22c55e">
+                                                    <Label.Triggers>
+                                                        <DataTrigger
+                                                            Binding="{Binding Status}"
+                                                            TargetType="Label"
+                                                            Value="Absent">
+                                                            <Setter Property="Text" Value="UNEXCUSED" />
+                                                            <Setter Property="TextColor" Value="#ef4444" />
+                                                        </DataTrigger>
+                                                        <DataTrigger
+                                                            Binding="{Binding IsExcused}"
+                                                            TargetType="Label"
+                                                            Value="True">
+                                                            <Setter Property="Text" Value="EXCUSED" />
+                                                            <Setter Property="TextColor" Value="#f59e0b" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                                <Border.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding Status}"
+                                                        TargetType="Border"
+                                                        Value="Absent">
+                                                        <Setter Property="BackgroundColor" Value="#450a0a" />
+                                                    </DataTrigger>
+                                                    <DataTrigger
+                                                        Binding="{Binding IsExcused}"
+                                                        TargetType="Border"
+                                                        Value="True">
+                                                        <Setter Property="BackgroundColor" Value="#451a03" />
+                                                    </DataTrigger>
+                                                </Border.Triggers>
+                                            </Border>
+                                        </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
+
                     </VerticalStackLayout>
-                </Border>
 
-                <!--  Actions  -->
-                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
                     <Button
-                        BackgroundColor="#3B82F6"
-                        CornerRadius="25"
-                        FontAttributes="Bold"
-                        HeightRequest="50"
-                        Text="✉ Contact Parent"
-                        TextColor="White" />
-                    <Button
-                        Grid.Column="1"
-                        BackgroundColor="#1F2937"
+                        Margin="0,0,0,20"
+                        BackgroundColor="#111827"
+                        BorderColor="#1F2937"
+                        BorderWidth="1"
+                        Clicked="OnHistoryClicked"
                         CornerRadius="25"
                         HeightRequest="50"
-                        Text="🖊"
-                        TextColor="White"
-                        WidthRequest="50" />
-                </Grid>
-
-                <!--  Recent Activity  -->
-                <VerticalStackLayout Spacing="10">
-                    <Label
-                        FontAttributes="Bold"
-                        Text="Recent Activity"
-                        TextColor="#64748B" />
-
-                    <CollectionView ItemsSource="{Binding RecentActivity}" VerticalScrollBarVisibility="Never">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Border
-                                    Margin="0,0,0,10"
-                                    Style="{StaticResource StatCard}">
-                                    <Grid ColumnDefinitions="Auto, *, Auto">
-                                        <Border
-                                            BackgroundColor="#1F2937"
-                                            HeightRequest="40"
-                                            StrokeShape="RoundRectangle 20"
-                                            StrokeThickness="0"
-                                            WidthRequest="40">
-                                            <Label
-                                                HorizontalOptions="Center"
-                                                Text="{Binding Status, StringFormat='{0:0}'}"
-                                                TextColor="{Binding Status, Converter={StaticResource StatusColorConverter}}"
-                                                VerticalOptions="Center" />
-                                            <Label
-                                                FontSize="18"
-                                                HorizontalOptions="Center"
-                                                Text="✔"
-                                                TextColor="#22c55e"
-                                                VerticalOptions="Center">
-                                                <Label.Triggers>
-                                                    <DataTrigger
-                                                        Binding="{Binding Status}"
-                                                        TargetType="Label"
-                                                        Value="Absent">
-                                                        <Setter Property="Text" Value="✖" />
-                                                        <Setter Property="TextColor" Value="#ef4444" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </Border>
-
-                                        <VerticalStackLayout
-                                            Grid.Column="1"
-                                            Margin="15,0"
-                                            VerticalOptions="Center">
-                                            <Label
-                                                FontAttributes="Bold"
-                                                Text="{Binding Status}"
-                                                TextColor="White" />
-                                            <Label
-                                                FontSize="12"
-                                                Text="{Binding FullTimeDisplay}"
-                                                TextColor="Gray" />
-                                        </VerticalStackLayout>
-
-                                        <Border
-                                            Grid.Column="2"
-                                            Padding="10,5"
-                                            BackgroundColor="#064e3b"
-                                            StrokeShape="RoundRectangle 5"
-                                            StrokeThickness="0"
-                                            VerticalOptions="Center">
-                                            <Label
-                                                FontAttributes="Bold"
-                                                FontSize="10"
-                                                Text="VERIFIED"
-                                                TextColor="#22c55e">
-                                                <Label.Triggers>
-                                                    <DataTrigger
-                                                        Binding="{Binding Status}"
-                                                        TargetType="Label"
-                                                        Value="Absent">
-                                                        <Setter Property="Text" Value="UNEXCUSED" />
-                                                        <Setter Property="TextColor" Value="#ef4444" />
-                                                    </DataTrigger>
-                                                    <DataTrigger
-                                                        Binding="{Binding IsExcused}"
-                                                        TargetType="Label"
-                                                        Value="True">
-                                                        <Setter Property="Text" Value="EXCUSED" />
-                                                        <Setter Property="TextColor" Value="#f59e0b" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                            <Border.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding Status}"
-                                                    TargetType="Border"
-                                                    Value="Absent">
-                                                    <Setter Property="BackgroundColor" Value="#450a0a" />
-                                                </DataTrigger>
-                                                <DataTrigger
-                                                    Binding="{Binding IsExcused}"
-                                                    TargetType="Border"
-                                                    Value="True">
-                                                    <Setter Property="BackgroundColor" Value="#451a03" />
-                                                </DataTrigger>
-                                            </Border.Triggers>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-
+                        Text="View All History"
+                        TextColor="#94A3B8" />
                 </VerticalStackLayout>
-
-                <Button
-                    Margin="0,0,0,20"
-                    BackgroundColor="#111827"
-                    BorderColor="#1F2937"
-                    BorderWidth="1"
-                    Clicked="OnHistoryClicked"
-                    CornerRadius="25"
-                    HeightRequest="50"
-                    Text="View All History"
-                    TextColor="#94A3B8" />
-            </VerticalStackLayout>
-        </ScrollView>
+            </ScrollView>
+        </Grid>
     </Grid>
 </ContentPage>
