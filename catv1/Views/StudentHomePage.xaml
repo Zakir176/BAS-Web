@@ -7,7 +7,17 @@
     BackgroundColor="#0F172A"
     Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid>
+        <!-- Background Image -->
+        <Image
+            Source="lecture_room_bg.png"
+            Aspect="AspectFill"
+            Opacity="0.2" />
+            
+        <!-- Blur/Overlay -->
+        <BoxView BackgroundColor="#0F172A" Opacity="0.5" />
+
+        <Grid RowDefinitions="Auto, *">
         <!--  Header  -->
         <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *, Auto, Auto">
             <Label
@@ -93,11 +103,7 @@
                 <!--  Stats Cards  -->
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
                     <Border
-                        Padding="20"
-                        BackgroundColor="#111827"
-                        Stroke="#1F2937"
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="1">
+                        Style="{StaticResource StatCard}">
                         <VerticalStackLayout Spacing="5">
                             <Label
                                 FontSize="10"
@@ -112,11 +118,7 @@
                     </Border>
                     <Border
                         Grid.Column="1"
-                        Padding="20"
-                        BackgroundColor="#111827"
-                        Stroke="#1F2937"
-                        StrokeShape="RoundRectangle 15"
-                        StrokeThickness="1">
+                        Style="{StaticResource StatCard}">
                         <VerticalStackLayout Spacing="5">
                             <Label
                                 FontSize="10"
@@ -133,11 +135,7 @@
 
                 <!--  Heatmap Mockup  -->
                 <Border
-                    Padding="15"
-                    BackgroundColor="#111827"
-                    Stroke="#1F2937"
-                    StrokeShape="RoundRectangle 15"
-                    StrokeThickness="1">
+                    Style="{StaticResource GlassCard}">
                     <VerticalStackLayout Spacing="15">
                         <Grid ColumnDefinitions="*, Auto">
                             <Label
@@ -233,11 +231,7 @@
                             <DataTemplate>
                                 <Border
                                     Margin="0,0,0,10"
-                                    Padding="15"
-                                    BackgroundColor="#111827"
-                                    Stroke="#1F2937"
-                                    StrokeShape="RoundRectangle 15"
-                                    StrokeThickness="1">
+                                    Style="{StaticResource StatCard}">
                                     <Grid ColumnDefinitions="Auto, *, Auto">
                                         <Border
                                             BackgroundColor="#1F2937"
