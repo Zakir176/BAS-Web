@@ -15,7 +15,7 @@
         <Tab
             Title="Dashboard"
             Icon="home_icon.png"
-            Route="dashboardTab">
+            Route="studentDashboardTab">
             <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
         </Tab>
         <Tab
@@ -30,7 +30,7 @@
         <Tab
             Title="Class Management"
             Icon="class_icon.png"
-            Route="dashboardTab">
+            Route="lecturerDashboardTab">
             <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
         </Tab>
         <Tab

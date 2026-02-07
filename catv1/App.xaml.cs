@@ -6,10 +6,6 @@ public partial class App : Application
 
     public App(IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider;
-        System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor Start");
-        InitializeComponent();
-
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
             System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (Unhandled): {e.ExceptionObject}");
@@ -20,6 +16,20 @@ public partial class App : Application
             System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (UnobservedTask): {e.Exception}");
             e.SetObserved();
         };
+
+        _serviceProvider = serviceProvider;
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor Start");
+
+        try
+        {
+            InitializeComponent();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (InitializeComponent): {ex}");
+            // We can't easily show a dialog here if the app is crashing, but we've logged it.
+            throw; // Re-throw to allow normal crash behavior but with logging
+        }
 
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor End");
     }
