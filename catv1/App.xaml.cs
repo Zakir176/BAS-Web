@@ -9,6 +9,18 @@ public partial class App : Application
         _serviceProvider = serviceProvider;
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor Start");
         InitializeComponent();
+
+        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+        {
+            System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (Unhandled): {e.ExceptionObject}");
+        };
+
+        TaskScheduler.UnobservedTaskException += (s, e) =>
+        {
+            System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (UnobservedTask): {e.Exception}");
+            e.SetObserved();
+        };
+
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor End");
     }
 
