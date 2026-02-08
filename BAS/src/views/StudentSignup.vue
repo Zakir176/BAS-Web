@@ -1,58 +1,148 @@
 <template>
-  <div class="auth-page student-signup-theme">
-    <div class="auth-overlay"></div>
-    <main class="auth-main">
-      <div class="auth-card-wrapper">
-        <div class="auth-card">
-          <div class="auth-header">
-            <div class="auth-brand">🎓</div>
-            <h2>Join the <span class="text-gradient">Future.</span></h2>
-            <p>Create your student account to get started.</p>
+  <div class="student-signup-page">
+    <Navbar />
+
+    <main class="main-content">
+      <div class="container">
+        <div class="signup-container">
+          <div class="signup-visual">
+            <div class="signup-illustration">
+              <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
+                <rect width="300" height="300" rx="20" fill="var(--success)" opacity="0.05" />
+                <circle cx="150" cy="80" r="30" fill="var(--success)" opacity="0.2" />
+                <rect
+                  x="110"
+                  y="130"
+                  width="80"
+                  height="100"
+                  rx="10"
+                  fill="var(--success)"
+                  opacity="0.3"
+                />
+                <path d="M130 180h40v30h-40z" fill="var(--success)" />
+                <circle cx="150" cy="80" r="20" fill="var(--success)" />
+                <path d="M140 75h20v10h-20z" fill="white" />
+                <path
+                  d="M135 85l10 10 20-20"
+                  stroke="white"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <rect x="120" y="200" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
+                <rect x="120" y="215" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
+              </svg>
+            </div>
+            <div class="signup-features">
+              <h3>Join BAS Today</h3>
+              <ul>
+                <li>Quick and easy registration</li>
+                <li>Instant barcode generation</li>
+                <li>Mobile-friendly interface</li>
+                <li>Secure attendance tracking</li>
+              </ul>
+            </div>
           </div>
 
-          <Form @submit="handleSignup" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
-            <div class="form-row-v2">
-              <div class="input-group-v2">
-                <Field name="firstName" type="text" id="firstName" placeholder=" " class="input-field" :class="{'is-invalid': errors.firstName}" />
-                <label for="firstName">First Name</label>
-                <ErrorMessage name="firstName" class="error-message" />
+          <Card class="signup-card">
+            <div class="signup-header">
+              <div class="signup-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="10" fill="var(--success)" />
+                  <path d="M10 15h20v10H10z" fill="white" />
+                  <path d="M15 10v20h10V10H15z" fill="var(--success)" />
+                </svg>
               </div>
-              <div class="input-group-v2">
-                <Field name="lastName" type="text" id="lastName" placeholder=" " class="input-field" :class="{'is-invalid': errors.lastName}" />
-                <label for="lastName">Last Name</label>
-                <ErrorMessage name="lastName" class="error-message" />
-              </div>
+              <h2>Create Account</h2>
+              <p>Join the Barcode Attendance System</p>
             </div>
 
-            <div class="input-group-v2">
-              <Field name="studentId" type="text" id="studentId" placeholder=" " class="input-field" :class="{'is-invalid': errors.studentId}" />
-              <label for="studentId">Student ID Number</label>
-              <ErrorMessage name="studentId" class="error-message" />
-            </div>
-
-            <div class="input-group-v2">
-              <Field name="email" type="email" id="email" placeholder=" " class="input-field" :class="{'is-invalid': errors.email}" />
-              <label for="email">University Email</label>
-              <ErrorMessage name="email" class="error-message" />
-            </div>
-
-            <div class="input-group-v2">
-              <Field name="classSection" type="text" id="classSection" placeholder=" " class="input-field" :class="{'is-invalid': errors.classSection}" />
-              <label for="classSection">Class Section (e.g. CS101)</label>
-              <ErrorMessage name="classSection" class="error-message" />
-            </div>
-
-            <div class="form-row-v2">
-              <div class="input-group-v2">
-                <Field name="password" type="password" id="password" placeholder=" " class="input-field" :class="{'is-invalid': errors.password}" />
-                <label for="password">Password</label>
-                <ErrorMessage name="password" class="error-message" />
+            <form @submit.prevent="handleSignup" class="signup-form">
+              <div class="form-row">
+                <Input
+                  v-model="formData.firstName"
+                  label="First Name"
+                  type="text"
+                  placeholder="John"
+                  required
+                  :error="errors.firstName"
+                />
+                <Input
+                  v-model="formData.lastName"
+                  label="Last Name"
+                  type="text"
+                  placeholder="Doe"
+                  required
+                  :error="errors.lastName"
+                />
               </div>
-              <div class="input-group-v2">
-                <Field name="confirmPassword" type="password" id="confirmPassword" placeholder=" " class="input-field" :class="{'is-invalid': errors.confirmPassword}" />
-                <label for="confirmPassword">Confirm</label>
-                <ErrorMessage name="confirmPassword" class="error-message" />
+
+              <Input
+                v-model="formData.studentId"
+                label="Student ID"
+                type="text"
+                placeholder="2024001"
+                required
+                :error="errors.studentId"
+              />
+
+              <Input
+                v-model="formData.email"
+                label="Email Address"
+                type="email"
+                placeholder="student@university.edu"
+                required
+                :error="errors.email"
+              />
+
+              <Input
+                v-model="formData.department"
+                label="Department"
+                type="text"
+                placeholder="Computer Science"
+                required
+                :error="errors.department"
+              />
+
+              <div class="form-row">
+                <Input
+                  v-model="formData.password"
+                  label="Password"
+                  type="password"
+                  placeholder="Create a strong password"
+                  required
+                  :error="errors.password"
+                />
+                <Input
+                  v-model="formData.confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  placeholder="Confirm your password"
+                  required
+                  :error="errors.confirmPassword"
+                />
               </div>
+
+              <div class="form-options">
+                <label class="checkbox-label">
+                  <input type="checkbox" v-model="formData.agreeToTerms" required />
+                  <span class="checkmark"></span>
+                  I agree to the terms and conditions
+                </label>
+              </div>
+
+              <Button type="submit" variant="primary" size="lg" full-width :disabled="isLoading">
+                <span v-if="!isLoading">Create Account</span>
+                <span v-else>Creating account...</span>
+              </Button>
+            </form>
+
+            <div class="signup-footer">
+              <p>
+                Already have an account?
+                <router-link to="/student-login" class="link"> Sign In </router-link>
+              </p>
             </div>
 
             <div class="auth-options">
@@ -80,49 +170,147 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import { Form, Field, ErrorMessage } from 'vee-validate'
-import * as yup from 'yup'
-import { useAuth } from '@/composables/useAuth'
-import { useToast } from '@/composables/useToast'
-import Button from '@/components/ui/Button.vue'
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { supabase } from "@/supabase";
+import Navbar from "@/components/layout/Navbar.vue";
+import Button from "@/components/ui/Button.vue";
+import Card from "@/components/ui/Card.vue";
+import Input from "@/components/ui/Input.vue";
 
-const router = useRouter()
-const { signUp, isLoading } = useAuth()
-const { toast } = useToast()
+const router = useRouter();
 
-const schema = yup.object({
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('Last name is required'),
-  studentId: yup.string().required('Student ID is required'),
-  email: yup.string().required('Email is required').email('Invalid email format'),
-  classSection: yup.string().required('Class section is required'),
-  password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
-  confirmPassword: yup.string()
-    .required('Please confirm your password')
-    .oneOf([yup.ref('password')], 'Passwords must match'),
-  agreeToTerms: yup.boolean().oneOf([true], 'You must accept the terms of service'),
+const formData = reactive({
+  firstName: "",
+  lastName: "",
+  studentId: "",
+  email: "",
+  department: "",
+  password: "",
+  confirmPassword: "",
+  agreeToTerms: false,
 });
 
-const handleSignup = async (values) => {
-  try {
-    await signUp(values.email, values.password, {
-      role: 'student',
-      student_id: values.studentId,
-      first_name: values.firstName,
-      last_name: values.lastName,
-      full_name: `${values.firstName} ${values.lastName}`,
-      class_section: values.classSection
-    })
-    toast.success('Account created successfully! Please check your email for verification.')
-    setTimeout(() => {
-      router.push('/student-login')
-    }, 2000)
-  } catch (err) {
-    console.error('Signup error:', err)
-    toast.error(err.message)
+const errors = reactive({
+  firstName: "",
+  lastName: "",
+  studentId: "",
+  email: "",
+  department: "",
+  password: "",
+  confirmPassword: "",
+});
+
+const isLoading = ref(false);
+
+const validateForm = () => {
+  // Clear previous errors
+  Object.keys(errors).forEach((key) => {
+    errors[key] = "";
+  });
+
+  let isValid = true;
+
+  if (!formData.firstName) {
+    errors.firstName = "First name is required";
+    isValid = false;
   }
-}
+
+  if (!formData.lastName) {
+    errors.lastName = "Last name is required";
+    isValid = false;
+  }
+
+  if (!formData.studentId) {
+    errors.studentId = "Student ID is required";
+    isValid = false;
+  } else if (formData.studentId.length < 3) {
+    errors.studentId = "Please enter a valid student ID";
+    isValid = false;
+  }
+
+  if (!formData.email) {
+    errors.email = "Email is required";
+    isValid = false;
+  } else if (!formData.email.includes("@")) {
+    errors.email = "Please enter a valid email";
+    isValid = false;
+  }
+
+  if (!formData.department) {
+    errors.department = "Department is required";
+    isValid = false;
+  }
+
+  if (!formData.password) {
+    errors.password = "Password is required";
+    isValid = false;
+  } else if (formData.password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+    isValid = false;
+  }
+
+  if (!formData.confirmPassword) {
+    errors.confirmPassword = "Please confirm your password";
+    isValid = false;
+  } else if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
+    isValid = false;
+  }
+
+  if (!formData.agreeToTerms) {
+    alert("Please agree to the terms and conditions");
+    isValid = false;
+  }
+
+  return isValid;
+};
+
+const handleSignup = async () => {
+  if (!validateForm()) return;
+
+  isLoading.value = true;
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          student_id: formData.studentId,
+          role: "student",
+        },
+      },
+    });
+
+    if (error) throw error;
+
+    if (data.user) {
+      // Insert into students table
+      const { error: profileError } = await supabase.from("students").insert({
+        id: data.user.id,
+        student_id: formData.studentId,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        department: formData.department,
+        is_present: false,
+      });
+
+      if (profileError) throw profileError;
+
+      alert("Registration successful! Please login.");
+      router.push("/student-login");
+    }
+  } catch (error) {
+    console.error("Registration failed:", error);
+    alert(error.message || "Registration failed. Please try again.");
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <style scoped>
@@ -159,10 +347,15 @@ const handleSignup = async (values) => {
 
 .auth-card-wrapper {
   position: relative;
-  width: 100%;
-  max-width: 540px;
-  padding: 1.5rem;
-  z-index: 10;
+  padding-left: 1.5rem;
+}
+
+.signup-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--success);
+  font-weight: bold;
 }
 
 .auth-card {
@@ -257,13 +450,14 @@ const handleSignup = async (values) => {
   transition: all 0.2s;
 }
 
-.input-group-v2 .input-field:focus ~ label,
-.input-group-v2 .input-field:not(:placeholder-shown) ~ label {
-  top: -1.4rem;
-  left: 0.5rem;
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #2563eb;
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.75rem;
 }
 
 .premium-checkbox {
@@ -299,11 +493,25 @@ const handleSignup = async (values) => {
   border-radius: 14px;
 }
 
-.auth-footer {
-  margin-top: 2rem;
-  text-align: center;
-  font-weight: 600;
-  color: #64748b;
+@media (max-width: 768px) {
+  .signup-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .signup-visual {
+    order: 2;
+  }
+
+  .signup-card {
+    order: 1;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 .auth-footer a { color: #2563eb; font-weight: 800; }

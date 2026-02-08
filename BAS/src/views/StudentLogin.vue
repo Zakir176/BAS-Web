@@ -1,90 +1,107 @@
 <template>
-  <div class="auth-page student-login">
-    <div class="auth-overlay">
-      <div class="auth-header">
-        <div class="logo-box">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="var(--primary)" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h1 class="brand-name">Smart Attendance</h1>
-      </div>
+  <div class="student-login-page">
+    <Navbar />
 
-      <div class="auth-card-wrapper">
-        <Card class="auth-card">
-          <div class="auth-card-header">
-            <h2>Welcome back, Scholar</h2>
-            <p>Sign in to your account to continue</p>
-            <!-- Show return URL if available -->
-            <div v-if="returnPath && returnPath !== '/student-login'" class="return-url-info">
-              <small>You'll be redirected to: <strong>{{ returnPath }}</strong></small>
+    <main class="main-content">
+      <div class="container">
+        <div class="login-container">
+          <div class="login-visual">
+            <div class="login-illustration">
+              <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
+                <rect
+                  width="300"
+                  height="300"
+                  rx="20"
+                  fill="var(--accent-primary)"
+                  opacity="0.05"
+                />
+                <circle cx="150" cy="80" r="30" fill="var(--accent-primary)" opacity="0.2" />
+                <rect
+                  x="110"
+                  y="130"
+                  width="80"
+                  height="100"
+                  rx="10"
+                  fill="var(--accent-primary)"
+                  opacity="0.3"
+                />
+                <path d="M130 180h40v30h-40z" fill="var(--accent-primary)" />
+                <circle cx="150" cy="80" r="20" fill="var(--accent-primary)" />
+                <path d="M140 75h20v10h-20z" fill="white" />
+                <rect x="120" y="200" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
+                <rect x="120" y="215" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
+              </svg>
+            </div>
+            <div class="login-features">
+              <h3>Student Portal</h3>
+              <ul>
+                <li>Mark attendance with barcode</li>
+                <li>View attendance history</li>
+                <li>Check class schedules</li>
+                <li>Download attendance reports</li>
+              </ul>
             </div>
           </div>
 
-          <Form @submit="handleLogin" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
-            <div class="form-group">
-              <label for="email">Student Email</label>
-              <div class="input-wrapper">
-                <span class="input-icon">👤</span>
-                <Field 
-                  name="email"
-                  type="email" 
-                  id="email"
-                  placeholder="name@university.edu" 
-                  class="input"
-                  :class="{ 'is-invalid': errors.email }"
-                />
+          <Card class="login-card">
+            <div class="login-header">
+              <div class="login-logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="10" fill="var(--accent-primary)" />
+                  <path d="M10 15h20v10H10z" fill="white" />
+                  <path d="M15 10v20h10V10H15z" fill="var(--accent-primary)" />
+                </svg>
               </div>
               <ErrorMessage name="email" class="error-message" />
             </div>
 
-            <div class="form-group">
-              <label for="password">Password</label>
-              <div class="input-wrapper">
-                <span class="input-icon">🔒</span>
-                <Field 
-                  name="password"
-                  :type="showPassword ? 'text' : 'password'" 
-                  id="password"
-                  placeholder="••••••••" 
-                  class="input"
-                  :class="{ 'is-invalid': errors.password }"
-                />
-                <button type="button" class="password-toggle" @click="showPassword = !showPassword" aria-label="Toggle password visibility">
-                  <span aria-hidden="true">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</span>
-                </button>
+            <form @submit.prevent="handleLogin" class="login-form">
+              <Input
+                v-model="formData.email"
+                label="Email Address"
+                type="email"
+                placeholder="student@university.edu"
+                required
+                :error="errors.email"
+              />
+
+              <Input
+                v-model="formData.password"
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                required
+                :error="errors.password"
+              />
+
+              <div class="form-options">
+                <label class="checkbox-label">
+                  <input type="checkbox" v-model="formData.rememberMe" />
+                  <span class="checkmark"></span>
+                  Remember me
+                </label>
+                <a href="#" class="forgot-password">Forgot password?</a>
               </div>
-              <ErrorMessage name="password" class="error-message" />
+
+              <Button type="submit" variant="primary" size="lg" full-width :disabled="isLoading">
+                <span v-if="!isLoading">Sign In</span>
+                <span v-else>Signing in...</span>
+              </Button>
+            </form>
+
+            <div class="divider">
+              <span>OR</span>
             </div>
 
-            <div class="auth-options">
-              <label class="checkbox-container">
-                <input type="checkbox" v-model="rememberMe">
-                <span class="checkmark"></span>
-                Remember me
-              </label>
-              <router-link to="/forgot-password" class="forgot-link">Forgot Password?</router-link>
-            </div>
-
-            <Button
-              type="submit"
-              variant="primary"
-              full-width
-              :disabled="isLoading"
-              class="submit-btn"
-            >
-              <span v-if="!isLoading">Log In to Portal</span>
-              <span v-else>Authenticating...</span>
-              <span class="btn-arrow">→</span>
+            <Button variant="secondary" size="lg" full-width @click="goToSignup">
+              Create New Account
             </Button>
-          </Form>
 
-          <div class="auth-footer">
-            <p>Are you a faculty member? <router-link to="/lecturer-login">Lecturer Portal</router-link></p>
-            <div class="secure-badge">
-              <span>🛡️</span> SECURE STUDENT ACCESS
+            <div class="login-footer">
+              <p>
+                Are you a lecturer?
+                <router-link to="/lecturer-login" class="link"> Lecturer Portal </router-link>
+              </p>
             </div>
           </div>
         </Card>
@@ -94,43 +111,75 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { Form, Field, ErrorMessage } from 'vee-validate'
-import * as yup from 'yup'
-import { useAuth } from '@/composables/useAuth'
-import { useToast } from '@/composables/useToast'
-import { useAuthRedirect } from '@/composables/useAuthRedirect'
-import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { supabase } from "@/supabase";
+import Navbar from "@/components/layout/Navbar.vue";
+import Button from "@/components/ui/Button.vue";
+import Card from "@/components/ui/Card.vue";
+import Input from "@/components/ui/Input.vue";
 
-const router = useRouter()
-const route = useRoute()
-const { signIn, isLoading } = useAuth()
-const { toast } = useToast()
-const { redirectToIntendedDestination, returnPath } = useAuthRedirect()
-const showPassword = ref(false)
-const rememberMe = ref(false)
+const router = useRouter();
 
-const schema = yup.object({
-  email: yup.string().required('Email is required').email('Invalid email format'),
-  password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+const formData = reactive({
+  studentId: "", // Note: Still using studentId as a conceptual label, but we need email for auth
+  email: "", // Added email field for auth
+  password: "",
+  rememberMe: false,
 });
 
-const handleLogin = async (values) => {
-  try {
-    await signIn(values.email, values.password)
-    toast.success('Welcome back! Redirecting...')
-    
-    // Redirect to intended destination after successful login
-    setTimeout(() => {
-      redirectToIntendedDestination('student')
-    }, 1000)
-  } catch (err) {
-    console.error('Login failed:', err)
-    toast.error('Invalid credentials. Please check your email and password.')
+const errors = reactive({
+  email: "",
+  password: "",
+});
+
+const isLoading = ref(false);
+
+const validateForm = () => {
+  errors.email = "";
+  errors.password = "";
+
+  if (!formData.email) {
+    errors.email = "Email is required";
+    return false;
   }
-}
+
+  if (!formData.password) {
+    errors.password = "Password is required";
+    return false;
+  }
+
+  return true;
+};
+
+const handleLogin = async () => {
+  if (!validateForm()) return;
+
+  isLoading.value = true;
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      // Redirect to student homepage
+      router.push("/student-homepage");
+    }
+  } catch (error) {
+    console.error("Login failed:", error);
+    errors.password = error.message || "Invalid email or password";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const goToSignup = () => {
+  router.push("/student-signup");
+};
 </script>
 
 <style scoped>
@@ -207,8 +256,12 @@ const handleLogin = async (values) => {
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
 }
 
-.auth-card-header {
-  margin-bottom: 2.5rem;
+.login-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--success);
+  font-weight: bold;
 }
 
 .auth-card-header h2 {
@@ -283,8 +336,14 @@ const handleLogin = async (values) => {
   transition: background 0.2s;
 }
 
-.password-toggle:hover {
-  background: #eee;
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.75rem;
 }
 
 .auth-options {
@@ -309,11 +368,14 @@ const handleLogin = async (values) => {
   font-size: 0.9375rem;
 }
 
-.submit-btn {
-  height: 4rem;
-  font-size: 1.125rem;
-  border-radius: 20px;
-  margin-top: 1rem;
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--border-primary);
 }
 
 .btn-arrow {
@@ -351,25 +413,25 @@ const handleLogin = async (values) => {
   border: 1px solid #e2e8f0;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+@media (max-width: 768px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
 
-@media (max-width: 640px) {
-  .auth-overlay {
-    padding: 1.5rem;
+  .login-visual {
+    order: 2;
   }
-  
-  .auth-card-wrapper {
-    margin: 0 -1.5rem -1.5rem -1.5rem;
-    max-width: none;
-    width: auto;
+
+  .login-card {
+    order: 1;
   }
-  
-  .auth-card {
-    border-radius: 40px 40px 0 0;
-    padding: 3rem 2rem;
+
+  .form-options {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
   }
 }
 </style>

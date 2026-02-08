@@ -1,30 +1,112 @@
 <template>
   <div class="student-dashboard">
     <Navbar />
-    
-    <main class="main-content">
-      <div class="container dashboard-container">
-        <!-- Profile Header -->
-        <StudentProfileHeader
-          :is-loading="isLoading"
-          :student-name="studentName"
-          :student-profile="studentProfile"
-          :class-section="classSection"
-          @view-profile="toast.info('Profile page coming soon!')"
-          @view-settings="toast.info('Settings page coming soon!')"
-        />
 
-        <!-- Desktop Grid Layout -->
-        <div class="dashboard-grid">
-          <!-- Left Column (Main Content) -->
-          <div class="grid-main">
-            <!-- Stats Overview -->
-            <section class="stats-overview">
-              <div class="stats-row">
-                <div class="stat-card blue-card">
-                  <span class="label">ATTENDANCE</span>
-                  <Skeleton v-if="isLoading" width="60px" height="2rem" />
-                  <div v-else class="value">{{ attendanceStats.overall }}%</div>
+    <main class="main-content">
+      <div class="container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+          <div class="welcome-content">
+            <div class="welcome-text">
+              <h1>Welcome back, {{ studentName }}!</h1>
+              <p class="welcome-subtitle">Track your attendance and view your academic progress</p>
+            </div>
+            <div class="welcome-actions">
+              <Button variant="primary" size="lg" @click="showBarcodeScanner">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                  <path
+                    d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM12 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zM12 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3z"
+                  />
+                </svg>
+                Mark Attendance
+              </Button>
+              <Button variant="secondary" size="lg" @click="goToReports"> View Reports </Button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="stats-section">
+          <div class="stats-grid">
+            <Card class="stat-card">
+              <div class="stat-icon attendance">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v2h-8V9h2z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number">{{ attendanceStats.overall }}%</div>
+                <div class="stat-label">Overall Attendance</div>
+              </div>
+            </Card>
+
+            <Card class="stat-card">
+              <div class="stat-icon present">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number">{{ attendanceStats.present }}</div>
+                <div class="stat-label">Days Present</div>
+              </div>
+            </Card>
+
+            <Card class="stat-card">
+              <div class="stat-icon absent">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v8h8v-2h-6V9h-2z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number">{{ attendanceStats.absent }}</div>
+                <div class="stat-label">Days Absent</div>
+              </div>
+            </Card>
+
+            <Card class="stat-card">
+              <div class="stat-icon streak">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M16 2l2.122 6.364L24 10.878l-5.878 2.514L16 20l-2.122-6.608L8 10.878l5.878-2.514L16 2z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number">{{ attendanceStats.streak }}</div>
+                <div class="stat-label">Day Streak</div>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="activity-section">
+          <div class="section-header">
+            <h2>Recent Activity</h2>
+            <Button variant="secondary" size="sm" @click="viewAllActivity"> View All </Button>
+          </div>
+
+          <div class="activity-list">
+            <Card v-for="activity in recentActivities" :key="activity.id" class="activity-item">
+              <div class="activity-content">
+                <div class="activity-icon" :class="activity.type">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      v-if="activity.type === 'present'"
+                      d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+                    />
+                    <path
+                      v-else
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                    />
+                  </svg>
                 </div>
                 <div class="stat-card white-card">
                   <span class="label">ABSENCES</span>
@@ -32,16 +114,8 @@
                   <div v-else class="value danger">{{ attendanceStats.absent }}</div>
                 </div>
               </div>
-            </section>
-
-            <!-- Heatmap Section -->
-            <section class="heatmap-section">
-              <div class="card calendar-surface">
-                <div class="section-header">
-                  <h3>Attendance Heatmap</h3>
-                  <div class="selector">Term 1 <span>▾</span></div>
-                </div>
-                <AttendanceCalendar :attendance-records="attendanceRecords" />
+              <div class="activity-status" :class="activity.type">
+                {{ activity.type === "present" ? "Present" : "Absent" }}
               </div>
             </section>
 
@@ -54,31 +128,38 @@
             />
           </div>
 
-          <!-- Right Column (Sidebar) -->
-          <div class="grid-sidebar">
-            <!-- Barcode Section -->
-            <section v-if="!isLoading && studentProfile?.student_id" class="barcode-section">
-              <StudentBarcode :student-id="studentProfile.student_id" />
-            </section>
-            <section v-else-if="isLoading" class="barcode-section">
-              <div class="barcode-skeleton">
-                <Skeleton width="100%" height="200px" radius="20px" />
-              </div>
-            </section>
+        <!-- Today's Schedule -->
+        <section class="schedule-section">
+          <div class="section-header">
+            <h2>Today's Schedule</h2>
+            <span class="current-date">{{ currentDate }}</span>
+          </div>
 
-            <!-- Main Action Area -->
-            <section class="action-area">
-              <Button 
-                variant="primary" 
-                full-width 
-                size="lg" 
-                class="contact-button"
-                @click="handleContactParent"
-              >
-                <span class="btn-icon">✉️</span> Contact Counselor
-              </Button>
-              <button class="fab-edit" @click="toast.info('Profile editing coming soon!')">✎</button>
-            </section>
+          <div class="schedule-grid">
+            <Card v-for="classItem in todaySchedule" :key="classItem.id" class="schedule-item">
+              <div class="schedule-time">
+                <div class="time-start">{{ classItem.startTime }}</div>
+                <div class="time-end">{{ classItem.endTime }}</div>
+              </div>
+              <div class="schedule-details">
+                <h4>{{ classItem.course }}</h4>
+                <p>{{ classItem.lecturer }} • {{ classItem.room }}</p>
+                <div class="schedule-status" :class="classItem.status">
+                  {{ classItem.status }}
+                </div>
+              </div>
+              <div class="schedule-action">
+                <Button
+                  v-if="classItem.status === 'Upcoming'"
+                  variant="primary"
+                  size="sm"
+                  @click="markAttendance(classItem.id)"
+                >
+                  Mark
+                </Button>
+                <span v-else-if="classItem.status === 'Completed'" class="completed-mark"> ✓ </span>
+              </div>
+            </Card>
           </div>
         </div>
       </div>
@@ -87,124 +168,105 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuth } from '@/composables/useAuth'
-import { useToast } from '@/composables/useToast'
-import { supabase } from '@/supabase'
-import Navbar from '@/components/common/Navbar.vue'
-import Button from '@/components/ui/Button.vue'
-import Skeleton from '@/components/ui/Skeleton.vue'
-import AttendanceCalendar from '@/components/student/AttendanceCalendar.vue'
-import StudentBarcode from '@/components/student/StudentBarcode.vue'
-import StudentProfileHeader from '@/components/student/StudentProfileHeader.vue'
-import RecentActivity from '@/components/student/RecentActivity.vue'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { supabase } from "@/supabase";
+import Navbar from "@/components/layout/Navbar.vue";
+import Button from "@/components/ui/Button.vue";
+import Card from "@/components/ui/Card.vue";
 
-const router = useRouter()
-const { user } = useAuth()
-const { toast } = useToast()
-const studentProfile = ref(null)
-const studentName = ref('')
-const classSection = ref('10A') // Default/Placeholder
+const router = useRouter();
+
+const studentName = ref("Loading...");
+const currentDate = ref(
+  new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }),
+);
 
 const attendanceStats = ref({
   overall: 0,
   present: 0,
-  absent: 0
-})
+  absent: 0,
+  streak: 0,
+});
 
-const recentActivity = ref([])
-const attendanceRecords = ref([])
-const isLoading = ref(true)
-const showAllHistory = ref(false)
-
-const handleContactParent = () => {
-  const subject = encodeURIComponent(`Inquiry regarding student ${studentName.value}`)
-  const body = encodeURIComponent(`Hello,\n\nI am inquiring about the attendance status for student ID: ${studentProfile.value?.student_id}.`)
-  window.location.href = `mailto:advisor@university.edu?subject=${subject}&body=${body}`
-}
+const recentActivities = ref([]);
+const todaySchedule = ref([]); // Currently mock as no schedule table exists yet
 
 const fetchStudentData = async () => {
   try {
-    if (!user.value) {
-      toast.error('User not found. Please login again.')
-      return
-    }
-    
-    isLoading.value = true
-
-    // 1. Get student profile details using email
-    const { data: studentData, error } = await supabase
-      .from('students')
-      .select('*')
-      .eq('email', user.value.email)
-      .single()
-    
-    if (error) {
-      toast.error('Failed to fetch student profile')
-      console.error('Student profile error:', error)
-      return
-    }
-    
-    if (studentData) {
-      studentProfile.value = studentData
-      studentName.value = studentData.full_name
-      classSection.value = studentData.class_section || '10A'
-      toast.success(`Welcome back, ${studentData.full_name}!`)
-    } else {
-      toast.warning('Student profile not found')
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/student-login");
+      return;
     }
 
-    // 2. Fetch specific attendance records
-    const studentId = studentProfile.value?.student_id
-    if (!studentId) {
-      toast.warning('Student ID not found')
-      return
-    }
+    // Fetch student profile
+    const { data: profile, error: profileError } = await supabase
+      .from("students")
+      .select("*")
+      .eq("id", user.id)
+      .single();
 
-    const { data: attendanceData } = await supabase
-      .from('attendance')
-      .select('status, timestamp, attendance_id')
-      .eq('student_id', studentId)
-      .order('timestamp', { ascending: false })
+    if (profileError) throw profileError;
+    studentName.value = `${profile.first_name} ${profile.last_name}`;
 
-    if (attendanceData) {
-      const total = attendanceData.length
-      const presentCount = attendanceData.filter(a => a.status === 'Present').length
-      
-      attendanceStats.value = {
-        overall: total > 0 ? Math.round((presentCount / total) * 100) : 0,
-        present: presentCount,
-        absent: total - presentCount
-      }
+    // Fetch activity logs
+    const { data: logs, error: logsError } = await supabase
+      .from("activity_logs")
+      .select("*")
+      .eq("student_id", user.id)
+      .order("date_time", { ascending: false });
 
-      // Map for Activity Timeline
-      recentActivity.value = attendanceData.map(item => ({
-        id: item.attendance_id,
-        status: item.status.toLowerCase(),
-        time: new Date(item.timestamp).toLocaleDateString('en-US', {
-          month: 'short', day: 'numeric', year: 'numeric'
-        }) + ' • ' + new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }))
+    if (logsError) throw logsError;
 
-      // Map for Calendar
-      attendanceRecords.value = attendanceData.map(record => ({
-        date: record.timestamp.split('T')[0],
-        status: record.status
-      }))
-    }
+    recentActivities.value = logs.map((log) => ({
+      id: log.id,
+      course: "General Attendance", // Placeholder until classes are implemented
+      date: new Date(log.date_time).toLocaleDateString(),
+      time: new Date(log.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      type: log.status?.toLowerCase() || "present",
+    }));
 
+    // Calculate Stats
+    const total = logs.length;
+    const presentCount = logs.filter((l) => l.status === "Present").length;
+    attendanceStats.value = {
+      overall: total > 0 ? Math.round((presentCount / total) * 100) : 0,
+      present: presentCount,
+      absent: total - presentCount,
+      streak: 0, // Logic for streak can be added later
+    };
   } catch (error) {
-    console.error('Data sync failed:', error)
-    toast.error('Could not load your dashboard data. Please try again later.')
-  } finally {
-    isLoading.value = false
+    console.error("Error fetching student data:", error);
   }
-}
+};
+
+const showBarcodeScanner = () => {
+  alert("In the Web version, please use the Mobile App to scan your ID.");
+};
+
+const goToReports = () => {
+  router.push("/report-page");
+};
+
+const viewAllActivity = () => {
+  router.push("/report-page");
+};
+
+const markAttendance = (classId) => {
+  alert("Please use the Mobile App to mark attendance via QR scanning.");
+};
 
 onMounted(() => {
-  fetchStudentData()
-})
+  fetchStudentData();
+});
 </script>
 
 <style scoped>
@@ -409,21 +471,36 @@ onMounted(() => {
   margin-bottom: 2.5rem;
 }
 
-.contact-button {
-  height: 3.5rem;
-  border-radius: 16px;
-  font-weight: 700;
-}
+@media (max-width: 768px) {
+  .welcome-content {
+    flex-direction: column;
+    text-align: center;
+  }
 
-.fab-edit {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 16px;
-  border: none;
-  background: var(--bg-card);
-  color: var(--text-main);
-  font-size: 1.25rem;
-  cursor: pointer;
-  box-shadow: var(--shadow-soft);
+  .welcome-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-item,
+  .schedule-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .schedule-time {
+    min-width: auto;
+  }
+
+  .section-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
 }
 </style>
