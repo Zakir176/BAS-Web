@@ -1,6 +1,13 @@
 <template>
   <div class="barcode-scanner">
-    <div ref="scanner" class="scanner-viewport"></div>
+    <div ref="scanner" :class="{'scanner-viewport': true, 'border-green-500': isDetecting, 'border-red-500': errorMessage}" class="relative border-4 rounded-lg">
+      <div v-if="errorMessage" class="absolute inset-0 bg-red-800 bg-opacity-75 flex items-center justify-center text-white text-lg font-bold p-4 rounded-lg z-10">
+        {{ errorMessage }}
+      </div>
+      <div v-if="detectedBarcode" class="absolute top-0 left-0 right-0 bg-green-500 text-white text-center py-1 z-10">
+        Detected: {{ detectedBarcode }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -10,6 +17,10 @@ import Quagga from '@ericblade/quagga2'
 
 const scanner = ref(null)
 const emit = defineEmits(['detected'])
+
+const errorMessage = ref('')
+const detectedBarcode = ref(null)
+const isDetecting = ref(false)
 
 onMounted(() => {
   Quagga.init({
@@ -46,8 +57,10 @@ onMounted(() => {
     if (err) {
       console.error('Quagga init failed:', err)
       // Fallback for desktop/specific devices
-      if (err.name === "OverconstrainedError" || err.name === "NotAllowedError") {
-        alert("Camera access failed. Please check permissions.")
+      if (err.name === "OverconstrainedError" || err.name === "NotAllowedError" || err.name === "NotFoundError") {
+        errorMessage.value = "Camera access failed. Please ensure you have a camera and grant permissions."
+      } else {
+        errorMessage.value = `Scanner initialization failed: ${err.message || err.name}`
       }
       return
     }
@@ -60,6 +73,14 @@ onMounted(() => {
   Quagga.onDetected((data) => {
     if (!data.codeResult || !data.codeResult.code) return
     
+    isDetecting.value = true
+    detectedBarcode.value = data.codeResult.code
+
+    setTimeout(() => {
+      isDetecting.value = false
+      detectedBarcode.value = null
+    }, 1500) // Visual feedback lasts for 1.5 seconds
+
     const now = Date.now()
     if (now - lastEmitTime > cooldown) {
       lastEmitTime = now
