@@ -8,6 +8,14 @@
         Detected: {{ detectedBarcode }}
       </div>
     </div>
+    <div class="flex justify-center mt-4 space-x-4">
+      <button v-if="!isPaused" @click="togglePauseResume" class="px-6 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75">
+        Pause Scanner
+      </button>
+      <button v-else @click="togglePauseResume" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+        Resume Scanner
+      </button>
+    </div>
   </div>
 </template>
 
@@ -21,6 +29,18 @@ const emit = defineEmits(['detected'])
 const errorMessage = ref('')
 const detectedBarcode = ref(null)
 const isDetecting = ref(false)
+const isPaused = ref(false)
+
+const togglePauseResume = () => {
+  if (isPaused.value) {
+    Quagga.start()
+    isPaused.value = false
+    errorMessage.value = '' // Clear error message when resuming
+  } else {
+    Quagga.stop()
+    isPaused.value = true
+  }
+}
 
 onMounted(() => {
   Quagga.init({
@@ -64,7 +84,9 @@ onMounted(() => {
       }
       return
     }
-    Quagga.start()
+    if (!isPaused.value) { // Only start if not paused initially
+      Quagga.start()
+    }
   })
 
   let lastEmitTime = 0
@@ -91,7 +113,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  Quagga.stop()
+  if (!isPaused.value) { // Stop Quagga only if it's currently running (not paused)
+    Quagga.stop()
+  }
 })
 </script>
 
