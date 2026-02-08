@@ -1,7 +1,7 @@
 <template>
   <div class="student-homepage">
     <Navbar />
-    
+
     <main class="main-content">
       <div class="container">
         <!-- Welcome Section -->
@@ -14,13 +14,13 @@
             <div class="welcome-actions">
               <Button variant="primary" size="lg" @click="showBarcodeScanner">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM12 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zM12 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3z"/>
+                  <path
+                    d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM12 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zM12 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3z"
+                  />
                 </svg>
                 Mark Attendance
               </Button>
-              <Button variant="secondary" size="lg" @click="goToReports">
-                View Reports
-              </Button>
+              <Button variant="secondary" size="lg" @click="goToReports"> View Reports </Button>
             </div>
           </div>
         </section>
@@ -31,7 +31,9 @@
             <Card class="stat-card">
               <div class="stat-icon attendance">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v2h-8V9h2z"/>
+                  <path
+                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v2h-8V9h2z"
+                  />
                 </svg>
               </div>
               <div class="stat-content">
@@ -43,7 +45,9 @@
             <Card class="stat-card">
               <div class="stat-icon present">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"/>
+                  <path
+                    d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"
+                  />
                 </svg>
               </div>
               <div class="stat-content">
@@ -55,7 +59,9 @@
             <Card class="stat-card">
               <div class="stat-icon absent">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v8h8v-2h-6V9h-2z"/>
+                  <path
+                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v8h8v-2h-6V9h-2z"
+                  />
                 </svg>
               </div>
               <div class="stat-content">
@@ -67,7 +73,9 @@
             <Card class="stat-card">
               <div class="stat-icon streak">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2l2.122 6.364L24 10.878l-5.878 2.514L16 20l-2.122-6.608L8 10.878l5.878-2.514L16 2z"/>
+                  <path
+                    d="M16 2l2.122 6.364L24 10.878l-5.878 2.514L16 20l-2.122-6.608L8 10.878l5.878-2.514L16 2z"
+                  />
                 </svg>
               </div>
               <div class="stat-content">
@@ -82,18 +90,22 @@
         <section class="activity-section">
           <div class="section-header">
             <h2>Recent Activity</h2>
-            <Button variant="secondary" size="sm" @click="viewAllActivity">
-              View All
-            </Button>
+            <Button variant="secondary" size="sm" @click="viewAllActivity"> View All </Button>
           </div>
-          
+
           <div class="activity-list">
             <Card v-for="activity in recentActivities" :key="activity.id" class="activity-item">
               <div class="activity-content">
                 <div class="activity-icon" :class="activity.type">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path v-if="activity.type === 'present'" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    <path v-else d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    <path
+                      v-if="activity.type === 'present'"
+                      d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+                    />
+                    <path
+                      v-else
+                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                    />
                   </svg>
                 </div>
                 <div class="activity-details">
@@ -102,7 +114,7 @@
                 </div>
               </div>
               <div class="activity-status" :class="activity.type">
-                {{ activity.type === 'present' ? 'Present' : 'Absent' }}
+                {{ activity.type === "present" ? "Present" : "Absent" }}
               </div>
             </Card>
           </div>
@@ -114,7 +126,7 @@
             <h2>Today's Schedule</h2>
             <span class="current-date">{{ currentDate }}</span>
           </div>
-          
+
           <div class="schedule-grid">
             <Card v-for="classItem in todaySchedule" :key="classItem.id" class="schedule-item">
               <div class="schedule-time">
@@ -129,17 +141,15 @@
                 </div>
               </div>
               <div class="schedule-action">
-                <Button 
-                  v-if="classItem.status === 'Upcoming'" 
-                  variant="primary" 
+                <Button
+                  v-if="classItem.status === 'Upcoming'"
+                  variant="primary"
                   size="sm"
                   @click="markAttendance(classItem.id)"
                 >
                   Mark
                 </Button>
-                <span v-else-if="classItem.status === 'Completed'" class="completed-mark">
-                  ✓
-                </span>
+                <span v-else-if="classItem.status === 'Completed'" class="completed-mark"> ✓ </span>
               </div>
             </Card>
           </div>
@@ -150,118 +160,105 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import Navbar from '@/components/layout/Navbar.vue'
-import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { supabase } from "@/supabase";
+import Navbar from "@/components/layout/Navbar.vue";
+import Button from "@/components/ui/Button.vue";
+import Card from "@/components/ui/Card.vue";
 
-const router = useRouter()
+const router = useRouter();
 
-// Mock data - replace with actual Supabase calls
-const studentName = ref('John Doe')
-const currentDate = ref(new Date().toLocaleDateString('en-US', { 
-  weekday: 'long', 
-  year: 'numeric', 
-  month: 'long', 
-  day: 'numeric' 
-}))
+const studentName = ref("Loading...");
+const currentDate = ref(
+  new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }),
+);
 
 const attendanceStats = ref({
-  overall: 92,
-  present: 138,
-  absent: 12,
-  streak: 7
-})
+  overall: 0,
+  present: 0,
+  absent: 0,
+  streak: 0,
+});
 
-const recentActivities = ref([
-  {
-    id: 1,
-    course: 'Computer Science 101',
-    date: 'Today',
-    time: '10:00 AM',
-    type: 'present'
-  },
-  {
-    id: 2,
-    course: 'Mathematics 201',
-    date: 'Yesterday',
-    time: '2:00 PM',
-    type: 'present'
-  },
-  {
-    id: 3,
-    course: 'Physics 101',
-    date: 'Dec 10, 2024',
-    time: '11:00 AM',
-    type: 'absent'
-  },
-  {
-    id: 4,
-    course: 'Chemistry Lab',
-    date: 'Dec 9, 2024',
-    time: '3:00 PM',
-    type: 'present'
-  }
-])
+const recentActivities = ref([]);
+const todaySchedule = ref([]); // Currently mock as no schedule table exists yet
 
-const todaySchedule = ref([
-  {
-    id: 1,
-    course: 'Computer Science 101',
-    lecturer: 'Dr. Smith',
-    room: 'Room 301',
-    startTime: '9:00 AM',
-    endTime: '10:30 AM',
-    status: 'Completed'
-  },
-  {
-    id: 2,
-    course: 'Mathematics 201',
-    lecturer: 'Prof. Johnson',
-    room: 'Room 205',
-    startTime: '11:00 AM',
-    endTime: '12:30 PM',
-    status: 'Upcoming'
-  },
-  {
-    id: 3,
-    course: 'Physics 101',
-    lecturer: 'Dr. Brown',
-    room: 'Lab 102',
-    startTime: '2:00 PM',
-    endTime: '3:30 PM',
-    status: 'Upcoming'
+const fetchStudentData = async () => {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/student-login");
+      return;
+    }
+
+    // Fetch student profile
+    const { data: profile, error: profileError } = await supabase
+      .from("students")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) throw profileError;
+    studentName.value = `${profile.first_name} ${profile.last_name}`;
+
+    // Fetch activity logs
+    const { data: logs, error: logsError } = await supabase
+      .from("activity_logs")
+      .select("*")
+      .eq("student_id", user.id)
+      .order("date_time", { ascending: false });
+
+    if (logsError) throw logsError;
+
+    recentActivities.value = logs.map((log) => ({
+      id: log.id,
+      course: "General Attendance", // Placeholder until classes are implemented
+      date: new Date(log.date_time).toLocaleDateString(),
+      time: new Date(log.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      type: log.status?.toLowerCase() || "present",
+    }));
+
+    // Calculate Stats
+    const total = logs.length;
+    const presentCount = logs.filter((l) => l.status === "Present").length;
+    attendanceStats.value = {
+      overall: total > 0 ? Math.round((presentCount / total) * 100) : 0,
+      present: presentCount,
+      absent: total - presentCount,
+      streak: 0, // Logic for streak can be added later
+    };
+  } catch (error) {
+    console.error("Error fetching student data:", error);
   }
-])
+};
 
 const showBarcodeScanner = () => {
-  // Mock barcode scanner functionality
-  alert('Barcode scanner would open here')
-}
+  alert("In the Web version, please use the Mobile App to scan your ID.");
+};
 
 const goToReports = () => {
-  router.push('/report-page')
-}
+  router.push("/report-page");
+};
 
 const viewAllActivity = () => {
-  // Navigate to full activity page
-  console.log('View all activity')
-}
+  router.push("/report-page");
+};
 
 const markAttendance = (classId) => {
-  // Mock attendance marking
-  const classItem = todaySchedule.value.find(c => c.id === classId)
-  if (classItem) {
-    classItem.status = 'Completed'
-    alert(`Attendance marked for ${classItem.course}`)
-  }
-}
+  alert("Please use the Mobile App to mark attendance via QR scanning.");
+};
 
 onMounted(() => {
-  // Load student data from Supabase
-  console.log('Student homepage loaded')
-})
+  fetchStudentData();
+});
 </script>
 
 <style scoped>
@@ -541,27 +538,27 @@ onMounted(() => {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .welcome-actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .activity-item,
   .schedule-item {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
   }
-  
+
   .schedule-time {
     min-width: auto;
   }
-  
+
   .section-header {
     flex-direction: column;
     gap: 1rem;

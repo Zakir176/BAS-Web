@@ -1,7 +1,7 @@
 <template>
   <div class="report-page">
     <Navbar />
-    
+
     <main class="main-content">
       <div class="container">
         <!-- Header Section -->
@@ -13,13 +13,19 @@
           <div class="header-actions">
             <Button variant="primary" @click="exportReport">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
+                <path
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                />
               </svg>
               Export Report
             </Button>
             <Button variant="secondary" @click="refreshData">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                <path
+                  fill-rule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clip-rule="evenodd"
+                />
               </svg>
               Refresh
             </Button>
@@ -40,7 +46,7 @@
                   <option value="custom">Custom Range</option>
                 </select>
               </div>
-              
+
               <div class="filter-item">
                 <label class="filter-label">Course</label>
                 <select v-model="filters.course" class="filter-select">
@@ -51,7 +57,7 @@
                   <option value="chem101">Chemistry 101</option>
                 </select>
               </div>
-              
+
               <div class="filter-item">
                 <label class="filter-label">Status</label>
                 <select v-model="filters.status" class="filter-select">
@@ -61,7 +67,7 @@
                   <option value="late">Late Only</option>
                 </select>
               </div>
-              
+
               <div class="filter-item">
                 <Button variant="primary" @click="applyFilters">Apply Filters</Button>
               </div>
@@ -75,8 +81,10 @@
             <Card class="summary-card">
               <div class="summary-icon total">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4z"/>
-                  <path d="M16 8v8l4 4"/>
+                  <path
+                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4z"
+                  />
+                  <path d="M16 8v8l4 4" />
                 </svg>
               </div>
               <div class="summary-content">
@@ -88,7 +96,9 @@
             <Card class="summary-card">
               <div class="summary-icon present">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"/>
+                  <path
+                    d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"
+                  />
                 </svg>
               </div>
               <div class="summary-content">
@@ -100,7 +110,9 @@
             <Card class="summary-card">
               <div class="summary-icon absent">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v8h8v-2h-6V9h-2z"/>
+                  <path
+                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v8h8v-2h-6V9h-2z"
+                  />
                 </svg>
               </div>
               <div class="summary-content">
@@ -112,8 +124,10 @@
             <Card class="summary-card">
               <div class="summary-icon percentage">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4z"/>
-                  <path d="M16 8v8l6 3"/>
+                  <path
+                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4z"
+                  />
+                  <path d="M16 8v8l6 3" />
                 </svg>
               </div>
               <div class="summary-content">
@@ -131,14 +145,14 @@
               <h3>Attendance Trend</h3>
               <div class="chart-placeholder">
                 <svg width="100%" height="200" viewBox="0 0 400 200" fill="none">
-                  <rect width="400" height="200" fill="var(--bg-tertiary)" rx="8"/>
+                  <rect width="400" height="200" fill="var(--bg-tertiary)" rx="8" />
                   <polyline
                     points="20,180 60,160 100,140 140,150 180,120 220,130 260,110 300,100 340,90 380,85"
                     stroke="var(--accent-primary)"
                     stroke-width="3"
                     fill="none"
                   />
-                  <circle cx="380" cy="85" r="5" fill="var(--accent-primary)"/>
+                  <circle cx="380" cy="85" r="5" fill="var(--accent-primary)" />
                 </svg>
               </div>
             </Card>
@@ -147,11 +161,11 @@
               <h3>Course Distribution</h3>
               <div class="chart-placeholder">
                 <svg width="100%" height="200" viewBox="0 0 400 200" fill="none">
-                  <rect width="400" height="200" fill="var(--bg-tertiary)" rx="8"/>
-                  <rect x="50" y="150" width="60" height="30" fill="var(--accent-primary)"/>
-                  <rect x="130" y="120" width="60" height="60" fill="var(--success)"/>
-                  <rect x="210" y="100" width="60" height="80" fill="var(--warning)"/>
-                  <rect x="290" y="140" width="60" height="40" fill="var(--error)"/>
+                  <rect width="400" height="200" fill="var(--bg-tertiary)" rx="8" />
+                  <rect x="50" y="150" width="60" height="30" fill="var(--accent-primary)" />
+                  <rect x="130" y="120" width="60" height="60" fill="var(--success)" />
+                  <rect x="210" y="100" width="60" height="80" fill="var(--warning)" />
+                  <rect x="290" y="140" width="60" height="40" fill="var(--error)" />
                 </svg>
               </div>
             </Card>
@@ -164,14 +178,10 @@
             <div class="records-header">
               <h3>Detailed Attendance Records</h3>
               <div class="records-actions">
-                <Input
-                  v-model="searchQuery"
-                  placeholder="Search records..."
-                  type="text"
-                />
+                <Input v-model="searchQuery" placeholder="Search records..." type="text" />
               </div>
             </div>
-            
+
             <div class="table-container">
               <table class="records-table">
                 <thead>
@@ -204,13 +214,23 @@
                 </tbody>
               </table>
             </div>
-            
+
             <div class="pagination">
-              <Button variant="secondary" size="sm" :disabled="currentPage === 1" @click="previousPage">
+              <Button
+                variant="secondary"
+                size="sm"
+                :disabled="currentPage === 1"
+                @click="previousPage"
+              >
                 Previous
               </Button>
               <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
-              <Button variant="secondary" size="sm" :disabled="currentPage === totalPages" @click="nextPage">
+              <Button
+                variant="secondary"
+                size="sm"
+                :disabled="currentPage === totalPages"
+                @click="nextPage"
+              >
                 Next
               </Button>
             </div>
@@ -222,135 +242,130 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import Navbar from '@/components/layout/Navbar.vue'
-import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
-import Input from '@/components/ui/Input.vue'
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { supabase } from "@/supabase";
+import Navbar from "@/components/layout/Navbar.vue";
+import Button from "@/components/ui/Button.vue";
+import Card from "@/components/ui/Card.vue";
+import Input from "@/components/ui/Input.vue";
 
-// Mock data - replace with actual Supabase calls
+const router = useRouter();
+
+// Filters
 const filters = ref({
-  dateRange: 'month',
-  course: 'all',
-  status: 'all'
-})
+  dateRange: "month",
+  course: "all",
+  status: "all",
+});
 
 const summaryStats = ref({
-  totalClasses: 150,
-  present: 138,
-  absent: 12,
-  percentage: 92
-})
+  totalClasses: 0,
+  present: 0,
+  absent: 0,
+  percentage: 0,
+});
 
-const searchQuery = ref('')
-const currentPage = ref(1)
-const totalPages = ref(5)
+const searchQuery = ref("");
+const currentPage = ref(1);
+const totalPages = ref(1);
+const attendanceRecords = ref([]);
 
-const attendanceRecords = ref([
-  {
-    id: 1,
-    date: '2024-12-11',
-    course: 'Computer Science 101',
-    time: '10:00 AM',
-    lecturer: 'Dr. Smith',
-    status: 'Present'
-  },
-  {
-    id: 2,
-    date: '2024-12-10',
-    course: 'Mathematics 201',
-    time: '2:00 PM',
-    lecturer: 'Prof. Johnson',
-    status: 'Present'
-  },
-  {
-    id: 3,
-    date: '2024-12-09',
-    course: 'Physics 101',
-    time: '11:00 AM',
-    lecturer: 'Dr. Brown',
-    status: 'Absent'
-  },
-  {
-    id: 4,
-    date: '2024-12-08',
-    course: 'Chemistry Lab',
-    time: '3:00 PM',
-    lecturer: 'Dr. Davis',
-    status: 'Present'
-  },
-  {
-    id: 5,
-    date: '2024-12-07',
-    course: 'Computer Science 101',
-    time: '10:00 AM',
-    lecturer: 'Dr. Smith',
-    status: 'Late'
+const fetchAttendanceData = async () => {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/student-login");
+      return;
+    }
+
+    // Fetch activity logs
+    const { data: logs, error } = await supabase
+      .from("activity_logs")
+      .select("*")
+      .eq("student_id", user.id)
+      .order("date_time", { ascending: false });
+
+    if (error) throw error;
+
+    attendanceRecords.value = logs.map((log) => ({
+      id: log.id,
+      date: new Date(log.date_time).toLocaleDateString(),
+      course: "General Attendance",
+      time: new Date(log.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      lecturer: "N/A",
+      status: log.status || "Present",
+    }));
+
+    // Calculate Summary
+    const total = logs.length;
+    const presentCount = logs.filter((l) => l.status === "Present").length;
+    summaryStats.value = {
+      totalClasses: total,
+      present: presentCount,
+      absent: total - presentCount,
+      percentage: total > 0 ? Math.round((presentCount / total) * 100) : 0,
+    };
+
+    totalPages.value = Math.ceil(attendanceRecords.value.length / 10) || 1;
+  } catch (error) {
+    console.error("Error fetching attendance data:", error);
   }
-])
+};
 
 const filteredRecords = computed(() => {
-  let records = [...attendanceRecords.value]
-  
+  let records = [...attendanceRecords.value];
+
   if (searchQuery.value) {
-    records = records.filter(record => 
-      record.course.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      record.lecturer.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      record.date.includes(searchQuery.value)
-    )
+    records = records.filter(
+      (record) =>
+        record.course.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        record.date.includes(searchQuery.value),
+    );
   }
-  
-  if (filters.value.course !== 'all') {
-    records = records.filter(record => 
-      record.course.toLowerCase().includes(filters.value.course)
-    )
+
+  if (filters.value.status !== "all") {
+    records = records.filter((record) => record.status.toLowerCase() === filters.value.status);
   }
-  
-  if (filters.value.status !== 'all') {
-    records = records.filter(record => 
-      record.status.toLowerCase() === filters.value.status
-    )
-  }
-  
-  return records
-})
+
+  // Pagination
+  const start = (currentPage.value - 1) * 10;
+  return records.slice(start, start + 10);
+});
 
 const applyFilters = () => {
-  console.log('Applying filters:', filters.value)
-  // Apply filters logic here
-}
+  fetchAttendanceData();
+};
 
 const exportReport = () => {
-  console.log('Exporting report...')
-  // Export logic here
-  alert('Report would be exported as PDF/Excel')
-}
+  alert("Report export feature will be available soon.");
+};
 
 const refreshData = () => {
-  console.log('Refreshing data...')
-  // Refresh data from Supabase
-}
+  fetchAttendanceData();
+};
 
 const viewDetails = (recordId) => {
-  console.log('Viewing details for record:', recordId)
-  // View record details
-}
+  console.log("Viewing details for record:", recordId);
+};
 
 const previousPage = () => {
   if (currentPage.value > 1) {
-    currentPage.value--
+    currentPage.value--;
   }
-}
+};
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
-    currentPage.value++
+    currentPage.value++;
   }
-}
+};
 
 onMounted(() => {
-  console.log('Report page loaded')
-})
+  fetchAttendanceData();
+});
 </script>
 
 <style scoped>
@@ -612,38 +627,38 @@ onMounted(() => {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .header-actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .filter-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .summary-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .charts-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .records-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .records-actions {
     min-width: auto;
     width: 100%;
   }
-  
+
   .table-container {
     font-size: 0.875rem;
   }
-  
+
   .pagination {
     flex-direction: column;
     gap: 0.5rem;

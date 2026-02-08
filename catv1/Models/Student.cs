@@ -10,21 +10,27 @@ namespace catv1.Models;
 public class Student : BaseModel, INotifyPropertyChanged
 {
     [PrimaryKey("id", false)]
+    [JsonProperty("id")]
     public string Id { get; set; } = string.Empty; // Supabase Auth UUID
 
     [Column("student_id")]
+    [JsonProperty("student_id")]
     public string StudentId { get; set; } = string.Empty; // The SIN (e.g. 210984)
 
     [Column("first_name")]
+    [JsonProperty("first_name")]
     public string FirstName { get; set; } = string.Empty;
 
     [Column("last_name")]
+    [JsonProperty("last_name")]
     public string LastName { get; set; } = string.Empty;
 
     [Column("email")]
+    [JsonProperty("email")]
     public string Email { get; set; } = string.Empty;
 
     [Column("department")]
+    [JsonProperty("department")]
     public string Department { get; set; } = string.Empty;
 
     [JsonIgnore]

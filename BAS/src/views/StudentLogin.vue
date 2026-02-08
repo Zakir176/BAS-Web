@@ -1,21 +1,35 @@
 <template>
   <div class="student-login-page">
     <Navbar />
-    
+
     <main class="main-content">
       <div class="container">
         <div class="login-container">
           <div class="login-visual">
             <div class="login-illustration">
               <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
-                <rect width="300" height="300" rx="20" fill="var(--accent-primary)" opacity="0.05"/>
-                <circle cx="150" cy="80" r="30" fill="var(--accent-primary)" opacity="0.2"/>
-                <rect x="110" y="130" width="80" height="100" rx="10" fill="var(--accent-primary)" opacity="0.3"/>
-                <path d="M130 180h40v30h-40z" fill="var(--accent-primary)"/>
-                <circle cx="150" cy="80" r="20" fill="var(--accent-primary)"/>
-                <path d="M140 75h20v10h-20z" fill="white"/>
-                <rect x="120" y="200" width="60" height="8" rx="4" fill="var(--accent-secondary)"/>
-                <rect x="120" y="215" width="60" height="8" rx="4" fill="var(--accent-secondary)"/>
+                <rect
+                  width="300"
+                  height="300"
+                  rx="20"
+                  fill="var(--accent-primary)"
+                  opacity="0.05"
+                />
+                <circle cx="150" cy="80" r="30" fill="var(--accent-primary)" opacity="0.2" />
+                <rect
+                  x="110"
+                  y="130"
+                  width="80"
+                  height="100"
+                  rx="10"
+                  fill="var(--accent-primary)"
+                  opacity="0.3"
+                />
+                <path d="M130 180h40v30h-40z" fill="var(--accent-primary)" />
+                <circle cx="150" cy="80" r="20" fill="var(--accent-primary)" />
+                <path d="M140 75h20v10h-20z" fill="white" />
+                <rect x="120" y="200" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
+                <rect x="120" y="215" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
               </svg>
             </div>
             <div class="login-features">
@@ -28,30 +42,30 @@
               </ul>
             </div>
           </div>
-          
+
           <Card class="login-card">
             <div class="login-header">
               <div class="login-logo">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <rect width="40" height="40" rx="10" fill="var(--accent-primary)"/>
-                  <path d="M10 15h20v10H10z" fill="white"/>
-                  <path d="M15 10v20h10V10H15z" fill="var(--accent-primary)"/>
+                  <rect width="40" height="40" rx="10" fill="var(--accent-primary)" />
+                  <path d="M10 15h20v10H10z" fill="white" />
+                  <path d="M15 10v20h10V10H15z" fill="var(--accent-primary)" />
                 </svg>
               </div>
               <h2>Student Login</h2>
               <p>Sign in to mark your attendance</p>
             </div>
-            
+
             <form @submit.prevent="handleLogin" class="login-form">
               <Input
-                v-model="formData.studentId"
-                label="Student ID"
-                type="text"
-                placeholder="Enter your student ID"
+                v-model="formData.email"
+                label="Email Address"
+                type="email"
+                placeholder="student@university.edu"
                 required
-                :error="errors.studentId"
+                :error="errors.email"
               />
-              
+
               <Input
                 v-model="formData.password"
                 label="Password"
@@ -60,47 +74,34 @@
                 required
                 :error="errors.password"
               />
-              
+
               <div class="form-options">
                 <label class="checkbox-label">
-                  <input type="checkbox" v-model="formData.rememberMe">
+                  <input type="checkbox" v-model="formData.rememberMe" />
                   <span class="checkmark"></span>
                   Remember me
                 </label>
                 <a href="#" class="forgot-password">Forgot password?</a>
               </div>
-              
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                full-width
-                :disabled="isLoading"
-              >
+
+              <Button type="submit" variant="primary" size="lg" full-width :disabled="isLoading">
                 <span v-if="!isLoading">Sign In</span>
                 <span v-else>Signing in...</span>
               </Button>
             </form>
-            
+
             <div class="divider">
               <span>OR</span>
             </div>
-            
-            <Button
-              variant="secondary"
-              size="lg"
-              full-width
-              @click="goToSignup"
-            >
+
+            <Button variant="secondary" size="lg" full-width @click="goToSignup">
               Create New Account
             </Button>
-            
+
             <div class="login-footer">
               <p>
-                Are you a lecturer? 
-                <router-link to="/lecturer-login" class="link">
-                  Lecturer Portal
-                </router-link>
+                Are you a lecturer?
+                <router-link to="/lecturer-login" class="link"> Lecturer Portal </router-link>
               </p>
             </div>
           </Card>
@@ -111,80 +112,75 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import Navbar from '@/components/layout/Navbar.vue'
-import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
-import Input from '@/components/ui/Input.vue'
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { supabase } from "@/supabase";
+import Navbar from "@/components/layout/Navbar.vue";
+import Button from "@/components/ui/Button.vue";
+import Card from "@/components/ui/Card.vue";
+import Input from "@/components/ui/Input.vue";
 
-const router = useRouter()
+const router = useRouter();
 
 const formData = reactive({
-  studentId: '',
-  password: '',
-  rememberMe: false
-})
+  studentId: "", // Note: Still using studentId as a conceptual label, but we need email for auth
+  email: "", // Added email field for auth
+  password: "",
+  rememberMe: false,
+});
 
 const errors = reactive({
-  studentId: '',
-  password: ''
-})
+  email: "",
+  password: "",
+});
 
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 const validateForm = () => {
-  errors.studentId = ''
-  errors.password = ''
-  
-  if (!formData.studentId) {
-    errors.studentId = 'Student ID is required'
-    return false
+  errors.email = "";
+  errors.password = "";
+
+  if (!formData.email) {
+    errors.email = "Email is required";
+    return false;
   }
-  
-  if (formData.studentId.length < 3) {
-    errors.studentId = 'Please enter a valid student ID'
-    return false
-  }
-  
+
   if (!formData.password) {
-    errors.password = 'Password is required'
-    return false
+    errors.password = "Password is required";
+    return false;
   }
-  
-  if (formData.password.length < 6) {
-    errors.password = 'Password must be at least 6 characters'
-    return false
-  }
-  
-  return true
-}
+
+  return true;
+};
 
 const handleLogin = async () => {
-  if (!validateForm()) return
-  
-  isLoading.value = true
-  
+  if (!validateForm()) return;
+
+  isLoading.value = true;
+
   try {
-    // Mock authentication - replace with actual Supabase call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    // Mock successful login
-    console.log('Login successful:', formData)
-    
-    // Redirect to student homepage
-    router.push('/student-homepage')
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      // Redirect to student homepage
+      router.push("/student-homepage");
+    }
   } catch (error) {
-    console.error('Login failed:', error)
-    errors.password = 'Invalid student ID or password'
+    console.error("Login failed:", error);
+    errors.password = error.message || "Invalid email or password";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 const goToSignup = () => {
-  router.push('/student-signup')
-}
+  router.push("/student-signup");
+};
 </script>
 
 <style scoped>
@@ -241,7 +237,7 @@ const goToSignup = () => {
 }
 
 .login-features li::before {
-  content: '✓';
+  content: "✓";
   position: absolute;
   left: 0;
   color: var(--success);
@@ -315,7 +311,7 @@ const goToSignup = () => {
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-  content: '✓';
+  content: "✓";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -342,7 +338,7 @@ const goToSignup = () => {
 }
 
 .divider::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 0;
@@ -389,15 +385,15 @@ const goToSignup = () => {
     gap: 2rem;
     text-align: center;
   }
-  
+
   .login-visual {
     order: 2;
   }
-  
+
   .login-card {
     order: 1;
   }
-  
+
   .form-options {
     flex-direction: column;
     gap: 1rem;

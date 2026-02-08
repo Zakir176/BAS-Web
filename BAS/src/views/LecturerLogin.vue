@@ -1,20 +1,34 @@
 <template>
   <div class="lecturer-login-page">
     <Navbar />
-    
+
     <main class="main-content">
       <div class="container">
         <div class="login-container">
           <div class="login-visual">
             <div class="login-illustration">
               <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
-                <rect width="300" height="300" rx="20" fill="var(--accent-primary)" opacity="0.05"/>
-                <circle cx="150" cy="100" r="40" fill="var(--accent-primary)" opacity="0.2"/>
-                <rect x="100" y="160" width="100" height="80" rx="10" fill="var(--accent-primary)" opacity="0.3"/>
-                <path d="M130 200h40v20h-40z" fill="var(--accent-primary)"/>
-                <circle cx="150" cy="100" r="25" fill="var(--accent-primary)"/>
-                <path d="M140 95h20v10h-20z" fill="white"/>
-                <path d="M145 90h10v15h-10z" fill="white"/>
+                <rect
+                  width="300"
+                  height="300"
+                  rx="20"
+                  fill="var(--accent-primary)"
+                  opacity="0.05"
+                />
+                <circle cx="150" cy="100" r="40" fill="var(--accent-primary)" opacity="0.2" />
+                <rect
+                  x="100"
+                  y="160"
+                  width="100"
+                  height="80"
+                  rx="10"
+                  fill="var(--accent-primary)"
+                  opacity="0.3"
+                />
+                <path d="M130 200h40v20h-40z" fill="var(--accent-primary)" />
+                <circle cx="150" cy="100" r="25" fill="var(--accent-primary)" />
+                <path d="M140 95h20v10h-20z" fill="white" />
+                <path d="M145 90h10v15h-10z" fill="white" />
               </svg>
             </div>
             <div class="login-features">
@@ -27,20 +41,20 @@
               </ul>
             </div>
           </div>
-          
+
           <Card class="login-card">
             <div class="login-header">
               <div class="login-logo">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <rect width="40" height="40" rx="10" fill="var(--accent-primary)"/>
-                  <path d="M10 15h20v10H10z" fill="white"/>
-                  <path d="M15 10v20h10V10H15z" fill="var(--accent-primary)"/>
+                  <rect width="40" height="40" rx="10" fill="var(--accent-primary)" />
+                  <path d="M10 15h20v10H10z" fill="white" />
+                  <path d="M15 10v20h10V10H15z" fill="var(--accent-primary)" />
                 </svg>
               </div>
               <h2>Lecturer Login</h2>
               <p>Sign in to access your dashboard</p>
             </div>
-            
+
             <form @submit.prevent="handleLogin" class="login-form">
               <Input
                 v-model="formData.email"
@@ -50,7 +64,7 @@
                 required
                 :error="errors.email"
               />
-              
+
               <Input
                 v-model="formData.password"
                 label="Password"
@@ -59,34 +73,26 @@
                 required
                 :error="errors.password"
               />
-              
+
               <div class="form-options">
                 <label class="checkbox-label">
-                  <input type="checkbox" v-model="formData.rememberMe">
+                  <input type="checkbox" v-model="formData.rememberMe" />
                   <span class="checkmark"></span>
                   Remember me
                 </label>
                 <a href="#" class="forgot-password">Forgot password?</a>
               </div>
-              
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                full-width
-                :disabled="isLoading"
-              >
+
+              <Button type="submit" variant="primary" size="lg" full-width :disabled="isLoading">
                 <span v-if="!isLoading">Sign In</span>
                 <span v-else>Signing in...</span>
               </Button>
             </form>
-            
+
             <div class="login-footer">
               <p>
-                Not a lecturer? 
-                <router-link to="/student-login" class="link">
-                  Student Portal
-                </router-link>
+                Not a lecturer?
+                <router-link to="/student-login" class="link"> Student Portal </router-link>
               </p>
             </div>
           </Card>
@@ -97,76 +103,75 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import Navbar from '@/components/layout/Navbar.vue'
-import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
-import Input from '@/components/ui/Input.vue'
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { supabase } from "@/supabase";
+import Navbar from "@/components/layout/Navbar.vue";
+import Button from "@/components/ui/Button.vue";
+import Card from "@/components/ui/Card.vue";
+import Input from "@/components/ui/Input.vue";
 
-const router = useRouter()
+const router = useRouter();
 
 const formData = reactive({
-  email: '',
-  password: '',
-  rememberMe: false
-})
+  email: "",
+  password: "",
+  rememberMe: false,
+});
 
 const errors = reactive({
-  email: '',
-  password: ''
-})
+  email: "",
+  password: "",
+});
 
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 const validateForm = () => {
-  errors.email = ''
-  errors.password = ''
-  
+  errors.email = "";
+  errors.password = "";
+
   if (!formData.email) {
-    errors.email = 'Email is required'
-    return false
+    errors.email = "Email is required";
+    return false;
   }
-  
-  if (!formData.email.includes('@')) {
-    errors.email = 'Please enter a valid email'
-    return false
+
+  if (!formData.email.includes("@")) {
+    errors.email = "Please enter a valid email";
+    return false;
   }
-  
+
   if (!formData.password) {
-    errors.password = 'Password is required'
-    return false
+    errors.password = "Password is required";
+    return false;
   }
-  
-  if (formData.password.length < 6) {
-    errors.password = 'Password must be at least 6 characters'
-    return false
-  }
-  
-  return true
-}
+
+  return true;
+};
 
 const handleLogin = async () => {
-  if (!validateForm()) return
-  
-  isLoading.value = true
-  
+  if (!validateForm()) return;
+
+  isLoading.value = true;
+
   try {
-    // Mock authentication - replace with actual Supabase call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    // Mock successful login
-    console.log('Login successful:', formData)
-    
-    // Redirect to dashboard (create this route later)
-    router.push('/student-homepage') // Temporary redirect
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (error) throw error;
+
+    if (data.session) {
+      // Redirect to dashboard (create this route later)
+      router.push("/student-homepage"); // Temporary redirect
+    }
   } catch (error) {
-    console.error('Login failed:', error)
-    errors.password = 'Invalid email or password'
+    console.error("Login failed:", error);
+    errors.password = error.message || "Invalid email or password";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>
@@ -223,7 +228,7 @@ const handleLogin = async () => {
 }
 
 .login-features li::before {
-  content: '✓';
+  content: "✓";
   position: absolute;
   left: 0;
   color: var(--success);
@@ -297,7 +302,7 @@ const handleLogin = async () => {
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-  content: '✓';
+  content: "✓";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -345,15 +350,15 @@ const handleLogin = async () => {
     gap: 2rem;
     text-align: center;
   }
-  
+
   .login-visual {
     order: 2;
   }
-  
+
   .login-card {
     order: 1;
   }
-  
+
   .form-options {
     flex-direction: column;
     gap: 1rem;
