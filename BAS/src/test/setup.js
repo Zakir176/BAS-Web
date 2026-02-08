@@ -97,3 +97,23 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }))
+
+// Mock Quagga2 - must be here to be hoisted
+vi.mock('@ericblade/quagga2', () => {
+  const Quagga = {
+    init: vi.fn((config, callback) => {
+      if (callback) {
+        callback(); // Simulate successful initialization by default
+      }
+    }),
+    start: vi.fn(),
+    stop: vi.fn(),
+    onDetected: vi.fn((callback) => {
+      // Store the callback to simulate detection later
+      Quagga.triggerDetected = (data) => callback(data);
+    }),
+    triggerDetected: null, // This will be assigned in onDetected
+    offDetected: vi.fn(),
+  };
+  return { default: Quagga };
+});
