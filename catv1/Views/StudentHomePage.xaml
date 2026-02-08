@@ -13,7 +13,7 @@
         <Image
             Aspect="AspectFill"
             Opacity="0.2"
-            Source="lecture_room_bg.png" />
+            Source="lecture_room.png" />
 
         <!--  Blur/Overlay  -->
         <BoxView BackgroundColor="#0F172A" Opacity="0.5" />

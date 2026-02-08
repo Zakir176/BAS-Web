@@ -225,11 +225,11 @@ public class LoginViewModel : BaseViewModel
 
                 if (_isStudent)
                 {
-                    await Shell.Current.GoToAsync("//student/dashboardTab/home");
+                    await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
                 }
                 else
                 {
-                    await Shell.Current.GoToAsync("//lecturer/dashboardTab/dashboard");
+                    await Shell.Current.GoToAsync("//lecturer/lecturerDashboardTab/dashboard");
                 }
             }
         }

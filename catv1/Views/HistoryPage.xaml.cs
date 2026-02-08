@@ -12,6 +12,6 @@ public partial class HistoryPage : ContentPage
 
     private async void OnBackClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("//student/dashboardTab/home");
+        await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
     }
 }

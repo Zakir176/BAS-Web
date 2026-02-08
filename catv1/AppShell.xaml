@@ -14,13 +14,13 @@
     <TabBar Route="student">
         <Tab
             Title="Dashboard"
-            Icon="Resources/Images/home_icon.png"
-            Route="dashboardTab">
+            Icon="home_icon.png"
+            Route="studentDashboardTab">
             <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
         </Tab>
         <Tab
             Title="History"
-            Icon="Resources/Images/history_icon.png"
+            Icon="history_icon.png"
             Route="historyTab">
             <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="history" />
         </Tab>
@@ -29,13 +29,13 @@
     <TabBar Route="lecturer">
         <Tab
             Title="Class Management"
-            Icon="Resources/Images/class_icon.png"
-            Route="dashboardTab">
+            Icon="class_icon.png"
+            Route="lecturerDashboardTab">
             <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
         </Tab>
         <Tab
             Title="Scan ID"
-            Icon="Resources/Images/scan_icon.png"
+            Icon="scan_icon.png"
             Route="scanTab">
             <ShellContent ContentTemplate="{DataTemplate local:ScanPage}" Route="scan" />
         </Tab>
