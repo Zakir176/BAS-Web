@@ -3,12 +3,13 @@
     <Navbar />
 
     <main class="main-content">
-      <div class="container">
+      <div class="container py-8">
         <!-- Header Section -->
-        <section class="header-section">
-          <div class="header-content">
-            <h1>Attendance Reports</h1>
-            <p class="header-subtitle">View and analyze your attendance data</p>
+        <header class="page-header-v2">
+          <div class="header-left">
+            <span class="badge-v2">DATA & ANALYTICS</span>
+            <h1>Attendance <span class="highlight">Intelligence</span></h1>
+            <p>Comprehensive records and performance insights.</p>
           </div>
           <div class="header-actions">
             <Button variant="primary" @click="exportReport">
@@ -186,29 +187,25 @@
               <table class="records-table">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Course</th>
-                    <th>Time</th>
-                    <th>Lecturer</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>DATE</th>
+                    <th>COURSE UNIT</th>
+                    <th>SESSION TIME</th>
+                    <th>STATUS</th>
+                    <th class="text-right">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="record in filteredRecords" :key="record.id">
-                    <td>{{ record.date }}</td>
-                    <td>{{ record.course }}</td>
-                    <td>{{ record.time }}</td>
-                    <td>{{ record.lecturer }}</td>
+                  <tr v-for="record in paginatedRecords" :key="record.id">
+                    <td><span class="date-txt">{{ record.date }}</span></td>
+                    <td><span class="course-name-txt">{{ record.course }}</span></td>
+                    <td><span class="time-txt">{{ record.time }}</span></td>
                     <td>
-                      <span class="status-badge" :class="record.status.toLowerCase()">
+                      <span class="status-pill-v2" :class="record.status.toLowerCase()">
                         {{ record.status }}
                       </span>
                     </td>
-                    <td>
-                      <Button variant="secondary" size="sm" @click="viewDetails(record.id)">
-                        View
-                      </Button>
+                    <td class="text-right">
+                      <button class="action-btn-circle" @click="viewDetails(record.id)">⋯</button>
                     </td>
                   </tr>
                 </tbody>
@@ -234,8 +231,8 @@
                 Next
               </Button>
             </div>
-          </Card>
-        </section>
+          </template>
+        </div>
       </div>
     </main>
   </div>
@@ -371,255 +368,225 @@ onMounted(() => {
 <style scoped>
 .report-page {
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-main);
 }
 
-.main-content {
-  padding: 2rem 0;
-}
-
-.header-section {
+.page-header-v2 {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: center;
+  margin-bottom: 3rem;
 }
 
-.header-content h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
+.badge-v2 {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 100px;
   margin-bottom: 0.5rem;
 }
 
-.header-subtitle {
-  color: var(--text-secondary);
-  font-size: 1.125rem;
-  margin: 0;
+.header-left h1 {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--text-main);
 }
+
+.highlight { color: var(--primary); }
 
 .header-actions {
   display: flex;
   gap: 1rem;
 }
 
-.filter-section {
-  margin-bottom: 2rem;
-}
-
-.filter-card {
-  padding: 1.5rem;
-}
-
-.filter-grid {
+/* Premium Stats Bar */
+.premium-stats-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  align-items: end;
-}
-
-.filter-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.filter-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.filter-select {
-  padding: 0.75rem;
-  border: 1px solid var(--border-primary);
-  border-radius: 0.5rem;
-  background-color: var(--input-bg);
-  color: var(--text-primary);
-  font-size: 0.875rem;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
-}
-
-.summary-section {
-  margin-bottom: 2rem;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
-.summary-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.stat-box-v2 {
+  background: var(--bg-card);
   padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
-.summary-icon {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+.highlight-box {
+  background: var(--primary);
+  color: var(--text-inverse);
 }
 
-.summary-icon.total {
-  background-color: var(--accent-primary);
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
 }
 
-.summary-icon.present {
-  background-color: var(--success);
-}
+.highlight-box .stat-label { color: var(--text-inverse); opacity: 0.8; }
 
-.summary-icon.absent {
-  background-color: var(--error);
-}
-
-.summary-icon.percentage {
-  background-color: var(--warning);
-}
-
-.summary-content {
-  flex: 1;
-}
-
-.summary-number {
+.stat-value {
   font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-top: 0.5rem;
+}
+
+.stat-trend {
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
+  margin-top: 0.5rem;
 }
 
-.summary-label {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+.text-success { color: var(--success); }
+.text-error { color: var(--error); }
+
+.mini-chart {
+  margin-top: 1rem;
 }
 
-.charts-section {
-  margin-bottom: 2rem;
-}
+.bar-bg { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; }
+.bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
 
-.charts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-}
-
-.chart-card {
-  padding: 1.5rem;
-}
-
-.chart-card h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
-}
-
-.chart-placeholder {
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-.records-section {
-  margin-bottom: 2rem;
-}
-
-.records-card {
-  padding: 1.5rem;
-}
-
-.records-header {
+/* Filter Bar */
+.filter-bar-v2 {
+  background: var(--bg-card);
+  padding: 1rem;
+  border-radius: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
-.records-header h3 {
-  font-size: 1.25rem;
+.filter-group {
+  display: flex;
+  gap: 2.5rem;
+  flex: 1;
+}
+
+.filter-field label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.filter-field select {
+  background: transparent;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Table Card */
+.table-card-v2 {
+  background: var(--bg-card);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.card-header-v2 {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.card-header-v2 h3 { font-weight: 800; color: var(--text-main); }
+
+.search-box-v2 input {
+  background: var(--bg-main);
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  width: 280px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-main);
 }
 
-.records-actions {
-  min-width: 300px;
-}
-
-.table-container {
-  overflow-x: auto;
-  margin-bottom: 1.5rem;
-}
-
-.records-table {
+.premium-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.records-table th,
-.records-table td {
-  padding: 0.75rem;
+.premium-table th {
+  padding: 1.25rem 2rem;
   text-align: left;
-  border-bottom: 1px solid var(--border-primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  background: var(--bg-card);
 }
 
-.records-table th {
-  font-weight: 600;
-  color: var(--text-primary);
-  background-color: var(--bg-secondary);
+.premium-table td {
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.records-table td {
-  color: var(--text-secondary);
+.date-txt { font-weight: 800; color: var(--text-main); }
+.course-name-txt { font-weight: 700; color: var(--text-muted); }
+.time-txt { color: var(--text-muted); font-weight: 600; font-size: 0.9rem; }
+
+.status-pill-v2 {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+.status-pill-v2.present { background: #dcfce7; color: #059669; }
+.status-pill-v2.absent { background: #fee2e2; color: #dc2626; }
+
+.action-btn-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-main);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 800;
 }
 
-.status-badge.present {
-  background-color: var(--success);
-  color: white;
-}
-
-.status-badge.absent {
-  background-color: var(--error);
-  color: white;
-}
-
-.status-badge.late {
-  background-color: var(--warning);
-  color: white;
-}
-
-.pagination {
+.pagination-v2 {
+  padding: 1.5rem 2rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
 }
 
-.page-info {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
+.page-count { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
+
+.page-btns { display: flex; gap: 0.5rem; }
+.page-btns button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  background: var(--bg-card);
+  cursor: pointer;
+  font-weight: 800;
+  transition: all 0.2s;
+  color: var(--text-main);
 }
 
 @media (max-width: 768px) {

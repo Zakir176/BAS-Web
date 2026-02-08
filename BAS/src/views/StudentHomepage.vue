@@ -1,5 +1,5 @@
 <template>
-  <div class="student-homepage">
+  <div class="student-dashboard">
     <Navbar />
 
     <main class="main-content">
@@ -108,17 +108,25 @@
                     />
                   </svg>
                 </div>
-                <div class="activity-details">
-                  <h4>{{ activity.course }}</h4>
-                  <p>{{ activity.date }} • {{ activity.time }}</p>
+                <div class="stat-card white-card">
+                  <span class="label">ABSENCES</span>
+                  <Skeleton v-if="isLoading" width="60px" height="2rem" />
+                  <div v-else class="value danger">{{ attendanceStats.absent }}</div>
                 </div>
               </div>
               <div class="activity-status" :class="activity.type">
                 {{ activity.type === "present" ? "Present" : "Absent" }}
               </div>
-            </Card>
+            </section>
+
+            <!-- History Timeline -->
+            <RecentActivity 
+              :is-loading="isLoading"
+              :activities="recentActivity"
+              :show-all="showAllHistory"
+              @toggle-show-all="showAllHistory = !showAllHistory"
+            />
           </div>
-        </section>
 
         <!-- Today's Schedule -->
         <section class="schedule-section">
@@ -153,7 +161,7 @@
               </div>
             </Card>
           </div>
-        </section>
+        </div>
       </div>
     </main>
   </div>
@@ -262,275 +270,205 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.student-homepage {
+.student-dashboard {
   min-height: 100vh;
-  background-color: var(--bg-primary);
 }
 
 .main-content {
-  padding: 2rem 0;
+  padding-bottom: 5rem;
 }
 
-.welcome-section {
-  margin-bottom: 3rem;
-}
-
-.welcome-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-}
-
-.welcome-text h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.welcome-subtitle {
-  font-size: 1.125rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.welcome-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.stats-section {
-  margin-bottom: 3rem;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 1.5rem;
 }
 
-.stat-icon {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
+/* Desktop Grid Layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.grid-main {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.grid-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: sticky;
+  top: 90px;
+}
+
+/* Tablet: Adjusted Layout */
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .grid-sidebar {
+    position: static;
+    order: 2;
+  }
+  
+  .grid-main {
+    order: 1;
+  }
+}
+
+/* Mobile: Optimized Layout */
+@media (max-width: 768px) {
+  .dashboard-container {
+    max-width: 100%;
+    padding: 1rem;
+  }
+  
+  .dashboard-grid {
+    gap: 1.5rem;
+  }
+  
+  .grid-main,
+  .grid-sidebar {
+    gap: 1.5rem;
+  }
+}
+
+/* Small Mobile: Compact Layout */
+@media (max-width: 640px) {
+  .dashboard-container {
+    padding: 0.75rem;
+  }
+  
+  .dashboard-grid {
+    gap: 1rem;
+  }
+  
+  .grid-main,
+  .grid-sidebar {
+    gap: 1rem;
+  }
+
+  .stats-row {
+    flex-direction: column;
+  }
+  
+  .action-area {
+    position: relative;
+  }
+  
+  .fab-edit {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+
+/* Extra Small Mobile: Minimal Layout */
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 0.5rem;
+  }
+  
+  .dashboard-grid {
+    gap: 0.75rem;
+  }
+}
+
+/* Barcode Section */
+.barcode-skeleton {
+  width: 100%;
+}
+
+
+/* Stats */
+.stats-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  flex: 1;
+  padding: 1.25rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.blue-card {
+  background: var(--primary);
   color: white;
 }
 
-.stat-icon.attendance {
-  background-color: var(--accent-primary);
+.white-card {
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
-.stat-icon.present {
-  background-color: var(--success);
+.stat-card .label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
 }
 
-.stat-icon.absent {
-  background-color: var(--error);
+.stat-card .value {
+  font-size: 1.75rem;
+  font-weight: 800;
 }
 
-.stat-icon.streak {
-  background-color: var(--warning);
+.stat-card .value.danger {
+  color: var(--error);
 }
 
-.stat-content {
-  flex: 1;
+/* Heatmap */
+.heatmap-section {
+  margin-bottom: 2rem;
 }
 
-.stat-number {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
-}
-
-.stat-label {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
-.activity-section,
-.schedule-section {
-  margin-bottom: 3rem;
+.calendar-surface {
+  padding: 1.5rem;
+  border: none;
+  background: var(--bg-card);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
-.section-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
+.section-header h3 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-main);
 }
 
-.current-date {
-  color: var(--text-secondary);
+.selector {
   font-size: 0.875rem;
-}
-
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.activity-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-}
-
-.activity-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.activity-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.activity-icon.present {
-  background-color: var(--success);
-}
-
-.activity-icon.absent {
-  background-color: var(--error);
-}
-
-.activity-details h4 {
-  font-size: 1rem;
+  color: var(--text-muted);
   font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.activity-details p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin: 0;
-}
-
-.activity-status {
+  background: var(--bg-main);
   padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  border-radius: 8px;
 }
 
-.activity-status.present {
-  background-color: var(--success);
-  color: white;
-}
-
-.activity-status.absent {
-  background-color: var(--error);
-  color: white;
-}
-
-.schedule-grid {
+/* Actions */
+.action-area {
   display: flex;
-  flex-direction: column;
   gap: 1rem;
-}
-
-.schedule-item {
-  display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
-}
-
-.schedule-time {
-  min-width: 80px;
-  text-align: center;
-}
-
-.time-start {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.time-end {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.schedule-details {
-  flex: 1;
-}
-
-.schedule-details h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.schedule-details p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin: 0 0 0.5rem 0;
-}
-
-.schedule-status {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.schedule-status.Upcoming {
-  background-color: var(--warning);
-  color: white;
-}
-
-.schedule-status.Completed {
-  background-color: var(--success);
-  color: white;
-}
-
-.schedule-action {
-  min-width: 80px;
-  text-align: center;
-}
-
-.completed-mark {
-  display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  background-color: var(--success);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
+  margin-bottom: 2.5rem;
 }
 
 @media (max-width: 768px) {

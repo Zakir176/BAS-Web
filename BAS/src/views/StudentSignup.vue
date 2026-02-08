@@ -144,7 +144,25 @@
                 <router-link to="/student-login" class="link"> Sign In </router-link>
               </p>
             </div>
-          </Card>
+
+            <div class="auth-options">
+              <label class="premium-checkbox">
+                <Field name="agreeToTerms" type="checkbox" :value="true" />
+                <span class="box"></span>
+                <span class="label-txt">I accept the terms of service</span>
+              </label>
+              <ErrorMessage name="agreeToTerms" class="error-message" />
+            </div>
+
+            <Button type="submit" variant="primary" size="lg" full-width class="auth-btn" :disabled="isLoading">
+              <span v-if="!isLoading">Create Student Account</span>
+              <span v-else>Registering...</span>
+            </Button>
+          </Form>
+
+          <footer class="auth-footer">
+            <p>Already a member? <router-link to="/student-login">Sign In</router-link></p>
+          </footer>
         </div>
       </div>
     </main>
@@ -296,54 +314,38 @@ const handleSignup = async () => {
 </script>
 
 <style scoped>
-.student-signup-page {
-  min-height: 100vh;
-  background-color: var(--bg-primary);
+.error-message {
+  color: #ef4444; /* red-500 */
+  font-size: 0.875rem; /* text-sm */
+  margin-top: 0.25rem;
 }
 
-.main-content {
-  flex: 1;
+.input-field.is-invalid {
+  border-color: #ef4444;
+}
+
+.auth-page {
+  min-height: 100vh;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  background-size: cover;
+  background-position: center;
 }
 
-.signup-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  max-width: 1200px;
-  width: 100%;
-  align-items: center;
+.student-signup-theme {
+  background-image: url('https://images.unsplash.com/photo-1523050335392-99238e814041?q=80&w=2070&auto=format&fit=crop');
 }
 
-.signup-visual {
-  text-align: center;
+.auth-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(30,58,138,0.8), rgba(88,28,135,0.8));
+  backdrop-filter: blur(8px);
 }
 
-.signup-illustration {
-  margin-bottom: 2rem;
-}
-
-.signup-features h3 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 1.5rem;
-}
-
-.signup-features ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-  max-width: 300px;
-  margin: 0 auto;
-}
-
-.signup-features li {
-  padding: 0.75rem 0;
-  color: var(--text-secondary);
+.auth-card-wrapper {
   position: relative;
   padding-left: 1.5rem;
 }
@@ -356,73 +358,96 @@ const handleSignup = async () => {
   font-weight: bold;
 }
 
-.signup-card {
-  max-width: 500px;
-  width: 100%;
-  margin: 0 auto;
+.auth-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 3rem;
+  border-radius: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
 }
 
-.signup-header {
+.auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
-.signup-logo {
-  display: flex;
-  justify-content: center;
+.auth-brand {
+  font-size: 3rem;
   margin-bottom: 1rem;
 }
 
-.signup-header h2 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--text-primary);
+.auth-header h2 {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1e293b;
   margin-bottom: 0.5rem;
 }
 
-.signup-header p {
-  color: var(--text-secondary);
+.text-gradient {
+  background: linear-gradient(to right, #2563eb, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.signup-form {
-  margin-bottom: 1.5rem;
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.form-row {
+.form-row-v2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
-.form-options {
-  margin-bottom: 1.5rem;
+/* Mobile responsive - single column on small screens */
+@media (max-width: 640px) {
+  .form-row-v2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .auth-card {
+    padding: 2rem;
+  }
+  
+  .auth-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .auth-brand {
+    font-size: 2.5rem;
+  }
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-
-.checkbox-label input[type="checkbox"] {
-  display: none;
-}
-
-.checkmark {
-  width: 1rem;
-  height: 1rem;
-  border: 1px solid var(--border-primary);
-  border-radius: 0.25rem;
-  margin-right: 0.5rem;
+.input-group-v2 {
   position: relative;
-  transition: all 0.2s ease;
 }
 
-.checkbox-label input[type="checkbox"]:checked + .checkmark {
-  background-color: var(--accent-primary);
-  border-color: var(--accent-primary);
+.input-group-v2 .input-field {
+  width: 100%;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.input-group-v2 .input-field:focus {
+  border-color: #3b82f6;
+  background: white;
+  outline: none;
+}
+
+.input-group-v2 label {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  color: #94a3b8;
+  pointer-events: none;
+  transition: all 0.2s;
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
@@ -435,26 +460,37 @@ const handleSignup = async () => {
   font-size: 0.75rem;
 }
 
-.signup-footer {
-  text-align: center;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-primary);
+.premium-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
 }
 
-.signup-footer p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
+.premium-checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.premium-checkbox .box {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
-.link {
-  color: var(--accent-primary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+.premium-checkbox input:checked + .box {
+  background: #2563eb;
+  border-color: #2563eb;
 }
 
-.link:hover {
-  color: var(--accent-hover);
+.label-txt { font-size: 0.9rem; font-weight: 600; color: #64748b; }
+
+.auth-btn {
+  margin-top: 1rem;
+  border-radius: 14px;
 }
 
 @media (max-width: 768px) {
@@ -477,4 +513,6 @@ const handleSignup = async () => {
     gap: 0;
   }
 }
+
+.auth-footer a { color: #2563eb; font-weight: 800; }
 </style>

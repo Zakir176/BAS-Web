@@ -20,6 +20,7 @@ export function useTheme() {
   return {
     theme,
     toggleTheme,
+    updateTheme,
     isDark: () => theme.value === 'dark'
   }
 }
