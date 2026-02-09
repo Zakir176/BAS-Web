@@ -6,39 +6,41 @@
     xmlns:local="clr-namespace:catv1.Views"
     Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:LoginPage}"
-        Route="login" />
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent
+            Title="Login"
+            ContentTemplate="{DataTemplate local:LoginPage}"
+            Route="login" />
 
-    <TabBar Route="student">
-        <Tab
-            Title="Dashboard"
-            Icon="home_icon.png"
-            Route="studentDashboardTab">
-            <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
-        </Tab>
-        <Tab
-            Title="History"
-            Icon="history_icon.png"
-            Route="historyTab">
-            <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="history" />
-        </Tab>
-    </TabBar>
+        <TabBar Route="student">
+            <Tab
+                Title="Dashboard"
+                Icon="home_icon.png"
+                Route="studentDashboardTab">
+                <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
+            </Tab>
+            <Tab
+                Title="History"
+                Icon="history_icon.png"
+                Route="historyTab">
+                <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="history" />
+            </Tab>
+        </TabBar>
 
-    <TabBar Route="lecturer">
-        <Tab
-            Title="Class Management"
-            Icon="class_icon.png"
-            Route="lecturerDashboardTab">
-            <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
-        </Tab>
-        <Tab
-            Title="Scan ID"
-            Icon="scan_icon.png"
-            Route="scanTab">
-            <ShellContent ContentTemplate="{DataTemplate local:ScanPage}" Route="scan" />
-        </Tab>
-    </TabBar>
+        <TabBar Route="lecturer">
+            <Tab
+                Title="Class Management"
+                Icon="class_icon.png"
+                Route="lecturerDashboardTab">
+                <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
+            </Tab>
+            <Tab
+                Title="Scan ID"
+                Icon="scan_icon.png"
+                Route="scanTab">
+                <ShellContent ContentTemplate="{DataTemplate local:ScanPage}" Route="scan" />
+            </Tab>
+        </TabBar>
+    </FlyoutItem>
 
 </Shell>
