@@ -101,7 +101,6 @@
                             TextColor="White" />
                     </Grid>
 
-                    <!--  Recent Activity  -->
                     <Label
                         FontAttributes="Bold"
                         Text="Recent Activity"
