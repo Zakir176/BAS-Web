@@ -476,6 +476,61 @@ const handleLogin = async () => {
   opacity: 1;
 }
 
+/* Return URL Display Styles */
+.return-url-info {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.return-url-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.return-url-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.return-url-text {
+  flex: 1;
+}
+
+.return-url-label {
+  font-size: 0.875rem;
+  color: #0369a1;
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+}
+
+.return-url-path {
+  font-size: 0.875rem;
+  color: #0c4a6e;
+  margin: 0;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
