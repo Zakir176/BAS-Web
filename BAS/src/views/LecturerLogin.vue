@@ -43,6 +43,17 @@
           </div>
 
           <Card class="login-card">
+            <!-- Return URL Display -->
+            <div v-if="authRedirect.hasIntendedDestination" class="return-url-info">
+              <div class="return-url-content">
+                <span class="return-url-icon">🔄</span>
+                <div class="return-url-text">
+                  <p class="return-url-label">After login, you'll be redirected to:</p>
+                  <p class="return-url-path">{{ authRedirect.returnPath }}</p>
+                </div>
+              </div>
+            </div>
+
             <div class="login-header">
               <div class="login-logo">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -137,15 +148,21 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
+import { useAuth } from "@/composables/useAuth";
+import { useAuthRedirect } from "@/composables/useAuthRedirect";
+import { useToast } from "@/composables/useToast";
 import Navbar from "@/components/layout/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";
 
 const router = useRouter();
+const auth = useAuth();
+const authRedirect = useAuthRedirect();
+const { toast } = useToast();
 
 const formData = reactive({
   email: "",
@@ -159,6 +176,11 @@ const errors = reactive({
 });
 
 const isLoading = ref(false);
+
+// Restore intended destination on component mount
+onMounted(() => {
+  authRedirect.restoreIntendedDestination();
+});
 
 const validateForm = () => {
   errors.email = "";
@@ -196,8 +218,8 @@ const handleLogin = async () => {
     if (error) throw error;
 
     if (data.session) {
-      // Redirect to dashboard (create this route later)
-      router.push("/student-homepage"); // Temporary redirect
+      // Use auth redirect to handle post-login navigation
+      authRedirect.redirectToIntendedDestination('lecturer');
     }
   } catch (error) {
     console.error("Login failed:", error);

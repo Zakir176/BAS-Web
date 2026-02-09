@@ -44,6 +44,17 @@
           </div>
 
           <Card class="login-card">
+            <!-- Return URL Display -->
+            <div v-if="authRedirect.hasIntendedDestination" class="return-url-info">
+              <div class="return-url-content">
+                <span class="return-url-icon">🔄</span>
+                <div class="return-url-text">
+                  <p class="return-url-label">After login, you'll be redirected to:</p>
+                  <p class="return-url-path">{{ authRedirect.returnPath }}</p>
+                </div>
+              </div>
+            </div>
+
             <div class="login-header">
               <div class="login-logo">
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -111,15 +122,21 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
+import { useAuth } from "@/composables/useAuth";
+import { useAuthRedirect } from "@/composables/useAuthRedirect";
+import { useToast } from "@/composables/useToast";
 import Navbar from "@/components/layout/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";
 
 const router = useRouter();
+const auth = useAuth();
+const authRedirect = useAuthRedirect();
+const { toast } = useToast();
 
 const formData = reactive({
   studentId: "", // Note: Still using studentId as a conceptual label, but we need email for auth
@@ -134,6 +151,11 @@ const errors = reactive({
 });
 
 const isLoading = ref(false);
+
+// Restore intended destination on component mount
+onMounted(() => {
+  authRedirect.restoreIntendedDestination();
+});
 
 const validateForm = () => {
   errors.email = "";
@@ -166,8 +188,8 @@ const handleLogin = async () => {
     if (error) throw error;
 
     if (data.session) {
-      // Redirect to student homepage
-      router.push("/student-homepage");
+      // Use auth redirect to handle post-login navigation
+      authRedirect.redirectToIntendedDestination('student');
     }
   } catch (error) {
     console.error("Login failed:", error);
@@ -411,6 +433,61 @@ const goToSignup = () => {
   color: #64748b;
   letter-spacing: 0.1em;
   border: 1px solid #e2e8f0;
+}
+
+/* Return URL Display Styles */
+.return-url-info {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.return-url-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.return-url-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.return-url-text {
+  flex: 1;
+}
+
+.return-url-label {
+  font-size: 0.875rem;
+  color: #0369a1;
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+}
+
+.return-url-path {
+  font-size: 0.875rem;
+  color: #0c4a6e;
+  margin: 0;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
