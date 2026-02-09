@@ -23,12 +23,22 @@ public static class MauiProgram
 
         builder.Services.AddSingleton(provider =>
         {
-            System.Diagnostics.Debug.WriteLine("CAT_LOG: Creating Supabase Client");
-            return new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key, new Supabase.SupabaseOptions
+            try
             {
-                AutoRefreshToken = true,
-                AutoConnectRealtime = true
-            });
+                System.Diagnostics.Debug.WriteLine("CAT_LOG: Creating Supabase Client");
+                return new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key, new Supabase.SupabaseOptions
+                {
+                    AutoRefreshToken = true,
+                    AutoConnectRealtime = true
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"CAT_LOG_ERROR: Supabase Initialization Failed: {ex}");
+                // We return null or throw depending on how we want to handle it. 
+                // For now, let's throw to be caught by the global handler we just added.
+                throw;
+            }
         });
 
         // ViewModels
