@@ -117,16 +117,17 @@
               <div class="activity-status" :class="activity.type">
                 {{ activity.type === "present" ? "Present" : "Absent" }}
               </div>
-            </section>
-
-            <!-- History Timeline -->
-            <RecentActivity 
-              :is-loading="isLoading"
-              :activities="recentActivity"
-              :show-all="showAllHistory"
-              @toggle-show-all="showAllHistory = !showAllHistory"
-            />
+            </Card>
           </div>
+
+          <!-- History Timeline -->
+          <RecentActivity 
+            :is-loading="isLoading"
+            :activities="recentActivity"
+            :show-all="showAllHistory"
+            @toggle-show-all="showAllHistory = !showAllHistory"
+          />
+        </section>
 
         <!-- Today's Schedule -->
         <section class="schedule-section">
@@ -161,7 +162,7 @@
               </div>
             </Card>
           </div>
-        </div>
+        </section>
       </div>
     </main>
   </div>
