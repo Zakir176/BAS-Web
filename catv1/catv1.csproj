@@ -21,7 +21,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>catv1</ApplicationTitle>
+		<ApplicationTitle>Smart Attendance</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.catv1</ApplicationId>
