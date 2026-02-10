@@ -6,6 +6,23 @@
     xmlns:local="clr-namespace:catv1.Views"
     Shell.FlyoutBehavior="Disabled">
 
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TabBar">
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Background}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Gray500}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}" />
+            </Style>
+            <Style TargetType="ShellItem">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Surface}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.UnselectedColor" Value="{StaticResource Gray400}" />
+            </Style>
+        </ResourceDictionary>
+    </Shell.Resources>
+
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent
             Title="Login"

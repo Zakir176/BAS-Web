@@ -1,63 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="catv1.Views.HistoryPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:catv1.ViewModels"
     Title="History"
-    BackgroundColor="#0F172A">
+    BackgroundColor="{StaticResource Background}">
+
     <ContentPage.Resources>
         <Style x:Key="FilterPickerStyle" TargetType="Picker">
             <Setter Property="TextColor" Value="White" />
-            <Setter Property="TitleColor" Value="Gray" />
-            <Setter Property="BackgroundColor" Value="#1E293B" />
+            <Setter Property="TitleColor" Value="{StaticResource Gray400}" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
             <Setter Property="FontAttributes" Value="Bold" />
         </Style>
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, Auto, Auto, *">
+        <!--  Background Overlay  -->
+        <Image
+            Aspect="AspectFill"
+            Opacity="0.1"
+            Source="lecture_room.png" />
+
         <!--  Header  -->
-        <Grid Padding="20,20,20,10" ColumnDefinitions="Auto, *, Auto">
-            <Label
-                FontFamily="Arial"
-                FontSize="24"
+        <Grid Padding="24,20,24,10" ColumnDefinitions="Auto, *, Auto">
+            <Border
+                BackgroundColor="{StaticResource Surface}"
                 HeightRequest="40"
-                HorizontalTextAlignment="Center"
-                Text="⬅"
-                TextColor="White"
-                VerticalTextAlignment="Center"
+                Stroke="{StaticResource GlassBorder}"
+                StrokeShape="RoundRectangle 20"
                 WidthRequest="40">
-                <Label.GestureRecognizers>
+                <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnBackClicked" />
-                </Label.GestureRecognizers>
-            </Label>
+                </Border.GestureRecognizers>
+                <Label
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="⬅"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </Border>
             <Label
                 Grid.Column="1"
-                Margin="10,0,0,0"
-                FontAttributes="Bold"
-                FontSize="20"
                 HorizontalOptions="Center"
+                Style="{StaticResource LabelHeader}"
                 Text="History Reports"
-                TextColor="White"
                 VerticalOptions="Center" />
-            <ImageButton
+            <Label
                 Grid.Column="2"
-                HeightRequest="24"
-                Source="dotnet_bot.png"
-                WidthRequest="24" />
+                FontSize="24"
+                Text="📊"
+                VerticalOptions="Center" />
         </Grid>
 
         <!--  Filters  -->
         <Grid
             Grid.Row="1"
-            Margin="20,10"
+            Margin="24,10"
             ColumnDefinitions="*,*,*"
-            ColumnSpacing="10">
+            ColumnSpacing="12">
             <Border
-                Padding="0"
-                BackgroundColor="#1E293B"
-                Stroke="Gray"
-                StrokeShape="RoundRectangle 20"
-                StrokeThickness="1">
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource GlassBorder}"
+                StrokeShape="RoundRectangle 16">
                 <Picker
                     Title="Grade"
                     HorizontalTextAlignment="Center"
@@ -67,11 +73,9 @@
             </Border>
             <Border
                 Grid.Column="1"
-                Padding="0"
-                BackgroundColor="#1E293B"
-                Stroke="Gray"
-                StrokeShape="RoundRectangle 20"
-                StrokeThickness="1">
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource GlassBorder}"
+                StrokeShape="RoundRectangle 16">
                 <Picker
                     Title="Month"
                     HorizontalTextAlignment="Center"
@@ -81,11 +85,9 @@
             </Border>
             <Border
                 Grid.Column="2"
-                Padding="0"
-                BackgroundColor="#1E293B"
-                Stroke="Gray"
-                StrokeShape="RoundRectangle 20"
-                StrokeThickness="1">
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource GlassBorder}"
+                StrokeShape="RoundRectangle 16">
                 <Picker
                     Title="Year"
                     HorizontalTextAlignment="Center"
@@ -96,71 +98,61 @@
         </Grid>
 
         <!--  Presence Summary  -->
-        <VerticalStackLayout Grid.Row="2" Padding="20,10">
+        <VerticalStackLayout Grid.Row="2" Padding="24,10">
             <Label
-                FontAttributes="Bold"
-                FontSize="16"
-                Text="Presence Summary"
-                TextColor="White" />
+                FontSize="18"
+                Style="{StaticResource LabelHeader}"
+                Text="Presence Summary" />
 
             <Grid
-                Margin="0,15,0,0"
+                Margin="0,16,0,0"
                 ColumnDefinitions="*,*"
-                ColumnSpacing="15">
+                ColumnSpacing="16">
                 <!--  Present  -->
-                <Border
-                    Padding="20"
-                    BackgroundColor="#1E293B"
-                    StrokeShape="RoundRectangle 20"
-                    StrokeThickness="0">
-                    <VerticalStackLayout Spacing="10">
+                <Border Style="{StaticResource StatCard}">
+                    <VerticalStackLayout Spacing="12">
                         <Border
                             HeightRequest="80"
-                            Stroke="#00E676"
+                            Stroke="{StaticResource Success}"
                             StrokeShape="RoundRectangle 40"
-                            StrokeThickness="4"
+                            StrokeThickness="3"
                             WidthRequest="80">
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="18"
                                 HorizontalOptions="Center"
                                 Text="{Binding PresencePercentageDisplay}"
-                                TextColor="#00E676"
+                                TextColor="{StaticResource Success}"
                                 VerticalOptions="Center" />
                         </Border>
                         <Label
                             HorizontalOptions="Center"
-                            Text="Present"
-                            TextColor="Gray" />
+                            Style="{StaticResource LabelCaption}"
+                            Text="Present" />
                     </VerticalStackLayout>
                 </Border>
 
                 <!--  Absent  -->
-                <Border
-                    Grid.Column="1"
-                    Padding="20"
-                    BackgroundColor="#1E293B"
-                    StrokeShape="RoundRectangle 20"
-                    StrokeThickness="0">
-                    <VerticalStackLayout Spacing="10">
+                <Border Grid.Column="1" Style="{StaticResource StatCard}">
+                    <VerticalStackLayout Spacing="12">
                         <Border
                             HeightRequest="80"
-                            Stroke="#FF5252"
+                            Stroke="{StaticResource Error}"
                             StrokeShape="RoundRectangle 40"
-                            StrokeThickness="4"
+                            StrokeThickness="3"
                             WidthRequest="80">
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="18"
                                 HorizontalOptions="Center"
                                 Text="{Binding AbsencePercentageDisplay}"
-                                TextColor="#FF5252"
+                                TextColor="{StaticResource Error}"
                                 VerticalOptions="Center" />
                         </Border>
                         <Label
                             HorizontalOptions="Center"
-                            Text="Absent"
-                            TextColor="Gray" />
+                            Style="{StaticResource LabelCaption}"
+                            Text="Absent" />
                     </VerticalStackLayout>
                 </Border>
             </Grid>
@@ -169,61 +161,54 @@
         <!--  Student Statistics  -->
         <Grid
             Grid.Row="3"
-            Padding="20,10,20,20"
+            Padding="24,16,24,24"
             RowDefinitions="Auto, *">
             <Grid ColumnDefinitions="*, Auto">
                 <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
+                    FontSize="18"
+                    Style="{StaticResource LabelHeader}"
                     Text="Student Statistics"
-                    TextColor="White"
                     VerticalOptions="Center" />
                 <Label
                     Grid.Column="1"
                     FontAttributes="Bold"
-                    FontSize="12"
+                    Style="{StaticResource LabelCaption}"
                     Text="32 STUDENTS"
-                    TextColor="#3B82F6"
+                    TextColor="{StaticResource Primary}"
                     VerticalOptions="Center" />
             </Grid>
 
             <CollectionView
                 Grid.Row="1"
-                Margin="0,10,0,0"
+                Margin="0,12,0,0"
                 ItemsSource="{Binding Students}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border
-                            Margin="0,0,0,10"
-                            Padding="10"
-                            BackgroundColor="#1E293B"
-                            StrokeShape="RoundRectangle 10"
-                            StrokeThickness="0">
+                            Margin="0,0,0,12"
+                            Padding="12"
+                            BackgroundColor="{StaticResource Surface}"
+                            Stroke="{StaticResource GlassBorder}"
+                            StrokeShape="RoundRectangle 16">
                             <Grid ColumnDefinitions="Auto, *, Auto">
                                 <Border
-                                    Grid.Column="0"
-                                    Padding="0"
-                                    HeightRequest="40"
-                                    StrokeShape="RoundRectangle 20"
-                                    StrokeThickness="0"
-                                    VerticalOptions="Center"
-                                    WidthRequest="40">
+                                    BackgroundColor="{StaticResource Background}"
+                                    HeightRequest="44"
+                                    Stroke="{StaticResource GlassBorder}"
+                                    StrokeShape="RoundRectangle 22"
+                                    WidthRequest="44">
                                     <Image Aspect="AspectFill" Source="{Binding Avatar}" />
                                 </Border>
 
                                 <VerticalStackLayout
                                     Grid.Column="1"
-                                    Margin="10,0"
+                                    Margin="16,0"
                                     VerticalOptions="Center">
                                     <Label
-                                        FontAttributes="Bold"
                                         FontSize="14"
-                                        Text="{Binding Name}"
-                                        TextColor="White" />
-                                    <Label
-                                        FontSize="12"
-                                        Text="{Binding Id}"
-                                        TextColor="Gray" />
+                                        Style="{StaticResource LabelHeader}"
+                                        Text="{Binding Name}" />
+                                    <Label Style="{StaticResource LabelCaption}" Text="{Binding Id}" />
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
@@ -232,12 +217,11 @@
                                         FontSize="14"
                                         HorizontalOptions="End"
                                         Text="{Binding PresenceRateDisplay}"
-                                        TextColor="#3B82F6" />
+                                        TextColor="{StaticResource Primary}" />
                                     <Label
-                                        FontSize="12"
                                         HorizontalOptions="End"
-                                        Text="{Binding AbsencesDisplay}"
-                                        TextColor="Gray" />
+                                        Style="{StaticResource LabelCaption}"
+                                        Text="{Binding AbsencesDisplay}" />
                                 </VerticalStackLayout>
                             </Grid>
                         </Border>
@@ -245,15 +229,13 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!--  Bottom Button Overlay  -->
+            <!--  Bottom Action Overlay  -->
             <Button
                 Grid.Row="1"
                 Margin="0,20"
-                BackgroundColor="#1E293B"
-                BorderColor="#334155"
+                BackgroundColor="{StaticResource Surface}"
+                BorderColor="{StaticResource GlassBorder}"
                 BorderWidth="1"
-                CornerRadius="25"
-                FontAttributes="Bold"
                 HeightRequest="50"
                 Text="View Full Student List"
                 TextColor="White"

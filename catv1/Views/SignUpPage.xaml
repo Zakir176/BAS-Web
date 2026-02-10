@@ -5,394 +5,285 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:catv1.ViewModels"
     Title="Sign Up"
-    BackgroundColor="#0F172A"
+    BackgroundColor="{StaticResource Background}"
     Shell.NavBarIsVisible="False">
 
     <Grid>
-        <!--  Background Image  -->
+        <!--  Background Image with Overlay  -->
         <Image
             Aspect="AspectFill"
-            Opacity="0.25"
+            Opacity="0.3"
             Source="lecture_room.png" />
 
-        <!--  Background Decoration  -->
-        <BoxView
-            CornerRadius="500"
-            HeightRequest="500"
-            HorizontalOptions="End"
-            Opacity="0.1"
-            TranslationX="100"
-            TranslationY="-200"
-            VerticalOptions="Start"
-            WidthRequest="500"
-            Color="#1E293B" />
-
-        <BoxView
-            CornerRadius="300"
-            HeightRequest="300"
-            HorizontalOptions="Start"
-            Opacity="0.05"
-            TranslationX="-100"
-            TranslationY="100"
-            VerticalOptions="End"
-            WidthRequest="300"
-            Color="#10B981" />
+        <BoxView Opacity="0.6" Color="{StaticResource Background}" />
 
         <ScrollView>
-            <Grid Padding="30" RowDefinitions="Auto, *">
+            <VerticalStackLayout
+                Padding="30"
+                Spacing="32"
+                VerticalOptions="FillAndExpand">
 
-                <!--  Header  -->
-                <VerticalStackLayout
-                    Grid.Row="0"
-                    Margin="0,20,0,0"
-                    Spacing="10">
+                <!--  Header Section  -->
+                <VerticalStackLayout Margin="0,20,0,0" Spacing="12">
                     <Label
-                        FontAttributes="Bold"
-                        FontSize="28"
                         HorizontalOptions="Center"
-                        Text="Create Account"
-                        TextColor="White" />
+                        Style="{StaticResource LabelHeader}"
+                        Text="Create Account" />
                     <Label
-                        FontSize="14"
                         HorizontalOptions="Center"
-                        Text="Join the Smart Attendance System"
-                        TextColor="#94A3B8" />
+                        Style="{StaticResource LabelCaption}"
+                        Text="Join the Smart Attendance System" />
                 </VerticalStackLayout>
 
                 <!--  Sign Up Card  -->
-                <Border
-                    Grid.Row="1"
-                    Margin="0,30,0,20"
-                    Padding="25"
-                    BackgroundColor="#E61E293B"
-                    Stroke="#334155"
-                    StrokeShape="RoundRectangle 20"
-                    StrokeThickness="1"
-                    VerticalOptions="Start">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="30"
-                            Offset="0,10" />
-                    </Border.Shadow>
+                <Border Margin="0,0,0,20" Style="{StaticResource GlassCard}">
+                    <VerticalStackLayout Spacing="28">
 
-                    <VerticalStackLayout Spacing="20">
                         <!--  Role Switcher  -->
                         <Border
-                            Padding="4"
-                            BackgroundColor="#0F172A"
-                            Stroke="Transparent"
-                            StrokeShape="RoundRectangle 10">
+                            BackgroundColor="{StaticResource Surface}"
+                            HeightRequest="56"
+                            HorizontalOptions="Center"
+                            Stroke="{StaticResource GlassBorder}"
+                            StrokeShape="RoundRectangle 28"
+                            WidthRequest="280">
                             <Grid ColumnDefinitions="*,*">
-                                <Button
-                                    x:Name="BtnStudent"
-                                    BackgroundColor="{Binding StudentBtnBgColor}"
-                                    Command="{Binding StudentCommand}"
-                                    CornerRadius="8"
-                                    FontAttributes="Bold"
-                                    FontSize="14"
-                                    HeightRequest="40"
-                                    Text="Student"
-                                    TextColor="{Binding StudentBtnTextColor}" />
-                                <Button
-                                    x:Name="BtnLecturer"
+                                <Border
+                                    Margin="4"
+                                    BackgroundColor="{Binding IsStudent, Converter={StaticResource BoolToColorConverter}}"
+                                    StrokeShape="RoundRectangle 24"
+                                    StrokeThickness="0">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SetRoleCommand}" CommandParameter="Student" />
+                                    </Border.GestureRecognizers>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Text="Student"
+                                        TextColor="{Binding IsStudent, Converter={StaticResource BoolToInverseTextColorConverter}}"
+                                        VerticalOptions="Center" />
+                                </Border>
+                                <Border
                                     Grid.Column="1"
-                                    BackgroundColor="{Binding LecturerBtnBgColor}"
-                                    Command="{Binding LecturerCommand}"
-                                    CornerRadius="8"
-                                    FontAttributes="Bold"
-                                    FontSize="14"
-                                    HeightRequest="40"
-                                    Text="Lecturer"
-                                    TextColor="{Binding LecturerBtnTextColor}" />
+                                    Margin="4"
+                                    BackgroundColor="{Binding IsLecturer, Converter={StaticResource BoolToColorConverter}}"
+                                    StrokeShape="RoundRectangle 24"
+                                    StrokeThickness="0">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SetRoleCommand}" CommandParameter="Lecturer" />
+                                    </Border.GestureRecognizers>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Text="Lecturer"
+                                        TextColor="{Binding IsLecturer, Converter={StaticResource BoolToInverseTextColorConverter}}"
+                                        VerticalOptions="Center" />
+                                </Border>
                             </Grid>
                         </Border>
 
                         <Label
-                            x:Name="LblSignUpTitle"
-                            FontAttributes="Bold"
                             FontSize="18"
                             HorizontalOptions="Center"
-                            Text="{Binding SignUpTitle}"
-                            TextColor="White" />
+                            Style="{StaticResource LabelHeader}"
+                            Text="{Binding SignUpTitle}" />
 
                         <!--  Input Fields  -->
-                        <VerticalStackLayout Spacing="20">
+                        <VerticalStackLayout Spacing="16">
                             <!--  Name Fields  -->
-                            <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                                <VerticalStackLayout Spacing="8">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="12"
-                                        Text="FIRST NAME"
-                                        TextColor="#CBD5E1" />
-                                    <Border
-                                        BackgroundColor="#0F172A"
-                                        HeightRequest="50"
-                                        Stroke="#334155"
-                                        StrokeShape="RoundRectangle 8"
-                                        StrokeThickness="1">
-                                        <Entry
-                                            Margin="15,0"
-                                            Placeholder="John"
-                                            PlaceholderColor="#475569"
-                                            Text="{Binding FirstName}"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </Border>
-                                </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Column="1" Spacing="8">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="12"
-                                        Text="LAST NAME"
-                                        TextColor="#CBD5E1" />
-                                    <Border
-                                        BackgroundColor="#0F172A"
-                                        HeightRequest="50"
-                                        Stroke="#334155"
-                                        StrokeShape="RoundRectangle 8"
-                                        StrokeThickness="1">
-                                        <Entry
-                                            Margin="15,0"
-                                            Placeholder="Doe"
-                                            PlaceholderColor="#475569"
-                                            Text="{Binding LastName}"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </Border>
-                                </VerticalStackLayout>
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                                <Border
+                                    Padding="16,0"
+                                    BackgroundColor="{StaticResource Surface}"
+                                    HeightRequest="56"
+                                    Stroke="{StaticResource GlassBorder}"
+                                    StrokeShape="RoundRectangle 16">
+                                    <Entry
+                                        Placeholder="First Name"
+                                        Text="{Binding FirstName}"
+                                        VerticalOptions="Center" />
+                                </Border>
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="16,0"
+                                    BackgroundColor="{StaticResource Surface}"
+                                    HeightRequest="56"
+                                    Stroke="{StaticResource GlassBorder}"
+                                    StrokeShape="RoundRectangle 16">
+                                    <Entry
+                                        Placeholder="Last Name"
+                                        Text="{Binding LastName}"
+                                        VerticalOptions="Center" />
+                                </Border>
                             </Grid>
 
                             <!--  Email Field  -->
-                            <VerticalStackLayout Spacing="8">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="EMAIL ADDRESS"
-                                    TextColor="#CBD5E1" />
-                                <Border
-                                    BackgroundColor="#0F172A"
-                                    HeightRequest="50"
-                                    Stroke="#334155"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="1">
-                                    <Grid ColumnDefinitions="50, *">
-                                        <Label
-                                            FontFamily="Arial"
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
-                                            Text="✉"
-                                            TextColor="#64748B"
-                                            VerticalOptions="Center" />
-                                        <Entry
-                                            Grid.Column="1"
-                                            Margin="0,0,10,0"
-                                            Keyboard="Email"
-                                            Placeholder="e.g. john@example.com"
-                                            PlaceholderColor="#475569"
-                                            Text="{Binding Email}"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
+                            <Border
+                                Padding="16,0"
+                                BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="56"
+                                Stroke="{StaticResource GlassBorder}"
+                                StrokeShape="RoundRectangle 16">
+                                <Grid ColumnDefinitions="40, *">
+                                    <Label
+                                        FontSize="18"
+                                        HorizontalOptions="Center"
+                                        Text="✉"
+                                        TextColor="{StaticResource PrimaryLight}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        Keyboard="Email"
+                                        Placeholder="Email Address"
+                                        Text="{Binding Email}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
 
                             <!--  ID Field  -->
-                            <VerticalStackLayout Spacing="8">
-                                <Label
-                                    x:Name="LblIdField"
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="{Binding IdFieldLabel}"
-                                    TextColor="#CBD5E1" />
-                                <Border
-                                    BackgroundColor="#0F172A"
-                                    HeightRequest="50"
-                                    Stroke="#334155"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="1">
-                                    <Grid ColumnDefinitions="50, *">
-                                        <Label
-                                            FontFamily="Arial"
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
-                                            Text="🆔"
-                                            TextColor="#64748B"
-                                            VerticalOptions="Center" />
-                                        <Entry
-                                            x:Name="EntryId"
-                                            Grid.Column="1"
-                                            Margin="0,0,10,0"
-                                            Placeholder="{Binding IdPlaceholder}"
-                                            PlaceholderColor="#475569"
-                                            Text="{Binding Id}"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
+                            <Border
+                                Padding="16,0"
+                                BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="56"
+                                Stroke="{StaticResource GlassBorder}"
+                                StrokeShape="RoundRectangle 16">
+                                <Grid ColumnDefinitions="40, *">
+                                    <Label
+                                        FontSize="18"
+                                        HorizontalOptions="Center"
+                                        Text="🆔"
+                                        TextColor="{StaticResource PrimaryLight}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        Placeholder="{Binding IdPlaceholder}"
+                                        Text="{Binding Id}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
 
-                            <!--  Department Field  -->
-                            <VerticalStackLayout Spacing="8">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="DEPARTMENT"
-                                    TextColor="#CBD5E1" />
-                                <Border
-                                    BackgroundColor="#0F172A"
-                                    HeightRequest="50"
-                                    Stroke="#334155"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="1">
-                                    <Grid ColumnDefinitions="50, *">
-                                        <Label
-                                            FontFamily="Arial"
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
-                                            Text="🏛"
-                                            TextColor="#64748B"
-                                            VerticalOptions="Center" />
-                                        <Entry
-                                            Grid.Column="1"
-                                            Margin="0,0,10,0"
-                                            Placeholder="{Binding DeptPlaceholder}"
-                                            PlaceholderColor="#475569"
-                                            Text="{Binding Department}"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
+                            <!--  Department/Class Field  -->
+                            <Border
+                                Padding="16,0"
+                                BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="56"
+                                Stroke="{StaticResource GlassBorder}"
+                                StrokeShape="RoundRectangle 16">
+                                <Grid ColumnDefinitions="40, *">
+                                    <Label
+                                        FontSize="18"
+                                        HorizontalOptions="Center"
+                                        Text="🏛"
+                                        TextColor="{StaticResource PrimaryLight}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        Placeholder="{Binding DeptPlaceholder}"
+                                        Text="{Binding Department}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
 
                             <!--  Password Field  -->
-                            <VerticalStackLayout Spacing="8">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="PASSWORD"
-                                    TextColor="#CBD5E1" />
-                                <Border
-                                    BackgroundColor="#0F172A"
-                                    HeightRequest="50"
-                                    Stroke="#334155"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="1">
-                                    <Grid ColumnDefinitions="50, *, 50">
-                                        <Label
-                                            FontFamily="Arial"
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
-                                            Text="🔒"
-                                            TextColor="#64748B"
-                                            VerticalOptions="Center" />
-                                        <Entry
-                                            Grid.Column="1"
-                                            Margin="0,0,10,0"
-                                            IsPassword="{Binding IsPassword}"
-                                            Placeholder="Create a password"
-                                            PlaceholderColor="#475569"
-                                            Text="{Binding Password}"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            Grid.Column="2"
-                                            FontFamily="Arial"
-                                            FontSize="18"
-                                            HeightRequest="40"
-                                            HorizontalTextAlignment="Center"
-                                            Text="👁"
-                                            TextColor="#64748B"
-                                            VerticalTextAlignment="Center"
-                                            WidthRequest="40">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding TogglePasswordCommand}" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
+                            <Border
+                                Padding="16,0"
+                                BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="56"
+                                Stroke="{StaticResource GlassBorder}"
+                                StrokeShape="RoundRectangle 16">
+                                <Grid ColumnDefinitions="40, *, 40">
+                                    <Label
+                                        FontSize="18"
+                                        HorizontalOptions="Center"
+                                        Text="🔒"
+                                        TextColor="{StaticResource PrimaryLight}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        IsPassword="{Binding IsPassword}"
+                                        Placeholder="Password"
+                                        Text="{Binding Password}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Grid.Column="2"
+                                        FontSize="18"
+                                        HorizontalTextAlignment="Center"
+                                        Text="👁"
+                                        TextColor="{StaticResource Gray400}"
+                                        VerticalTextAlignment="Center">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding TogglePasswordCommand}" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+                            </Border>
 
                             <!--  Confirm Password Field  -->
-                            <VerticalStackLayout Spacing="8">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="CONFIRM PASSWORD"
-                                    TextColor="#CBD5E1" />
-                                <Border
-                                    BackgroundColor="#0F172A"
-                                    HeightRequest="50"
-                                    Stroke="#334155"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="1">
-                                    <Grid ColumnDefinitions="50, *, 50">
-                                        <Label
-                                            FontFamily="Arial"
-                                            FontSize="18"
-                                            HorizontalOptions="Center"
-                                            Text="🔒"
-                                            TextColor="#64748B"
-                                            VerticalOptions="Center" />
-                                        <Entry
-                                            Grid.Column="1"
-                                            Margin="0,0,10,0"
-                                            IsPassword="{Binding IsPassword}"
-                                            Placeholder="Confirm password"
-                                            PlaceholderColor="#475569"
-                                            Text="{Binding ConfirmPassword}"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </Grid>
-                                </Border>
-                            </VerticalStackLayout>
+                            <Border
+                                Padding="16,0"
+                                BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="56"
+                                Stroke="{StaticResource GlassBorder}"
+                                StrokeShape="RoundRectangle 16">
+                                <Grid ColumnDefinitions="40, *">
+                                    <Label
+                                        FontSize="18"
+                                        HorizontalOptions="Center"
+                                        Text="🔒"
+                                        TextColor="{StaticResource PrimaryLight}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        IsPassword="{Binding IsPassword}"
+                                        Placeholder="Confirm Password"
+                                        Text="{Binding ConfirmPassword}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
                         </VerticalStackLayout>
 
-                        <!--  Action Button  -->
-                        <Button
-                            BackgroundColor="#10B981"
-                            Command="{Binding SignUpCommand}"
-                            CornerRadius="10"
-                            FontAttributes="Bold"
-                            FontSize="16"
-                            HeightRequest="55"
-                            Text="Create Account"
-                            TextColor="White">
-                            <Button.Shadow>
-                                <Shadow
-                                    Brush="#10B981"
-                                    Opacity="0.4"
-                                    Radius="10"
-                                    Offset="0,4" />
-                            </Button.Shadow>
-                        </Button>
+                        <!--  Action Section  -->
+                        <VerticalStackLayout Spacing="24">
+                            <Button
+                                Command="{Binding SignUpCommand}"
+                                HeightRequest="56"
+                                Text="Create Account" />
 
-                        <!--  Footer  -->
-                        <Label
-                            FontSize="13"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="Already have an account? " TextColor="#94A3B8" />
-                                    <Span
-                                        FontAttributes="Bold"
-                                        Text="Login here"
-                                        TextColor="#3B82F6">
-                                        <Span.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding LoginCommand}" />
-                                        </Span.GestureRecognizers>
-                                    </Span>
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
+                            <Label HorizontalOptions="Center" VerticalOptions="Center">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Style="{StaticResource LabelCaption}" Text="Already have an account? " />
+                                        <Span
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelCaption}"
+                                            Text="Login here"
+                                            TextColor="{StaticResource Primary}">
+                                            <Span.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding LoginCommand}" />
+                                            </Span.GestureRecognizers>
+                                        </Span>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </VerticalStackLayout>
 
                     </VerticalStackLayout>
                 </Border>
 
-            </Grid>
+                <!--  Footer Info  -->
+                <Label
+                    HorizontalOptions="Center"
+                    Style="{StaticResource LabelCaption}"
+                    Text="Version 1.0.0 • Verified Secure"
+                    TextColor="{StaticResource Gray500}" />
+
+            </VerticalStackLayout>
         </ScrollView>
     </Grid>
+
 </ContentPage>
