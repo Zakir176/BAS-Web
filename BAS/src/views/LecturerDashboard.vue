@@ -38,7 +38,7 @@
         </div>
 
         <!-- Class Roster Section -->
-        <LiveRoster 
+        <LiveRosterRealtime 
           :active-roster="activeRoster"
           :active-session-name="activeSessionName"
           :active-session-id="activeSessionId"
@@ -97,7 +97,7 @@ import CreateCourseModal from '@/components/lecturer/CreateCourseModal.vue'
 import CreateSessionModal from '@/components/lecturer/CreateSessionModal.vue'
 import DashboardStats from '@/components/lecturer/DashboardStats.vue'
 import CourseGrid from '@/components/lecturer/CourseGrid.vue'
-import LiveRoster from '@/components/lecturer/LiveRoster.vue'
+import LiveRosterRealtime from '@/components/lecturer/LiveRosterRealtime.vue'
 import ScannerInterface from '@/components/lecturer/ScannerInterface.vue'
 
 const router = useRouter()
