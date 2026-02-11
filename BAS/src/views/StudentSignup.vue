@@ -147,22 +147,21 @@
 
             <div class="auth-options">
               <label class="premium-checkbox">
-                <Field name="agreeToTerms" type="checkbox" :value="true" />
+                <input type="checkbox" v-model="formData.agreeToTerms" />
                 <span class="box"></span>
                 <span class="label-txt">I accept the terms of service</span>
               </label>
-              <ErrorMessage name="agreeToTerms" class="error-message" />
             </div>
 
             <Button type="submit" variant="primary" size="lg" full-width class="auth-btn" :disabled="isLoading">
               <span v-if="!isLoading">Create Student Account</span>
               <span v-else>Registering...</span>
             </Button>
-          </Form>
 
           <footer class="auth-footer">
             <p>Already a member? <router-link to="/student-login">Sign In</router-link></p>
           </footer>
+        </Card>
         </div>
       </div>
     </main>
@@ -173,7 +172,7 @@
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
-import Navbar from "@/components/layout/Navbar.vue";
+import Navbar from "@/components/common/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";

@@ -31,7 +31,7 @@
               Refresh
             </Button>
           </div>
-        </section>
+        </header>
 
         <!-- Filter Section -->
         <section class="filter-section">
@@ -231,8 +231,8 @@
                 Next
               </Button>
             </div>
-          </template>
-        </div>
+          </Card>
+        </section>
       </div>
     </main>
   </div>
@@ -242,7 +242,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
-import Navbar from "@/components/layout/Navbar.vue";
+import Navbar from "@/components/common/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";
