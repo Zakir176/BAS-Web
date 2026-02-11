@@ -114,10 +114,10 @@
                 <router-link to="/lecturer-login" class="link"> Lecturer Portal </router-link>
               </p>
             </div>
-          </div>
         </Card>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -128,7 +128,7 @@ import { supabase } from "@/supabase";
 import { useAuth } from "@/composables/useAuth";
 import { useAuthRedirect } from "@/composables/useAuthRedirect";
 import { useToast } from "@/composables/useToast";
-import Navbar from "@/components/layout/Navbar.vue";
+import Navbar from "@/components/common/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";
