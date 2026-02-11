@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace catv1.Models;
 
-[Table("lecturers")]
+[Table("lecturer_profiles")]
 public class LecturerProfile : BaseModel
 {
     [PrimaryKey("id", false)]
