@@ -117,16 +117,17 @@
               <div class="activity-status" :class="activity.type">
                 {{ activity.type === "present" ? "Present" : "Absent" }}
               </div>
-            </section>
-
-            <!-- History Timeline -->
-            <RecentActivity 
-              :is-loading="isLoading"
-              :activities="recentActivity"
-              :show-all="showAllHistory"
-              @toggle-show-all="showAllHistory = !showAllHistory"
-            />
+            </Card>
           </div>
+
+          <!-- History Timeline -->
+          <RecentActivity 
+            :is-loading="isLoading"
+            :activities="recentActivity"
+            :show-all="showAllHistory"
+            @toggle-show-all="showAllHistory = !showAllHistory"
+          />
+        </section>
 
         <!-- Today's Schedule -->
         <section class="schedule-section">
@@ -161,7 +162,7 @@
               </div>
             </Card>
           </div>
-        </div>
+        </section>
       </div>
     </main>
   </div>
@@ -171,7 +172,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
-import Navbar from "@/components/layout/Navbar.vue";
+import Navbar from "@/components/common/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 
