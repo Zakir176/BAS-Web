@@ -13,7 +13,7 @@
         <Image
             Aspect="AspectFill"
             Opacity="0.3"
-            Source="lecture_room.png" />
+            Source="Resources/Images/lecture_room.png" />
 
         <BoxView Opacity="0.6" Color="{StaticResource Background}" />
 

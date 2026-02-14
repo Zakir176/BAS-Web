@@ -14,7 +14,7 @@
         <Image
             Aspect="AspectFill"
             Opacity="0.25"
-            Source="lecture_room.png" />
+            Source="Resources/Images/lecture_room.png" />
 
         <ScrollView>
             <Grid>

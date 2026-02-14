@@ -1,5 +1,4 @@
 using catv1.ViewModels;
-using Microsoft.Maui.Controls;
 
 namespace catv1.Views;
 

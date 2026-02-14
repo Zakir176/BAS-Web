@@ -19,7 +19,7 @@
         <Image
             Aspect="AspectFill"
             Opacity="0.1"
-            Source="lecture_room.png" />
+            Source="Resources/Images/lecture_room.png" />
 
         <!--  SETUP VIEW  -->
         <Grid
@@ -165,6 +165,7 @@
                         <Grid>
                             <zxing:CameraBarcodeReaderView
                                 x:Name="cameraBarcodeReaderView"
+                                BarcodesDetected="cameraBarcodeReaderView_BarcodesDetected"
                                 IsDetecting="{Binding IsSessionActive}"
                                 IsTorchOn="False" />
 

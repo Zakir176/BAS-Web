@@ -16,4 +16,12 @@ public partial class ScanPage : ContentPage
             Multiple = false
         };
     }
+
+    private void cameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+    {
+        if (BindingContext is ScanViewModel viewModel)
+        {
+            viewModel.OnBarcodeDetected(e.Results);
+        }
+    }
 }
