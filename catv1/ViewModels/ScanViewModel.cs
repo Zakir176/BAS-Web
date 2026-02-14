@@ -159,6 +159,24 @@ public class ScanViewModel : BaseViewModel
         OnPropertyChanged(nameof(AbsentProgress));
     }
 
+    public void OnBarcodeDetected(ZXing.Net.Maui.BarcodeResult[] results)
+    {
+        if (results == null || results.Length == 0) return;
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            foreach (var result in results)
+            {
+                var student = Roster.FirstOrDefault(s => s.StudentId == result.Value);
+                if (student != null && !student.IsPresent)
+                {
+                    OnMarkStudent(student);
+                    break;
+                }
+            }
+        });
+    }
+
     private void GenerateRoster()
     {
         Roster =

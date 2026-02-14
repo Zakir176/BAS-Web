@@ -21,7 +21,7 @@
         <Image
             Aspect="AspectFill"
             Opacity="0.1"
-            Source="lecture_room.png" />
+            Source="Resources/Images/lecture_room.png" />
 
         <!--  Header  -->
         <Grid Padding="24,20,24,10" ColumnDefinitions="Auto, *, Auto">
