@@ -8,6 +8,12 @@
     <Color x:Key="PrimaryDark">#1D4ED8</Color>
     <Color x:Key="Secondary">#64748B</Color>
     <Color x:Key="Tertiary">#10B981</Color>
+    <Color x:Key="Background">#0F172A</Color>
+    <Color x:Key="Surface">#1E293B</Color>
+    <Color x:Key="PrimaryLight">#60A5FA</Color>
+    <Color x:Key="Info">#3B82F6</Color>
+    <Color x:Key="Success">#10B981</Color>
+    <Color x:Key="Error">#EF4444</Color>
 
     <!--  Glassmorphism Colors  -->
     <Color x:Key="GlassBackground">#E61E293B</Color>
