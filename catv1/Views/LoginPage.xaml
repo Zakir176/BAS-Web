@@ -304,7 +304,6 @@
                                 </Label>
                             </Grid>
 
-                            <!--  Action Button  -->
                             <Button
                                 BackgroundColor="#3B82F6"
                                 Command="{Binding LoginCommand}"
