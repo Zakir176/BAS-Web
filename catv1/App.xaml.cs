@@ -3,8 +3,9 @@
 public partial class App : Application
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly Supabase.Client _supabaseClient;
 
-    public App(IServiceProvider serviceProvider)
+    public App(IServiceProvider serviceProvider, Supabase.Client supabaseClient)
     {
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
@@ -18,6 +19,7 @@ public partial class App : Application
         };
 
         _serviceProvider = serviceProvider;
+        _supabaseClient = supabaseClient;
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor Start");
 
         try
@@ -32,6 +34,21 @@ public partial class App : Application
         }
 
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor End");
+    }
+
+    protected override async void OnStart()
+    {
+        base.OnStart();
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("CAT_LOG: Initializing Supabase...");
+            await _supabaseClient.InitializeAsync();
+            System.Diagnostics.Debug.WriteLine("CAT_LOG: Supabase Initialized.");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CAT_LOG_ERROR: Supabase Initialization Failed: {ex}");
+        }
     }
 
     protected override Window CreateWindow(IActivationState? activationState)
