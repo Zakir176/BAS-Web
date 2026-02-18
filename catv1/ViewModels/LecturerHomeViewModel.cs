@@ -1,6 +1,4 @@
 using catv1.Models;
-using System.Windows.Input;
-
 namespace catv1.ViewModels;
 
 public class LecturerHomeViewModel : BaseViewModel
