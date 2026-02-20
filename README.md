@@ -1,6 +1,6 @@
 # Barcode Attendance System (BAS)
 
-A modern, reliable, and easy-to-use barcode attendance system designed for universities. This project is the frontend implementation, built with Vue.js and designed to provide a clean, professional, and user-friendly interface for both students and lecturers.
+A modern, reliable, and easy-to-use barcode-based attendance system designed for universities. This project is the frontend implementation, built with Vue.js and designed to provide a clean, professional, and user-friendly interface for both students and lecturers.
 
 ## 🎨 Design & Interface
 
