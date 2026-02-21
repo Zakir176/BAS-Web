@@ -30,20 +30,20 @@ The UI is designed to be modern, clean, and academic-friendly. It features a dua
 
 ## ✨ Features
 
-*   **Dual-Theme UI:** Seamlessly switch between Light and Dark modes.
-*   **Distinct User Portals:** Separate login and dashboard experiences for Students and Lecturers.
-*   **Lecturer Dashboard:** A comprehensive view for lecturers to manage their courses, view student information, and track attendance in real-time.
-    *   **Course and Session Management:** Create, update, and manage courses and attendance sessions.
-    *   **Barcode Scanning:** Utilize the device's camera to scan student ID barcodes for quick and efficient attendance marking.
-    *   **Real-time Roster:** View a live roster of students for each session, with instant updates as attendance is taken.
-    *   **Manual Attendance:** Manually mark students as present or absent.
-    *   **Reporting:** Generate and export attendance reports in Excel format.
-*   **Student Dashboard:** A personalized dashboard for students to monitor their attendance and academic standing.
-    *   **Attendance Tracking:** View overall attendance statistics and a detailed history of attended and missed sessions.
-    *   **Attendance Heatmap:** Visualize attendance patterns throughout the semester with an intuitive heatmap.
-    *   **Recent Activity:** See a timeline of recent attendance activity.
-*   **Authentication:** Secure authentication for both lecturers and students using Supabase Auth.
-*   **Modern Tech Stack:** Built with Vue.js 3, Vite, and modern CSS for a fast and reliable experience.
+* **Dual-Theme UI:** Seamlessly switch between Light and Dark modes.
+* **Distinct User Portals:** Separate login and dashboard experiences for Students and Lecturers.
+* **Lecturer Dashboard:** A comprehensive view for lecturers to manage their courses, view student information, and track attendance in real-time.
+    * **Course and Session Management:** Create, update, and manage courses and attendance sessions.
+    * **Barcode Scanning:** Utilize the device's camera to scan student ID barcodes for quick and efficient attendance marking.
+    * **Real-time Roster:** View a live roster of students for each session, with instant updates as attendance is taken.
+    * **Manual Attendance:** Manually mark students as present or absent.
+    * **Reporting:** Generate and export attendance reports in Excel format.
+* **Student Dashboard:** A personalized dashboard for students to monitor their attendance and academic standing.
+    * **Attendance Tracking:** View overall attendance statistics and a detailed history of attended and missed sessions.
+    * **Attendance Heatmap:** Visualize attendance patterns throughout the semester with an intuitive heatmap.
+    * **Recent Activity:** See a timeline of recent attendance activity.
+* **Authentication:** Secure authentication for both lecturers and students using Supabase Auth.
+* **Modern Tech Stack:** Built with Vue.js 3, Vite, and modern CSS for a fast and reliable experience.
 
 ## 🛠 Tech Stack
 
@@ -61,30 +61,30 @@ The UI is designed to be modern, clean, and academic-friendly. It features a dua
 
 To get the frontend running locally, follow these steps:
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
     ```bash
     git clone https://github.com/Zakir176/BAS-Web.git
     cd BAS-Web
     ```
 
-2.  **Navigate to the project directory:**
+2. **Navigate to the project directory:**
     The Vue.js project is located in the `BAS` sub-directory.
     ```bash
     cd BAS
     ```
 
-3.  **Install dependencies:**
+3. **Install dependencies:**
     ```bash
     npm install
     ```
 
-4.  **Set up environment variables:**
+4. **Set up environment variables:**
     Create a `.env` file in the `BAS` directory by copying the `.env.example` file. Then, fill in the required Supabase URL and anonymous key.
     ```bash
     cp .env.example .env
     ```
 
-5.  **Run the development server:**
+5. **Run the development server:**
     ```bash
     npm run dev
     ```
