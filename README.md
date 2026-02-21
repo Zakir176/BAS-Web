@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # Barcode Attendance System (BAS)
 
 A modern, reliable, and easy-to-use barcode-based attendance system designed for universities. This project is the frontend implementation, built with Vue.js and designed to provide a clean, professional, and user-friendly interface for both students and lecturers.
@@ -8,22 +9,22 @@ The UI is designed to be modern, clean, and academic-friendly. It features a dua
 
 ### Light Mode
 
-| Home | Student Login | Lecturer Login |
-| --- | --- | --- |
+| Home                                                                 | Student Login                                                                          | Lecturer Login                                                                           |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | <img src="docs/ui/light_mode/Home.png" alt="Home Page" width="300"/> | <img src="docs/ui/light_mode/student_login_page.png" alt="Student Login" width="300"/> | <img src="docs/ui/light_mode/lecturer_login_page.png" alt="Lecturer Login" width="300"/> |
 
-| Student Homepage | Report Page |
-| --- | --- |
+| Student Homepage                                                                        | Report Page                                                                   |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | <img src="docs/ui/light_mode/student_homepage.png" alt="Student Homepage" width="300"/> | <img src="docs/ui/light_mode/report_page.png" alt="Report Page" width="300"/> |
 
 ### Dark Mode
 
-| Home | Student Login | Lecturer Login |
-| --- | --- | --- |
+| Home                                                                | Student Login                                                                         | Lecturer Login                                                                          |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | <img src="docs/ui/dark_mode/Home.png" alt="Home Page" width="300"/> | <img src="docs/ui/dark_mode/student_login_page.png" alt="Student Login" width="300"/> | <img src="docs/ui/dark_mode/lecturer_login_page.png" alt="Lecturer Login" width="300"/> |
 
-| Student Homepage | Report Page |
-| --- | --- |
+| Student Homepage                                                                       | Report Page                                                                  |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | <img src="docs/ui/dark_mode/student_homepage.png" alt="Student Homepage" width="300"/> | <img src="docs/ui/dark_mode/report_page.png" alt="Report Page" width="300"/> |
 
 
