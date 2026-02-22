@@ -17,7 +17,6 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, Auto, Auto, *">
-        <!--  Background Overlay  -->
         <Image
             Aspect="AspectFill"
             Opacity="0.1"
