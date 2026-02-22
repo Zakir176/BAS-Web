@@ -96,7 +96,6 @@
             </Border>
         </Grid>
 
-        <!--  Presence Summary  -->
         <VerticalStackLayout Grid.Row="2" Padding="24,10">
             <Label
                 FontSize="18"
