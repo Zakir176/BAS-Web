@@ -156,7 +156,6 @@
             </Grid>
         </VerticalStackLayout>
 
-        <!--  Student Statistics  -->
         <Grid
             Grid.Row="3"
             Padding="24,16,24,24"
