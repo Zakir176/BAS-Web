@@ -125,7 +125,6 @@
                                 </Grid>
                             </Border>
 
-                            <!--  Title & Description  -->
                             <VerticalStackLayout Spacing="5">
                                 <Label
                                     x:Name="LblWelcomeTitle"
