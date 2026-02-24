@@ -142,7 +142,6 @@
 
                             <!--  Input Fields  -->
                             <VerticalStackLayout Spacing="20">
-                                <!--  Email Field  -->
                                 <VerticalStackLayout Spacing="8">
                                     <Label
                                         FontAttributes="Bold"
