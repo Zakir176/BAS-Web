@@ -36,7 +36,6 @@
                     TextColor="{StaticResource Gray400}" />
             </VerticalStackLayout>
 
-            <!--  Form  -->
             <VerticalStackLayout
                 Grid.Row="1"
                 Spacing="32"
