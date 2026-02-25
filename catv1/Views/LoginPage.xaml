@@ -140,7 +140,6 @@
                                     TextColor="#94A3B8" />
                             </VerticalStackLayout>
 
-                            <!--  Input Fields  -->
                             <VerticalStackLayout Spacing="20">
                                 <VerticalStackLayout Spacing="8">
                                     <Label
