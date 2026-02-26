@@ -94,7 +94,6 @@
 
             </VerticalStackLayout>
 
-            <!--  Action  -->
             <Button
                 Grid.Row="2"
                 Command="{Binding StartSessionCommand}"
