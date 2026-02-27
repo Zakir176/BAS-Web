@@ -20,8 +20,6 @@
             Aspect="AspectFill"
             Opacity="0.1"
             Source="Resources/Images/lecture_room.png" />
-
-        <!--  SETUP VIEW  -->
         <Grid
             Padding="30"
             IsVisible="{Binding IsSetupVisible}"
@@ -96,7 +94,6 @@
 
             </VerticalStackLayout>
 
-            <!--  Action  -->
             <Button
                 Grid.Row="2"
                 Command="{Binding StartSessionCommand}"
