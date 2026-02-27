@@ -2,10 +2,10 @@
 
 public partial class App : Application
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly Supabase.Client _supabaseClient;
+    //private readonly IServiceProvider _serviceProvider;
+    //private readonly Supabase.Client _supabaseClient;
 
-    public App(IServiceProvider serviceProvider, Supabase.Client supabaseClient)
+    public App(IServiceProvider serviceProvider)//, Supabase.Client supabaseClient)
     {
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
@@ -18,8 +18,8 @@ public partial class App : Application
             e.SetObserved();
         };
 
-        _serviceProvider = serviceProvider;
-        _supabaseClient = supabaseClient;
+        //_serviceProvider = serviceProvider;
+        //_supabaseClient = supabaseClient;
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor Start");
 
         try
@@ -42,7 +42,7 @@ public partial class App : Application
         try
         {
             System.Diagnostics.Debug.WriteLine("CAT_LOG: Initializing Supabase...");
-            await _supabaseClient.InitializeAsync();
+            //await _supabaseClient.InitializeAsync();
             System.Diagnostics.Debug.WriteLine("CAT_LOG: Supabase Initialized.");
         }
         catch (Exception ex)
@@ -51,10 +51,10 @@ public partial class App : Application
         }
     }
 
-    protected override Window CreateWindow(IActivationState? activationState)
+    /*protected override Window CreateWindow(IActivationState? activationState)
     {
         System.Diagnostics.Debug.WriteLine("CAT_LOG: CreateWindow");
         var shell = _serviceProvider.GetRequiredService<AppShell>();
         return new Window(shell);
-    }
+    }*/
 }
