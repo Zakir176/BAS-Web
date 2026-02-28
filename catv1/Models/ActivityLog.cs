@@ -24,7 +24,6 @@ public class ActivityLog : BaseModel
     [Column("is_excused")]
     public bool IsExcused { get; set; }
 
-    // Derived properties for display
     [Newtonsoft.Json.JsonIgnore]
     public string DateDisplay => DateTime.ToString("MMM dd, yyyy");
     [Newtonsoft.Json.JsonIgnore]
