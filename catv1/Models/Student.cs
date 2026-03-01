@@ -56,7 +56,7 @@ public class Student : BaseModel, INotifyPropertyChanged
     [JsonIgnore]
     public string TimeDisplay => IsPresent && ScanTime.HasValue ? ScanTime.Value.ToString("hh:mm tt") : "";
 
-    // Helper for property change notification
+    // Helper for property change notifications
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
