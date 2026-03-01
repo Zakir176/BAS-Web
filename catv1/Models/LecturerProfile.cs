@@ -9,7 +9,7 @@ public class LecturerProfile : BaseModel
 {
     [PrimaryKey("id", false)]
     [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty; // Supabase Auth UUID
+    public string Id { get; set; } = string.Empty; //Supabase Auth UUID
 
     [Column("registration_id")]
     [JsonProperty("registration_id")]
