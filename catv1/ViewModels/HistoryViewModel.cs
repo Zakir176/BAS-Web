@@ -10,9 +10,9 @@ public class HistoryViewModel : BaseViewModel
     private string? _selectedYear;
 
     public ObservableCollection<StudentStat> Students { get; set; }
-    public ObservableCollection<string> Grades { get; } = new() { "Grade 10-A", "Grade 10-B", "Grade 11-A" };
-    public ObservableCollection<string> Months { get; } = new() { "October", "November", "December" };
-    public ObservableCollection<string> Years { get; } = new() { "2023", "2024" };
+    public ObservableCollection<string> Grades { get; } = ["Grade 10-A", "Grade 10-B", "Grade 11-A"];
+    public ObservableCollection<string> Months { get; } = ["October", "November", "December"];
+    public ObservableCollection<string> Years { get; } = ["2023", "2024"];
 
     public string? SelectedGrade
     {
@@ -44,13 +44,13 @@ public class HistoryViewModel : BaseViewModel
         SelectedMonth = Months[0];
         SelectedYear = Years[0];
 
-        Students = new ObservableCollection<StudentStat>
-        {
-            new StudentStat { Name = "Jane Cooper", Id = "#00124", PresenceRate = 0.98, Absences = 2, Avatar = "dotnet_bot.png" },
-            new StudentStat { Name = "Robert Fox", Id = "#00125", PresenceRate = 0.82, Absences = 6, Avatar = "dotnet_bot.png" },
-            new StudentStat { Name = "Esther Howard", Id = "#00126", PresenceRate = 0.95, Absences = 1, Avatar = "dotnet_bot.png" },
-            new StudentStat { Name = "Cameron Williamson", Id = "#00127", PresenceRate = 0.71, Absences = 12, Avatar = "dotnet_bot.png" },
-             new StudentStat { Name = "Jenny Wilson", Id = "#00128", PresenceRate = 0.88, Absences = 4, Avatar = "dotnet_bot.png" }
-        };
+        Students =
+        [
+            new() { Name = "Jane Cooper", Id = "#00124", PresenceRate = 0.98, Absences = 2, Avatar = "dotnet_bot.png" },
+            new() { Name = "Robert Fox", Id = "#00125", PresenceRate = 0.82, Absences = 6, Avatar = "dotnet_bot.png" },
+            new() { Name = "Esther Howard", Id = "#00126", PresenceRate = 0.95, Absences = 1, Avatar = "dotnet_bot.png" },
+            new() { Name = "Cameron Williamson", Id = "#00127", PresenceRate = 0.71, Absences = 12, Avatar = "dotnet_bot.png" },
+            new() { Name = "Jenny Wilson", Id = "#00128", PresenceRate = 0.88, Absences = 4, Avatar = "dotnet_bot.png" }
+        ];
     }
 }
