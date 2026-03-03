@@ -65,7 +65,7 @@
                     </Border>
                 </VerticalStackLayout>
 
-                <!--  Date Selection  -->
+                <!--  Date Selector  -->
                 <VerticalStackLayout Spacing="10">
                     <Label
                         FontAttributes="Bold"
