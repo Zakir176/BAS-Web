@@ -39,7 +39,6 @@
                 Spacing="32"
                 VerticalOptions="Center">
 
-                <!--  Course Selection  -->
                 <VerticalStackLayout Spacing="10">
                     <Label
                         FontAttributes="Bold"
