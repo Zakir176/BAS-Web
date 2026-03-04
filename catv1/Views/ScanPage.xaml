@@ -147,7 +147,7 @@
                     VerticalOptions="Center" />
             </Grid>
 
-            <!--  Camera & Stats Section  -->
+            <!--  Camera & Stats  -->
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout Padding="20" Spacing="24">
 
