@@ -230,7 +230,6 @@
 
                     <!--  Stats Cards  -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
-                        <!--  Present  -->
                         <Border Style="{StaticResource StatCard}">
                             <VerticalStackLayout Spacing="8">
                                 <Label Style="{StaticResource LabelCaption}" Text="PRESENT" />
