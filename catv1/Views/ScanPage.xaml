@@ -247,8 +247,7 @@
                                 <ProgressBar Progress="{Binding PresentProgress}" ProgressColor="{StaticResource Success}" />
                             </VerticalStackLayout>
                         </Border>
-
-                        <!--  Absent  -->
+                        
                         <Border Grid.Column="1" Style="{StaticResource StatCard}">
                             <VerticalStackLayout Spacing="8">
                                 <Label Style="{StaticResource LabelCaption}" Text="ABSENT" />
