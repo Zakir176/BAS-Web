@@ -15,7 +15,7 @@
     </ContentPage.Resources>
 
     <Grid>
-        <!--  Background Overlay for consistency (optional since camera might cover it)  -->
+        <!--  Background Overlay for consistency (optional, camera might cover it)  -->
         <Image
             Aspect="AspectFill"
             Opacity="0.1"
