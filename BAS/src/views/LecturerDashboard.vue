@@ -142,7 +142,7 @@ const closeBarcodeScanner = () => {
 const completeSession = async () => {
   if (!activeSessionId.value) return
   
-  if (!confirm('Are you sure you want to end this session? This will clear the active roster.')) {
+  if (!confirm('Are you sure you want to end this session?')) {
     return
   }
 
