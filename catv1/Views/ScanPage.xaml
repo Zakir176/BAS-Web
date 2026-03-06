@@ -352,7 +352,7 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <!--  Floating Finish Button  -->
+                <!--  Finish Button  -->
                 <Button
                     Grid.Row="1"
                     Margin="24"
