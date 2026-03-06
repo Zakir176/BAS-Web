@@ -23,7 +23,7 @@
           </div>
         </header>
 
-        <!-- Stats Grid -->
+        <!-- Stats -->
         <DashboardStats :stats="stats" />
 
         <!-- Main Content Area -->
