@@ -5,7 +5,7 @@ public partial class App : Application
     //private readonly IServiceProvider _serviceProvider;
     //private readonly Supabase.Client _supabaseClient;
 
-    public App(IServiceProvider serviceProvider)//, Supabase.Client supabaseClient)
+    public App(IServiceProvider serviceProvider)
     {
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
@@ -18,8 +18,6 @@ public partial class App : Application
             e.SetObserved();
         };
 
-        //_serviceProvider = serviceProvider;
-        //_supabaseClient = supabaseClient;
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor Start");
 
         try
@@ -28,27 +26,32 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (InitializeComponent): {ex}");
-            // We can't easily show a dialog here if the app is crashing, but we've logged it.
-            throw; // Re-throw to allow normal crash behavior but with logging
+            System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (App Component Initialization): {ex}");
+            throw; 
         }
 
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor End");
     }
 
-    protected override void OnStart()
+    protected override Window CreateWindow(IActivationState? activationState)
     {
-        base.OnStart();
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: CreateWindow Start");
         try
         {
-            System.Diagnostics.Debug.WriteLine("CAT_LOG: Initializing Supabase...");
-            //await _supabaseClient.InitializeAsync();
-            System.Diagnostics.Debug.WriteLine("CAT_LOG: Supabase Initialized.");
+            var shell = Handler.MauiContext.Services.GetRequiredService<AppShell>();
+            return new Window(shell);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"CAT_LOG_ERROR: Supabase Initialization Failed: {ex}");
+            System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (CreateWindow): {ex}");
+            throw;
         }
+    }
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        System.Diagnostics.Debug.WriteLine("CAT_LOG: App OnStart");
     }
 
     /*protected override Window CreateWindow(IActivationState? activationState)
