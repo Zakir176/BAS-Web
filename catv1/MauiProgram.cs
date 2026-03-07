@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
 using catv1.ViewModels;
 
@@ -21,23 +21,22 @@ public static class MauiProgram
 
         System.Diagnostics.Debug.WriteLine("CAT_LOG: Registering Services");
 
-        builder.Services.AddSingleton(provider =>
+        builder.Services.AddSingleton<Supabase.Client>(provider =>
         {
             try
             {
                 System.Diagnostics.Debug.WriteLine("CAT_LOG: Creating Supabase Client");
-                return new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key, new Supabase.SupabaseOptions
+                var client = new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key, new Supabase.SupabaseOptions
                 {
                     AutoRefreshToken = true,
                     AutoConnectRealtime = true
                 });
+                return client;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"CAT_LOG_ERROR: Supabase Initialization Failed: {ex}");
-                // We return null or throw depending on how we want to handle it. 
-                // For now, let's throw to be caught by the global handler we just added.
-                throw;
+                System.Diagnostics.Debug.WriteLine($"CAT_LOG_ERROR: Supabase Client Creation Failed: {ex}");
+                throw; // Rethrow to ensure we know why it failed during startup
             }
         });
 
