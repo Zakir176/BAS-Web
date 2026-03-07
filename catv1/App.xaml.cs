@@ -1,4 +1,4 @@
-﻿namespace catv1;
+namespace catv1;
 
 public partial class App : Application
 {
@@ -36,7 +36,7 @@ public partial class App : Application
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App Constructor End");
     }
 
-    protected override async void OnStart()
+    protected override void OnStart()
     {
         base.OnStart();
         try
