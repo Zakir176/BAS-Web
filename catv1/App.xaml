@@ -11,7 +11,6 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
             <converters:StatusColorConverter x:Key="StatusColorConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToInverseTextColorConverter x:Key="BoolToInverseTextColorConverter" />
