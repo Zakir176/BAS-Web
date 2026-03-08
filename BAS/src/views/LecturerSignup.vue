@@ -109,7 +109,7 @@ const handleSignup = async (values) => {
 
 <style scoped>
 .error-message {
-  color: #ef4444; /* red-500 */
+  color: #ef4444;
   font-size: 0.875rem; /* text-sm */
   margin-top: 0.25rem;
 }
