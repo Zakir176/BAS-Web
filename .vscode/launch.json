@@ -8,6 +8,7 @@
             "name": ".NET Meteor Debugger",
             "type": "dotnet-meteor.debugger",
             "request": "launch",
+            "deviceId": "Emulator_Phone_API_36.0",
             "preLaunchTask": "dotnet-meteor: Build"
         }
     ]
