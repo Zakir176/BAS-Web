@@ -196,7 +196,7 @@ const attendanceStats = ref({
 });
 
 const recentActivities = ref([]);
-const todaySchedule = ref([]); // Currently mock as no schedule table exists yet
+const todaySchedule = ref([]); // Current mock as no schedule table exists yet
 
 const fetchStudentData = async () => {
   try {
