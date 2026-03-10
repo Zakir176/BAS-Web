@@ -20,7 +20,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<!-- Display name -->
 		<ApplicationTitle>Smart Attendance</ApplicationTitle>
 
 		<!-- App Identifier -->
