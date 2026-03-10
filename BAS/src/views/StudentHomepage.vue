@@ -208,7 +208,7 @@ const fetchStudentData = async () => {
       return;
     }
 
-    // Fetch student profile
+    // Fetch student profiles
     const { data: profile, error: profileError } = await supabase
       .from("students")
       .select("*")
