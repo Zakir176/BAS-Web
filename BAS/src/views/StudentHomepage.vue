@@ -242,7 +242,7 @@ const fetchStudentData = async () => {
       overall: total > 0 ? Math.round((presentCount / total) * 100) : 0,
       present: presentCount,
       absent: total - presentCount,
-      streak: 0, // Logic for streak can be added later
+      streak: 0, // Logic for streaks can be added later
     };
   } catch (error) {
     console.error("Error fetching student data:", error);
