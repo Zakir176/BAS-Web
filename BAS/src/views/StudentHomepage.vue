@@ -307,7 +307,7 @@ onMounted(() => {
   top: 90px;
 }
 
-/* Tablet: Adjusted Layout */
+/* Tablet screen: Adjusted Layout */
 @media (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
