@@ -9,7 +9,7 @@
     Shell.NavBarIsVisible="False">
 
     <Grid>
-        <!--  Background Image  -->
+        <!--  Blurred Background Image  -->
         <Image
             Aspect="AspectFill"
             Opacity="0.2"
