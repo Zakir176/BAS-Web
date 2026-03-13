@@ -129,7 +129,7 @@
                         </Border>
                     </Grid>
 
-                    <!--  Heatmap Mockup// See inspo on LinkedIn Post  -->
+                    <!--  Heatmap Mockup | See inspo on LinkedIn Post  -->
                     <Border Style="{StaticResource GlassCard}">
                         <VerticalStackLayout Spacing="15">
                             <Grid ColumnDefinitions="*, Auto">
