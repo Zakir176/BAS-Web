@@ -1,7 +1,5 @@
 <template>
   <div class="report-page">
-    <Navbar />
-
     <main class="main-content">
       <div class="container py-8">
         <!-- Header Section -->
@@ -242,7 +240,6 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
-import Navbar from "@/components/common/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";
