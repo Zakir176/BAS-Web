@@ -1,6 +1,5 @@
 <template>
   <div class="toast-demo-page">
-    <Navbar />
     
     <main class="main-content">
       <div class="container">
@@ -105,7 +104,6 @@
 
 <script setup>
 import { useToast } from '@/composables/useToast'
-import Navbar from '@/components/common/Navbar.vue'
 
 const { toasts, success, error, warning, info, addToast, clearAllToasts } = useToast()
 

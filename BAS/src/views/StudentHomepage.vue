@@ -1,7 +1,5 @@
 <template>
   <div class="student-dashboard">
-    <Navbar />
-
     <main class="main-content">
       <div class="container">
         <!-- Welcome Section -->
@@ -172,7 +170,6 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
-import Navbar from "@/components/common/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 

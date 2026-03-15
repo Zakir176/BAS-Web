@@ -1,6 +1,5 @@
 <template>
   <div class="content-page terms-of-service">
-    <Navbar />
     <main class="container">
       <div class="content-wrapper">
         <header class="page-header">
@@ -54,7 +53,6 @@
 </template>
 
 <script setup>
-import Navbar from '@/components/common/Navbar.vue'
 </script>
 
 <style scoped>

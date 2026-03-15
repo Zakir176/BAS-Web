@@ -1,7 +1,5 @@
 <template>
   <div class="lecturer-login-page">
-    <Navbar />
-
     <main class="main-content">
       <div class="container">
         <div class="login-container">
@@ -154,7 +152,6 @@ import { supabase } from "@/supabase";
 import { useAuth } from "@/composables/useAuth";
 import { useAuthRedirect } from "@/composables/useAuthRedirect";
 import { useToast } from "@/composables/useToast";
-import Navbar from "@/components/common/Navbar.vue";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";
