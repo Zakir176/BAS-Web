@@ -1,6 +1,5 @@
 <template>
   <div class="lecturer-dashboard">
-    <Navbar />
     
     <main class="main-content">
       <div class="container">
@@ -90,7 +89,6 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import { supabase } from '@/supabase'
-import Navbar from '@/components/common/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Modal from '@/components/ui/Modal.vue'
 import CreateCourseModal from '@/components/lecturer/CreateCourseModal.vue'
