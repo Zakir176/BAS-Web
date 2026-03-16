@@ -1,7 +1,6 @@
 import { ref, onUnmounted, onMounted } from 'vue'
 import { supabase } from '@/supabase'
 import { useToast } from './useToast'
-import { useRealtimeNotifications } from './useRealtimeNotifications'
 
 /**
  * Real-time subscription composable for live attendance updates
@@ -9,7 +8,6 @@ import { useRealtimeNotifications } from './useRealtimeNotifications'
  */
 export function useRealtime() {
   const { toast } = useToast()
-  const notifications = useRealtimeNotifications()
   
   // Subscription state
   const subscriptions = ref(new Map())

@@ -1,512 +1,329 @@
 <template>
-  <div class="student-login-page">
-
-    <main class="main-content">
-      <div class="container">
-        <div class="login-container">
-          <div class="login-visual">
-            <div class="login-illustration">
-              <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
-                <rect
-                  width="300"
-                  height="300"
-                  rx="20"
-                  fill="var(--accent-primary)"
-                  opacity="0.05"
-                />
-                <circle cx="150" cy="80" r="30" fill="var(--accent-primary)" opacity="0.2" />
-                <rect
-                  x="110"
-                  y="130"
-                  width="80"
-                  height="100"
-                  rx="10"
-                  fill="var(--accent-primary)"
-                  opacity="0.3"
-                />
-                <path d="M130 180h40v30h-40z" fill="var(--accent-primary)" />
-                <circle cx="150" cy="80" r="20" fill="var(--accent-primary)" />
-                <path d="M140 75h20v10h-20z" fill="white" />
-                <rect x="120" y="200" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
-                <rect x="120" y="215" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
-              </svg>
-            </div>
-            <div class="login-features">
-              <h3>Student Portal</h3>
-              <ul>
-                <li>Mark attendance with barcode</li>
-                <li>View attendance history</li>
-                <li>Check class schedules</li>
-                <li>Download attendance reports</li>
-              </ul>
-            </div>
+  <div class="split-auth-page">
+    <!-- Left Side: Brand Showcase -->
+    <div class="brand-panel student-theme">
+      <div class="brand-content">
+        <div class="logo-mark">🎓</div>
+        <h1 class="brand-title">Student Portal</h1>
+        <p class="brand-subtitle">Your academic journey, tracked and simplified.</p>
+        
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="icon">📱</span>
+            <span>Mobile-friendly access</span>
           </div>
-
-          <Card class="login-card">
-            <!-- Return URL Display -->
-            <div v-if="authRedirect.hasIntendedDestination" class="return-url-info">
-              <div class="return-url-content">
-                <span class="return-url-icon">🔄</span>
-                <div class="return-url-text">
-                  <p class="return-url-label">After login, you'll be redirected to:</p>
-                  <p class="return-url-path">{{ authRedirect.returnPath }}</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="login-header">
-              <div class="login-logo">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <rect width="40" height="40" rx="10" fill="var(--accent-primary)" />
-                  <path d="M10 15h20v10H10z" fill="white" />
-                  <path d="M15 10v20h10V10H15z" fill="var(--accent-primary)" />
-                </svg>
-              </div>
-              <ErrorMessage name="email" class="error-message" />
-            </div>
-
-            <form @submit.prevent="handleLogin" class="login-form">
-              <Input
-                v-model="formData.email"
-                label="Email Address"
-                type="email"
-                placeholder="student@university.edu"
-                required
-                :error="errors.email"
-              />
-
-              <Input
-                v-model="formData.password"
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                required
-                :error="errors.password"
-              />
-
-              <div class="form-options">
-                <label class="checkbox-label">
-                  <input type="checkbox" v-model="formData.rememberMe" />
-                  <span class="checkmark"></span>
-                  Remember me
-                </label>
-                <a href="#" class="forgot-password">Forgot password?</a>
-              </div>
-
-              <Button type="submit" variant="primary" size="lg" full-width :disabled="isLoading">
-                <span v-if="!isLoading">Sign In</span>
-                <span v-else>Signing in...</span>
-              </Button>
-            </form>
-
-            <div class="divider">
-              <span>OR</span>
-            </div>
-
-            <Button variant="secondary" size="lg" full-width @click="goToSignup">
-              Create New Account
-            </Button>
-
-            <div class="login-footer">
-              <p>
-                Are you a lecturer?
-                <router-link to="/lecturer-login" class="link"> Lecturer Portal </router-link>
-              </p>
-            </div>
-        </Card>
+          <div class="feature-item">
+            <span class="icon">⚡</span>
+            <span>Instant barcode check-ins</span>
+          </div>
+          <div class="feature-item">
+            <span class="icon">📈</span>
+            <span>Track your attendance history</span>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
+
+    <!-- Right Side: Interaction Form -->
+    <div class="form-panel">
+      <div class="form-wrapper">
+        <div class="form-header">
+          <h2>Welcome Back</h2>
+          <p>Please log in to your student account.</p>
+        </div>
+
+        <Form @submit="handleLogin" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
+          <div class="input-group-clean">
+            <label for="email" class="clean-label">University Email</label>
+            <Field name="email" type="email" id="email" placeholder="student@university.edu" class="clean-input" :class="{'is-invalid': errors.email}" />
+            <ErrorMessage name="email" class="error-message" />
+          </div>
+
+          <div class="input-group-clean">
+            <label for="password" class="clean-label">Password</label>
+            <Field name="password" type="password" id="password" placeholder="••••••••" class="clean-input" :class="{'is-invalid': errors.password}" />
+            <ErrorMessage name="password" class="error-message" />
+          </div>
+
+          <div class="form-actions">
+            <!-- Space for 'Remember Me' if needed later -->
+            <div></div>
+            <router-link to="/forgot-password" class="forgot-link">Forgot password?</router-link>
+          </div>
+
+          <Button type="submit" variant="primary" size="lg" full-width class="submit-btn" :disabled="isLoading">
+            <span v-if="!isLoading">Sign In</span>
+            <span v-else>Signing In...</span>
+          </Button>
+        </Form>
+
+        <p class="auth-footer">
+          Don't have an account? 
+          <router-link to="/student-signup" class="footer-link">Create one here</router-link>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { supabase } from "@/supabase";
-import { useAuth } from "@/composables/useAuth";
-import { useAuthRedirect } from "@/composables/useAuthRedirect";
-import { useToast } from "@/composables/useToast";
-import Button from "@/components/ui/Button.vue";
-import Card from "@/components/ui/Card.vue";
-import Input from "@/components/ui/Input.vue";
+import { useRouter, useRoute } from 'vue-router'
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
+import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
+import Button from '@/components/ui/Button.vue'
 
-const router = useRouter();
-const auth = useAuth();
-const authRedirect = useAuthRedirect();
-const { toast } = useToast();
+const router = useRouter()
+const route = useRoute()
+const { signIn, isLoading } = useAuth()
+const { toast } = useToast()
 
-const formData = reactive({
-  studentId: "", // Note: Still using studentId as a conceptual label, but we need email for auth
-  email: "", // Added email field for auth
-  password: "",
-  rememberMe: false,
+const schema = yup.object({
+  email: yup.string().required('Email is required').email('Please enter a valid email address'),
+  password: yup.string().required('Password is required'),
 });
 
-const errors = reactive({
-  email: "",
-  password: "",
-});
-
-const isLoading = ref(false);
-
-// Restore intended destination on component mount
-onMounted(() => {
-  authRedirect.restoreIntendedDestination();
-});
-
-const validateForm = () => {
-  errors.email = "";
-  errors.password = "";
-
-  if (!formData.email) {
-    errors.email = "Email is required";
-    return false;
-  }
-
-  if (!formData.password) {
-    errors.password = "Password is required";
-    return false;
-  }
-
-  return true;
-};
-
-const handleLogin = async () => {
-  if (!validateForm()) return;
-
-  isLoading.value = true;
-
+const handleLogin = async (values) => {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (error) throw error;
-
-    if (data.session) {
-      // Use auth redirect to handle post-login navigation
-      authRedirect.redirectToIntendedDestination('student');
+    const data = await signIn(values.email, values.password)
+    
+    // Verify role and route dynamically
+    const userRole = data?.user?.user_metadata?.role || 'student'
+    toast.success('Successfully logged in!')
+    
+    const redirectPath = route.query.redirect 
+                         ? route.query.redirect 
+                         : (userRole === 'student' ? '/student-homepage' : '/lecturer-dashboard')
+                         
+    router.push(redirectPath)
+  } catch (err) {
+    if (err.message && err.message.includes('Invalid login credentials')) {
+      toast.error('Invalid email or password.')
+    } else {
+      toast.error(err.message || 'Login failed. Please check your credentials.')
     }
-  } catch (error) {
-    console.error("Login failed:", error);
-    errors.password = error.message || "Invalid email or password";
-  } finally {
-    isLoading.value = false;
   }
-};
-
-const goToSignup = () => {
-  router.push("/student-signup");
-};
+}
 </script>
 
 <style scoped>
-.error-message {
-  color: #ef4444; /* red-500 */
-  font-size: 0.875rem; /* text-sm */
-  margin-top: 0.25rem;
+/* Split Layout Base */
+.split-auth-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-main);
 }
 
-.return-url-info {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  background: rgba(59, 130, 246, 0.1); /* blue-500/10 */
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 6px;
-  color: #3b82f6;
-  font-size: 0.75rem;
-}
-
-.return-url-info strong {
-  color: #1d4ed8;
-  word-break: break-all;
-}
-
-.input.is-invalid {
-  border-color: #ef4444; /* red-500 */
-}
-
-.auth-overlay {
+/* Left Panel: Brand Showcase */
+.brand-panel {
+  display: none; /* Hidden on standard mobile */
   flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 4rem;
+  color: #ffffff;
+}
+
+.student-theme {
+  background-color: #0f172a; /* Deep slate blue for students */
+  background-image: 
+    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.15), transparent 40%),
+    radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.1), transparent 50%);
+}
+
+.brand-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-  background-color: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(2px);
-}
-
-.auth-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: auto;
-}
-
-.logo-box {
-  background: white;
-  padding: 0.75rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-soft);
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-.brand-name {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
+.logo-mark {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.brand-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
 }
 
-.auth-card-wrapper {
-  margin: 0 auto;
-  max-width: 480px;
+.brand-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.feature-item .icon {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .brand-panel {
+    display: flex;
+  }
+}
+
+/* Right Panel: Form Area */
+.form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--bg-card);
+}
+
+.form-wrapper {
   width: 100%;
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 400px;
 }
 
-.auth-card {
-  border-radius: 32px 32px 0 0;
-  padding: 3rem 2.5rem;
-  background: var(--bg-card);
-  border: none;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+.form-header {
+  margin-bottom: 2.5rem;
 }
 
-.login-features li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--success);
-  font-weight: bold;
-}
-
-.auth-card-header h2 {
+.form-header h2 {
   font-size: 2rem;
   font-weight: 800;
   color: var(--text-main);
   margin-bottom: 0.5rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
 }
 
-.auth-card-header p {
+.form-header p {
   color: var(--text-muted);
-  font-size: 1.125rem;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-}
-
-.form-group label {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--text-main);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 1.25rem;
-  font-size: 1.25rem;
-  opacity: 0.7;
-}
-
-.input-wrapper .input {
-  padding-left: 3.5rem;
-  height: 3.75rem;
-  border-radius: 18px;
-  background-color: #f9fafb;
-  border: 1.5px solid #f3f4f6;
   font-size: 1rem;
 }
 
-.input-wrapper .input:focus {
-  background-color: white;
-  border-color: var(--primary);
+/* Clean Form Inputs */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.password-toggle {
-  position: absolute;
-  right: 1.25rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.25rem;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: background 0.2s;
+.input-group-clean {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 0.75rem;
+.clean-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
-.auth-options {
+.clean-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.clean-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.clean-input:focus {
+  outline: none;
+  border-color: #3b82f6; /* Student primary blue */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  background-color: var(--bg-card);
+}
+
+.clean-input.is-invalid {
+  border-color: var(--error);
+}
+
+.clean-input.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--error-bg);
+}
+
+.error-message {
+  color: var(--error);
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Actions & Footer */
+.form-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  cursor: pointer;
+  margin-top: -0.5rem;
 }
 
 .forgot-link {
-  color: var(--primary);
+  font-size: 0.875rem;
   font-weight: 600;
+  color: #3b82f6;
   text-decoration: none;
-  font-size: 0.9375rem;
 }
 
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background-color: var(--border-primary);
+.forgot-link:hover {
+  text-decoration: underline;
 }
 
-.btn-arrow {
-  margin-left: auto;
-  font-size: 1.5rem;
+.submit-btn {
+  margin-top: 1rem;
+  background-color: #3b82f6;
+  border: none;
+}
+
+.submit-btn:hover {
+  background-color: #2563eb;
 }
 
 .auth-footer {
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   text-align: center;
-}
-
-.auth-footer p {
   color: var(--text-muted);
-  margin-bottom: 2rem;
+  font-size: 0.95rem;
 }
 
-.auth-footer a {
-  color: var(--primary);
+.footer-link {
+  color: #3b82f6;
   font-weight: 700;
   text-decoration: none;
 }
 
-.secure-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: #f8fafc;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #64748b;
-  letter-spacing: 0.1em;
-  border: 1px solid #e2e8f0;
-}
-
-/* Return URL Display Styles */
-.return-url-info {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: 1px solid #bae6fd;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  animation: slideDown 0.3s ease-out;
-}
-
-.return-url-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.return-url-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.return-url-text {
-  flex: 1;
-}
-
-.return-url-label {
-  font-size: 0.875rem;
-  color: #0369a1;
-  margin: 0 0 0.25rem 0;
-  font-weight: 500;
-}
-
-.return-url-path {
-  font-size: 0.875rem;
-  color: #0c4a6e;
-  margin: 0;
-  font-weight: 600;
-  font-family: 'Courier New', monospace;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  word-break: break-all;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .login-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-
-  .login-visual {
-    order: 2;
-  }
-
-  .login-card {
-    order: 1;
-  }
-
-  .form-options {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
+.footer-link:hover {
+  text-decoration: underline;
 }
 </style>

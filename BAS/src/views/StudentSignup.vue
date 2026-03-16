@@ -1,395 +1,289 @@
 <template>
-  <div class="student-signup-page">
+  <div class="split-auth-page">
+    <!-- Left Side: Brand Showcase -->
+    <div class="brand-panel student-theme">
+      <div class="brand-content">
+        <div class="logo-mark">🎓</div>
+        <h1 class="brand-title">Welcome to BAS</h1>
+        <p class="brand-subtitle">Join thousands of students managing their academic success.</p>
+        
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="icon">📱</span>
+            <span>Mobile-first dashboard</span>
+          </div>
+          <div class="feature-item">
+            <span class="icon">🏆</span>
+            <span>Visualize your attendance rates</span>
+          </div>
+          <div class="feature-item">
+            <span class="icon">🔔</span>
+            <span>Never miss a class check-in</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <main class="main-content">
-      <div class="container">
-        <div class="signup-container">
-          <div class="signup-visual">
-            <div class="signup-illustration">
-              <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
-                <rect width="300" height="300" rx="20" fill="var(--success)" opacity="0.05" />
-                <circle cx="150" cy="80" r="30" fill="var(--success)" opacity="0.2" />
-                <rect
-                  x="110"
-                  y="130"
-                  width="80"
-                  height="100"
-                  rx="10"
-                  fill="var(--success)"
-                  opacity="0.3"
-                />
-                <path d="M130 180h40v30h-40z" fill="var(--success)" />
-                <circle cx="150" cy="80" r="20" fill="var(--success)" />
-                <path d="M140 75h20v10h-20z" fill="white" />
-                <path
-                  d="M135 85l10 10 20-20"
-                  stroke="white"
-                  stroke-width="3"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <rect x="120" y="200" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
-                <rect x="120" y="215" width="60" height="8" rx="4" fill="var(--accent-secondary)" />
-              </svg>
+    <!-- Right Side: Interaction Form -->
+    <div class="form-panel">
+      <div class="form-wrapper">
+        <div class="form-header">
+          <h2>Create Account</h2>
+          <p>Register as a student to access the portal.</p>
+        </div>
+
+        <Form @submit="handleSignup" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
+          <div class="form-row-v2">
+            <div class="input-group-clean">
+              <label for="firstName" class="clean-label">First Name</label>
+              <Field name="firstName" type="text" id="firstName" placeholder="John" class="clean-input" :class="{'is-invalid': errors.firstName}" />
+              <ErrorMessage name="firstName" class="error-message" />
             </div>
-            <div class="signup-features">
-              <h3>Join BAS Today</h3>
-              <ul>
-                <li>Quick and easy registration</li>
-                <li>Instant barcode generation</li>
-                <li>Mobile-friendly interface</li>
-                <li>Secure attendance tracking</li>
-              </ul>
+            <div class="input-group-clean">
+              <label for="lastName" class="clean-label">Last Name</label>
+              <Field name="lastName" type="text" id="lastName" placeholder="Smith" class="clean-input" :class="{'is-invalid': errors.lastName}" />
+              <ErrorMessage name="lastName" class="error-message" />
             </div>
           </div>
 
-          <Card class="signup-card">
-            <div class="signup-header">
-              <div class="signup-logo">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <rect width="40" height="40" rx="10" fill="var(--success)" />
-                  <path d="M10 15h20v10H10z" fill="white" />
-                  <path d="M15 10v20h10V10H15z" fill="var(--success)" />
+          <div class="form-row-v2">
+            <div class="input-group-clean">
+              <label for="studentId" class="clean-label">Student ID</label>
+              <Field name="studentId" type="text" id="studentId" placeholder="e.g. S1234567" class="clean-input" :class="{'is-invalid': errors.studentId}" />
+              <ErrorMessage name="studentId" class="error-message" />
+            </div>
+            <div class="input-group-clean">
+              <label for="classSection" class="clean-label">Class Section</label>
+              <Field name="classSection" type="text" id="classSection" placeholder="e.g. BCS11" class="clean-input" :class="{'is-invalid': errors.classSection}" />
+              <ErrorMessage name="classSection" class="error-message" />
+            </div>
+          </div>
+
+          <div class="input-group-clean">
+            <label for="email" class="clean-label">University Email</label>
+            <Field name="email" type="email" id="email" placeholder="student@university.edu" class="clean-input" :class="{'is-invalid': errors.email}" />
+            <ErrorMessage name="email" class="error-message" />
+          </div>
+
+          <div class="form-row-v2">
+            <div class="input-group-clean">
+              <label for="password" class="clean-label">Password</label>
+              <Field name="password" type="password" id="password" placeholder="••••••••" class="clean-input" :class="{'is-invalid': errors.password}" />
+              <ErrorMessage name="password" class="error-message" />
+            </div>
+            <div class="input-group-clean">
+              <label for="confirmPassword" class="clean-label">Confirm</label>
+              <Field name="confirmPassword" type="password" id="confirmPassword" placeholder="••••••••" class="clean-input" :class="{'is-invalid': errors.confirmPassword}" />
+              <ErrorMessage name="confirmPassword" class="error-message" />
+            </div>
+          </div>
+
+          <div class="terms-group">
+            <label class="clean-checkbox-container">
+              <Field name="agreeToTerms" type="checkbox" value="true" class="sr-only" />
+              <div class="clean-checkbox">
+                <svg viewBox="0 0 24 24" fill="none" class="check-icon">
+                  <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
-              <h2>Create Account</h2>
-              <p>Join the Barcode Attendance System</p>
-            </div>
+              <span class="terms-text">I agree to the <router-link to="/terms-of-service" class="terms-link" target="_blank">Terms</router-link> and <router-link to="/privacy-policy" class="terms-link" target="_blank">Privacy Policy</router-link></span>
+            </label>
+            <ErrorMessage name="agreeToTerms" class="error-message block-error" />
+          </div>
 
-            <form @submit.prevent="handleSignup" class="signup-form">
-              <div class="form-row">
-                <Input
-                  v-model="formData.firstName"
-                  label="First Name"
-                  type="text"
-                  placeholder="John"
-                  required
-                  :error="errors.firstName"
-                />
-                <Input
-                  v-model="formData.lastName"
-                  label="Last Name"
-                  type="text"
-                  placeholder="Doe"
-                  required
-                  :error="errors.lastName"
-                />
-              </div>
+          <Button type="submit" variant="primary" size="lg" full-width class="submit-btn" :disabled="isLoading">
+            <span v-if="!isLoading">Register Account</span>
+            <span v-else>Registering...</span>
+          </Button>
+        </Form>
 
-              <Input
-                v-model="formData.studentId"
-                label="Student ID"
-                type="text"
-                placeholder="2024001"
-                required
-                :error="errors.studentId"
-              />
-
-              <Input
-                v-model="formData.email"
-                label="Email Address"
-                type="email"
-                placeholder="student@university.edu"
-                required
-                :error="errors.email"
-              />
-
-              <Input
-                v-model="formData.department"
-                label="Department"
-                type="text"
-                placeholder="Computer Science"
-                required
-                :error="errors.department"
-              />
-
-              <div class="form-row">
-                <Input
-                  v-model="formData.password"
-                  label="Password"
-                  type="password"
-                  placeholder="Create a strong password"
-                  required
-                  :error="errors.password"
-                />
-                <Input
-                  v-model="formData.confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  placeholder="Confirm your password"
-                  required
-                  :error="errors.confirmPassword"
-                />
-              </div>
-
-              <div class="form-options">
-                <label class="checkbox-label">
-                  <input type="checkbox" v-model="formData.agreeToTerms" required />
-                  <span class="checkmark"></span>
-                  I agree to the terms and conditions
-                </label>
-              </div>
-
-              <Button type="submit" variant="primary" size="lg" full-width :disabled="isLoading">
-                <span v-if="!isLoading">Create Account</span>
-                <span v-else>Creating account...</span>
-              </Button>
-            </form>
-
-            <div class="signup-footer">
-              <p>
-                Already have an account?
-                <router-link to="/student-login" class="link"> Sign In </router-link>
-              </p>
-            </div>
-
-            <div class="auth-options">
-              <label class="premium-checkbox">
-                <input type="checkbox" v-model="formData.agreeToTerms" />
-                <span class="box"></span>
-                <span class="label-txt">I accept the terms of service</span>
-              </label>
-            </div>
-
-            <Button type="submit" variant="primary" size="lg" full-width class="auth-btn" :disabled="isLoading">
-              <span v-if="!isLoading">Create Student Account</span>
-              <span v-else>Registering...</span>
-            </Button>
-
-          <footer class="auth-footer">
-            <p>Already a member? <router-link to="/student-login">Sign In</router-link></p>
-          </footer>
-        </Card>
-        </div>
+        <p class="auth-footer">
+          Already have an account? 
+          <router-link to="/student-login" class="footer-link">Sign in instead</router-link>
+        </p>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import { useRouter } from "vue-router";
-import { supabase } from "@/supabase";
-import Button from "@/components/ui/Button.vue";
-import Card from "@/components/ui/Card.vue";
-import Input from "@/components/ui/Input.vue";
+import { useRouter } from 'vue-router'
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
+import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
+import Button from '@/components/ui/Button.vue'
 
-const router = useRouter();
+const router = useRouter()
+const { signUp, isLoading } = useAuth()
+const { toast } = useToast()
 
-const formData = reactive({
-  firstName: "",
-  lastName: "",
-  studentId: "",
-  email: "",
-  department: "",
-  password: "",
-  confirmPassword: "",
-  agreeToTerms: false,
+const schema = yup.object({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  studentId: yup.string().required('Student ID is required').matches(/^[a-zA-Z0-9]+$/, 'Alphanumeric only'),
+  classSection: yup.string().required('Section is required'),
+  email: yup.string().required('Email is required').email('Please enter a valid email address'),
+  password: yup.string().required('Password is required').min(8, 'Must be at least 8 characters'),
+  confirmPassword: yup.string()
+    .required('Please confirm password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+  agreeToTerms: yup.array().min(1, 'You must agree to the terms').required('You must agree to the terms'),
 });
 
-const errors = reactive({
-  firstName: "",
-  lastName: "",
-  studentId: "",
-  email: "",
-  department: "",
-  password: "",
-  confirmPassword: "",
-});
-
-const isLoading = ref(false);
-
-const validateForm = () => {
-  // Clear previous errors
-  Object.keys(errors).forEach((key) => {
-    errors[key] = "";
-  });
-
-  let isValid = true;
-
-  if (!formData.firstName) {
-    errors.firstName = "First name is required";
-    isValid = false;
-  }
-
-  if (!formData.lastName) {
-    errors.lastName = "Last name is required";
-    isValid = false;
-  }
-
-  if (!formData.studentId) {
-    errors.studentId = "Student ID is required";
-    isValid = false;
-  } else if (formData.studentId.length < 3) {
-    errors.studentId = "Please enter a valid student ID";
-    isValid = false;
-  }
-
-  if (!formData.email) {
-    errors.email = "Email is required";
-    isValid = false;
-  } else if (!formData.email.includes("@")) {
-    errors.email = "Please enter a valid email";
-    isValid = false;
-  }
-
-  if (!formData.department) {
-    errors.department = "Department is required";
-    isValid = false;
-  }
-
-  if (!formData.password) {
-    errors.password = "Password is required";
-    isValid = false;
-  } else if (formData.password.length < 6) {
-    errors.password = "Password must be at least 6 characters";
-    isValid = false;
-  }
-
-  if (!formData.confirmPassword) {
-    errors.confirmPassword = "Please confirm your password";
-    isValid = false;
-  } else if (formData.password !== formData.confirmPassword) {
-    errors.confirmPassword = "Passwords do not match";
-    isValid = false;
-  }
-
-  if (!formData.agreeToTerms) {
-    alert("Please agree to the terms and conditions");
-    isValid = false;
-  }
-
-  return isValid;
-};
-
-const handleSignup = async () => {
-  if (!validateForm()) return;
-
-  isLoading.value = true;
-
+const handleSignup = async (values) => {
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          student_id: formData.studentId,
-          role: "student",
-        },
-      },
-    });
-
-    if (error) throw error;
-
-    if (data.user) {
-      // Insert into students table
-      const { error: profileError } = await supabase.from("students").insert({
-        id: data.user.id,
-        student_id: formData.studentId,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        department: formData.department,
-        is_present: false,
-      });
-
-      if (profileError) throw profileError;
-
-      alert("Registration successful! Please login.");
-      router.push("/student-login");
+    const metadata = {
+      role: 'student',
+      first_name: values.firstName,
+      last_name: values.lastName,
+      full_name: `${values.firstName} ${values.lastName}`,
+      student_id: values.studentId.toUpperCase(),
+      class_section: values.classSection.toUpperCase()
     }
-  } catch (error) {
-    console.error("Registration failed:", error);
-    alert(error.message || "Registration failed. Please try again.");
-  } finally {
-    isLoading.value = false;
+    
+    await signUp(values.email, values.password, metadata)
+    
+    toast.success('Account created! Please check your email.', { duration: 5000 })
+    setTimeout(() => {
+      router.push('/student-login')
+    }, 2000)
+    
+  } catch (err) {
+    if (err.message && err.message.includes('registered')) {
+      toast.error('This Student ID or Email is already registered.')
+    } else {
+      toast.error(err.message || 'Signup failed. Please try again.')
+    }
   }
-};
+}
 </script>
 
 <style scoped>
-.error-message {
-  color: #ef4444; /* red-500 */
-  font-size: 0.875rem; /* text-sm */
-  margin-top: 0.25rem;
-}
-
-.input-field.is-invalid {
-  border-color: #ef4444;
-}
-
-.auth-page {
-  min-height: 100vh;
-  position: relative;
+/* Split Layout Base */
+.split-auth-page {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: cover;
-  background-position: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-main);
 }
 
-.student-signup-theme {
-  background-image: url('https://images.unsplash.com/photo-1523050335392-99238e814041?q=80&w=2070&auto=format&fit=crop');
-}
-
-.auth-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(30,58,138,0.8), rgba(88,28,135,0.8));
-  backdrop-filter: blur(8px);
-}
-
-.auth-card-wrapper {
+/* Left Panel: Brand Showcase */
+.brand-panel {
+  display: none;
+  flex: 1;
   position: relative;
-  padding-left: 1.5rem;
+  overflow: hidden;
+  padding: 4rem;
+  color: #ffffff;
 }
 
-.signup-features li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--success);
-  font-weight: bold;
+.student-theme {
+  background-color: #0f172a; /* Deep slate blue for students */
+  background-image: 
+    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.15), transparent 40%),
+    radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.1), transparent 50%);
 }
 
-.auth-card {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 3rem;
-  border-radius: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+.brand-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.auth-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
+.logo-mark {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
 }
 
-.auth-brand {
+.brand-title {
   font-size: 3rem;
-  margin-bottom: 1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
-.auth-header h2 {
-  font-size: 2rem;
-  font-weight: 900;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
+.brand-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 3rem;
 }
 
-.text-gradient {
-  background: linear-gradient(to right, #2563eb, #7c3aed);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.auth-form {
+.feature-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.feature-item .icon {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .brand-panel {
+    display: flex;
+  }
+}
+
+/* Right Panel: Form Area */
+.form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--bg-card);
+  overflow-y: auto; /* For long forms */
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 460px; /* slightly wider for signup grids */
+  margin: auto 0;
+  padding: 2rem 0;
+}
+
+.form-header {
+  margin-bottom: 2.5rem;
+}
+
+.form-header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.form-header p {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* Clean Form Inputs */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .form-row-v2 {
@@ -398,118 +292,170 @@ const handleSignup = async () => {
   gap: 1rem;
 }
 
-/* Mobile responsive - single column on small screens */
 @media (max-width: 640px) {
   .form-row-v2 {
     grid-template-columns: 1fr;
   }
-  
-  .auth-card {
-    padding: 2rem;
-  }
-  
-  .auth-header h2 {
-    font-size: 1.5rem;
-  }
-  
-  .auth-brand {
-    font-size: 2.5rem;
-  }
 }
 
-.input-group-v2 {
-  position: relative;
-}
-
-.input-group-v2 .input-field {
-  width: 100%;
-  padding: 1rem;
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.input-group-v2 .input-field:focus {
-  border-color: #3b82f6;
-  background: white;
-  outline: none;
-}
-
-.input-group-v2 label {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  color: #94a3b8;
-  pointer-events: none;
-  transition: all 0.2s;
-}
-
-.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 0.75rem;
-}
-
-.premium-checkbox {
+.input-group-clean {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.clean-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.clean-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.clean-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.clean-input:focus {
+  outline: none;
+  border-color: #3b82f6; /* Student primary blue */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  background-color: var(--bg-card);
+}
+
+.clean-input.is-invalid {
+  border-color: var(--error);
+}
+
+.clean-input.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--error-bg);
+}
+
+.error-message {
+  color: var(--error);
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Custom Checkbox */
+.terms-group {
+  margin-top: 0.5rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.clean-checkbox-container {
+  display: flex;
+  align-items: flex-start;
   gap: 0.75rem;
   cursor: pointer;
+  padding-top: 0.25rem;
 }
 
-.premium-checkbox input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.premium-checkbox .box {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #cbd5e1;
-  border-radius: 6px;
+.clean-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  background-color: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
+  margin-top: 2px;
 }
 
-.premium-checkbox input:checked + .box {
-  background: #2563eb;
-  border-color: #2563eb;
+.check-icon {
+  width: 12px;
+  height: 12px;
+  color: white;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.label-txt { font-size: 0.9rem; font-weight: 600; color: #64748b; }
+.sr-only:checked + .clean-checkbox {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
 
-.auth-btn {
+.sr-only:checked + .clean-checkbox .check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.sr-only:focus-visible + .clean-checkbox {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.terms-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.terms-link {
+  color: #3b82f6;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+.block-error {
+  display: block;
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+}
+
+/* Actions & Footer */
+.submit-btn {
   margin-top: 1rem;
-  border-radius: 14px;
+  background-color: #3b82f6;
+  border: none;
 }
 
-@media (max-width: 768px) {
-  .signup-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-
-  .signup-visual {
-    order: 2;
-  }
-
-  .signup-card {
-    order: 1;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
+.submit-btn:hover {
+  background-color: #2563eb;
 }
 
-.auth-footer a { color: #2563eb; font-weight: 800; }
+.auth-footer {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.footer-link {
+  color: #3b82f6;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
 </style>

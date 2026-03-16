@@ -1,6 +1,5 @@
 <template>
   <div class="university-homepage">
-    <Navbar />
     
     <main>
       <HeroSection 
@@ -38,7 +37,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
-import Navbar from '@/components/common/Navbar.vue'
 import Button from '@/components/ui/Button.vue'
 import Skeleton from '@/components/ui/Skeleton.vue'
 import HeroSection from '@/components/home/HeroSection.vue'

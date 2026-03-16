@@ -1,66 +1,88 @@
 <template>
-  <div class="auth-page lecturer-signup-theme">
-    <div class="auth-overlay"></div>
-    <main class="auth-main">
-      <div class="auth-card-wrapper">
-        <div class="auth-card">
-          <div class="auth-header">
-            <div class="auth-brand">👨‍🏫</div>
-            <h2>Lecturer <span class="text-gradient">Portal.</span></h2>
-            <p>Empowering educators with smart tools.</p>
+  <div class="split-auth-page">
+    <!-- Left Side: Brand Showcase -->
+    <div class="brand-panel lecturer-theme">
+      <div class="brand-content">
+        <div class="logo-mark">👨‍🏫</div>
+        <h1 class="brand-title">Join BAS</h1>
+        <p class="brand-subtitle">Streamline your classroom management with instant barcode attendance.</p>
+        
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="icon">✨</span>
+            <span>Eliminate manual data entry</span>
           </div>
-
-          <Form @submit="handleSignup" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
-            <div class="form-row-v2">
-              <div class="input-group-v2">
-                <Field name="firstName" type="text" id="firstName" placeholder=" " class="input-field" :class="{'is-invalid': errors.firstName}" />
-                <label for="firstName">First Name</label>
-                <ErrorMessage name="firstName" class="error-message" />
-              </div>
-              <div class="input-group-v2">
-                <Field name="lastName" type="text" id="lastName" placeholder=" " class="input-field" :class="{'is-invalid': errors.lastName}" />
-                <label for="lastName">Last Name</label>
-                <ErrorMessage name="lastName" class="error-message" />
-              </div>
-            </div>
-
-            <div class="input-group-v2">
-              <Field name="email" type="email" id="email" placeholder=" " class="input-field" :class="{'is-invalid': errors.email}" />
-              <label for="email">Official Email</label>
-              <ErrorMessage name="email" class="error-message" />
-            </div>
-
-            <div class="input-group-v2">
-              <Field name="department" type="text" id="department" placeholder=" " class="input-field" :class="{'is-invalid': errors.department}" />
-              <label for="department">Department</label>
-              <ErrorMessage name="department" class="error-message" />
-            </div>
-
-            <div class="form-row-v2">
-              <div class="input-group-v2">
-                <Field name="password" type="password" id="password" placeholder=" " class="input-field" :class="{'is-invalid': errors.password}" />
-                <label for="password">Password</label>
-                <ErrorMessage name="password" class="error-message" />
-              </div>
-              <div class="input-group-v2">
-                <Field name="confirmPassword" type="password" id="confirmPassword" placeholder=" " class="input-field" :class="{'is-invalid': errors.confirmPassword}" />
-                <label for="confirmPassword">Confirm</label>
-                <ErrorMessage name="confirmPassword" class="error-message" />
-              </div>
-            </div>
-
-            <Button type="submit" variant="primary" size="lg" full-width class="auth-btn" :disabled="isLoading">
-              <span v-if="!isLoading">Register as Lecturer</span>
-              <span v-else>Registering...</span>
-            </Button>
-          </Form>
-
-          <footer class="auth-footer">
-            <p>Already registered? <router-link to="/lecturer-login">Sign In</router-link></p>
-          </footer>
+          <div class="feature-item">
+            <span class="icon">📈</span>
+            <span>Identify at-risk students early</span>
+          </div>
+          <div class="feature-item">
+            <span class="icon">🔍</span>
+            <span>Export comprehensive CSV reports</span>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
+
+    <!-- Right Side: Interaction Form -->
+    <div class="form-panel">
+      <div class="form-wrapper">
+        <div class="form-header">
+          <h2>Create Account</h2>
+          <p>Sign up as an instructor to get started.</p>
+        </div>
+
+        <Form @submit="handleSignup" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
+          <div class="form-row-v2">
+            <div class="input-group-clean">
+              <label for="firstName" class="clean-label">First Name</label>
+              <Field name="firstName" type="text" id="firstName" placeholder="Jane" class="clean-input" :class="{'is-invalid': errors.firstName}" />
+              <ErrorMessage name="firstName" class="error-message" />
+            </div>
+            <div class="input-group-clean">
+              <label for="lastName" class="clean-label">Last Name</label>
+              <Field name="lastName" type="text" id="lastName" placeholder="Doe" class="clean-input" :class="{'is-invalid': errors.lastName}" />
+              <ErrorMessage name="lastName" class="error-message" />
+            </div>
+          </div>
+
+          <div class="input-group-clean">
+            <label for="email" class="clean-label">Official Email</label>
+            <Field name="email" type="email" id="email" placeholder="instructor@university.edu" class="clean-input" :class="{'is-invalid': errors.email}" />
+            <ErrorMessage name="email" class="error-message" />
+          </div>
+
+          <div class="input-group-clean">
+            <label for="department" class="clean-label">Department</label>
+            <Field name="department" type="text" id="department" placeholder="e.g. Computer Science" class="clean-input" :class="{'is-invalid': errors.department}" />
+            <ErrorMessage name="department" class="error-message" />
+          </div>
+
+          <div class="form-row-v2">
+            <div class="input-group-clean">
+              <label for="password" class="clean-label">Password</label>
+              <Field name="password" type="password" id="password" placeholder="••••••••" class="clean-input" :class="{'is-invalid': errors.password}" />
+              <ErrorMessage name="password" class="error-message" />
+            </div>
+            <div class="input-group-clean">
+              <label for="confirmPassword" class="clean-label">Confirm</label>
+              <Field name="confirmPassword" type="password" id="confirmPassword" placeholder="••••••••" class="clean-input" :class="{'is-invalid': errors.confirmPassword}" />
+              <ErrorMessage name="confirmPassword" class="error-message" />
+            </div>
+          </div>
+
+          <Button type="submit" variant="primary" size="lg" full-width class="submit-btn" :disabled="isLoading">
+            <span v-if="!isLoading">Register Account</span>
+            <span v-else>Registering...</span>
+          </Button>
+        </Form>
+
+        <p class="auth-footer">
+          Already registered? 
+          <router-link to="/lecturer-login" class="footer-link">Sign in instead</router-link>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -79,7 +101,7 @@ const { toast } = useToast()
 const schema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
-  email: yup.string().required('Email is required').email('Invalid email format'),
+  email: yup.string().required('Email is required').email('Please enter a valid email address'),
   department: yup.string().required('Department is required'),
   password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
   confirmPassword: yup.string()
@@ -96,91 +118,142 @@ const handleSignup = async (values) => {
       full_name: `${values.firstName} ${values.lastName}`,
       department: values.department
     })
-    toast.success('Lecturer account created successfully! Please check your email for verification.')
+    toast.success('Account created successfully! Please check your email.', { duration: 5000 })
     setTimeout(() => {
       router.push('/lecturer-login')
     }, 2000)
   } catch (err) {
     console.error('Signup error:', err)
-    toast.error('Signup failed. Please check your details and try again.')
+    toast.error(err.message || 'Signup failed. Please try again.')
   }
 }
 </script>
 
 <style scoped>
-.error-message {
-  color: #ef4444;
-  font-size: 0.875rem; /* text-sm */
-  margin-top: 0.25rem;
-}
-
-.input-field.is-invalid {
-  border-color: #ef4444;
-}
-
-.auth-page {
-  min-height: 100vh;
-  position: relative;
+/* Split Layout Base */
+.split-auth-page {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: cover;
-  background-position: center;
-}
-
-.lecturer-signup-theme {
-  background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop');
-}
-
-.auth-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(6,78,59,0.8), rgba(30,58,138,0.8));
-  backdrop-filter: blur(10px);
-}
-
-.auth-card-wrapper {
-  position: relative;
+  min-height: 100vh;
   width: 100%;
-  max-width: 520px;
-  padding: 1.5rem;
+  background-color: var(--bg-main);
+}
+
+/* Left Panel: Brand Showcase */
+.brand-panel {
+  display: none;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 4rem;
+  color: #ffffff;
+}
+
+.lecturer-theme {
+  background-color: #064e3b; /* Deep emerald for lecturers */
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(52, 211, 153, 0.1), transparent 50%);
+}
+
+.brand-content {
+  position: relative;
   z-index: 10;
+  height: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.auth-card {
-  background: rgba(255, 255, 255, 0.98);
-  padding: 3rem;
-  border-radius: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+.logo-mark {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
 }
 
-.auth-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.auth-brand {
+.brand-title {
   font-size: 3rem;
-  margin-bottom: 1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
-.auth-header h2 {
-  font-size: 2rem;
-  font-weight: 900;
-  color: #064e3b;
-  margin-bottom: 0.5rem;
+.brand-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 3rem;
 }
 
-.text-gradient {
-  background: linear-gradient(to right, #059669, #2563eb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.auth-form {
+.feature-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.feature-item .icon {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .brand-panel {
+    display: flex;
+  }
+}
+
+/* Right Panel: Form Area */
+.form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--bg-card);
+  overflow-y: auto; /* Important for long signup forms */
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 440px; /* slightly wider for signup grids */
+  margin: auto 0;
+  padding: 2rem 0; /* extra padding for scroll breathing room */
+}
+
+.form-header {
+  margin-bottom: 2.5rem;
+}
+
+.form-header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.form-header p {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* Clean Form Inputs */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .form-row-v2 {
@@ -189,70 +262,87 @@ const handleSignup = async (values) => {
   gap: 1rem;
 }
 
-/* Mobile responsive - single column on small screens */
 @media (max-width: 640px) {
   .form-row-v2 {
     grid-template-columns: 1fr;
   }
-  
-  .auth-card {
-    padding: 2rem;
-  }
-  
-  .auth-header h2 {
-    font-size: 1.5rem;
-  }
-  
-  .auth-brand {
-    font-size: 2.5rem;
-  }
 }
 
-.input-group-v2 {
-  position: relative;
+.input-group-clean {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.input-group-v2 .input-field {
-  width: 100%;
-  padding: 1rem;
-  background: #f0fdf4;
-  border: 2px solid #dcfce7;
-  border-radius: 14px;
-  font-size: 1rem;
+.clean-label {
+  font-size: 0.875rem;
   font-weight: 600;
-  transition: all 0.2s;
+  color: var(--text-main);
 }
 
-.input-group-v2 label {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  color: #64748b;
-  pointer-events: none;
-  transition: all 0.2s;
+.clean-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
-.input-group-v2 .input-field:focus ~ label,
-.input-group-v2 .input-field:not(:placeholder-shown) ~ label {
-  top: -1.4rem;
-  left: 0.5rem;
+.clean-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.clean-input:focus {
+  outline: none;
+  border-color: #059669; /* Match lecturer emerald */
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  background-color: var(--bg-card);
+}
+
+.clean-input.is-invalid {
+  border-color: var(--error);
+}
+
+.clean-input.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--error-bg);
+}
+
+.error-message {
+  color: var(--error);
   font-size: 0.8rem;
-  font-weight: 800;
-  color: #059669;
+  font-weight: 500;
+  margin-top: 0.25rem;
 }
 
-.auth-btn {
+/* Actions & Footer */
+.submit-btn {
   margin-top: 1rem;
-  background: #059669;
-  border-radius: 14px;
+  background-color: #059669;
+  border: none;
+}
+
+.submit-btn:hover {
+  background-color: #047857;
 }
 
 .auth-footer {
   margin-top: 2rem;
   text-align: center;
-  font-weight: 600;
-  color: #64748b;
+  color: var(--text-muted);
+  font-size: 0.95rem;
 }
 
-.auth-footer a { color: #059669; font-weight: 800; }
+.footer-link {
+  color: #059669;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
 </style>
