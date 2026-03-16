@@ -8,13 +8,15 @@ import { Analytics } from '@vercel/analytics/vue'
 
 // Initialize theme and auth systems
 const { theme, toggleTheme, updateTheme } = useTheme()
-const { init } = useAuth()
+const { initialize } = useAuth()
 
 onMounted(async () => {
   console.log('App: Component mounted, initializing...')
   updateTheme()
   console.log('App: Theme updated')
-  await init()
+  if (initialize) {
+    await initialize()
+  }
   console.log('App: Auth initialization finished')
 })
 </script>
