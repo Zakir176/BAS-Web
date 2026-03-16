@@ -9,7 +9,6 @@
   --bg-main: #f3f6f9;
   --bg-card: #ffffff;
   --bg-panel: #ffffff;
-  --bg-navbar: rgba(255, 255, 255, 0.95);
   
   --text-main: #111827;
   --text-muted: #6b7280;
@@ -49,7 +48,6 @@
   --bg-main: #0a0e1a;
   --bg-card: #151b2e;
   --bg-panel: #1a2332;
-  --bg-navbar: rgba(21, 27, 46, 0.95);
   
   /* Text Colors - Soft whites for comfort */
   --text-main: #e2e8f0;
