@@ -27,7 +27,7 @@
         Title="Login"
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="login" />
-    //Student
+    <!-- Student -->
     <TabBar Route="student">
         <Tab
             Title="Dashboard"
@@ -42,7 +42,7 @@
             <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="history" />
         </Tab>
     </TabBar>
-    //Lecturer
+    <!-- Lecturer -->
     <TabBar Route="lecturer">
         <Tab
             Title="Class Management"
