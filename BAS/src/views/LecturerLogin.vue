@@ -1,557 +1,329 @@
 <template>
-  <div class="lecturer-login-page">
-    <main class="main-content">
-      <div class="container">
-        <div class="login-container">
-          <div class="login-visual">
-            <div class="login-illustration">
-              <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
-                <rect
-                  width="300"
-                  height="300"
-                  rx="20"
-                  fill="var(--accent-primary)"
-                  opacity="0.05"
-                />
-                <circle cx="150" cy="100" r="40" fill="var(--accent-primary)" opacity="0.2" />
-                <rect
-                  x="100"
-                  y="160"
-                  width="100"
-                  height="80"
-                  rx="10"
-                  fill="var(--accent-primary)"
-                  opacity="0.3"
-                />
-                <path d="M130 200h40v20h-40z" fill="var(--accent-primary)" />
-                <circle cx="150" cy="100" r="25" fill="var(--accent-primary)" />
-                <path d="M140 95h20v10h-20z" fill="white" />
-                <path d="M145 90h10v15h-10z" fill="white" />
-              </svg>
-            </div>
-            <div class="login-features">
-              <h3>Lecturer Portal</h3>
-              <ul>
-                <li>Manage class attendance</li>
-                <li>Generate reports</li>
-                <li>View student statistics</li>
-                <li>Export attendance data</li>
-              </ul>
-            </div>
+  <div class="split-auth-page">
+    <!-- Left Side: Brand Showcase -->
+    <div class="brand-panel lecturer-theme">
+      <div class="brand-content">
+        <div class="logo-mark">👨‍🏫</div>
+        <h1 class="brand-title">Lecturer Portal</h1>
+        <p class="brand-subtitle">Manage courses, track sessions, and empower your students with BAS.</p>
+        
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="icon">⚡</span>
+            <span>Real-time scanner capabilities</span>
           </div>
-
-          <Card class="login-card">
-            <!-- Return URL Display -->
-            <div v-if="authRedirect.hasIntendedDestination" class="return-url-info">
-              <div class="return-url-content">
-                <span class="return-url-icon">🔄</span>
-                <div class="return-url-text">
-                  <p class="return-url-label">After login, you'll be redirected to:</p>
-                  <p class="return-url-path">{{ authRedirect.returnPath }}</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="login-header">
-              <div class="login-logo">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <rect width="40" height="40" rx="10" fill="var(--accent-primary)" />
-                  <path d="M10 15h20v10H10z" fill="white" />
-                  <path d="M15 10v20h10V10H15z" fill="var(--accent-primary)" />
-                </svg>
-              </div>
-              <ErrorMessage name="email" class="error-message" />
-            </div>
-
-            <form @submit.prevent="handleLogin" class="login-form">
-              <Input
-                v-model="formData.email"
-                label="Email Address"
-                type="email"
-                placeholder="lecturer@university.edu"
-                required
-                :error="errors.email"
-              />
-
-              <Input
-                v-model="formData.password"
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                required
-                :error="errors.password"
-              />
-
-              <div class="form-options">
-                <label class="checkbox-label">
-                  <input type="checkbox" v-model="formData.rememberMe" />
-                  <span class="checkmark"></span>
-                  Remember me
-                </label>
-                <a href="#" class="forgot-password">Forgot password?</a>
-              </div>
-
-              <Button type="submit" variant="primary" size="lg" full-width :disabled="isLoading">
-                <span v-if="!isLoading">Sign In</span>
-                <span v-else>Signing in...</span>
-              </Button>
-            </form>
-
-            <div class="login-footer">
-              <p>
-                Not a lecturer?
-                <router-link to="/student-login" class="link"> Student Portal </router-link>
-              </p>
-            </div>
-
-            <div class="auth-options">
-              <label class="checkbox-container">
-                <input type="checkbox" v-model="rememberMe">
-                <span class="checkmark"></span>
-                Remember me
-              </label>
-              <router-link to="/forgot-password" class="forgot-link">Forgot Password?</router-link>
-            </div>
-
-            <Button
-              type="button"
-              variant="primary"
-              full-width
-              :disabled="isLoading"
-              class="submit-btn"
-            >
-              <span v-if="!isLoading">Log In to Dashboard</span>
-              <span v-else>Authenticating...</span>
-              <span class="btn-arrow">→</span>
-            </Button>
-
-          <div class="auth-footer">
-            <p>Not a lecturer? <router-link to="/student-login">Student Portal</router-link></p>
-            <div class="secure-badge">
-              <span>🛡️</span> SECURE FACULTY PORTAL
-            </div>
-            <button 
-              @click="handleClearSession" 
-              class="clear-session-btn"
-              title="Fix login issues by clearing stale credentials"
-            >
-              Stuck? Clear Auth Session
-            </button>
+          <div class="feature-item">
+            <span class="icon">📊</span>
+            <span>Comprehensive course analytics</span>
           </div>
-        </Card>
+          <div class="feature-item">
+            <span class="icon">🔒</span>
+            <span>Secure attendance sessions</span>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
+
+    <!-- Right Side: Interaction Form -->
+    <div class="form-panel">
+      <div class="form-wrapper">
+        <div class="form-header">
+          <h2>Welcome Back</h2>
+          <p>Please log in to your instructor account.</p>
+        </div>
+
+        <Form @submit="handleLogin" :validation-schema="schema" class="auth-form" v-slot="{ errors }">
+          <div class="input-group-clean">
+            <label for="email" class="clean-label">Official Email</label>
+            <Field name="email" type="email" id="email" placeholder="instructor@university.edu" class="clean-input" :class="{'is-invalid': errors.email}" />
+            <ErrorMessage name="email" class="error-message" />
+          </div>
+
+          <div class="input-group-clean">
+            <label for="password" class="clean-label">Password</label>
+            <Field name="password" type="password" id="password" placeholder="••••••••" class="clean-input" :class="{'is-invalid': errors.password}" />
+            <ErrorMessage name="password" class="error-message" />
+          </div>
+
+          <div class="form-actions">
+            <!-- Space for 'Remember Me' if needed later -->
+            <div></div>
+            <router-link to="/forgot-password" class="forgot-link">Forgot password?</router-link>
+          </div>
+
+          <Button type="submit" variant="primary" size="lg" full-width class="submit-btn" :disabled="isLoading">
+            <span v-if="!isLoading">Sign In</span>
+            <span v-else>Signing In...</span>
+          </Button>
+        </Form>
+
+        <p class="auth-footer">
+          New to the portal? 
+          <router-link to="/lecturer-signup" class="footer-link">Register here</router-link>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { supabase } from "@/supabase";
-import { useAuth } from "@/composables/useAuth";
-import { useAuthRedirect } from "@/composables/useAuthRedirect";
-import { useToast } from "@/composables/useToast";
-import Button from "@/components/ui/Button.vue";
-import Card from "@/components/ui/Card.vue";
-import Input from "@/components/ui/Input.vue";
+import { useRouter, useRoute } from 'vue-router'
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
+import { useAuth } from '@/composables/useAuth'
+import { useToast } from '@/composables/useToast'
+import Button from '@/components/ui/Button.vue'
 
-const router = useRouter();
-const auth = useAuth();
-const authRedirect = useAuthRedirect();
-const { toast } = useToast();
+const router = useRouter()
+const route = useRoute()
+const { signIn, isLoading } = useAuth()
+const { toast } = useToast()
 
-const formData = reactive({
-  email: "",
-  password: "",
-  rememberMe: false,
+const schema = yup.object({
+  email: yup.string().required('Email is required').email('Please enter a valid email address'),
+  password: yup.string().required('Password is required'),
 });
 
-const errors = reactive({
-  email: "",
-  password: "",
-});
-
-const isLoading = ref(false);
-
-// Restore intended destination on component mount
-onMounted(() => {
-  authRedirect.restoreIntendedDestination();
-});
-
-const validateForm = () => {
-  errors.email = "";
-  errors.password = "";
-
-  if (!formData.email) {
-    errors.email = "Email is required";
-    return false;
-  }
-
-  if (!formData.email.includes("@")) {
-    errors.email = "Please enter a valid email";
-    return false;
-  }
-
-  if (!formData.password) {
-    errors.password = "Password is required";
-    return false;
-  }
-
-  return true;
-};
-
-const handleLogin = async () => {
-  if (!validateForm()) return;
-
-  isLoading.value = true;
-
+const handleLogin = async (values) => {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (error) throw error;
-
-    if (data.session) {
-      // Use auth redirect to handle post-login navigation
-      authRedirect.redirectToIntendedDestination('lecturer');
+    const data = await signIn(values.email, values.password)
+    
+    const userRole = data?.user?.user_metadata?.role || 'student'
+    if (userRole !== 'teacher' && userRole !== 'admin' && userRole !== 'lecturer') {
+      throw new Error('Unauthorized Access. This portal is for Instructors only.')
     }
-  } catch (error) {
-    console.error("Login failed:", error);
-    errors.password = error.message || "Invalid email or password";
-  } finally {
-    isLoading.value = false;
+    
+    toast.success('Successfully logged in!')
+    
+    const redirectPath = route.query.redirect || '/lecturer-dashboard'
+    router.push(redirectPath)
+  } catch (err) {
+    if (err.message && err.message.includes('Unauthorized Access')) {
+      toast.error(err.message)
+    } else {
+      toast.error(err.message || 'Login failed. Please check your credentials.')
+    }
   }
-};
+}
 </script>
 
 <style scoped>
-.error-message {
-  color: #ef4444; /* red-500 */
-  font-size: 0.875rem; /* text-sm */
-  margin-top: 0.25rem;
+/* Split Layout Base */
+.split-auth-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-main);
 }
 
-.return-url-info {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  background: rgba(59, 130, 246, 0.1); /* blue-500/10 */
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 6px;
-  color: #3b82f6;
-  font-size: 0.75rem;
-}
-
-.return-url-info strong {
-  color: #1d4ed8;
-  word-break: break-all;
-}
-
-.input.is-invalid {
-  border-color: #ef4444; /* red-500 */
-}
-
-.auth-overlay {
+/* Left Panel: Brand Showcase */
+.brand-panel {
+  display: none;
   flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 4rem;
+  color: #ffffff;
+}
+
+.lecturer-theme {
+  background-color: #064e3b; /* Deep emerald for lecturers */
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(52, 211, 153, 0.1), transparent 50%);
+}
+
+.brand-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-  background-color: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(2px);
-}
-
-.auth-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: auto;
-}
-
-.logo-box {
-  background: white;
-  padding: 0.75rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-soft);
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-.brand-name {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
+.logo-mark {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.brand-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
 }
 
-.auth-card-wrapper {
-  margin: 0 auto;
-  max-width: 480px;
+.brand-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.feature-item .icon {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .brand-panel {
+    display: flex;
+  }
+}
+
+/* Right Panel: Form Area */
+.form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--bg-card);
+}
+
+.form-wrapper {
   width: 100%;
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 400px;
 }
 
-.auth-card {
-  border-radius: 32px 32px 0 0;
-  padding: 3rem 2.5rem;
-  background: var(--bg-card);
-  border: none;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+.form-header {
+  margin-bottom: 2.5rem;
 }
 
-.login-features li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--success);
-  font-weight: bold;
-}
-
-.auth-card-header h2 {
+.form-header h2 {
   font-size: 2rem;
   font-weight: 800;
   color: var(--text-main);
   margin-bottom: 0.5rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
 }
 
-.auth-card-header p {
+.form-header p {
   color: var(--text-muted);
-  font-size: 1.125rem;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-}
-
-.form-group label {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--text-main);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 1.25rem;
-  font-size: 1.25rem;
-  opacity: 0.7;
-}
-
-.input-wrapper .input {
-  padding-left: 3.5rem;
-  height: 3.75rem;
-  border-radius: 18px;
-  background-color: #f9fafb;
-  border: 1.5px solid #f3f4f6;
   font-size: 1rem;
 }
 
-.input-wrapper .input:focus {
-  background-color: white;
-  border-color: var(--primary);
+/* Clean Form Inputs */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.password-toggle {
-  position: absolute;
-  right: 1.25rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.25rem;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: background 0.2s;
+.input-group-clean {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.password-toggle:hover {
-  background: #eee;
+.clean-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
-.auth-options {
+.clean-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.clean-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.clean-input:focus {
+  outline: none;
+  border-color: #059669; /* Match lecturer emerald */
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  background-color: var(--bg-card);
+}
+
+.clean-input.is-invalid {
+  border-color: var(--error);
+}
+
+.clean-input.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--error-bg);
+}
+
+.error-message {
+  color: var(--error);
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Actions & Footer */
+.form-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  cursor: pointer;
+  margin-top: -0.5rem;
 }
 
 .forgot-link {
-  color: var(--primary);
+  font-size: 0.875rem;
   font-weight: 600;
+  color: #059669;
   text-decoration: none;
-  font-size: 0.9375rem;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
 }
 
 .submit-btn {
-  height: 4rem;
-  font-size: 1.125rem;
-  border-radius: 20px;
   margin-top: 1rem;
+  background-color: #059669;
+  border: none;
 }
 
-.btn-arrow {
-  margin-left: auto;
-  font-size: 1.5rem;
+.submit-btn:hover {
+  background-color: #047857;
 }
 
-.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 0.75rem;
-}
-
-.auth-footer p {
+.auth-footer {
+  margin-top: 2rem;
+  text-align: center;
   color: var(--text-muted);
-  margin-bottom: 2rem;
+  font-size: 0.95rem;
 }
 
-.auth-footer a {
-  color: var(--primary);
+.footer-link {
+  color: #059669;
   font-weight: 700;
   text-decoration: none;
 }
 
-.secure-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: #f8fafc;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #64748b;
-  letter-spacing: 0.1em;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 1rem;
-}
-
-.clear-session-btn {
-  display: block;
-  width: 100%;
-  background: none;
-  border: none;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+.footer-link:hover {
   text-decoration: underline;
-  cursor: pointer;
-  opacity: 0.6;
-  margin-top: 1rem;
-}
-
-.clear-session-btn:hover {
-  color: var(--error);
-  opacity: 1;
-}
-
-/* Return URL Display Styles */
-.return-url-info {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: 1px solid #bae6fd;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  animation: slideDown 0.3s ease-out;
-}
-
-.return-url-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.return-url-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.return-url-text {
-  flex: 1;
-}
-
-.return-url-label {
-  font-size: 0.875rem;
-  color: #0369a1;
-  margin: 0 0 0.25rem 0;
-  font-weight: 500;
-}
-
-.return-url-path {
-  font-size: 0.875rem;
-  color: #0c4a6e;
-  margin: 0;
-  font-weight: 600;
-  font-family: 'Courier New', monospace;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  word-break: break-all;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@media (max-width: 768px) {
-  .login-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-
-  .login-visual {
-    order: 2;
-  }
-
-  .login-card {
-    order: 1;
-  }
-
-  .form-options {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
 }
 </style>
