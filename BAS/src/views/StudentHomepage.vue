@@ -23,9 +23,20 @@
           </div>
         </section>
 
-        <!-- Stats Overview -->
+        <!-- Stats Overview & Chart -->
         <section class="stats-section">
-          <div class="stats-grid">
+          <div class="stats-overview-grid">
+            
+            <!-- Doughnut Chart (New) -->
+            <Card class="chart-card">
+              <h3>Attendance Overview</h3>
+              <div class="doughnut-container">
+                <DoughnutChart :chart-data="attendanceChartData" />
+              </div>
+            </Card>
+
+            <!-- Stats Grid -->
+            <div class="stats-kpi-grid">
             <Card class="stat-card">
               <div class="stat-icon attendance">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
@@ -81,6 +92,7 @@
                 <div class="stat-label">Day Streak</div>
               </div>
             </Card>
+          </div>
           </div>
         </section>
 
@@ -163,6 +175,18 @@
         </section>
       </div>
     </main>
+
+    <!-- Barcode Scanner Modal -->
+    <Modal :is-open="isBarcodeModalOpen" @close="closeBarcodeModal">
+      <template #default>
+        <div class="px-2 py-4">
+          <StudentBarcode v-if="studentProfile" :student-id="studentProfile.student_id" />
+          <div v-else class="text-center text-gray-500 py-8">
+            <p>Loading barcode...</p>
+          </div>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -172,10 +196,17 @@ import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
+import Modal from "@/components/ui/Modal.vue";
+import StudentBarcode from "@/components/student/StudentBarcode.vue";
+import DoughnutChart from "@/components/ui/charts/DoughnutChart.vue";
+import RecentActivity from "@/components/student/RecentActivity.vue";
+import Skeleton from "@/components/ui/Skeleton.vue";
 
 const router = useRouter();
 
 const studentName = ref("Loading...");
+const studentProfile = ref(null); // Save entire profile to access specific student_id
+
 const currentDate = ref(
   new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -192,8 +223,24 @@ const attendanceStats = ref({
   streak: 0,
 });
 
+const attendanceChartData = computed(() => {
+  return {
+    labels: ['Present', 'Absent'],
+    datasets: [
+      {
+        data: [attendanceStats.value.present, attendanceStats.value.absent],
+        backgroundColor: ['#10b981', '#ef4444'], // emerald-500, red-500
+        borderWidth: 0,
+        hoverOffset: 4
+      }
+    ]
+  }
+});
+
 const recentActivities = ref([]);
 const todaySchedule = ref([]); // Current mock as no schedule table exists yet
+
+const isBarcodeModalOpen = ref(false);
 
 const fetchStudentData = async () => {
   try {
@@ -213,6 +260,7 @@ const fetchStudentData = async () => {
       .single();
 
     if (profileError) throw profileError;
+    studentProfile.value = profile;
     studentName.value = `${profile.first_name} ${profile.last_name}`;
 
     // Fetch activity logs
@@ -247,7 +295,11 @@ const fetchStudentData = async () => {
 };
 
 const showBarcodeScanner = () => {
-  alert("In the Web version, please use the Mobile App to scan your ID.");
+  isBarcodeModalOpen.value = true;
+};
+
+const closeBarcodeModal = () => {
+  isBarcodeModalOpen.value = false;
 };
 
 const goToReports = () => {
@@ -259,7 +311,7 @@ const viewAllActivity = () => {
 };
 
 const markAttendance = (classId) => {
-  alert("Please use the Mobile App to mark attendance via QR scanning.");
+  showBarcodeScanner();
 };
 
 onMounted(() => {
@@ -280,6 +332,38 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
+}
+
+/* Stats Layout */
+.stats-overview-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.chart-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card h3 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.doughnut-container {
+  height: 220px;
+  position: relative;
+  flex: 1;
+}
+
+.stats-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
 /* Desktop Grid Layout */
@@ -328,6 +412,10 @@ onMounted(() => {
     padding: 1rem;
   }
   
+  .stats-overview-grid {
+    grid-template-columns: 1fr;
+  }
+  
   .dashboard-grid {
     gap: 1.5rem;
   }
@@ -344,6 +432,10 @@ onMounted(() => {
     padding: 0.75rem;
   }
   
+  .stats-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
   .dashboard-grid {
     gap: 1rem;
   }
