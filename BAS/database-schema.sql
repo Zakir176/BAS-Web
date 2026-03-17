@@ -200,12 +200,18 @@ CREATE POLICY "Teachers can view own profile" ON teachers
 CREATE POLICY "Teachers can update own profile" ON teachers
   FOR UPDATE USING (auth.uid() = teacher_id);
 
+CREATE POLICY "Teachers can insert own profile" ON teachers
+  FOR INSERT WITH CHECK (auth.uid() = teacher_id);
+
 -- RLS Policies for students table
 CREATE POLICY "Students can view own profile" ON students
   FOR SELECT USING (auth.email() = email);
 
 CREATE POLICY "Students can update own profile" ON students
   FOR UPDATE USING (auth.email() = email);
+
+CREATE POLICY "Students can insert own profile" ON students
+  FOR INSERT WITH CHECK (auth.email() = email);
 
 -- RLS Policies for courses table
 CREATE POLICY "Teachers can view their courses" ON courses
