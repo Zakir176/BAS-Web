@@ -142,30 +142,15 @@
           <div class="charts-grid">
             <Card class="chart-card">
               <h3>Attendance Trend</h3>
-              <div class="chart-placeholder">
-                <svg width="100%" height="200" viewBox="0 0 400 200" fill="none">
-                  <rect width="400" height="200" fill="var(--bg-tertiary)" rx="8" />
-                  <polyline
-                    points="20,180 60,160 100,140 140,150 180,120 220,130 260,110 300,100 340,90 380,85"
-                    stroke="var(--accent-primary)"
-                    stroke-width="3"
-                    fill="none"
-                  />
-                  <circle cx="380" cy="85" r="5" fill="var(--accent-primary)" />
-                </svg>
+              <div class="chart-container">
+                <LineChart :chart-data="trendChartData" />
               </div>
             </Card>
 
             <Card class="chart-card">
               <h3>Course Distribution</h3>
-              <div class="chart-placeholder">
-                <svg width="100%" height="200" viewBox="0 0 400 200" fill="none">
-                  <rect width="400" height="200" fill="var(--bg-tertiary)" rx="8" />
-                  <rect x="50" y="150" width="60" height="30" fill="var(--accent-primary)" />
-                  <rect x="130" y="120" width="60" height="60" fill="var(--success)" />
-                  <rect x="210" y="100" width="60" height="80" fill="var(--warning)" />
-                  <rect x="290" y="140" width="60" height="40" fill="var(--error)" />
-                </svg>
+              <div class="chart-container">
+                <BarChart :chart-data="courseChartData" />
               </div>
             </Card>
           </div>
@@ -243,6 +228,8 @@ import { supabase } from "@/supabase";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
 import Input from "@/components/ui/Input.vue";
+import LineChart from "@/components/ui/charts/LineChart.vue";
+import BarChart from "@/components/ui/charts/BarChart.vue";
 
 const router = useRouter();
 
@@ -327,6 +314,74 @@ const filteredRecords = computed(() => {
   // Pagination
   const start = (currentPage.value - 1) * 10;
   return records.slice(start, start + 10);
+});
+
+// Chart.js Data Computations
+const trendChartData = computed(() => {
+  // Aggregate recent attendance by date (past 7 distinct dates)
+  const map = new Map()
+  
+  // Sort oldest to newest for the line chart X-axis
+  const sortedRecords = [...attendanceRecords.value].sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  sortedRecords.forEach(r => {
+    const d = r.date;
+    if (!map.has(d)) map.set(d, { present: 0, total: 0 });
+    const stats = map.get(d);
+    stats.total++;
+    if (r.status === 'Present') stats.present++;
+  });
+
+  const recentDates = Array.from(map.keys()).slice(-7);
+  const dataPoints = recentDates.map(d => {
+    const s = map.get(d);
+    return Math.round((s.present / s.total) * 100);
+  });
+
+  return {
+    labels: recentDates.length ? recentDates : ['No Data'],
+    datasets: [
+      {
+        label: 'Attendance %',
+        data: dataPoints.length ? dataPoints : [0],
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+      }
+    ]
+  };
+});
+
+const courseChartData = computed(() => {
+  const map = new Map()
+  
+  attendanceRecords.value.forEach(r => {
+    const c = r.course;
+    if (!map.has(c)) map.set(c, { present: 0, total: 0 });
+    const stats = map.get(c);
+    stats.total++;
+    if (r.status === 'Present') stats.present++;
+  });
+
+  const courses = Array.from(map.keys());
+  const dataPoints = courses.map(c => {
+    const s = map.get(c);
+    return Math.round((s.present / s.total) * 100);
+  });
+
+  return {
+    labels: courses.length ? courses : ['No Data'],
+    datasets: [
+      {
+        label: 'Course Attendance %',
+        data: dataPoints.length ? dataPoints : [0],
+        backgroundColor: [
+          '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'
+        ],
+        borderRadius: 4
+      }
+    ]
+  };
 });
 
 const applyFilters = () => {
@@ -446,6 +501,13 @@ onMounted(() => {
 .text-error { color: var(--error); }
 
 .mini-chart {
+  margin-top: 1rem;
+}
+
+.chart-container {
+  height: 250px;
+  width: 100%;
+  position: relative;
   margin-top: 1rem;
 }
 
