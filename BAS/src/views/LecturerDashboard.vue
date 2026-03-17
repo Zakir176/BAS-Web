@@ -25,6 +25,18 @@
         <!-- Stats -->
         <DashboardStats :stats="stats" />
 
+        <!-- Course Attendance Chart (New) -->
+        <section class="chart-section" v-if="courses.length > 0">
+          <Card class="chart-card">
+            <div class="chart-header">
+              <h3>Course Attendance Overview</h3>
+            </div>
+            <div class="chart-container">
+              <BarChart :chart-data="courseChartData" />
+            </div>
+          </Card>
+        </section>
+
         <!-- Main Content Area -->
         <div class="dashboard-layout">
           <CourseGrid 
@@ -97,6 +109,7 @@ import DashboardStats from '@/components/lecturer/DashboardStats.vue'
 import CourseGrid from '@/components/lecturer/CourseGrid.vue'
 import LiveRosterRealtime from '@/components/lecturer/LiveRosterRealtime.vue'
 import ScannerInterface from '@/components/lecturer/ScannerInterface.vue'
+import BarChart from '@/components/ui/charts/BarChart.vue'
 
 const router = useRouter()
 const { user } = useAuth()
@@ -122,6 +135,20 @@ const scanStatus = ref('success')
 const scannedCount = ref(0)
 const isCreateCourseModalOpen = ref(false)
 const isCreateSessionModalOpen = ref(false)
+
+const courseChartData = computed(() => {
+  return {
+    labels: courses.value.map(c => c.course_name || 'Unnamed Course'),
+    datasets: [
+      {
+        label: 'Avg. Attendance %',
+        data: courses.value.map(c => c.attendance_rate || 0),
+        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#f43f5e', '#14b8a6', '#6366f1'],
+        borderRadius: 6
+      }
+    ]
+  }
+})
 
 const presentCount = computed(() => activeRoster.value.filter(s => s.present).length)
 
@@ -584,6 +611,28 @@ onMounted(fetchLecturerData)
   .container {
     padding: 0 0.75rem;
   }
+}
+
+/* Chart Section */
+.chart-section {
+  margin-bottom: 2.5rem;
+}
+
+.chart-card {
+  padding: 1.5rem;
+  border-radius: 20px;
+}
+
+.chart-header h3 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.chart-container {
+  height: 250px;
+  position: relative;
+  width: 100%;
 }
 
 /* Layout */
