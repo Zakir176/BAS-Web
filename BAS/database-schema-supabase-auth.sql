@@ -4,6 +4,13 @@
 -- Enable UUID extension for teacher IDs
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Departments / Schools: Reference table for assigning students and teachers
+CREATE TABLE IF NOT EXISTS departments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Students Table: Core student information (no password - handled by Supabase Auth)
 CREATE TABLE IF NOT EXISTS students (
     student_id VARCHAR(20) PRIMARY KEY,
