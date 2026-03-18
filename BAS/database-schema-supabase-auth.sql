@@ -1,267 +1,158 @@
--- BAS Database Schema for Supabase Auth
--- This schema works with Supabase Auth (no password columns needed)
+-- Supabase Schema V2 for CAT (Auth-Specific Version)
+-- Optimized for Real-Time Attendance Tracking and C# Compatibility
+-- This version is designed for use with Supabase Auth.
 
--- Enable UUID extension for teacher IDs
+-- ==========================================
+-- 1. Extensions & Cleanup
+-- ==========================================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Departments / Schools: Reference table for assigning students and teachers
-CREATE TABLE IF NOT EXISTS departments (
+-- Drop existing tables (if any) to ensure a clean slate
+DROP TABLE IF EXISTS public.attendance_logs CASCADE;
+DROP TABLE IF EXISTS public.enrollments CASCADE;
+DROP TABLE IF EXISTS public.sections CASCADE;
+DROP TABLE IF EXISTS public.courses CASCADE;
+DROP TABLE IF EXISTS public.students CASCADE;
+DROP TABLE IF EXISTS public.lecturers CASCADE;
+DROP TABLE IF EXISTS public.departments CASCADE;
+
+-- ==========================================
+-- 2. Core Tables
+-- ==========================================
+
+-- Departments Table
+CREATE TABLE public.departments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name TEXT UNIQUE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    name TEXT NOT NULL UNIQUE,
+    code TEXT UNIQUE,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Students Table: Core student information (no password - handled by Supabase Auth)
-CREATE TABLE IF NOT EXISTS students (
-    student_id VARCHAR(20) PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
-    class_section VARCHAR(20),
-    qr_code_value VARCHAR(100) UNIQUE,  -- Used for barcode/QR scanning
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(20),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Lecturers Table (Linked to Supabase Auth)
+CREATE TABLE public.lecturers (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    full_name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    registration_id TEXT UNIQUE,
+    department_id UUID REFERENCES public.departments(id) ON DELETE SET NULL,
+    is_admin BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Teachers Table: For authentication and ownership (no password - handled by Supabase Auth)
-CREATE TABLE IF NOT EXISTS teachers (
-    teacher_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    role VARCHAR(20) DEFAULT 'teacher' CHECK (role IN ('teacher', 'admin')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Students Table
+CREATE TABLE public.students (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    student_number TEXT NOT NULL UNIQUE,
+    full_name TEXT NOT NULL,
+    email TEXT UNIQUE,
+    phone TEXT,
+    qr_code TEXT UNIQUE,
+    department_id UUID REFERENCES public.departments(id) ON DELETE SET NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Courses / Subjects Table
-CREATE TABLE IF NOT EXISTS courses (
-    course_id SERIAL PRIMARY KEY,
-    course_name VARCHAR(100) NOT NULL,
-    teacher_id UUID REFERENCES teachers(teacher_id),
-    max_absences_allowed INTEGER DEFAULT 3,  -- School rule: max 3 misses
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Courses Table
+CREATE TABLE public.courses (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name TEXT NOT NULL,
+    code TEXT NOT NULL UNIQUE,
+    department_id UUID REFERENCES public.departments(id) ON DELETE CASCADE,
+    lecturer_id UUID REFERENCES public.lecturers(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Enrollments: Junction table (many-to-many between students and courses)
-CREATE TABLE IF NOT EXISTS enrollments (
-    enrollment_id SERIAL PRIMARY KEY,
-    student_id VARCHAR(20) NOT NULL REFERENCES students(student_id),
-    course_id INTEGER NOT NULL REFERENCES courses(course_id),
-    enrolled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE(student_id, course_id)
+-- Sections (Class Groups) Table
+CREATE TABLE public.sections (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID REFERENCES public.courses(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    semester INTEGER NOT NULL,
+    academic_year INTEGER NOT NULL,
+    lecturer_id UUID REFERENCES public.lecturers(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Sessions: Each actual class/lesson/meeting
-CREATE TABLE IF NOT EXISTS sessions (
-    session_id SERIAL PRIMARY KEY,
-    course_id INTEGER NOT NULL REFERENCES courses(course_id),
-    session_date DATE NOT NULL,
-    session_time TIME,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Enrollments Junction Table
+CREATE TABLE public.enrollments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    student_id UUID REFERENCES public.students(id) ON DELETE CASCADE,
+    section_id UUID REFERENCES public.sections(id) ON DELETE CASCADE,
+    enrolled_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE(student_id, section_id)
 );
 
--- Attendance: Individual attendance records
-CREATE TABLE IF NOT EXISTS attendance (
-    attendance_id SERIAL PRIMARY KEY,
-    session_id INTEGER NOT NULL REFERENCES sessions(session_id),
-    student_id VARCHAR(20) NOT NULL REFERENCES students(student_id),
-    status VARCHAR(20) DEFAULT 'Absent' CHECK (status IN ('Present', 'Absent', 'Excused', 'Late')),
-    timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    method VARCHAR(20) DEFAULT 'Manual' CHECK (method IN ('QR', 'Barcode', 'Manual', 'Web')),
-    excused_reason TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Attendance Logs Table (Real-Time Optimized)
+CREATE TABLE public.attendance_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    student_id UUID REFERENCES public.students(id) ON DELETE CASCADE,
+    section_id UUID REFERENCES public.sections(id) ON DELETE CASCADE,
+    status TEXT NOT NULL CHECK (status IN ('Present', 'Absent', 'Late', 'Excused')),
+    session_date TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    is_verified BOOLEAN DEFAULT FALSE,
+    is_excused BOOLEAN DEFAULT FALSE,
+    verified_by UUID REFERENCES public.lecturers(id),
+    notes TEXT,
+    location_coords TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Absence Warnings: Track warning levels for students
-CREATE TABLE IF NOT EXISTS absence_warnings (
-    warning_id SERIAL PRIMARY KEY,
-    student_id VARCHAR(20) NOT NULL REFERENCES students(student_id),
-    course_id INTEGER NOT NULL REFERENCES courses(course_id),
-    consecutive_absences INTEGER DEFAULT 0,
-    total_absences INTEGER DEFAULT 0,
-    warning_level INTEGER DEFAULT 0,
-    sent_to_parent BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    UNIQUE (student_id, course_id)
-);
+-- ==========================================
+-- 3. Row Level Security (RLS)
+-- ==========================================
 
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_students_student_id ON students(student_id);
-CREATE INDEX IF NOT EXISTS idx_students_email ON students(email);
-CREATE INDEX IF NOT EXISTS idx_teachers_email ON teachers(email);
-CREATE INDEX IF NOT EXISTS idx_courses_teacher ON courses(teacher_id);
-CREATE INDEX IF NOT EXISTS idx_sessions_course_date ON sessions(course_id, session_date);
-CREATE INDEX IF NOT EXISTS idx_attendance_session_student ON attendance(session_id, student_id);
-CREATE INDEX IF NOT EXISTS idx_attendance_student_date ON attendance(student_id, timestamp);
-CREATE INDEX IF NOT EXISTS idx_enrollments_student ON enrollments(student_id);
-CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments(course_id);
-CREATE INDEX IF NOT EXISTS idx_warnings_student_course ON absence_warnings(student_id, course_id);
+ALTER TABLE public.departments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.lecturers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sections ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.attendance_logs ENABLE ROW LEVEL SECURITY;
 
--- Enable Row Level Security (RLS)
-ALTER TABLE students ENABLE ROW LEVEL SECURITY;
-ALTER TABLE teachers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE attendance ENABLE ROW LEVEL SECURITY;
-ALTER TABLE enrollments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE absence_warnings ENABLE ROW LEVEL SECURITY;
+-- Lecturers Policies
+CREATE POLICY "Lecturers can view all departments" ON public.departments FOR SELECT USING (true);
+CREATE POLICY "Lecturers can view their own profile" ON public.lecturers FOR SELECT USING (auth.uid() = id);
 
--- RLS Policies for students table
-CREATE POLICY "Students can view own profile" ON students
-  FOR SELECT USING (auth.uid()::text = student_id);
+CREATE POLICY "Lecturers can view students in their sections" ON public.students
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM public.enrollments e
+            JOIN public.sections s ON e.section_id = s.id
+            WHERE e.student_id = public.students.id AND s.lecturer_id = auth.uid()
+        )
+        OR (SELECT is_admin FROM public.lecturers WHERE id = auth.uid())
+    );
 
-CREATE POLICY "Students can update own profile" ON students
-  FOR UPDATE USING (auth.uid()::text = student_id);
+CREATE POLICY "Lecturers can manage sections they teach" ON public.sections
+    FOR ALL USING (lecturer_id = auth.uid() OR (SELECT is_admin FROM public.lecturers WHERE id = auth.uid()));
 
--- RLS Policies for teachers table
-CREATE POLICY "Teachers can view own profile" ON teachers
-  FOR SELECT USING (auth.uid() = teacher_id);
+CREATE POLICY "Lecturers can manage attendance for their sections" ON public.attendance_logs
+    FOR ALL USING (
+        EXISTS (
+            SELECT 1 FROM public.sections s
+            WHERE s.id = section_id AND s.lecturer_id = auth.uid()
+        )
+        OR (SELECT is_admin FROM public.lecturers WHERE id = auth.uid())
+    );
 
-CREATE POLICY "Teachers can update own profile" ON teachers
-  FOR UPDATE USING (auth.uid() = teacher_id);
+-- Student Policies
+CREATE POLICY "Students can view their own attendance" ON public.attendance_logs
+    FOR SELECT USING (
+        student_id IN (SELECT id FROM public.students WHERE email = auth.jwt()->>'email')
+    );
 
--- RLS Policies for courses table
-CREATE POLICY "Teachers can view their courses" ON courses
-  FOR ALL USING (auth.uid() = teacher_id);
+-- ==========================================
+-- 4. Triggers & Functions
+-- ==========================================
 
-CREATE POLICY "Students can view enrolled courses" ON courses
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM enrollments 
-      WHERE enrollments.course_id = courses.course_id 
-      AND enrollments.student_id = auth.uid()::text
-    )
-  );
-
--- RLS Policies for sessions table
-CREATE POLICY "Teachers can manage their sessions" ON sessions
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM courses 
-      WHERE courses.course_id = sessions.course_id 
-      AND courses.teacher_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Students can view sessions for enrolled courses" ON sessions
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM enrollments e
-      JOIN courses c ON c.course_id = e.course_id
-      WHERE e.course_id = sessions.course_id 
-      AND e.student_id = auth.uid()::text
-    )
-  );
-
--- RLS Policies for attendance table
-CREATE POLICY "Teachers can manage attendance for their sessions" ON attendance
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM sessions s
-      JOIN courses c ON c.course_id = s.course_id
-      WHERE s.session_id = attendance.session_id 
-      AND c.teacher_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Students can view own attendance" ON attendance
-  FOR SELECT USING (auth.uid()::text = student_id);
-
--- RLS Policies for enrollments table
-CREATE POLICY "Teachers can view enrollments for their courses" ON enrollments
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM courses 
-      WHERE courses.course_id = enrollments.course_id 
-      AND courses.teacher_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Students can view own enrollments" ON enrollments
-  FOR SELECT USING (auth.uid()::text = student_id);
-
-CREATE POLICY "Teachers can manage enrollments for their courses" ON enrollments
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM courses 
-      WHERE courses.course_id = enrollments.course_id 
-      AND courses.teacher_id = auth.uid()
-    )
-  );
-
--- RLS Policies for absence_warnings
-CREATE POLICY "Teachers can manage warnings for their courses" ON absence_warnings
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM courses 
-      WHERE courses.course_id = absence_warnings.course_id 
-      AND courses.teacher_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Students can view own warnings" ON absence_warnings
-  FOR SELECT USING (auth.uid()::text = student_id);
-
--- Function to update absence warnings automatically
-CREATE OR REPLACE FUNCTION update_absence_warnings()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Get current absence count for this student in this course
-    INSERT INTO absence_warnings (student_id, course_id, total_absences, consecutive_absences, warning_level)
-    VALUES (
-        NEW.student_id,
-        (SELECT s.course_id FROM sessions s WHERE s.session_id = NEW.session_id),
-        (SELECT COUNT(*) FROM attendance a 
-         WHERE a.student_id = NEW.student_id 
-         AND a.session_id IN (
-             SELECT s.session_id FROM sessions s 
-             WHERE s.course_id = (SELECT course_id FROM sessions WHERE session_id = NEW.session_id)
-         )
-         AND a.status = 'Absent'),
-        (SELECT COUNT(*) FROM attendance a 
-         WHERE a.student_id = NEW.student_id 
-         AND a.session_id IN (
-             SELECT s.session_id FROM sessions s 
-             WHERE s.course_id = (SELECT course_id FROM sessions WHERE session_id = NEW.session_id)
-         )
-         AND a.status = 'Absent'
-         AND a.timestamp >= CURRENT_DATE - INTERVAL '7 days'),
-        CASE 
-            WHEN (SELECT COUNT(*) FROM attendance a 
-                 WHERE a.student_id = NEW.student_id 
-                 AND a.session_id IN (
-                     SELECT s.session_id FROM sessions s 
-                     WHERE s.course_id = (SELECT course_id FROM sessions WHERE session_id = NEW.session_id)
-                 )
-                 AND a.status = 'Absent') >= 3 THEN 2
-            WHEN (SELECT COUNT(*) FROM attendance a 
-                 WHERE a.student_id = NEW.student_id 
-                 AND a.session_id IN (
-                     SELECT s.session_id FROM sessions s 
-                     WHERE s.course_id = (SELECT course_id FROM sessions WHERE session_id = NEW.session_id)
-                 )
-                 AND a.status = 'Absent') >= 2 THEN 1
-            ELSE 0
-        END
-    )
-    ON CONFLICT (student_id, course_id) 
-    DO UPDATE SET 
-        total_absences = EXCLUDED.total_absences,
-        consecutive_absences = EXCLUDED.consecutive_absences,
-        warning_level = EXCLUDED.warning_level;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Trigger to update absence warnings when attendance is recorded
-CREATE TRIGGER trigger_update_absence_warnings
-    AFTER INSERT OR UPDATE ON attendance
-    FOR EACH ROW EXECUTE FUNCTION update_absence_warnings();
-
--- Function to automatically update updated_at columns
-CREATE OR REPLACE FUNCTION update_updated_at_column()
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = NOW();
@@ -269,12 +160,38 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers for updated_at columns
-CREATE TRIGGER update_students_updated_at BEFORE UPDATE ON students
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER set_updated_at_departments BEFORE UPDATE ON public.departments FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER set_updated_at_lecturers BEFORE UPDATE ON public.lecturers FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER set_updated_at_students BEFORE UPDATE ON public.students FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER set_updated_at_courses BEFORE UPDATE ON public.courses FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER set_updated_at_sections BEFORE UPDATE ON public.sections FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER set_updated_at_attendance_logs BEFORE UPDATE ON public.attendance_logs FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
-CREATE TRIGGER update_teachers_updated_at BEFORE UPDATE ON teachers
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- ==========================================
+-- 5. Real-Time Setup
+-- ==========================================
 
-CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+ALTER PUBLICATION supabase_realtime ADD TABLE public.attendance_logs;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.students;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.sections;
+
+-- ==========================================
+-- 6. Helper Functions
+-- ==========================================
+
+CREATE OR REPLACE FUNCTION public.get_attendance_percentage(p_student_id UUID, p_section_id UUID)
+RETURNS DECIMAL AS $$
+DECLARE
+    v_total_sessions INTEGER;
+    v_present_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO v_total_sessions FROM public.attendance_logs 
+    WHERE student_id = p_student_id AND section_id = p_section_id;
+    
+    SELECT COUNT(*) INTO v_present_count FROM public.attendance_logs 
+    WHERE student_id = p_student_id AND section_id = p_section_id AND status = 'Present';
+    
+    IF v_total_sessions = 0 THEN RETURN 0; END IF;
+    RETURN (v_present_count::DECIMAL / v_total_sessions::DECIMAL) * 100;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
