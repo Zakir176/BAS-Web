@@ -128,7 +128,7 @@ const schema = yup.object({
   confirmPassword: yup.string()
     .required('Please confirm password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
-  agreeToTerms: yup.array().min(1, 'You must agree to the terms').required('You must agree to the terms'),
+  agreeToTerms: yup.boolean().oneOf([true], 'You must agree to the terms').required('You must agree to the terms'),
 });
 
 const handleSignup = async (values) => {
