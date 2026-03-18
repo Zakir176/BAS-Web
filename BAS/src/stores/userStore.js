@@ -39,13 +39,14 @@ export const useUserStore = defineStore('user', () => {
             const currentRole = user.value.role || 'student'
             const table = currentRole === 'lecturer' ? 'teachers' : 'students'
 
-            // Determine the correct ID column based on the table
-            const idColumn = table === 'teachers' ? 'teacher_id' : 'id'
+            // Determine the correct ID column and value based on the table
+            const idColumn = table === 'teachers' ? 'teacher_id' : 'email'
+            const idValue = table === 'teachers' ? user.value.id : user.value.email
 
             const { data, error: fetchError } = await supabase
                 .from(table)
                 .select('*')
-                .eq(idColumn, user.value.id) // Use the correct ID column
+                .eq(idColumn, idValue)
                 .single()
 
             if (fetchError) throw fetchError

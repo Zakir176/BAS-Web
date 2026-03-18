@@ -252,31 +252,31 @@ const fetchStudentData = async () => {
       return;
     }
 
-    // Fetch student profiles
+    // Fetch student profile using email
     const { data: profile, error: profileError } = await supabase
       .from("students")
       .select("*")
-      .eq("id", user.id)
-      .single();
+      .eq("email", user.email)
+      .maybeSingle();
 
     if (profileError) throw profileError;
     studentProfile.value = profile;
-    studentName.value = `${profile.first_name} ${profile.last_name}`;
+    studentName.value = profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0];
 
-    // Fetch activity logs
+    // Fetch attendance records instead of activity_logs
     const { data: logs, error: logsError } = await supabase
-      .from("activity_logs")
-      .select("*")
-      .eq("student_id", user.id)
-      .order("date_time", { ascending: false });
+      .from("attendance")
+      .select("*, sessions(session_date, courses(course_name))")
+      .eq("student_id", profile.student_id)
+      .order("timestamp", { ascending: false });
 
     if (logsError) throw logsError;
 
     recentActivities.value = logs.map((log) => ({
-      id: log.id,
-      course: "General Attendance", // Placeholder until classes are implemented
-      date: new Date(log.date_time).toLocaleDateString(),
-      time: new Date(log.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      id: log.attendance_id,
+      course: log.sessions?.courses?.course_name || "General Attendance",
+      date: new Date(log.timestamp).toLocaleDateString(),
+      time: new Date(log.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       type: log.status?.toLowerCase() || "present",
     }));
 
