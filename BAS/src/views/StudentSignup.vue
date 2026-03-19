@@ -53,9 +53,14 @@
               <ErrorMessage name="studentId" class="error-message" />
             </div>
             <div class="input-group-clean">
-              <label for="classSection" class="clean-label">Class Section</label>
-              <Field name="classSection" type="text" id="classSection" placeholder="e.g. BCS11" class="clean-input" :class="{'is-invalid': errors.classSection}" />
-              <ErrorMessage name="classSection" class="error-message" />
+              <label for="department" class="clean-label">Department</label>
+              <Field name="departmentId" as="select" id="department" class="clean-input" :class="{'is-invalid': errors.departmentId}">
+                <option value="" disabled>-- Select Dept --</option>
+                <option v-for="dept in departments" :key="dept.id" :value="dept.id">
+                  {{ dept.name }}
+                </option>
+              </Field>
+              <ErrorMessage name="departmentId" class="error-message" />
             </div>
           </div>
 
@@ -107,9 +112,11 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
+import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
@@ -117,12 +124,33 @@ import Button from '@/components/ui/Button.vue'
 const router = useRouter()
 const { signUp, isLoading } = useAuth()
 const { toast } = useToast()
+const departments = ref([])
+
+const fetchDepartments = async () => {
+  console.log('Fetching departments...')
+  try {
+    const { data, error } = await supabase.from('departments').select('*')
+    if (error) {
+       console.error('Error fetching departments:', error)
+       // Fallback for UI testing
+       departments.value = [
+         { id: '1', name: 'Computer Science' },
+         { id: '2', name: 'Information Technology' }
+       ]
+    } else {
+       console.log('Departments loaded:', data)
+       departments.value = data || []
+    }
+  } catch (err) {
+    console.error('Catch fetching departments:', err)
+  }
+}
 
 const schema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
   studentId: yup.string().required('Student ID is required').matches(/^[a-zA-Z0-9]+$/, 'Alphanumeric only'),
-  classSection: yup.string().required('Section is required'),
+  departmentId: yup.string().required('Department is required'),
   email: yup.string().required('Email is required').email('Please enter a valid email address'),
   password: yup.string().required('Password is required').min(8, 'Must be at least 8 characters'),
   confirmPassword: yup.string()
@@ -139,7 +167,7 @@ const handleSignup = async (values) => {
       last_name: values.lastName,
       full_name: `${values.firstName} ${values.lastName}`,
       student_id: values.studentId.toUpperCase(),
-      class_section: values.classSection.toUpperCase()
+      department_id: values.departmentId
     }
     
     await signUp(values.email, values.password, metadata)
@@ -157,6 +185,8 @@ const handleSignup = async (values) => {
     }
   }
 }
+
+onMounted(fetchDepartments)
 </script>
 
 <style scoped>
