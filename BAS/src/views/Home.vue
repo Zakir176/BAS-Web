@@ -66,16 +66,16 @@ const fetchStats = async () => {
     const [
       { count: studentCount },
       { count: courseCount },
-      { count: sessionCount }
+      { count: attendanceCount }
     ] = await Promise.all([
       supabase.from('students').select('*', { count: 'exact', head: true }),
       supabase.from('courses').select('*', { count: 'exact', head: true }),
-      supabase.from('sessions').select('*', { count: 'exact', head: true })
+      supabase.from('attendance_logs').select('*', { count: 'exact', head: true })
     ])
 
     stats.value.students = studentCount || 0
     stats.value.courses = courseCount || 0
-    stats.value.sessions = sessionCount || 0
+    stats.value.sessions = attendanceCount || 0 // Use attendance logs as sessions proxy
   } catch (err) {
     console.error('Error fetching global stats:', err)
   } finally {
