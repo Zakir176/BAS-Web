@@ -44,8 +44,8 @@ export function useRealtime() {
           { 
             event: '*', 
             schema: 'public', 
-            table: 'attendance',
-            filter: `session_id=eq.${sessionId}`
+            table: 'attendance_logs',
+            filter: `section_id=eq.${sessionId}`
           }, 
           (payload) => {
             console.log('Attendance update received:', payload)
@@ -100,8 +100,8 @@ export function useRealtime() {
           { 
             event: '*', 
             schema: 'public', 
-            table: 'sessions',
-            filter: `session_id=eq.${sessionId}`
+            table: 'sections',
+            filter: `id=eq.${sessionId}`
           }, 
           (payload) => {
             console.log('Session status update received:', payload)
@@ -141,7 +141,7 @@ export function useRealtime() {
           { 
             event: '*', 
             schema: 'public', 
-            table: 'sessions',
+            table: 'sections',
             filter: `course_id=eq.${courseId}`
           }, 
           (payload) => {
