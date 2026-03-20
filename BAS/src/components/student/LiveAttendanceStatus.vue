@@ -153,44 +153,54 @@ const fetchTodaySessions = async () => {
   try {
     const today = new Date().toISOString().split('T')[0]
     
+    // In V2, we query sections the student is enrolled in
+    // Note: session_id in the UI will map to section_id
     const { data, error } = await supabase
-      .from('sessions')
+      .from('enrollments')
       .select(`
-        *,
-        courses(course_name),
-        attendance!inner(
-          student_id,
-          status,
-          timestamp,
-          method
+        section_id,
+        sections(
+          id,
+          name,
+          courses(name),
+          attendance_logs(
+            status,
+            session_date,
+            method
+          )
         )
       `)
-      .eq('attendance.student_id', user.value.user_metadata?.student_id || user.value.id)
-      .eq('session_date', today)
-      .order('session_time', { ascending: true })
+      .eq('student_id', user.value.id) // Corrected: userStore should ensure user.id is student UUID
 
     if (error) throw error
 
-    // Process sessions data
-    const processedSessions = (data || []).map(session => ({
-      ...session,
-      course_name: session.courses?.course_name || 'Unknown Course',
-      attendance_status: session.attendance?.[0]?.status || null,
-      attendance_time: session.attendance?.[0]?.timestamp || null,
-      attendance_method: session.attendance?.[0]?.method || null,
-      is_active: isActiveSession(session.session_time),
-      showNotification: false,
-      notificationText: ''
-    }))
+    // Transform data to match existing UI structure
+    const processedSessions = (data || []).map(enrollment => {
+      const section = enrollment.sections
+      // Find log for TODAY
+      const log = section?.attendance_logs?.find(l => 
+        new Date(l.session_date).toISOString().split('T')[0] === today
+      )
+      
+      return {
+        session_id: section?.id,
+        course_name: section?.courses?.name || 'Unknown Course',
+        session_time: 'Scheduled', 
+        attendance_status: log?.status || null,
+        attendance_time: log?.session_date || null,
+        attendance_method: log?.method || null,
+        is_active: true, // Sections are generally active during the day
+        showNotification: false,
+        notificationText: ''
+      }
+    })
 
     todaySessions.value = processedSessions
     calculateStats()
 
-    // Subscribe to real-time updates for active sessions
+    // Subscribe to real-time updates for all enrolled sections today
     processedSessions.forEach(session => {
-      if (session.is_active) {
-        subscribeToAttendance(session.session_id)
-      }
+      subscribeToAttendance(session.session_id)
     })
 
   } catch (error) {
@@ -229,8 +239,8 @@ const calculateStats = () => {
 }
 
 // Handle real-time attendance updates
-const handleAttendanceUpdate = (sessionId, status, timestamp, method) => {
-  const sessionIndex = todaySessions.value.findIndex(s => s.session_id === sessionId)
+const handleAttendanceUpdate = (sectionId, status, timestamp, method) => {
+  const sessionIndex = todaySessions.value.findIndex(s => s.session_id === sectionId)
   
   if (sessionIndex !== -1) {
     const session = todaySessions.value[sessionIndex]
@@ -245,7 +255,7 @@ const handleAttendanceUpdate = (sessionId, status, timestamp, method) => {
     session.notificationText = `Marked ${status.toLowerCase()} at ${formatTime(timestamp)}`
     
     // Add to recently updated for animation
-    recentlyUpdatedSessions.value.add(sessionId)
+    recentlyUpdatedSessions.value.add(sectionId)
     
     // Hide notification after 3 seconds
     setTimeout(() => {
@@ -304,9 +314,7 @@ watch(() => user.value, (newUser) => {
 // Cleanup on unmount
 onUnmounted(() => {
   todaySessions.value.forEach(session => {
-    if (session.is_active) {
-      unsubscribe(`attendance:${session.session_id}`)
-    }
+    unsubscribe(`attendance:${session.session_id}`)
   })
 })
 
