@@ -6,7 +6,7 @@
     </div>
     <div class="courses-grid" v-if="!isLoading">
       <template v-if="courses.length > 0">
-        <div v-for="course in courses" :key="course.course_id" class="course-card-premium">
+        <div v-for="course in courses" :key="course.id" class="course-card-premium">
           <div class="card-header">
             <h3>{{ course.course_name }}</h3>
             <span class="badge active">Active</span>
@@ -24,7 +24,7 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="manage-btn" @click="$emit('manage', course.course_id)">Manage Course</button>
+            <button class="manage-btn" @click="$emit('manage', course.id)">Manage Course</button>
           </div>
         </div>
       </template>
