@@ -48,11 +48,11 @@
     <div class="roster-grid-v2" v-if="liveRoster.length > 0">
       <div 
         v-for="student in liveRoster" 
-        :key="student.student_id" 
+        :key="student.id" 
         class="student-card-v2" 
         :class="{ 
           'is-present': student.present,
-          'recently-updated': recentlyUpdatedStudents.has(student.student_id)
+          'recently-updated': recentlyUpdatedStudents.has(student.id)
         }"
       >
         <div class="student-avatar-mini">
@@ -60,7 +60,7 @@
         </div>
         <div class="student-info-mini">
           <div class="name">{{ student.full_name }}</div>
-          <div class="sid">{{ student.student_id }}</div>
+          <div class="sid">{{ student.student_number || student.student_id }}</div>
           <div v-if="student.present && student.attendance_time" class="attendance-time">
             {{ formatTime(student.attendance_time) }}
           </div>
@@ -73,7 +73,7 @@
           <button 
             v-else 
             class="mark-btn-v2" 
-            @click="$emit('mark', student.student_id)"
+            @click="$emit('mark', student.id || student.student_id)"
             :disabled="!isConnected"
           >
             <span class="icon">📍</span> Mark
@@ -174,7 +174,7 @@ const handleRealtimeUpdate = (studentId, isPresent, timestamp) => {
   recentlyUpdatedStudents.value.add(studentId)
   
   // Show notification
-  const student = liveRoster.value.find(s => s.student_id === studentId)
+  const student = liveRoster.value.find(s => (s.id === studentId || s.student_id === studentId))
   if (student) {
     updateNotificationText.value = `${student.full_name} marked ${isPresent ? 'present' : 'absent'}`
     showUpdateNotification.value = true
