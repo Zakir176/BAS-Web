@@ -2,11 +2,13 @@ namespace catv1;
 
 public partial class App : Application
 {
-    //private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
     //private readonly Supabase.Client _supabaseClient;
 
     public App(IServiceProvider serviceProvider)
     {
+        _serviceProvider = serviceProvider;
+
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
             System.Diagnostics.Debug.WriteLine($"CRITICAL_APP_ERROR (Unhandled): {e.ExceptionObject}");
@@ -38,7 +40,7 @@ public partial class App : Application
         System.Diagnostics.Debug.WriteLine("CAT_LOG: CreateWindow Start");
         try
         {
-            var shell = Handler.MauiContext.Services.GetRequiredService<AppShell>();
+            var shell = _serviceProvider.GetRequiredService<AppShell>();
             return new Window(shell);
         }
         catch (Exception ex)
