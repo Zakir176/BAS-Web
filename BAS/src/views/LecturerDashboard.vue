@@ -277,47 +277,33 @@ const handleBarcodeDetected = async (barcode) => {
   }
 }
 
-const markAsPresent = async (studentId) => {
+const markAsPresent = async (studentUUID) => {
+  if (!activeSessionId.value) {
+    toast.error('No active session selected.')
+    return
+  }
+
   try {
-    // 1. Get Lecturer's Sections
-    const { data: mySections } = await supabase
-      .from('sections')
-      .select('id')
-      .eq('lecturer_id', user.value.id)
-      
-    if (!mySections?.length) return
-    
-    let activeSession = null
-    for (const s of mySections) {
-       const { data: log } = await supabase
-         .from('attendance_logs')
-         .select('id, section_id')
-         .eq('section_id', s.id)
-         .order('session_date', { ascending: false })
-         .limit(1)
-         .maybeSingle()
-       
-       if (log) {
-         activeSession = log
-         break
+    const { error: insertError } = await supabase
+      .from('attendance_logs')
+      .insert({
+        student_id: studentUUID,
+        section_id: activeSessionId.value,
+        status: 'Present',
+        session_date: new Date().toISOString()
+      })
+
+    if (insertError) {
+       if (insertError.code === '23505') {
+         toast.info('Student already marked present.')
+       } else {
+         throw insertError
        }
+    } else {
+      toast.success('Attendance recorded.')
+      const index = activeRoster.value.findIndex(s => s.id === studentUUID)
+      if (index !== -1) activeRoster.value[index].present = true
     }
-
-    if (!activeSession) {
-      toast.error('No session found')
-      return
-    }
-
-    await supabase.from('attendance').upsert({
-      session_id: activeSession.session_id,
-      student_id: studentId,
-      status: 'Present',
-      method: 'Manual',
-      timestamp: new Date().toISOString()
-    })
-
-    const index = activeRoster.value.findIndex(s => s.student_id === studentId)
-    if (index !== -1) activeRoster.value[index].present = true
   } catch (err) {
     console.error(err)
     toast.error('Failed to mark as present.')
@@ -408,8 +394,15 @@ const fetchLecturerData = async () => {
       new Date(l.session_date).toDateString() === new Date().toDateString()
     ).length || 0
 
-    // 5. Find Active Section (Most Recent)
-    const activeSection = mySections[0] // Simplified for now
+    // 5. Select Active Section
+    // If we already have one selected via handleSessionCreated, keep it.
+    // Otherwise, pick the first one as default.
+    let activeSection = null
+    if (activeSessionId.value) {
+       activeSection = mySections.find(s => s.id === activeSessionId.value) || mySections[0]
+    } else {
+       activeSection = mySections[0]
+    }
     
     if (activeSection) {
       activeSessionId.value = activeSection.id
