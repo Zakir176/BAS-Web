@@ -16,14 +16,28 @@
           />
         </div>
         <div class="form-group">
-          <label for="maxAbsences" class="form-label">Max Absences Allowed</label>
+          <label for="courseCode" class="form-label">Course Code</label>
           <Input 
-            id="maxAbsences" 
-            v-model.number="maxAbsencesAllowed" 
-            type="number" 
-            placeholder="e.g., 3" 
-            min="0"
+            id="courseCode" 
+            v-model="courseCode" 
+            type="text" 
+            placeholder="e.g., CS101" 
+            required 
           />
+        </div>
+        <div class="form-group">
+          <label for="departmentSelect" class="form-label">Department</label>
+          <select 
+            id="departmentSelect" 
+            v-model="selectedDepartmentId" 
+            class="form-select" 
+            required
+          >
+            <option value="" disabled>-- Select Department --</option>
+            <option v-for="dept in departments" :key="dept.id" :value="dept.id">
+              {{ dept.name }}
+            </option>
+          </select>
         </div>
       </form>
     </template>
@@ -37,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Modal from '@/components/ui/Modal.vue'
 import Button from '@/components/ui/Button.vue'
 import Input from '@/components/ui/Input.vue'
@@ -55,18 +69,38 @@ const props = defineProps({
 const emit = defineEmits(['close', 'courseCreated'])
 
 const courseName = ref('')
-const maxAbsencesAllowed = ref(0)
+const courseCode = ref('')
+const selectedDepartmentId = ref('')
+const departments = ref([])
 const isCreating = ref(false)
 const { user } = useAuth()
 const { toast } = useToast()
+
+const fetchDepartments = async () => {
+  console.log('Fetching departments (Modal)...')
+  try {
+    const { data, error } = await supabase.from('departments').select('*')
+    if (error) {
+      console.error('Error fetching departments:', error)
+      departments.value = [
+        { id: '1', name: 'Computer Science' },
+        { id: '2', name: 'Information Technology' }
+      ]
+    } else {
+      departments.value = data || []
+    }
+  } catch (error) {
+    console.error('Error fetching departments:', error)
+  }
+}
 
 const createCourse = async () => {
   if (!courseName.value.trim()) {
     toast.error('Course name cannot be empty.')
     return
   }
-  if (maxAbsencesAllowed.value < 0) {
-    toast.error('Maximum absences cannot be negative.')
+  if (!courseCode.value.trim()) {
+    toast.error('Course code cannot be empty.')
     return
   }
 
@@ -75,9 +109,10 @@ const createCourse = async () => {
     const { data, error } = await supabase
       .from('courses')
       .insert({
-        course_name: courseName.value,
-        max_absences_allowed: maxAbsencesAllowed.value,
-        teacher_id: user.value.id // Assuming teacher_id is tied to the logged-in user
+        name: courseName.value,
+        code: courseCode.value,
+        department_id: selectedDepartmentId.value,
+        lecturer_id: user.value.id
       })
       .select()
 
@@ -91,7 +126,8 @@ const createCourse = async () => {
       emit('close')
       // Reset form fields
       courseName.value = ''
-      maxAbsencesAllowed.value = 0
+      courseCode.value = ''
+      selectedDepartmentId.value = ''
     }
 
   } catch (error) {
@@ -101,6 +137,8 @@ const createCourse = async () => {
     isCreating.value = false
   }
 }
+
+onMounted(fetchDepartments)
 </script>
 
 <style scoped>
