@@ -30,6 +30,18 @@ CREATE TABLE public.departments (
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
+-- Seed Departments
+INSERT INTO public.departments (name, code) VALUES 
+('Computer Science', 'CS'),
+('Information Technology', 'IT'),
+('Engineering', 'ENG'),
+('Business & Finance', 'BUS'),
+('Arts & Humanities', 'ARTS'),
+('Science & Mathematics', 'SCI'),
+('Health Sciences', 'HEALTH')
+ON CONFLICT (name) DO NOTHING;
+
+
 -- Lecturers Table (Linked to Supabase Auth)
 CREATE TABLE public.lecturers (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -117,11 +129,31 @@ ALTER TABLE public.sections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance_logs ENABLE ROW LEVEL SECURITY;
 
--- Lecturers Policies
-CREATE POLICY "Lecturers can view all departments" ON public.departments FOR SELECT USING (true);
+-- Departments Policies (Publicly readable for signup)
+CREATE POLICY "Public read departments" ON public.departments FOR SELECT USING (true);
 
 CREATE POLICY "Lecturers can view their own profile" ON public.lecturers
     FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Lecturers can update their own profile" ON public.lecturers
+    FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Lecturers can insert their own profile" ON public.lecturers
+    FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- Student Policies
+CREATE POLICY "Students can view their own profile" ON public.students
+    FOR SELECT USING (email = auth.email() OR email = auth.jwt()->>'email');
+
+CREATE POLICY "Students can update their own profile" ON public.students
+    FOR UPDATE USING (email = auth.email() OR email = auth.jwt()->>'email');
+
+CREATE POLICY "Students can insert their own profile" ON public.students
+    FOR INSERT WITH CHECK (email = auth.email() OR email = auth.jwt()->>'email');
+
+-- Students can view all departments (like lecturers)
+CREATE POLICY "Students can view all departments" ON public.departments FOR SELECT USING (true);
+
 
 CREATE POLICY "Lecturers can view students in their sections" ON public.students
     FOR SELECT USING (
@@ -148,7 +180,7 @@ CREATE POLICY "Lecturers can manage attendance for their sections" ON public.att
 -- Student Policies (Assuming students might also log in eventually, though currently mobile-first)
 CREATE POLICY "Students can view their own attendance" ON public.attendance_logs
     FOR SELECT USING (
-        student_id IN (SELECT id FROM public.students WHERE email = auth.jwt()->>'email')
+        student_id IN (SELECT id FROM public.students WHERE email = auth.email() OR email = auth.jwt()->>'email')
     );
 
 -- ==========================================

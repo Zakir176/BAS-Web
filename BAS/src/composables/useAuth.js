@@ -37,20 +37,20 @@ export function useAuth() {
 
       const userId = data.user.id
       if (metadata.role === 'lecturer') {
-        const { error: profileError } = await supabase.from('teachers').insert({
-          teacher_id: userId,
+        const { error: profileError } = await supabase.from('lecturers').insert({
+          id: userId,
           full_name: metadata.full_name,
           email: sanitizedEmail,
-          role: 'teacher'
+          department_id: metadata.department_id
         });
         if (profileError) throw profileError;
       } else {
         const { error: profileError } = await supabase.from('students').insert({
-          student_id: metadata.student_id,
+          student_number: metadata.student_id, // student_id from form to student_number in DB
           full_name: metadata.full_name,
           email: sanitizedEmail,
-          class_section: metadata.class_section,
-          qr_code_value: metadata.student_id
+          qr_code: metadata.student_id,
+          department_id: metadata.department_id
         });
         if (profileError) {
           if (profileError.code === '23505') {
@@ -68,25 +68,24 @@ export function useAuth() {
   }
 
   const ongoingRepairs = new Set()
-  const ensureTeacherProfile = async (authUser) => {
+  const ensureLecturerProfile = async (authUser) => {
     if (!authUser || ongoingRepairs.has(authUser.id)) return null
     const userRole = authUser.user_metadata?.role
     if (userRole === 'student') return null
     ongoingRepairs.add(authUser.id)
     try {
       const { data: currentProfile } = await supabase
-        .from('teachers')
-        .select('teacher_id, role')
-        .eq('teacher_id', authUser.id)
+        .from('lecturers')
+        .select('id')
+        .eq('id', authUser.id)
         .maybeSingle()
       if (currentProfile) {
-        return currentProfile.role === 'admin' ? 'admin' : 'lecturer'
+        return 'lecturer'
       }
-      const { error: repairError } = await supabase.from('teachers').upsert({
-        teacher_id: authUser.id,
+      const { error: repairError } = await supabase.from('lecturers').upsert({
+        id: authUser.id,
         email: authUser.email,
-        full_name: authUser.user_metadata?.full_name || authUser.email.split('@')[0],
-        role: 'teacher'
+        full_name: authUser.user_metadata?.full_name || authUser.email.split('@')[0]
       }, { onConflict: 'email', ignoreDuplicates: false })
       if (!repairError) {
         await supabase.auth.updateUser({ data: { role: 'lecturer' } })
@@ -121,7 +120,7 @@ export function useAuth() {
         throw signInError
       }
 
-      const detectedRole = await ensureTeacherProfile(data.user)
+      const detectedRole = await ensureLecturerProfile(data.user)
       if (detectedRole) {
         const { data: { user: updatedUser } } = await supabase.auth.getUser()
         store.setUser(updatedUser) // Use store action

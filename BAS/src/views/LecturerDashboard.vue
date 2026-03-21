@@ -242,8 +242,8 @@ const handleBarcodeDetected = async (barcode) => {
 
     const { data: student } = await supabase
       .from('students')
-      .select('full_name')
-      .eq('id', studentId) // Assuming current logic passes UUID id
+      .select('id, full_name') // Fetch UUID and Name
+      .eq('student_number', studentId) // Query by the barcode string
       .maybeSingle()
 
     if (!student) {
@@ -254,8 +254,8 @@ const handleBarcodeDetected = async (barcode) => {
     }
 
     await supabase.from('attendance_logs').insert({
-      section_id: activeSession.section_id || activeSession.id, // Adaptation
-      student_id: studentId,
+      section_id: activeSession.section_id || activeSession.id, 
+      student_id: student.id, // Insert the UUID primary key into the logs
       status: 'Present',
       session_date: new Date().toISOString()
     })
@@ -267,7 +267,7 @@ const handleBarcodeDetected = async (barcode) => {
     toast.success(`${student.full_name} marked as present!`)
     
     // Update local roster if student is in it
-    const index = activeRoster.value.findIndex(s => s.student_id === studentId)
+    const index = activeRoster.value.findIndex(s => s.student_id === student.id)
     if (index !== -1) activeRoster.value[index].present = true
 
     setTimeout(() => { lastScanned.value = '' }, 3000)

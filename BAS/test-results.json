@@ -1,0 +1,237 @@
+{
+  "config": {
+    "configFile": "D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\playwright.config.ts",
+    "rootDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": "D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\tests\\global-setup.ts",
+    "globalTeardown": "D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\tests\\global-teardown.ts",
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts",
+          "**/*.e2e.spec.ts",
+          "**/*.integration.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts",
+          "**/*.e2e.spec.ts",
+          "**/*.integration.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.spec.ts",
+          "**/*.e2e.spec.ts",
+          "**/*.integration.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.mobile.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.mobile.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "iPad",
+        "name": "iPad",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.tablet.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "accessibility",
+        "name": "accessibility",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.a11y.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/code/GitHub/Personal/BAS-Web/BAS/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "performance",
+        "name": "performance",
+        "testDir": "D:/code/GitHub/Personal/BAS-Web/BAS/tests",
+        "testIgnore": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**"
+        ],
+        "testMatch": [
+          "**/*.perf.spec.ts"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.0",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true,
+      "timeout": 120000,
+      "stdout": "pipe",
+      "stderr": "pipe"
+    }
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "ReferenceError: require is not defined",
+      "stack": "ReferenceError: require is not defined\n    at globalSetup (D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\tests\\global-setup.ts:12:14)",
+      "location": {
+        "file": "D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\tests\\global-setup.ts",
+        "column": 14,
+        "line": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mglobal-setup.ts:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m   \n \u001b[90m 11 |\u001b[39m   \u001b[90m// Create necessary directories\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m   \u001b[36mconst\u001b[39m fs \u001b[33m=\u001b[39m require(\u001b[32m'fs'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m   \u001b[36mconst\u001b[39m directories \u001b[33m=\u001b[39m [\n \u001b[90m 14 |\u001b[39m     \u001b[32m'test-results/screenshots'\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 15 |\u001b[39m     \u001b[32m'test-results/videos'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+    },
+    {
+      "message": "ReferenceError: require is not defined",
+      "stack": "ReferenceError: require is not defined\n    at cleanupTempFiles (D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\tests\\global-teardown.ts:49:14)\n    at globalTeardown (D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\tests\\global-teardown.ts:17:9)",
+      "location": {
+        "file": "D:\\code\\GitHub\\Personal\\BAS-Web\\BAS\\tests\\global-teardown.ts",
+        "column": 14,
+        "line": 49
+      },
+      "snippet": "\u001b[90m   at \u001b[39mglobal-teardown.ts:49\n\n\u001b[0m \u001b[90m 47 |\u001b[39m   \n \u001b[90m 48 |\u001b[39m   \u001b[90m// Clean up any temporary files created during testing\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 49 |\u001b[39m   \u001b[36mconst\u001b[39m fs \u001b[33m=\u001b[39m require(\u001b[32m'fs'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 50 |\u001b[39m   \u001b[36mconst\u001b[39m path \u001b[33m=\u001b[39m require(\u001b[32m'path'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 51 |\u001b[39m   \n \u001b[90m 52 |\u001b[39m   \u001b[36mconst\u001b[39m tempDirs \u001b[33m=\u001b[39m [\u001b[32m'test-results/temp'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test-results/cache'\u001b[39m]\u001b[33m;\u001b[39m\u001b[0m"
+    }
+  ],
+  "stats": {
+    "startTime": "2026-03-15T19:30:50.556Z",
+    "duration": 140.26500000000033,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
