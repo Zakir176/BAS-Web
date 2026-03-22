@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace catv1.Models;
 
-[Table("lecturer_profiles")]
+[Table("lecturers")]
 public class LecturerProfile : BaseModel
 {
     [PrimaryKey("id", false)]
@@ -15,19 +15,24 @@ public class LecturerProfile : BaseModel
     [JsonProperty("registration_id")]
     public string RegistrationId { get; set; } = string.Empty;
 
-    [Column("first_name")]
-    [JsonProperty("first_name")]
-    public string FirstName { get; set; } = string.Empty;
-
-    [Column("last_name")]
-    [JsonProperty("last_name")]
-    public string LastName { get; set; } = string.Empty;
+    [Column("full_name")]
+    [JsonProperty("full_name")]
+    public string FullName { get; set; } = string.Empty;
 
     [Column("email")]
     [JsonProperty("email")]
     public string Email { get; set; } = string.Empty;
 
-    [Column("department")]
-    [JsonProperty("department")]
-    public string Department { get; set; } = string.Empty;
+    [Column("department_id")]
+    [JsonProperty("department_id")]
+    public string DepartmentId { get; set; } = string.Empty;
+
+    [Column("is_admin")]
+    [JsonProperty("is_admin")]
+    public bool IsAdmin { get; set; }
+
+    // Display-only properties
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string DepartmentName { get; set; } = "---";
 }
