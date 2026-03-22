@@ -121,9 +121,28 @@ const createCourse = async () => {
     }
 
     if (data && data.length > 0) {
-      toast.success('Course created successfully!')
+      const newCourse = data[0]
+
+      // Automatically create a default 'Main Section' for this course
+      // If we don't, the dashboard and 'New Session' dropdown will be empty.
+      const { error: sectionError } = await supabase
+        .from('sections')
+        .insert({
+          course_id: newCourse.id,
+          lecturer_id: user.value.id,
+          name: 'Main Section'
+        })
+
+      if (sectionError) {
+        console.warn('Course created, but failed to create default section:', sectionError)
+        toast.error('Course created, but failed to setup default section.')
+      } else {
+        toast.success('Course & Default Section created successfully!')
+      }
+      
       emit('courseCreated', data[0])
       emit('close')
+      
       // Reset form fields
       courseName.value = ''
       courseCode.value = ''
