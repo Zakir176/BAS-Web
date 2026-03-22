@@ -6,16 +6,16 @@
     <template #default>
       <form @submit.prevent="createSession">
         <div class="form-group">
-          <label for="sectionSelect" class="form-label">Select Section</label>
+          <label for="sectionSelect" class="form-label">Select Course</label>
           <select 
             id="sectionSelect" 
             v-model="selectedSectionId" 
             class="form-select" 
             required
           >
-            <option value="" disabled>-- Please select a section --</option>
+            <option value="" disabled>-- Please select a course --</option>
             <option v-for="section in sections" :key="section.id" :value="section.id">
-              {{ section.courses?.name }} - {{ section.name }}
+              {{ section.courses?.name }} ({{ section.name }})
             </option>
           </select>
         </div>
