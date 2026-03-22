@@ -202,43 +202,12 @@ const handleBarcodeDetected = async (barcode) => {
     const studentId = barcode.trim()
     if (lastScanned.value.includes(studentId)) return
     
-    // ---------------------------------------------------------
-    // Find Active Session - Fixed: Remove is_completed filter
-    // ---------------------------------------------------------
-    // 1. Get Lecturer's Sections
-    const { data: mySections } = await supabase
-      .from('sections')
-      .select('id, course_id')
-      .eq('lecturer_id', user.value.id)
-      
-    if (!mySections?.length) return toast.error('No sections found')
-
-    let foundActiveSession = null
-
-    // 2. Find any recent attendance log entry to identify "active" session
-    for (const s of mySections) {
-      const { data: log } = await supabase
-        .from('attendance_logs')
-        .select('id, session_date')
-        .eq('section_id', s.id)
-        .order('session_date', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-      
-      if (log) {
-        foundActiveSession = { ...log, section_id: s.id }
-        break
-      }
-    }
-
-    if (!foundActiveSession) {
+    if (!activeSessionId.value) {
       lastScanned.value = 'No session found'
       scanStatus.value = 'error'
       toast.error('No session found. Please create a session first.')
       return
     }
-
-    const activeSession = foundActiveSession
 
     const { data: student } = await supabase
       .from('students')
@@ -254,7 +223,7 @@ const handleBarcodeDetected = async (barcode) => {
     }
 
     await supabase.from('attendance_logs').insert({
-      section_id: activeSession.section_id || activeSession.id, 
+      section_id: activeSessionId.value, 
       student_id: student.id, // Insert the UUID primary key into the logs
       status: 'Present',
       session_date: new Date().toISOString()
