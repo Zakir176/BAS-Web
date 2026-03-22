@@ -22,6 +22,18 @@
         <div class="guide-corner bottom-right"></div>
       </div>
     </div>
+    
+    <!-- Manual Entry Fallback -->
+    <div class="manual-entry-overlay">
+      <input 
+        v-model="manualBarcode" 
+        type="text" 
+        placeholder="Or type Student ID manually (e.g. STU123)" 
+        @keyup.enter="submitManual"
+        class="manual-input"
+      />
+      <button class="manual-btn" @click="submitManual">Mark</button>
+    </div>
 
     <!-- Scan Status & Counter -->
     <div class="scanner-footer-overlay">
@@ -61,7 +73,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import BarcodeScanner from '@/components/lecturer/BarcodeScanner.vue'
 
 const props = defineProps({
@@ -77,7 +89,15 @@ const progress = computed(() => {
   return Math.min(100, Math.round((props.scannedCount / props.totalStudents) * 100))
 })
 
-defineEmits(['close', 'detected', 'complete'])
+const manualBarcode = ref('')
+const emit = defineEmits(['close', 'detected', 'complete'])
+
+const submitManual = () => {
+  if (manualBarcode.value.trim()) {
+    emit('detected', manualBarcode.value.trim())
+    manualBarcode.value = ''
+  }
+}
 </script>
 
 <style scoped>
@@ -144,6 +164,36 @@ defineEmits(['close', 'detected', 'complete'])
   flex: 1;
   position: relative;
   overflow: hidden;
+}
+
+.manual-entry-overlay {
+  padding: 1rem 2rem;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 20;
+}
+
+.manual-input {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #222;
+  color: white;
+  width: 100%;
+  max-width: 300px;
+  font-family: monospace;
+}
+
+.manual-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .scan-overlay-guides {
