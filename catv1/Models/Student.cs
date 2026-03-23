@@ -9,51 +9,99 @@ namespace catv1.Models;
 [Table("students")]
 public class Student : BaseModel, INotifyPropertyChanged
 {
-    [PrimaryKey("id", false)]
+    [PrimaryKey("id")]
+    [Column("id")]
     [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty; // Supabase Auth UUID
+    public string Id { get; set; } = string.Empty;
 
-    [Column("student_id")]
-    [JsonProperty("student_id")]
-    public string StudentId { get; set; } = string.Empty; // The SIN (e.g. 210984)
+    [Column("student_number")]
+    [JsonProperty("student_number")]
+    public string StudentNumber { get; set; } = string.Empty;
 
-    [Column("first_name")]
-    [JsonProperty("first_name")]
-    public string FirstName { get; set; } = string.Empty;
-
-    [Column("last_name")]
-    [JsonProperty("last_name")]
-    public string LastName { get; set; } = string.Empty;
+    [Column("full_name")]
+    [JsonProperty("full_name")]
+    public string FullName { get; set; } = string.Empty;
 
     [Column("email")]
     [JsonProperty("email")]
     public string Email { get; set; } = string.Empty;
 
-    [Column("department")]
-    [JsonProperty("department")]
-    public string Department { get; set; } = string.Empty;
+    [Column("phone")]
+    [JsonProperty("phone")]
+    public string Phone { get; set; } = string.Empty;
 
-    [JsonIgnore]
-    public string Name => $"{FirstName} {LastName}";
+    [Column("qr_code")]
+    [JsonProperty("qr_code")]
+    public string QrCode { get; set; } = string.Empty;
 
-    [JsonIgnore]
-    public string Initials => !string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName)
-        ? $"{FirstName[0]}{LastName[0]}"
-        : "?";
+    [Column("department_id")]
+    [JsonProperty("department_id")]
+    public string DepartmentId { get; set; } = string.Empty;
 
-    // UI Properties
+    [Column("is_active")]
+    [JsonProperty("is_active")]
+    public bool IsActive { get; set; } = true;
+
+    [Column("created_at")]
+    [JsonProperty("created_at")]
+    public DateTime? CreatedAt { get; set; }
+
+    [Column("updated_at")]
+    [JsonProperty("updated_at")]
+    public DateTime? UpdatedAt { get; set; }
+
+    // Computed properties (not stored in database)
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string Initials 
+    { 
+        get 
+        {
+            if (string.IsNullOrWhiteSpace(FullName)) return "?";
+            var parts = FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            return string.Join("", parts.Select(p => p[0]));
+        }
+    }
+
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string FirstName 
+    { 
+        get 
+        {
+            if (string.IsNullOrWhiteSpace(FullName)) return "";
+            return FullName.Split(' ').FirstOrDefault() ?? "";
+        }
+    }
+
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string LastName 
+    { 
+        get 
+        {
+            if (string.IsNullOrWhiteSpace(FullName)) return "";
+            var parts = FullName.Split(' ');
+            return parts.Length > 1 ? string.Join(" ", parts.Skip(1)) : "";
+        }
+    }
+
+    // UI Properties (not stored in database)
     private bool _isPresent;
-    [Column("is_present")]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public bool IsPresent
     {
         get => _isPresent;
         set => SetProperty(ref _isPresent, value);
     }
 
-    [Column("scan_time")]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public DateTime? ScanTime { get; set; }
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string TimeDisplay => IsPresent && ScanTime.HasValue ? ScanTime.Value.ToString("hh:mm tt") : "";
 
     // Helper for property change notifications
