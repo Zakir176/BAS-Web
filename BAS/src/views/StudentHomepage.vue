@@ -1,189 +1,133 @@
 <template>
   <div class="student-dashboard">
     <main class="main-content">
-      <div class="container">
-        <!-- Welcome Section -->
-        <section class="welcome-section">
-          <div class="welcome-content">
-            <div class="welcome-text">
-              <h1>Welcome back, {{ studentName }}!</h1>
-              <p class="welcome-subtitle">Track your attendance and view your academic progress</p>
-            </div>
-            <div class="welcome-actions">
-              <Button variant="primary" size="lg" @click="showBarcodeScanner">
+      <div class="dashboard-container">
+        
+        <!-- Premium Hero Banner -->
+        <section class="hero-banner">
+          <div class="hero-content">
+            <div class="hero-badge">Student Portal</div>
+            <h1>Welcome back, {{ studentName }}!</h1>
+            <p class="hero-subtitle">Your academic journey is looking great. Keep up the strong momentum!</p>
+            <div class="hero-actions">
+              <button class="btn-glow" @click="showBarcodeScanner">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM12 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zM12 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3z"
-                  />
+                  <path d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM12 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zM12 12a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3z" />
                 </svg>
-                Mark Attendance
-              </Button>
-              <Button variant="secondary" size="lg" @click="goToReports"> View Reports </Button>
+                Show ID Card
+              </button>
+              <button class="btn-glass" @click="goToReports">
+                View Reports
+              </button>
             </div>
           </div>
-        </section>
-
-        <!-- Stats Overview & Chart -->
-        <section class="stats-section">
-          <div class="stats-overview-grid">
-            
-            <!-- Doughnut Chart (New) -->
-            <Card class="chart-card">
-              <h3>Attendance Overview</h3>
-              <div class="doughnut-container">
-                <DoughnutChart :chart-data="attendanceChartData" />
-              </div>
-            </Card>
-
-            <!-- Stats Grid -->
-            <div class="stats-kpi-grid">
-            <Card class="stat-card">
-              <div class="stat-icon attendance">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v6h6v2h-8V9h2z"
-                  />
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ attendanceStats.overall }}%</div>
-                <div class="stat-label">Overall Attendance</div>
-              </div>
-            </Card>
-
-            <Card class="stat-card">
-              <div class="stat-icon present">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"
-                  />
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ attendanceStats.present }}</div>
-                <div class="stat-label">Days Present</div>
-              </div>
-            </Card>
-
-            <Card class="stat-card">
-              <div class="stat-icon absent">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v8h8v-2h-6V9h-2z"
-                  />
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ attendanceStats.absent }}</div>
-                <div class="stat-label">Days Absent</div>
-              </div>
-            </Card>
-
-            <Card class="stat-card">
-              <div class="stat-icon streak">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2l2.122 6.364L24 10.878l-5.878 2.514L16 20l-2.122-6.608L8 10.878l5.878-2.514L16 2z"
-                  />
-                </svg>
-              </div>
-              <div class="stat-content">
-                <div class="stat-number">{{ attendanceStats.streak }}</div>
-                <div class="stat-label">Day Streak</div>
-              </div>
-            </Card>
-          </div>
+          <div class="hero-decoration">
+            <div class="circle-1"></div>
+            <div class="circle-2"></div>
           </div>
         </section>
 
-        <!-- Recent Activity -->
-        <section class="activity-section">
-          <div class="section-header">
-            <h2>Recent Activity</h2>
-            <Button variant="secondary" size="sm" @click="viewAllActivity"> View All </Button>
+        <!-- Premium Bento Grid -->
+        <section class="bento-grid">
+          
+          <!-- Main Chart -->
+          <div class="bento-card col-span-2 row-span-2 glass-panel p-6">
+            <div class="bento-header">
+              <h2>Attendance Ratio</h2>
+            </div>
+            <div class="doughnut-wrapper">
+              <DoughnutChart :chart-data="attendanceChartData" />
+            </div>
+            <div class="overall-overlay">
+              <div class="big-percent">{{ attendanceStats.overall }}%</div>
+              <div class="lbl">OVERALL</div>
+            </div>
           </div>
 
-          <div class="activity-list">
-            <Card v-for="activity in recentActivity" :key="activity.id" class="activity-item">
-              <div class="activity-content">
-                <div class="activity-icon" :class="activity.type">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      v-if="activity.type === 'present'"
-                      d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
-                    />
-                    <path
-                      v-else
-                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                    />
-                  </svg>
-                </div>
-                <div class="stat-card white-card">
-                  <span class="label">ABSENCES</span>
-                  <Skeleton v-if="isLoading" width="60px" height="2rem" />
-                  <div v-else class="value danger">{{ attendanceStats.absent }}</div>
-                </div>
-              </div>
-              <div class="activity-status" :class="activity.type">
-                {{ activity.type === "present" ? "Present" : "Absent" }}
-              </div>
-            </Card>
+          <!-- KPI: Present -->
+          <div class="bento-card glass-panel p-hover emerald-glow p-5">
+            <div class="kpi-icon emerald">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div class="kpi-value">{{ attendanceStats.present }}</div>
+            <div class="kpi-label">Days Present</div>
           </div>
 
+          <!-- KPI: Absent -->
+          <div class="bento-card glass-panel p-hover rose-glow p-5">
+            <div class="kpi-icon rose">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <div class="kpi-value">{{ attendanceStats.absent }}</div>
+            <div class="kpi-label">Days Absent</div>
+          </div>
+
+          <!-- KPI: Streak -->
+          <div class="bento-card col-span-2 glass-panel flex-row items-center justify-between p-5 p-hover blue-glow">
+            <div class="kpi-info">
+              <div class="kpi-label">Current Streak</div>
+              <div class="kpi-value">🔥 {{ attendanceStats.overall >= 80 ? 'Active' : 'Needs Repair' }}</div>
+            </div>
+            <div class="kpi-visual">
+              <div class="mini-bar-bg">
+                <div class="mini-bar-fill" :style="{ width: attendanceStats.overall + '%' }"></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Secondary Layout -->
+        <div class="secondary-grid mt-8">
+          
           <!-- History Timeline -->
-          <RecentActivity 
-            :is-loading="isLoading"
-            :activities="recentActivity"
-            :show-all="showAllHistory"
-            @toggle-show-all="showAllHistory = !showAllHistory"
-          />
-        </section>
-
-        <!-- Today's Schedule -->
-        <section class="schedule-section">
-          <div class="section-header">
-            <h2>Today's Schedule</h2>
-            <span class="current-date">{{ currentDate }}</span>
+          <div class="glass-panel p-6">
+            <div class="section-header">
+              <h2>Attendance Heatmap</h2>
+            </div>
+            <AttendanceCalendar :attendance-records="calendarData" />
           </div>
 
-          <div class="schedule-grid">
-            <Card v-for="classItem in todaySchedule" :key="classItem.id" class="schedule-item">
-              <div class="schedule-time">
-                <div class="time-start">{{ classItem.startTime }}</div>
-                <div class="time-end">{{ classItem.endTime }}</div>
-              </div>
-              <div class="schedule-details">
-                <h4>{{ classItem.course }}</h4>
-                <p>{{ classItem.lecturer }} • {{ classItem.room }}</p>
-                <div class="schedule-status" :class="classItem.status">
-                  {{ classItem.status }}
+          <!-- Today's Schedule -->
+          <div class="glass-panel p-6">
+            <div class="section-header">
+              <h2>Today's Schedule</h2>
+              <span class="current-date">{{ currentDate }}</span>
+            </div>
+            <div class="schedule-list">
+              <div v-for="classItem in todaySchedule" :key="classItem.id" class="schedule-flight shadow-sm">
+                <div class="flight-time">
+                  <strong>{{ classItem.startTime }}</strong>
+                  <span class="text-xs text-gray-400">{{ classItem.endTime }}</span>
+                </div>
+                <div class="flight-details">
+                  <h4>{{ classItem.course }}</h4>
+                  <p>{{ classItem.room }}</p>
+                </div>
+                <div class="flight-action">
+                  <span class="completed-mark">✓</span>
                 </div>
               </div>
-              <div class="schedule-action">
-                <Button
-                  v-if="classItem.status === 'Upcoming'"
-                  variant="primary"
-                  size="sm"
-                  @click="markAttendance(classItem.id)"
-                >
-                  Mark
-                </Button>
-                <span v-else-if="classItem.status === 'Completed'" class="completed-mark"> ✓ </span>
+              <div v-if="todaySchedule.length === 0" class="text-center text-gray-500 text-sm mt-4">
+                No classes scheduled for today.
               </div>
-            </Card>
+            </div>
           </div>
-        </section>
+
+        </div>
       </div>
     </main>
 
     <!-- Barcode Scanner Modal -->
-    <Modal :is-open="isBarcodeModalOpen" @close="closeBarcodeModal">
+    <Modal :is-open="isBarcodeModalOpen" @close="closeBarcodeModal" transparent hide-header hide-footer>
       <template #default>
-        <div class="px-2 py-4">
-          <StudentBarcode v-if="studentProfile" :student-id="studentProfile.student_number" />
-          <div v-else class="text-center text-gray-500 py-8">
-            <p>Loading barcode...</p>
-          </div>
+        <StudentBarcode v-if="studentProfile" :student-id="studentProfile.student_number" />
+        <div v-else class="text-center text-gray-500 py-8 bg-white rounded-3xl p-8">
+          <p>Loading barcode...</p>
         </div>
       </template>
     </Modal>
@@ -191,16 +135,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
-import Button from "@/components/ui/Button.vue";
-import Card from "@/components/ui/Card.vue";
 import Modal from "@/components/ui/Modal.vue";
 import StudentBarcode from "@/components/student/StudentBarcode.vue";
 import DoughnutChart from "@/components/ui/charts/DoughnutChart.vue";
-import RecentActivity from "@/components/student/RecentActivity.vue";
-import Skeleton from "@/components/ui/Skeleton.vue";
+import AttendanceCalendar from "@/components/student/AttendanceCalendar.vue";
 
 const router = useRouter();
 
@@ -240,6 +181,7 @@ const attendanceChartData = computed(() => {
 });
 
 const recentActivity = ref([]);
+const calendarData = ref([]);
 const todaySchedule = ref([]); // Current mock as no schedule table exists yet
 
 const isBarcodeModalOpen = ref(false);
@@ -282,26 +224,22 @@ const fetchStudentData = async () => {
       type: log.status?.toLowerCase() || "present",
     }));
 
+    calendarData.value = logs.map((log) => ({
+      date: log.session_date.split('T')[0],
+      status: log.status || 'Present'
+    }));
+
     // Calculate Stats
     const total = logs.length;
-    const presentCount = logs.filter((l) => l.status === "Present").length;
+    const presentCount = logs.filter((l) => l.status === "Present" || l.status === "present").length;
     attendanceStats.value = {
       overall: total > 0 ? Math.round((presentCount / total) * 100) : 0,
       present: presentCount,
       absent: total - presentCount,
-      streak: 0, // Logic for streaks can be added later
+      streak: 0, 
     };
   } catch (error) {
     console.error("Error fetching student data:", error);
-    // FALLBACK for UI testing if 403 Forbidden persists
-    if (error.code === '42501' || error.status === 403) {
-      console.warn("Permission denied. Using fallback data for UI demonstration.");
-      recentActivity.value = [
-        { id: '1', course: 'Computer Science 101', date: new Date().toLocaleDateString(), time: '10:00 AM', type: 'present' },
-        { id: '2', course: 'Database Systems', date: new Date().toLocaleDateString(), time: '02:00 PM', type: 'absent' }
-      ];
-      attendanceStats.value = { overall: 85, present: 10, absent: 2, streak: 3 };
-    }
   } finally {
     isLoading.value = false;
   }
@@ -319,291 +257,375 @@ const goToReports = () => {
   router.push("/report-page");
 };
 
-const viewAllActivity = () => {
-  router.push("/report-page");
-};
+let attendanceSubscription = null;
 
-const markAttendance = (classId) => {
-  showBarcodeScanner();
-};
+onMounted(async () => {
+  await fetchStudentData();
+  
+  if (studentProfile.value?.id) {
+    attendanceSubscription = supabase
+      .channel('student-attendance')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'attendance_logs',
+        filter: `student_id=eq.${studentProfile.value.id}`
+      }, () => {
+        // Automatically refresh dashboard when lecturer marks them present
+        fetchStudentData();
+      })
+      .subscribe();
+  }
+});
 
-onMounted(() => {
-  fetchStudentData();
+onUnmounted(() => {
+  if (attendanceSubscription) {
+    supabase.removeChannel(attendanceSubscription);
+  }
 });
 </script>
 
 <style scoped>
 .student-dashboard {
   min-height: 100vh;
+  background-color: var(--bg-main);
+  font-family: 'Inter', sans-serif;
 }
 
 .main-content {
-  padding-bottom: 5rem;
+  padding: 2rem 0 5rem 0;
 }
 
 .dashboard-container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 1.5rem;
-}
-
-/* Stats Layout */
-.stats-overview-grid {
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-}
-
-.chart-card {
-  padding: 1.5rem;
+  padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
+  gap: 2rem;
 }
 
-.chart-card h3 {
-  font-size: 1.125rem;
-  font-weight: 800;
+/* === HERO BANNER === */
+.hero-banner {
+  position: relative;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  border-radius: 28px;
+  padding: 3rem;
+  color: white;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(79, 70, 229, 0.25);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   margin-bottom: 1rem;
 }
 
-.doughnut-container {
-  height: 220px;
-  position: relative;
-  flex: 1;
+.hero-banner h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
 }
 
-.stats-kpi-grid {
+.hero-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-glow {
+  background: white;
+  color: #4f46e5;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(255,255,255,0.3);
+}
+
+.btn-glow:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(255,255,255,0.4);
+}
+
+.btn-glass {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-glass:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.hero-decoration {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.circle-1 {
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  top: -150px; right: -50px;
+}
+
+.circle-2 {
+  position: absolute;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(236,72,153,0.3) 0%, transparent 70%);
+  bottom: -100px; right: 20%;
+}
+
+/* === BENTO GRID === */
+.bento-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(130px, auto);
   gap: 1.5rem;
 }
 
-/* Desktop Grid Layout */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 2rem;
-  align-items: start;
-}
-
-.grid-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.grid-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  position: sticky;
-  top: 90px;
-}
-
-/* Tablet screen: Adjusted Layout */
-@media (max-width: 1024px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .grid-sidebar {
-    position: static;
-    order: 2;
-  }
-  
-  .grid-main {
-    order: 1;
-  }
-}
-
-/* Mobile: Optimized Layout */
-@media (max-width: 768px) {
-  .dashboard-container {
-    max-width: 100%;
-    padding: 1rem;
-  }
-  
-  .stats-overview-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .dashboard-grid {
-    gap: 1.5rem;
-  }
-  
-  .grid-main,
-  .grid-sidebar {
-    gap: 1.5rem;
-  }
-}
-
-/* Small Mobile: Compact Layout */
-@media (max-width: 640px) {
-  .dashboard-container {
-    padding: 0.75rem;
-  }
-  
-  .stats-kpi-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-grid {
-    gap: 1rem;
-  }
-  
-  .grid-main,
-  .grid-sidebar {
-    gap: 1rem;
-  }
-
-  .stats-row {
-    flex-direction: column;
-  }
-  
-  .action-area {
-    position: relative;
-  }
-  
-  .fab-edit {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-  }
-}
-
-/* Extra Small Mobile: Minimal Layout */
-@media (max-width: 480px) {
-  .dashboard-container {
-    padding: 0.5rem;
-  }
-  
-  .dashboard-grid {
-    gap: 0.75rem;
-  }
-}
-
-/* Barcode Section */
-.barcode-skeleton {
-  width: 100%;
-}
-
-
-/* Stats */
-.stats-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.stat-card {
-  flex: 1;
-  padding: 1.25rem;
-  border-radius: 20px;
-  box-shadow: var(--shadow-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.blue-card {
-  background: var(--primary);
-  color: white;
-}
-
-.white-card {
+.glass-panel {
   background: var(--bg-card);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme='dark'] .glass-panel {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(20px);
+  border-color: rgba(255,255,255,0.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.col-span-2 { grid-column: span 2; }
+.row-span-2 { grid-row: span 2; }
+.p-6 { padding: 1.5rem; }
+.p-5 { padding: 1.25rem; }
+.mt-8 { margin-top: 2rem; }
+.flex-row { display: flex; align-items: center; }
+
+/* Interactive Hover Lift */
+.p-hover {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  cursor: default;
+}
+.p-hover:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+.emerald-glow:hover { box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.2); }
+.rose-glow:hover { box-shadow: 0 15px 35px rgba(244, 63, 94, 0.15); border-color: rgba(244, 63, 94, 0.2); }
+.blue-glow:hover { box-shadow: 0 15px 35px rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.2); }
+
+/* Bento specific contents */
+.bento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.bento-header h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--text-main);
 }
 
-.stat-card .label {
-  font-size: 0.7rem;
+.doughnut-wrapper {
+  height: 200px;
+  position: relative;
+  z-index: 2;
+}
+
+.overall-overlay {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1;
+}
+
+.big-percent {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.overall-overlay .lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.kpi-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.kpi-icon.emerald { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.kpi-icon.rose { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
+
+.kpi-value {
+  font-size: 2.2rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
-  opacity: 0.8;
+  color: var(--text-main);
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
 }
 
-.stat-card .value {
-  font-size: 1.75rem;
-  font-weight: 800;
+.kpi-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
-.stat-card .value.danger {
-  color: var(--error);
+/* Mini Bar Fill */
+.mini-bar-bg {
+  width: 120px;
+  height: 8px;
+  background: var(--bg-main);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-/* Heatmap */
-.heatmap-section {
-  margin-bottom: 2rem;
+.mini-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.calendar-surface {
-  padding: 1.5rem;
-  border: none;
-  background: var(--bg-card);
+/* === SECONDARY GRID === */
+.secondary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
-
-.section-header h3 {
-  font-size: 1.125rem;
+.section-header h2 {
+  font-size: 1.25rem;
   font-weight: 800;
-  color: var(--text-main);
 }
 
-.selector {
-  font-size: 0.875rem;
+.current-date {
+  font-size: 0.85rem;
   color: var(--text-muted);
   font-weight: 600;
-  background: var(--bg-main);
-  padding: 0.25rem 0.75rem;
-  border-radius: 8px;
 }
 
-/* Actions */
-.action-area {
+.schedule-list {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
+}
+
+.schedule-flight {
+  background: var(--bg-main);
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
   align-items: center;
-  margin-bottom: 2.5rem;
+  gap: 1.5rem;
+}
+
+.flight-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+  color: var(--text-main);
+}
+.flight-time strong { font-size: 1.1rem; }
+
+.flight-details h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.2rem;
+}
+.flight-details p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.flight-action {
+  margin-left: auto;
+}
+.completed-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--success-bg);
+  color: var(--success);
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+/* === MEDIA QUERIES === */
+@media (max-width: 1000px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
-  .welcome-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .welcome-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .activity-item,
-  .schedule-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
-
-  .schedule-time {
-    min-width: auto;
-  }
-
-  .section-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
+  .hero-banner { padding: 2rem; }
+  .hero-banner h1 { font-size: 2rem; }
+  .bento-grid { grid-template-columns: 1fr; }
+  .col-span-2 { grid-column: span 1; }
+  .secondary-grid { grid-template-columns: 1fr; }
 }
 </style>
