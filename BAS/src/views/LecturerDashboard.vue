@@ -235,9 +235,19 @@ const handleBarcodeDetected = async (barcode) => {
     
     toast.success(`${student.full_name} marked as present!`)
     
-    // Update local roster if student is in it
+    // Update local roster if student is in it, otherwise add as walk-in
     const index = activeRoster.value.findIndex(s => s.student_id === student.id)
-    if (index !== -1) activeRoster.value[index].present = true
+    if (index !== -1) {
+      activeRoster.value[index].present = true
+    } else {
+      activeRoster.value.push({
+        id: student.id,
+        student_id: student.id,
+        name: student.full_name,
+        present: true,
+        isGuest: true // Flag to show they aren't formally enrolled
+      })
+    }
 
     setTimeout(() => { lastScanned.value = '' }, 3000)
   } catch (error) {
