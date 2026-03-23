@@ -42,8 +42,24 @@ public class LecturerHomeViewModel : BaseViewModel
 
             if (profileResponse != null)
             {
-                Name = $"{profileResponse.FirstName} {profileResponse.LastName}";
-                Department = profileResponse.Department;
+                Name = profileResponse.FullName;
+                
+                // Fetch Department Name
+                if (!string.IsNullOrEmpty(profileResponse.DepartmentId))
+                {
+                    var deptResponse = await _supabase.From<Department>()
+                        .Where(d => d.Id == profileResponse.DepartmentId)
+                        .Single();
+                    
+                    if (deptResponse != null)
+                    {
+                        Department = deptResponse.Name;
+                    }
+                    else
+                    {
+                        Department = "Unknown Department";
+                    }
+                }
             }
         }
         catch (Exception ex)
