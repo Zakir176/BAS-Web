@@ -131,7 +131,7 @@ const createCourse = async () => {
           course_id: newCourse.id,
           lecturer_id: user.value.id,
           name: 'Main Section',
-          semester: 'Fall',
+          semester: 1,
           academic_year: new Date().getFullYear().toString()
         })
 
