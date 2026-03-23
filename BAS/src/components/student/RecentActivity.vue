@@ -15,13 +15,13 @@
       </template>
       <template v-else>
         <div v-for="item in visibleActivities" :key="item.id" class="timeline-item shadow-sm">
-          <div class="item-icon-box" :class="item.status">
-            <span class="icon">{{ item.status === 'present' ? '✓' : '✕' }}</span>
+          <div class="item-icon-box" :class="item.type">
+            <span class="icon">{{ item.type === 'present' ? '✓' : '✕' }}</span>
           </div>
           <div class="item-content">
             <div class="item-top">
-              <span class="item-status">{{ item.status.toUpperCase() }}</span>
-              <span class="badge" :class="item.status">{{ item.status === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
+              <span class="item-status">{{ item.type.toUpperCase() }}</span>
+              <span class="badge" :class="item.type">{{ item.type === 'present' ? 'VERIFIED' : 'UNEXCUSED' }}</span>
             </div>
             <div class="item-meta">{{ item.time }}</div>
           </div>
