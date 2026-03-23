@@ -9,8 +9,16 @@ public class BaseViewModel : INotifyPropertyChanged
     public bool IsBusy
     {
         get => _isBusy;
-        set => SetProperty(ref _isBusy, value);
+        set 
+        {
+            if (SetProperty(ref _isBusy, value))
+            {
+                OnPropertyChanged(nameof(IsNotBusy));
+            }
+        }
     }
+
+    public bool IsNotBusy => !IsBusy;
 
     private string _title = string.Empty;
     public string Title
