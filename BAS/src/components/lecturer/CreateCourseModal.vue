@@ -130,7 +130,9 @@ const createCourse = async () => {
         .insert({
           course_id: newCourse.id,
           lecturer_id: user.value.id,
-          name: 'Main Section'
+          name: 'Main Section',
+          semester: 'Fall',
+          academic_year: new Date().getFullYear().toString()
         })
 
       if (sectionError) {
