@@ -191,7 +191,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "@/supabase";
 import Button from "@/components/ui/Button.vue";
@@ -327,8 +327,31 @@ const markAttendance = (classId) => {
   showBarcodeScanner();
 };
 
-onMounted(() => {
-  fetchStudentData();
+let attendanceSubscription = null;
+
+onMounted(async () => {
+  await fetchStudentData();
+  
+  if (studentProfile.value?.id) {
+    attendanceSubscription = supabase
+      .channel('student-attendance')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'attendance_logs',
+        filter: `student_id=eq.${studentProfile.value.id}`
+      }, () => {
+        // Automatically refresh dashboard when lecturer marks them present
+        fetchStudentData();
+      })
+      .subscribe();
+  }
+});
+
+onUnmounted(() => {
+  if (attendanceSubscription) {
+    supabase.removeChannel(attendanceSubscription);
+  }
 });
 </script>
 
