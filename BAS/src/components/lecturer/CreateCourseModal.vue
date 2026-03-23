@@ -136,7 +136,7 @@ const createCourse = async () => {
         })
 
       if (sectionError) {
-        console.warn('Course created, but failed to create default section:', sectionError)
+        console.error('Course created, but failed to create default section. Exact Details:', JSON.stringify(sectionError, null, 2))
         toast.error('Course created, but failed to setup default section.')
       } else {
         toast.success('Course & Default Section created successfully!')
