@@ -54,8 +54,13 @@
 
           <div class="input-group-clean">
             <label for="department" class="clean-label">Department</label>
-            <Field name="department" type="text" id="department" placeholder="e.g. Computer Science" class="clean-input" :class="{'is-invalid': errors.department}" />
-            <ErrorMessage name="department" class="error-message" />
+            <Field name="departmentId" as="select" id="department" class="clean-input" :class="{'is-invalid': errors.departmentId}">
+              <option value="" disabled>-- Select your department --</option>
+              <option v-for="dept in departments" :key="dept.id" :value="dept.id">
+                {{ dept.name }}
+              </option>
+            </Field>
+            <ErrorMessage name="departmentId" class="error-message" />
           </div>
 
           <div class="form-row-v2">
@@ -87,9 +92,11 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
+import { supabase } from '@/supabase'
 import { useAuth } from '@/composables/useAuth'
 import { useToast } from '@/composables/useToast'
 import Button from '@/components/ui/Button.vue'
@@ -97,12 +104,33 @@ import Button from '@/components/ui/Button.vue'
 const router = useRouter()
 const { signUp, isLoading } = useAuth()
 const { toast } = useToast()
+const departments = ref([])
+
+const fetchDepartments = async () => {
+  console.log('Fetching departments...')
+  try {
+    const { data, error } = await supabase.from('departments').select('*')
+    if (error) {
+       console.error('Error fetching departments:', error)
+       // Fallback for UI testing
+       departments.value = [
+         { id: '1', name: 'Computer Science' },
+         { id: '2', name: 'Information Technology' }
+       ]
+    } else {
+       console.log('Departments loaded:', data)
+       departments.value = data || []
+    }
+  } catch (err) {
+    console.error('Catch fetching departments:', err)
+  }
+}
 
 const schema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
   email: yup.string().required('Email is required').email('Please enter a valid email address'),
-  department: yup.string().required('Department is required'),
+  departmentId: yup.string().required('Department is required'),
   password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
   confirmPassword: yup.string()
     .required('Please confirm your password')
@@ -116,7 +144,7 @@ const handleSignup = async (values) => {
       first_name: values.firstName,
       last_name: values.lastName,
       full_name: `${values.firstName} ${values.lastName}`,
-      department: values.department
+      department_id: values.departmentId
     })
     toast.success('Account created successfully! Please check your email.', { duration: 5000 })
     setTimeout(() => {
@@ -127,6 +155,8 @@ const handleSignup = async (values) => {
     toast.error(err.message || 'Signup failed. Please try again.')
   }
 }
+
+onMounted(fetchDepartments)
 </script>
 
 <style scoped>

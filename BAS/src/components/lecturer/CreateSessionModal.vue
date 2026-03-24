@@ -6,34 +6,25 @@
     <template #default>
       <form @submit.prevent="createSession">
         <div class="form-group">
-          <label for="courseSelect" class="form-label">Select Course</label>
+          <label for="sectionSelect" class="form-label">Select Course</label>
           <select 
-            id="courseSelect" 
-            v-model="selectedCourseId" 
+            id="sectionSelect" 
+            v-model="selectedSectionId" 
             class="form-select" 
             required
           >
             <option value="" disabled>-- Please select a course --</option>
-            <option v-for="course in courses" :key="course.course_id" :value="course.course_id">
-              {{ course.course_name }}
+            <option v-for="section in sections" :key="section.id" :value="section.id">
+              {{ section.courses?.name }} ({{ section.name }})
             </option>
           </select>
         </div>
         <div class="form-group">
-          <label for="sessionDate" class="form-label">Session Date</label>
+          <label for="sessionDate" class="form-label">Date</label>
           <Input 
             id="sessionDate" 
             v-model="sessionDate" 
             type="date" 
-            required 
-          />
-        </div>
-        <div class="form-group">
-          <label for="sessionTime" class="form-label">Session Time</label>
-          <Input 
-            id="sessionTime" 
-            v-model="sessionTime" 
-            type="time" 
             required 
           />
         </div>
@@ -66,64 +57,51 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'sessionCreated'])
 
-const selectedCourseId = ref('')
-const sessionDate = ref('')
-const sessionTime = ref('09:00') // Default time
-const courses = ref([])
+const selectedSectionId = ref('')
+const sessionDate = ref(new Date().toISOString().split('T')[0])
+const sections = ref([])
 const isCreating = ref(false)
 const { user } = useAuth()
 const { toast } = useToast()
 
-const fetchCourses = async () => {
+const fetchSections = async () => {
   if (!user.value) return
   try {
     const { data, error } = await supabase
-      .from('courses')
-      .select('course_id, course_name')
-      .eq('teacher_id', user.value.id)
+      .from('sections')
+      .select('id, name, courses(name)')
+      .eq('lecturer_id', user.value.id)
 
     if (error) throw error
-    courses.value = data
+    sections.value = data
   } catch (error) {
-    toast.error('Failed to load courses.')
-    console.error('Error fetching courses:', error.message)
+    toast.error('Failed to load sections.')
+    console.error('Error fetching sections:', error.message)
   }
 }
 
 const createSession = async () => {
-  if (!selectedCourseId.value || !sessionDate.value || !sessionTime.value) {
-    toast.error('Please fill in all session details.')
+  if (!selectedSectionId.value || !sessionDate.value) {
+    toast.error('Please select a section and date.')
     return
   }
 
   isCreating.value = true
   try {
-    const { data, error } = await supabase
-      .from('sessions')
-      .insert({
-        course_id: selectedCourseId.value,
-        session_date: sessionDate.value,
-        session_time: sessionTime.value
-      })
-      .select()
-
-    if (error) {
-      throw error
-    }
-
-    if (data && data.length > 0) {
-      toast.success('Session created successfully!')
-      emit('sessionCreated', data[0])
-      emit('close')
-      // Reset form fields
-      selectedCourseId.value = ''
-      sessionDate.value = ''
-      sessionTime.value = '09:00'
-    }
+    // In V2, we don't necessarily create a "session" record.
+    // We just return the selection to the dashboard which will then be used for barcode scanning.
+    const selectedSection = sections.value.find(s => s.id === selectedSectionId.value)
+    
+    emit('sessionCreated', {
+      id: selectedSection.id,
+      name: `${selectedSection.courses?.name} - ${selectedSection.name}`,
+      date: sessionDate.value
+    })
+    emit('close')
+    toast.success('Session context set. Start scanning now!')
 
   } catch (error) {
-    console.error('Error creating session:', error.message)
-    toast.error(`Error creating session: ${error.message}`)
+    console.error('Error setting session:', error.message)
   } finally {
     isCreating.value = false
   }
@@ -131,13 +109,13 @@ const createSession = async () => {
 
 watch(() => props.isOpen, (newVal) => {
   if (newVal) {
-    fetchCourses()
+    fetchSections()
   }
 })
 
 onMounted(() => {
   if (props.isOpen) {
-    fetchCourses()
+    fetchSections()
   }
 })
 </script>

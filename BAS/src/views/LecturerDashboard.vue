@@ -110,6 +110,7 @@ import CourseGrid from '@/components/lecturer/CourseGrid.vue'
 import LiveRosterRealtime from '@/components/lecturer/LiveRosterRealtime.vue'
 import ScannerInterface from '@/components/lecturer/ScannerInterface.vue'
 import BarChart from '@/components/ui/charts/BarChart.vue'
+import Card from '@/components/ui/Card.vue'
 
 const router = useRouter()
 const { user } = useAuth()
@@ -155,7 +156,11 @@ const presentCount = computed(() => activeRoster.value.filter(s => s.present).le
 const showCreateCourse = () => { isCreateCourseModalOpen.value = true }
 const showCreateSession = () => { isCreateSessionModalOpen.value = true }
 const handleCourseCreated = async () => { await fetchLecturerData() }
-const handleSessionCreated = async () => { await fetchLecturerData() }
+const handleSessionCreated = async (session) => {
+  activeSessionId.value = session.id
+  activeSessionName.value = session.name
+  await fetchLecturerData()
+}
 const showBarcodeScanner = () => { isScannerOpen.value = true }
 
 const closeBarcodeScanner = () => {
@@ -197,48 +202,17 @@ const handleBarcodeDetected = async (barcode) => {
     const studentId = barcode.trim()
     if (lastScanned.value.includes(studentId)) return
     
-    // ---------------------------------------------------------
-    // Find Active Session - Fixed: Remove is_completed filter
-    // ---------------------------------------------------------
-    // 1. Get Teacher's Courses
-    const { data: myCourses } = await supabase
-      .from('courses')
-      .select('course_id')
-      .eq('teacher_id', user.value.id)
-      
-    if (!myCourses?.length) return toast.error('No courses found')
-
-    let foundActiveSession = null
-
-    // 2. Find the most recent session (since we don't have is_completed)
-    for (const c of myCourses) {
-      const { data: session } = await supabase
-        .from('sessions')
-        .select('session_id, session_date, session_time')
-        .eq('course_id', c.course_id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-      
-      if (session) {
-        foundActiveSession = session
-        break
-      }
-    }
-
-    if (!foundActiveSession) {
+    if (!activeSessionId.value) {
       lastScanned.value = 'No session found'
       scanStatus.value = 'error'
       toast.error('No session found. Please create a session first.')
       return
     }
 
-    const activeSession = foundActiveSession
-
     const { data: student } = await supabase
       .from('students')
-      .select('full_name')
-      .eq('student_id', studentId)
+      .select('id, full_name') // Fetch UUID and Name
+      .eq('student_number', studentId) // Query by the barcode string
       .maybeSingle()
 
     if (!student) {
@@ -248,12 +222,11 @@ const handleBarcodeDetected = async (barcode) => {
       return
     }
 
-    await supabase.from('attendance').upsert({
-      session_id: activeSession.session_id,
-      student_id: studentId,
+    await supabase.from('attendance_logs').insert({
+      section_id: activeSessionId.value, 
+      student_id: student.id, // Insert the UUID primary key into the logs
       status: 'Present',
-      method: 'Barcode',
-      timestamp: new Date().toISOString()
+      session_date: new Date().toISOString()
     })
 
     lastScanned.value = student.full_name
@@ -262,9 +235,19 @@ const handleBarcodeDetected = async (barcode) => {
     
     toast.success(`${student.full_name} marked as present!`)
     
-    // Update local roster if student is in it
-    const index = activeRoster.value.findIndex(s => s.student_id === studentId)
-    if (index !== -1) activeRoster.value[index].present = true
+    // Update local roster if student is in it, otherwise add as walk-in
+    const index = activeRoster.value.findIndex(s => s.student_id === student.id)
+    if (index !== -1) {
+      activeRoster.value[index].present = true
+    } else {
+      activeRoster.value.push({
+        id: student.id,
+        student_id: student.id,
+        name: student.full_name,
+        present: true,
+        isGuest: true // Flag to show they aren't formally enrolled
+      })
+    }
 
     setTimeout(() => { lastScanned.value = '' }, 3000)
   } catch (error) {
@@ -273,47 +256,33 @@ const handleBarcodeDetected = async (barcode) => {
   }
 }
 
-const markAsPresent = async (studentId) => {
+const markAsPresent = async (studentUUID) => {
+  if (!activeSessionId.value) {
+    toast.error('No active session selected.')
+    return
+  }
+
   try {
-    // 1. Get Teacher's Courses
-    const { data: myCourses } = await supabase
-      .from('courses')
-      .select('course_id')
-      .eq('teacher_id', user.value.id)
-      
-    if (!myCourses?.length) return
-    
-    let activeSession = null
-    for (const c of myCourses) {
-       const { data: s } = await supabase
-         .from('sessions')
-         .select('session_id')
-         .eq('course_id', c.course_id)
-         .order('created_at', { ascending: false })
-         .limit(1)
-         .maybeSingle()
-       
-       if (s) {
-         activeSession = s
-         break
+    const { error: insertError } = await supabase
+      .from('attendance_logs')
+      .insert({
+        student_id: studentUUID,
+        section_id: activeSessionId.value,
+        status: 'Present',
+        session_date: new Date().toISOString()
+      })
+
+    if (insertError) {
+       if (insertError.code === '23505') {
+         toast.info('Student already marked present.')
+       } else {
+         throw insertError
        }
+    } else {
+      toast.success('Attendance recorded.')
+      const index = activeRoster.value.findIndex(s => s.id === studentUUID)
+      if (index !== -1) activeRoster.value[index].present = true
     }
-
-    if (!activeSession) {
-      toast.error('No session found')
-      return
-    }
-
-    await supabase.from('attendance').upsert({
-      session_id: activeSession.session_id,
-      student_id: studentId,
-      status: 'Present',
-      method: 'Manual',
-      timestamp: new Date().toISOString()
-    })
-
-    const index = activeRoster.value.findIndex(s => s.student_id === studentId)
-    if (index !== -1) activeRoster.value[index].present = true
   } catch (err) {
     console.error(err)
     toast.error('Failed to mark as present.')
@@ -331,9 +300,9 @@ const fetchLecturerData = async () => {
 
     // 1. Fetch Lecturer Profile
     const { data: lecturer, error: profileError } = await supabase
-      .from('teachers')
+      .from('lecturers')
       .select('full_name')
-      .eq('teacher_id', user.value.id)
+      .eq('id', user.value.id)
       .maybeSingle()
 
     if (lecturer) {
@@ -342,136 +311,99 @@ const fetchLecturerData = async () => {
       lecturerName.value = user.value.user_metadata?.full_name || user.value.email.split('@')[0]
     }
 
-    // 2. Fetch ALL Courses for this teacher
-    const { data: myCourses } = await supabase
-      .from('courses')
-      .select('course_id, course_name, enrollments(count)')
-      .eq('teacher_id', user.value.id)
+    // 2. Fetch ALL Sections for this lecturer
+    const { data: mySections } = await supabase
+      .from('sections')
+      .select('id, name, course_id, courses(name), enrollments(count)')
+      .eq('lecturer_id', user.value.id)
 
-    if (!myCourses || myCourses.length === 0) {
+    if (!mySections || mySections.length === 0) {
       isLoading.value = false
       return
     }
 
-    // 3. Parallel fetch for deep stats to avoid complex joins
-    const coursesWithStats = await Promise.all(myCourses.map(async (c) => {
-      // Get all sessions for this course
-      const { data: cSessions } = await supabase
-        .from('sessions')
-        .select('session_id')
-        .eq('course_id', c.course_id)
+    // 3. Parallel fetch for deep stats
+    const sectionsWithStats = await Promise.all(mySections.map(async (s) => {
+      // Get attendance logs for this section
+      const { count: attendanceCount } = await supabase
+        .from('attendance_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('section_id', s.id)
       
-      const sessionIds = cSessions?.map(s => s.session_id) || []
-      const studentCount = c.enrollments?.[0]?.count || 0
+      const studentCount = s.enrollments?.[0]?.count || 0
       
-      let attendanceRate = 0
-      if (studentCount > 0 && sessionIds.length > 0) {
-        // We have to batch this if too many, but for now strict IN query
-        // If this fails with 400, we know the session_id type matches
-        const { count: attendanceCount } = await supabase
-          .from('attendance')
-          .select('*', { count: 'exact', head: true })
-          .in('session_id', sessionIds)
-        
-        attendanceRate = Math.round((attendanceCount / (studentCount * sessionIds.length)) * 100)
-      }
-
+      // Calculate attendance rate (rough estimate since we don't have explicit sessions anymore)
+      // In a real app, you'd divide by (studentCount * number_of_class_days)
+      const attendanceRate = studentCount > 0 ? Math.round((attendanceCount / (studentCount * 10)) * 100) : 0 // Assuming 10 days for now
+      
       return {
-        ...c,
-        sessions: cSessions || [], // Store for later usage
+        ...s,
+        course_name: s.courses?.name,
         student_count: studentCount,
-        attendance_rate: attendanceRate
+        attendance_rate: Math.min(attendanceRate, 100)
       }
     }))
     
-    courses.value = coursesWithStats
-    stats.value.totalCourses = coursesWithStats.length
-    stats.value.totalStudents = coursesWithStats.reduce((s, c) => s + c.student_count, 0)
+    courses.value = sectionsWithStats // UI still uses 'courses' variable name
+    stats.value.totalCourses = sectionsWithStats.length
+    stats.value.totalStudents = sectionsWithStats.reduce((sum, s) => sum + s.student_count, 0)
     
     // Calculate Avg Attendance
-    const totalPossible = coursesWithStats.reduce((s, c) => s + (c.student_count * c.sessions.length), 0)
-    if (totalPossible > 0) {
-       // Re-sum based on individual rates? Or do a big query?
-       // Let's do a weighted average of the rates we already calculated to save a query
-       const weightedSum = coursesWithStats.reduce((s, c) => s + (c.attendance_rate * (c.student_count * c.sessions.length)), 0)
-       stats.value.avgAttendance = Math.round(weightedSum / totalPossible)
-    } else {
-      stats.value.avgAttendance = 0
+    if (sectionsWithStats.length > 0) {
+      stats.value.avgAttendance = Math.round(sectionsWithStats.reduce((sum, s) => sum + s.attendance_rate, 0) / sectionsWithStats.length)
     }
 
-    // 4. Fetch Recent Sessions (Manually Aggregated from Courses)
-    // We already have sessions in 'coursesWithStats', just need details for them
-    // But we need 'is_completed' etc.
-    // Let's re-query recent sessions per course and merge sort
-    const allRecentSessions = await Promise.all(myCourses.map(async (c) => {
-       const { data: sData } = await supabase
-         .from('sessions')
-         .select('*, attendance(count)')
-         .eq('course_id', c.course_id)
-         .order('session_date', { ascending: false })
-         .limit(3) // Get top 3 per course to be safe
-       
-       return sData?.map(s => ({
-         ...s,
-         course_name: c.course_name,
-         student_count: s.attendance?.[0]?.count || 0,
-         status: s.is_completed ? 'completed' : (new Date(s.session_date) > new Date() ? 'upcoming' : 'active')
-       })) || []
-    }))
-
-    // Flatten and sort by date desc
-    const flattenedSessions = allRecentSessions.flat().sort((a, b) => new Date(b.session_date) - new Date(a.session_date))
-    recentSessions.value = flattenedSessions.slice(0, 8)
-    stats.value.todaySessions = flattenedSessions.filter(s => s.session_date === new Date().toISOString().split('T')[0]).length
-
-    // 5. Find Active Session (Latest Non-Completed)
-    // We intentionally iterate because .in() was 400-ing
-    let foundActiveSession = null
+    // 4. Fetch Recent Attendance (Last 8 logs)
+    const { data: recentLogs } = await supabase
+      .from('attendance_logs')
+      .select('*, students(full_name), sections(name, courses(name))')
+      .in('section_id', mySections.map(s => s.id))
+      .order('session_date', { ascending: false })
+      .limit(8)
     
-    // Check each course for an active session
-    // Optimization: flattenedSessions might ALREADY have it if it's recent
-    const potentialActive = flattenedSessions.find(s => !s.is_completed)
+    recentSessions.value = recentLogs?.map(l => ({
+      ...l,
+      course_name: l.sections?.courses?.name,
+      student_name: l.students?.full_name,
+      session_date: l.session_date,
+      status: 'completed'
+    })) || []
     
-    if (potentialActive) {
-      foundActiveSession = potentialActive
+    stats.value.todaySessions = recentLogs?.filter(l => 
+      new Date(l.session_date).toDateString() === new Date().toDateString()
+    ).length || 0
+
+    // 5. Select Active Section
+    // If we already have one selected via handleSessionCreated, keep it.
+    // Otherwise, pick the first one as default.
+    let activeSection = null
+    if (activeSessionId.value) {
+       activeSection = mySections.find(s => s.id === activeSessionId.value) || mySections[0]
     } else {
-      // Deep search if not in recent
-      for (const course of myCourses) {
-        const { data: deepSession } = await supabase
-          .from('sessions')
-          .select('*')
-          .eq('course_id', course.course_id)
-          .eq('is_completed', false)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
-          
-        if (deepSession) {
-          // Found one!
-          foundActiveSession = { ...deepSession, course_name: course.course_name }
-          break // Assume only 1 active session at a time is managed
-        }
-      }
+       activeSection = mySections[0]
     }
-
-    if (foundActiveSession) {
-      activeSessionId.value = foundActiveSession.session_id
-      activeSessionName.value = foundActiveSession.course_name || 'Active Session'
+    
+    if (activeSection) {
+      activeSessionId.value = activeSection.id
+      activeSessionName.value = activeSection.courses?.name || activeSection.name
       
       const { data: enrolledStudents } = await supabase
         .from('enrollments')
-        .select('student_id, students(full_name)')
-        .eq('course_id', foundActiveSession.course_id)
+        .select('student_id, students(id, full_name, student_number)')
+        .eq('section_id', activeSection.id)
       
       const { data: attendanceData } = await supabase
-        .from('attendance')
+        .from('attendance_logs')
         .select('student_id')
-        .eq('session_id', foundActiveSession.session_id)
+        .eq('section_id', activeSection.id)
+        .gte('session_date', new Date().toISOString().split('T')[0]) // Today
 
       const attendedIds = new Set(attendanceData?.map(a => a.student_id) || [])
 
       activeRoster.value = enrolledStudents.map(e => ({
-        student_id: e.student_id,
+        id: e.student_id,
+        student_id: e.students?.student_number || e.student_id,
+        student_number: e.students?.student_number,
         full_name: e.students?.full_name,
         present: attendedIds.has(e.student_id)
       }))

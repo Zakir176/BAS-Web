@@ -4,27 +4,34 @@
       <h2>My Courses</h2>
       <button class="text-link" @click="$emit('view-all')">See all</button>
     </div>
-    <div class="courses-grid" v-if="!isLoading">
+    <div class="courses-grid grid-cols-3" v-if="!isLoading">
       <template v-if="courses.length > 0">
-        <div v-for="course in courses" :key="course.course_id" class="course-card-premium">
+        <div v-for="course in courses" :key="course.id" class="course-card-premium glass-panel">
           <div class="card-header">
-            <h3>{{ course.course_name }}</h3>
+            <div class="icon-wrapper">
+              <span class="icon">📚</span>
+            </div>
             <span class="badge active">Active</span>
           </div>
           <div class="card-body">
-            <div class="detail-row">
-              <span>Students</span>
-              <strong>{{ course.student_count }}</strong>
-            </div>
-            <div class="detail-row">
-              <span>Performance</span>
-              <div class="mini-progress">
-                <div class="fill" :style="{ width: course.attendance_rate + '%' }"></div>
+            <h3>{{ course.course_name }}</h3>
+            <div class="metrics-row">
+              <div class="metric">
+                <span class="lbl">Students</span>
+                <span class="val">{{ course.student_count }}</span>
               </div>
+              <div class="metric">
+                <span class="lbl">Attendance</span>
+                <span class="val">{{ course.attendance_rate }}%</span>
+              </div>
+            </div>
+            
+            <div class="mini-progress">
+              <div class="fill" :style="{ width: course.attendance_rate + '%' }"></div>
             </div>
           </div>
           <div class="card-footer">
-            <button class="manage-btn" @click="$emit('manage', course.course_id)">Manage Course</button>
+            <button class="manage-btn" @click="$emit('manage', course.id)">Manage Course</button>
           </div>
         </div>
       </template>
@@ -61,99 +68,124 @@ defineEmits(['view-all', 'manage', 'create'])
 
 <style scoped>
 .content-section {
-  margin-top: 2.5rem;
+  width: 100%;
 }
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
 
-.section-header h2 {
-  font-size: 1.25rem;
-  font-weight: 800;
-}
-
-.text-link {
-  background: none;
-  border: none;
-  color: var(--primary);
-  font-weight: 700;
-  cursor: pointer;
-}
 
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
 .course-card-premium {
-  background: var(--bg-card);
   padding: 1.5rem;
-  border-radius: 24px;
-  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card-premium:hover {
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
 }
 
-.card-header h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
+.icon-wrapper {
+  width: 44px; height: 44px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
 }
 
 .badge {
-  padding: 4px 12px;
+  padding: 4px 10px;
   border-radius: 8px;
   font-size: 0.7rem;
   font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
-.badge.active { background: #dcfce7; color: #166534; }
+.badge.active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
 
-.detail-row {
-  display: flex;
-  justify-content: space-between;
+.card-body h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
   margin-bottom: 1rem;
-  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.metrics-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metric .lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.metric .val {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
 }
 
 .mini-progress {
-  width: 100px;
-  height: 8px;
+  width: 100%;
+  height: 6px;
   background: var(--bg-main);
-  border-radius: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 0.5rem;
 }
 
 .mini-progress .fill {
   height: 100%;
-  background: var(--primary);
-  border-radius: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 8px;
 }
 
 .card-footer {
   margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border-light);
 }
 
 .manage-btn {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.8rem;
   border-radius: 12px;
-  border: 2px solid var(--border-light);
-  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  background: transparent;
   font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
   color: var(--text-main);
 }
 
-.manage-btn:hover { background: var(--bg-main); border-color: var(--border-medium); }
+.manage-btn:hover { 
+  background: rgba(59, 130, 246, 0.05); 
+  border-color: #3b82f6; 
+  color: #3b82f6;
+}
 
 .full-width-empty {
   grid-column: 1 / -1;
