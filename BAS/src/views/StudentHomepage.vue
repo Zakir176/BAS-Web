@@ -28,10 +28,10 @@
         </section>
 
         <!-- Premium Bento Grid -->
-        <section class="bento-grid">
+        <section class="bento-grid grid-cols-4">
           
           <!-- Main Chart -->
-          <div class="bento-card col-span-2 row-span-2 glass-panel p-6">
+          <div class="bento-card glass-panel p-hover blue-glow col-span-2 row-span-2 p-6">
             <div class="bento-header">
               <h2>Attendance Ratio</h2>
             </div>
@@ -67,7 +67,7 @@
           </div>
 
           <!-- KPI: Streak -->
-          <div class="bento-card col-span-2 glass-panel flex-row items-center justify-between p-5 p-hover blue-glow">
+          <div class="bento-card glass-panel flex-row items-center justify-between p-5 p-hover blue-glow col-span-2">
             <div class="kpi-info">
               <div class="kpi-label">Current Streak</div>
               <div class="kpi-value">🔥 {{ attendanceStats.overall >= 80 ? 'Active' : 'Needs Repair' }}</div>
@@ -82,7 +82,7 @@
         </section>
 
         <!-- Secondary Layout -->
-        <div class="secondary-grid mt-8">
+        <div class="secondary-grid grid-cols-2 mt-8">
           
           <!-- History Timeline -->
           <div class="glass-panel p-6">
@@ -414,33 +414,21 @@ onUnmounted(() => {
 /* === BENTO GRID === */
 .bento-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: minmax(130px, auto);
   gap: 1.5rem;
 }
 
-.glass-panel {
-  background: var(--bg-card);
-  border: 1px solid rgba(0,0,0,0.05);
-  border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-  position: relative;
-  overflow: hidden;
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+.bento-card {
+  grid-auto-rows: minmax(130px, auto);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
-[data-theme='dark'] .glass-panel {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(20px);
-  border-color: rgba(255,255,255,0.05);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-.col-span-2 { grid-column: span 2; }
-.row-span-2 { grid-row: span 2; }
 .p-6 { padding: 1.5rem; }
-.p-5 { padding: 1.25rem; }
 .mt-8 { margin-top: 2rem; }
-.flex-row { display: flex; align-items: center; }
 
 /* Interactive Hover Lift */
 .p-hover {
@@ -451,6 +439,7 @@ onUnmounted(() => {
   transform: translateY(-6px) scale(1.02);
 }
 
+/* Glow Effects */
 .emerald-glow:hover { box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.2); }
 .rose-glow:hover { box-shadow: 0 15px 35px rgba(244, 63, 94, 0.15); border-color: rgba(244, 63, 94, 0.2); }
 .blue-glow:hover { box-shadow: 0 15px 35px rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.2); }
@@ -616,9 +605,7 @@ onUnmounted(() => {
 
 /* === MEDIA QUERIES === */
 @media (max-width: 1000px) {
-  .bento-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .bento-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {

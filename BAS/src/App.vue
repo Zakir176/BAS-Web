@@ -51,8 +51,9 @@ body {
 
 .app-content-wrapper {
   flex: 1;
-  padding-top: 72px; /* To prevent content from being hidden behind the fixed navbar */
+  padding-top: 96px; /* Optimized gap for the 1rem-offset floating pill */
   display: flex;
   flex-direction: column;
+  transition: padding 0.4s ease;
 }
 </style>

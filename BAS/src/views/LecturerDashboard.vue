@@ -1,69 +1,81 @@
 <template>
   <div class="lecturer-dashboard">
-    
     <main class="main-content">
-      <div class="container">
-        <!-- Welcome Header -->
-        <header class="dashboard-header">
-          <div class="header-left">
-            <h1>Welcome back, <span class="highlight">{{ lecturerName }}</span></h1>
-            <p>You have {{ stats.todaySessions }} sessions scheduled for today</p>
+      <div class="dashboard-container">
+        
+        <!-- Premium Pro Header -->
+        <section class="pro-hero-banner">
+          <div class="hero-content">
+            <div class="hero-badge">Lecturer Pro Portal</div>
+            <h1>Welcome back, <span class="highlight-text">{{ lecturerName }}</span></h1>
+            <p class="hero-subtitle">You have <strong>{{ stats.todaySessions }}</strong> sessions scheduled for today</p>
           </div>
-          <div class="header-right">
-            <Button variant="secondary" @click="showCreateCourse" class="action-btn">
+          <div class="hero-actions">
+            <button class="btn-glass" @click="showCreateCourse">
               <span class="icon">📘</span> New Course
-            </Button>
-            <Button variant="primary" @click="showCreateSession" class="action-btn">
+            </button>
+            <button class="btn-glass" @click="showCreateSession">
               <span class="icon">➕</span> New Session
-            </Button>
-            <Button variant="success" @click="showBarcodeScanner" class="scan-btn">
+            </button>
+            <button class="btn-glow" @click="showBarcodeScanner">
               <span class="icon">📷</span> Start Scanning
-            </Button>
+            </button>
           </div>
-        </header>
+          <div class="hero-decoration">
+            <div class="circle-1"></div>
+            <div class="circle-2"></div>
+          </div>
+        </section>
 
         <!-- Stats -->
         <DashboardStats :stats="stats" />
 
-        <!-- Course Attendance Chart (New) -->
-        <section class="chart-section" v-if="courses.length > 0">
-          <Card class="chart-card">
-            <div class="chart-header">
-              <h3>Course Attendance Overview</h3>
-            </div>
-            <div class="chart-container">
-              <BarChart :chart-data="courseChartData" />
-            </div>
-          </Card>
-        </section>
+        <!-- Dual Column Dashboard Layout -->
+        <div class="dashboard-layout mt-8">
+          
+          <!-- Left Column: Chart & Courses -->
+          <div class="left-col">
+            <!-- Course Attendance Chart -->
+            <section class="chart-section" v-if="courses.length > 0">
+              <div class="glass-panel p-6">
+                <div class="section-header">
+                  <h2>Course Attendance Overview</h2>
+                </div>
+                <div class="chart-wrapper">
+                  <BarChart :chart-data="courseChartData" />
+                </div>
+              </div>
+            </section>
 
-        <!-- Main Content Area -->
-        <div class="dashboard-layout">
-          <CourseGrid 
-            :courses="courses"
-            :is-loading="isLoading"
-            @view-all="viewAllCourses"
-            @manage="manageCourse"
-            @create="showCreateCourse"
-          />
+            <CourseGrid 
+              :courses="courses"
+              :is-loading="isLoading"
+              @view-all="viewAllCourses"
+              @manage="manageCourse"
+              @create="showCreateCourse"
+            />
+          </div>
+
+          <!-- Right Column: Live Roster -->
+          <div class="right-col glass-panel p-0 overflow-hidden live-roster-panel">
+            <LiveRosterRealtime 
+              :active-roster="activeRoster"
+              :active-session-name="activeSessionName"
+              :active-session-id="activeSessionId"
+              :present-count="presentCount"
+              :is-ending-session="isEndingSession"
+              :is-loading="isLoading"
+              @mark="markAsPresent"
+              @complete="completeSession"
+              @scan="showBarcodeScanner"
+            />
+          </div>
+          
         </div>
-
-        <!-- Class Roster Section -->
-        <LiveRosterRealtime 
-          :active-roster="activeRoster"
-          :active-session-name="activeSessionName"
-          :active-session-id="activeSessionId"
-          :present-count="presentCount"
-          :is-ending-session="isEndingSession"
-          :is-loading="isLoading"
-          @mark="markAsPresent"
-          @complete="completeSession"
-          @scan="showBarcodeScanner"
-        />
       </div>
     </main>
 
-    <!-- Scan Barcode Modal (Full Screen Overlay Style) -->
+    <!-- Scan Barcode Modal -->
     <Modal :is-open="isScannerOpen" @close="closeBarcodeScanner" class="scanner-modal-fullscreen">
       <template #default>
         <ScannerInterface 
@@ -430,204 +442,235 @@ onMounted(fetchLecturerData)
 <style scoped>
 .lecturer-dashboard {
   min-height: 100vh;
+  background-color: var(--bg-main);
+  font-family: 'Inter', sans-serif;
 }
 
 .main-content {
-  padding: 2.5rem 0;
+  padding: 2rem 0 5rem 0;
 }
 
-.dashboard-header {
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* === PRO HERO BANNER === */
+.pro-hero-banner {
+  position: relative;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 28px;
+  padding: 3rem;
+  color: white;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2.5rem;
 }
 
-.header-left h1 {
-  font-size: 2rem;
+[data-theme='light'] .pro-hero-banner {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 500px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #38bdf8;
+}
+
+.pro-hero-banner h1 {
+  font-size: 2.2rem;
   font-weight: 800;
-  color: var(--text-main);
-  margin-bottom: 0.25rem;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
 }
 
-.highlight { color: var(--primary); }
-
-.header-left p {
-  color: var(--text-muted);
-  font-weight: 500;
+.highlight-text {
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.header-right {
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: #94a3b8;
+}
+.hero-subtitle strong {
+  color: white;
+}
+
+.hero-actions {
+  position: relative;
+  z-index: 2;
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
-/* Mobile responsive - adapt grid layout */
-@media (max-width: 1024px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1.5rem;
-    text-align: center;
-  }
-  
-  .header-right {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-  }
-  
-  .action-btn, .scan-btn {
-    flex: 1;
-    min-width: 140px;
-  }
-  
-  .dashboard-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
+.btn-glow {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.9rem 1.6rem;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
 }
 
-@media (max-width: 768px) {
-  .dashboard-header {
-    padding: 1.5rem 1rem;
-    gap: 1rem;
-  }
-  
-  .header-left h1 {
-    font-size: 1.5rem;
-  }
-  
-  .header-left p {
-    font-size: 0.875rem;
-  }
-  
-  .header-right {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .action-btn, .scan-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 0.875rem 1rem;
-  }
-  
-  .container {
-    padding: 0 1rem;
-  }
+.btn-glow:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+  background: #2563eb;
 }
 
-@media (max-width: 640px) {
-  .dashboard-header {
-    padding: 1rem 0.75rem;
-  }
-  
-  .header-left h1 {
-    font-size: 1.25rem;
-    line-height: 1.3;
-  }
-  
-  .header-left p {
-    font-size: 0.8rem;
-  }
-  
-  .header-right {
-    gap: 0.5rem;
-  }
-  
-  .action-btn, .scan-btn {
-    padding: 0.75rem 0.875rem;
-    font-size: 0.875rem;
-  }
-  
-  .container {
-    padding: 0 0.75rem;
-  }
+.btn-glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  padding: 0.9rem 1.4rem;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Chart Section */
-.chart-section {
-  margin-bottom: 2.5rem;
+.btn-glass:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
 }
 
-.chart-card {
-  padding: 1.5rem;
-  border-radius: 20px;
+.hero-decoration {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.chart-header h3 {
-  font-size: 1.125rem;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
+.circle-1 {
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+  top: -150px; right: -50px;
 }
 
-.chart-container {
-  height: 250px;
-  position: relative;
-  width: 100%;
+.circle-2 {
+  position: absolute;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.15) 0%, transparent 70%);
+  bottom: -100px; right: 20%;
 }
 
-/* Layout */
+.p-6 { padding: 1.5rem; }
+.mt-8 { margin-top: 2rem; }
+.overflow-hidden { overflow: hidden; }
+
+/* === LAYOUT === */
 .dashboard-layout {
   display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 2.5rem;
+  grid-template-columns: 1fr 30%;
+  gap: 2rem;
+  align-items: start;
 }
 
-.section-header {
+.left-col {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.chart-section {
+  width: 100%;
 }
 
 .section-header h2 {
   font-size: 1.25rem;
   font-weight: 800;
+  color: var(--text-main);
 }
 
-.text-link {
-  background: none;
-  border: none;
-  color: var(--primary);
-  font-weight: 700;
-  cursor: pointer;
+.chart-wrapper {
+  height: 250px;
+  position: relative;
+  width: 100%;
 }
 
-/* Timeline */
-.sessions-list-compact {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.live-roster-panel {
+  position: sticky;
+  top: 6rem;
 }
 
-.session-item-compact {
-  padding: 1rem;
-  background: var(--bg-card);
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+/* === MEDIA QUERIES === */
+@media (max-width: 1024px) {
+  .pro-hero-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  
+  .hero-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .btn-glow, .btn-glass {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .live-roster-panel {
+    position: static;
+  }
 }
 
-.session-meta {
-  width: 60px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-align: center;
+@media (max-width: 640px) {
+  .pro-hero-banner {
+    padding: 2rem 1.5rem;
+  }
+  
+  .pro-hero-banner h1 {
+    font-size: 1.8rem;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+  }
+  
+  .btn-glow, .btn-glass {
+    width: 100%;
+  }
 }
-
-.session-info h4 { font-size: 0.9rem; font-weight: 800; }
-.session-info p { font-size: 0.8rem; color: var(--text-muted); }
-
-.session-status {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-left: auto;
-}
-
-.session-status.completed { background: #cbd5e1; }
-.session-status.upcoming { background: #3b82f6; }
 </style>
