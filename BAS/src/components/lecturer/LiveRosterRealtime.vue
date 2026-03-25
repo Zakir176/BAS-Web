@@ -1,119 +1,135 @@
 <template>
-  <section class="content-section py-8">
-    <div class="section-header">
-      <div class="header-titles">
-        <h2>
-          Active Session Roster
-          <span v-if="isConnected" class="live-indicator">
-            <span class="live-dot"></span>
-            LIVE
-          </span>
+  <section class="live-roster-wrapper">
+    <!-- Header Area -->
+    <div class="roster-header">
+      <div class="header-main">
+        <h2 class="title">
+          Live Roster
+          <div v-if="isConnected" class="pulse-badge">
+            <span class="pulsing-dot"></span> LIVE
+          </div>
         </h2>
-        <p v-if="activeSessionName">Monitoring: <span class="highlight-alt">{{ activeSessionName }}</span></p>
-        <p v-if="lastUpdate" class="last-update">
-          Last update: {{ formatTime(lastUpdate) }}
+        <p class="subtitle" v-if="activeSessionName">
+          Monitoring: <strong>{{ activeSessionName }}</strong>
         </p>
       </div>
-      <div class="roster-actions">
-        <div class="connection-status" :class="{ 'connected': isConnected, 'connecting': isConnecting, 'error': connectionError }">
-          <span v-if="isConnected" class="status-text">🟢 Connected</span>
-          <span v-else-if="isConnecting" class="status-text">🟡 Connecting...</span>
-          <span v-else-if="connectionError" class="status-text">🔴 {{ connectionError }}</span>
-          <span v-else class="status-text">⚪ Disconnected</span>
+      
+      <div class="header-actions">
+        <div class="status-indicator" :class="{ 'connected': isConnected, 'connecting': isConnecting, 'error': connectionError }">
+          <span v-if="isConnected">🟢 Connected</span>
+          <span v-else-if="isConnecting">🟡 Connecting...</span>
+          <span v-else-if="connectionError">🔴 {{ connectionError }}</span>
+          <span v-else>⚪ Disconnected</span>
         </div>
-        <span class="roster-stats">
-          <strong>{{ presentCount }}</strong> Present / {{ liveRoster.length }} Total
-        </span>
-        <Button 
+        <div class="roster-stats">
+          <span class="stat-number">{{ presentCount }}</span>
+          <span class="stat-divider">/</span>
+          <span class="stat-total">{{ liveRoster.length }}</span>
+        </div>
+        <button 
           v-if="activeSessionId" 
-          variant="danger" 
-          size="sm" 
+          class="btn-danger-outline" 
           @click="$emit('complete')"
           :disabled="isEndingSession"
-          class="ml-4"
         >
-          {{ isEndingSession ? 'Ending...' : 'Complete Session' }}
-        </Button>
+          {{ isEndingSession ? 'Ending...' : 'End' }}
+        </button>
       </div>
     </div>
 
-    <!-- Real-time Updates Notification -->
-    <div v-if="showUpdateNotification" class="update-notification">
-      <div class="notification-content">
-        <span class="notification-icon">🔄</span>
-        <span class="notification-text">{{ updateNotificationText }}</span>
+    <!-- Notification Ribbon -->
+    <transition name="ribbon-slide">
+      <div v-if="showUpdateNotification" class="update-ribbon">
+        <span class="ribbon-icon">⚡</span>
+        <span class="ribbon-text">{{ updateNotificationText }}</span>
       </div>
-    </div>
+    </transition>
 
-    <div class="roster-grid-v2" v-if="liveRoster.length > 0">
-      <div 
-        v-for="student in liveRoster" 
-        :key="student.id" 
-        class="student-card-v2" 
-        :class="{ 
-          'is-present': student.present,
-          'recently-updated': recentlyUpdatedStudents.has(student.id)
-        }"
-      >
-        <div class="student-avatar-mini">
-          {{ student.full_name?.charAt(0) }}
-        </div>
-        <div class="student-info-mini">
-          <div class="name">{{ student.full_name }}</div>
-          <div class="sid">{{ student.student_number || student.student_id }}</div>
-          <div v-if="student.present && student.attendance_time" class="attendance-time">
-            {{ formatTime(student.attendance_time) }}
+    <!-- Roster Grid Table -->
+    <div class="roster-grid-container" v-if="liveRoster.length > 0">
+      <div class="roster-table-header">
+        <div class="col-ident">STUDENT</div>
+        <div class="col-status">STATUS</div>
+        <div class="col-time">TIMESTAMP</div>
+        <div class="col-action">ACTION</div>
+      </div>
+      <div class="roster-rows">
+        <div 
+          v-for="student in liveRoster" 
+          :key="student.id" 
+          class="roster-row" 
+          :class="{ 
+            'is-present': student.present,
+            'recently-scanned': recentlyUpdatedStudents.has(student.id || student.student_id)
+          }"
+        >
+          <div class="col-ident">
+            <div class="student-avatar-small">{{ student.full_name?.charAt(0) }}</div>
+            <div class="student-info-dense">
+              <span class="name">{{ student.full_name }}</span>
+              <span class="id">{{ student.student_number || student.student_id }}</span>
+            </div>
           </div>
-        </div>
-        <div class="student-status-action">
-          <span v-if="student.present" class="status-icon-check">
-            ✓
-            <span class="check-time">{{ formatTime(student.attendance_time) }}</span>
-          </span>
-          <button 
-            v-else 
-            class="mark-btn-v2" 
-            @click="$emit('mark', student.id || student.student_id)"
-            :disabled="!isConnected"
-          >
-            <span class="icon">📍</span> Mark
-          </button>
+          
+          <div class="col-status">
+            <div v-if="student.present" class="status-badge-present">
+              <span class="dot-live"></span> PRESENT
+            </div>
+            <div v-else class="status-badge-absent">ABSENT</div>
+          </div>
+
+          <div class="col-time">
+            <span v-if="student.present && (student.attendance_time || lastUpdate)" class="precise-time">
+              {{ formatPreciseTime(student.attendance_time || lastUpdate) }}
+            </span>
+            <span v-else class="text-muted-xs">--:--:--</span>
+          </div>
+
+          <div class="col-action">
+            <button 
+              v-if="!student.present"
+              class="btn-action-sm" 
+              @click="$emit('mark', student.id || student.student_id)"
+              :disabled="!isConnected"
+            >
+              Mark Manual
+            </button>
+            <div v-else class="success-check-icon">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     
-    <div v-else-if="!isLoading">
-      <EmptyState 
-        icon="📷"
-        title="No Active Session"
-        description="Roster visibility is only available during an active session. Start scanning students to populate this area."
-      >
-        <template #action>
-          <Button variant="primary" @click="$emit('scan')">Start Scanning</Button>
-        </template>
-      </EmptyState>
+    <!-- Empty State -->
+    <div v-else-if="!isLoading" class="empty-roster-state">
+      <div class="empty-icon">📍</div>
+      <h3>No Active Session</h3>
+      <p>Start a new session to populate the live roster with students.</p>
+      <button class="btn-glow-small" @click="$emit('scan')">
+        Open Scanner
+      </button>
     </div>
 
-    <!-- Connection Error State -->
-    <div v-if="connectionError && !isConnecting" class="connection-error-card">
-      <div class="error-content">
-        <span class="error-icon">⚠️</span>
-        <div class="error-details">
-          <h4>Connection Lost</h4>
+    <!-- Connection Error -->
+    <div v-if="connectionError && !isConnecting" class="error-banner">
+      <div class="error-info">
+        <span class="icon">⚠️</span>
+        <div class="text">
+          <h5>Connection Lost</h5>
           <p>{{ connectionError }}</p>
-          <Button variant="secondary" size="sm" @click="reconnect">
-            Reconnect
-          </Button>
         </div>
       </div>
+      <button class="btn-retry" @click="reconnect">Retry</button>
     </div>
   </section>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import Button from '@/components/ui/Button.vue'
-import EmptyState from '@/components/ui/EmptyState.vue'
 import { useRealtime } from '@/composables/useRealtime'
 
 const props = defineProps({
@@ -153,12 +169,9 @@ const presentCount = computed(() => {
 // Watch for session changes to subscribe/unsubscribe
 watch(() => props.activeSessionId, (newSessionId, oldSessionId) => {
   if (oldSessionId) {
-    // Unsubscribe from old session
     unsubscribe(`attendance:${oldSessionId}`)
   }
-  
   if (newSessionId) {
-    // Subscribe to new session
     subscribeToAttendance(newSessionId)
   }
 }, { immediate: true })
@@ -168,34 +181,39 @@ watch(() => props.activeRoster, (newRoster) => {
   setRosterData(newRoster)
 }, { immediate: true, deep: true })
 
+// Watch liveRoster for changes to trigger flash animation
+watch(liveRoster, (newRoster, oldRoster) => {
+  if (!oldRoster || oldRoster.length === 0) return
+  
+  newRoster.forEach(newStudent => {
+    const oldStudent = oldRoster.find(s => (s.id === newStudent.id || s.student_id === newStudent.student_id))
+    if (oldStudent && !oldStudent.present && newStudent.present) {
+      handleRealtimeUpdate(newStudent.id || newStudent.student_id, true, newStudent.attendance_time || new Date())
+    }
+  })
+}, { deep: true })
+
 // Handle real-time updates
 const handleRealtimeUpdate = (studentId, isPresent, timestamp) => {
-  // Add to recently updated set for animation
   recentlyUpdatedStudents.value.add(studentId)
-  
-  // Show notification
   const student = liveRoster.value.find(s => (s.id === studentId || s.student_id === studentId))
   if (student) {
     updateNotificationText.value = `${student.full_name} marked ${isPresent ? 'present' : 'absent'}`
     showUpdateNotification.value = true
-    
-    // Hide notification after 3 seconds
-    setTimeout(() => {
-      showUpdateNotification.value = false
-    }, 3000)
+    setTimeout(() => { showUpdateNotification.value = false }, 3000)
   }
-  
-  // Remove from recently updated after animation
-  setTimeout(() => {
-    recentlyUpdatedStudents.value.delete(studentId)
-  }, 2000)
+  setTimeout(() => { recentlyUpdatedStudents.value.delete(studentId) }, 2000)
 }
 
-// Format time helper
-const formatTime = (timestamp) => {
+// Format precise time helper
+const formatPreciseTime = (timestamp) => {
   if (!timestamp) return ''
   const date = new Date(timestamp)
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const h = date.getHours().toString().padStart(2, '0')
+  const m = date.getMinutes().toString().padStart(2, '0')
+  const s = date.getSeconds().toString().padStart(2, '0')
+  const ms = date.getMilliseconds().toString().padStart(3, '0')
+  return `${h}:${m}:${s}.${ms}`
 }
 
 // Reconnect handler
@@ -215,317 +233,372 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.content-section {
-  margin-top: 2.5rem;
-}
-
-.section-header {
+.live-roster-wrapper {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  flex-direction: column;
+  height: 100%;
 }
 
-.header-titles h2 {
-  font-size: 1.5rem;
+.roster-header {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 1rem;
+}
+
+.header-main {
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 1.35rem;
   font-weight: 850;
-  margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
 }
 
-.live-indicator {
+.pulse-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--success);
+  gap: 0.4rem;
   background: rgba(34, 197, 94, 0.1);
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
+  color: #10b981;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
-.live-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--success);
+.pulsing-dot {
+  width: 6px; height: 6px;
+  background: #10b981;
   border-radius: 50%;
-  animation: pulse 2s infinite;
+  animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
-.highlight-alt {
-  color: var(--primary);
-  font-weight: 700;
-}
-
-.last-update {
-  font-size: 0.8rem;
+.subtitle {
+  font-size: 0.85rem;
   color: var(--text-muted);
-  margin-top: 0.25rem;
+}
+.subtitle strong {
+  color: var(--primary);
 }
 
-.roster-actions {
+.header-actions {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: space-between;
 }
 
-.connection-status {
-  display: flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
+.status-indicator {
+  font-size: 0.75rem;
   font-weight: 600;
-}
-
-.connection-status.connected {
-  background: rgba(34, 197, 94, 0.1);
-  color: var(--success);
-}
-
-.connection-status.connecting {
-  background: rgba(250, 204, 21, 0.1);
-  color: var(--warning);
-}
-
-.connection-status.error {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error);
+  padding: 0.25rem 0;
 }
 
 .roster-stats {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.85rem;
   color: var(--text-muted);
+  font-weight: 600;
+  background: var(--bg-main);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
 }
 
-.roster-stats strong {
-  color: var(--text-main);
+.stat-number {
   font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
 }
+.stat-divider { margin: 0 0.2rem; }
 
-.ml-4 {
-  margin-left: 1rem;
+.btn-danger-outline {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.4rem 1rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
 }
+.btn-danger-outline:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
+.btn-danger-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.update-notification {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: 1px solid #bae6fd;
+/* Ribbon */
+.update-ribbon {
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+  color: white;
+  padding: 0.6rem 1rem;
   border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  animation: slideDown 0.3s ease-out;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-.notification-content {
+.ribbon-slide-enter-active, .ribbon-slide-leave-active { transition: all 0.3s ease; }
+.ribbon-slide-enter-from, .ribbon-slide-leave-to { opacity: 0; transform: translateY(-10px); }
+
+/* Roster Grid Table */
+.roster-grid-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.roster-table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 100px;
+  padding: 0.75rem 1rem;
+  background: rgba(0,0,0,0.02);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+[data-theme='dark'] .roster-table-header {
+  background: rgba(255,255,255,0.03);
+}
+
+.roster-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.roster-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 100px;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.roster-row:hover {
+  background: rgba(59, 130, 246, 0.03);
+}
+
+.roster-row.is-present {
+  background: rgba(16, 185, 129, 0.02);
+}
+
+/* HIGH INTENSITY FLASH */
+.recently-scanned {
+  animation: premium-flash 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  z-index: 10;
+  position: relative;
+}
+
+@keyframes premium-flash {
+  0% {
+    background: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    border-color: #10b981;
+    transform: scale(1.02);
+  }
+  20% {
+    transform: scale(1);
+  }
+  100% {
+    background: rgba(16, 185, 129, 0.05);
+    box-shadow: none;
+    border-color: transparent;
+  }
+}
+
+.col-ident {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.notification-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.notification-text {
-  font-size: 0.9rem;
-  color: #0369a1;
-  font-weight: 500;
-}
-
-.roster-grid-v2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.25rem;
-}
-
-.student-card-v2 {
-  background: var(--bg-card);
-  padding: 1rem;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  border: 1px solid var(--border-light);
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.student-card-v2.is-present {
-  border-color: var(--success-soft);
-  background: var(--success-soft);
-  opacity: 0.8;
-}
-
-.student-card-v2.recently-updated {
-  animation: highlightUpdate 2s ease-out;
-}
-
-@keyframes highlightUpdate {
-  0% {
-    border-color: var(--primary);
-    background: rgba(59, 130, 246, 0.1);
-    transform: scale(1.02);
-  }
-  100% {
-    border-color: var(--border-light);
-    background: var(--bg-card);
-    transform: scale(1);
-  }
-}
-
-.student-avatar-mini {
-  width: 40px;
-  height: 40px;
-  background: var(--bg-main);
-  border-radius: 12px;
+.student-avatar-small {
+  width: 28px;
+  height: 28px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  color: var(--primary);
-  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
-.student-info-mini {
-  flex: 1;
+[data-theme='dark'] .student-avatar-small {
+  background: rgba(255,255,255,0.08);
 }
 
-.student-info-mini .name {
-  font-size: 0.95rem;
+.student-info-dense {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-info-dense .name {
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-main);
 }
 
-.student-info-mini .sid {
-  font-size: 0.75rem;
+.student-info-dense .id {
+  font-size: 0.65rem;
   color: var(--text-muted);
   font-weight: 600;
 }
 
-.attendance-time {
-  font-size: 0.7rem;
-  color: var(--success);
-  font-weight: 600;
-  margin-top: 0.25rem;
-}
-
-.status-icon-check {
-  width: 28px;
-  height: 28px;
-  background: var(--success);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 900;
-  position: relative;
-}
-
-.check-time {
-  position: absolute;
-  top: -20px;
-  right: 0;
-  font-size: 0.6rem;
-  color: var(--success);
-  white-space: nowrap;
-  background: white;
-  padding: 2px 4px;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.mark-btn-v2 {
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--border-medium);
-  background: var(--bg-card);
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
+.status-badge-present {
+  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  color: #10b981;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.dot-live {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+}
+
+.status-badge-absent {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.precise-time {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.text-muted-xs {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.btn-action-sm {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
   transition: all 0.2s;
 }
 
-.mark-btn-v2:hover:not(:disabled) {
+[data-theme='dark'] .btn-action-sm {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+}
+
+.btn-action-sm:hover {
   background: var(--primary);
-  border-color: var(--primary);
   color: white;
+  border-color: var(--primary);
 }
 
-.mark-btn-v2:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.success-check-icon {
+  color: #10b981;
+  display: flex;
+  justify-content: center;
 }
 
-.connection-error-card {
-  background: rgba(239, 68, 68, 0.1);
+/* Empty state */
+.empty-roster-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-main);
+  border-radius: 16px;
+  border: 1px dashed var(--border-medium);
+  margin-top: 1.5rem;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.empty-roster-state h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.empty-roster-state p {
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  max-width: 250px;
+}
+
+.btn-glow-small {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s;
+}
+.btn-glow-small:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+/* Error banner */
+.error-banner {
+  margin-top: 1rem;
+  background: rgba(239, 68, 68, 0.05);
   border: 1px solid rgba(239, 68, 68, 0.2);
   border-radius: 12px;
   padding: 1rem;
-  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
-.error-content {
+.error-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
-}
-
-.error-icon {
-  font-size: 2rem;
-  flex-shrink: 0;
-}
-
-.error-details h4 {
-  color: var(--error);
-  margin-bottom: 0.25rem;
-}
-
-.error-details p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 640px) {
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .roster-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .live-indicator {
-    font-size: 0.65rem;
-  }
+  gap: 0.75rem;
 }
 </style>

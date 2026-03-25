@@ -1,5 +1,5 @@
 <template>
-  <Line :data="chartData" :options="mergedOptions" />
+  <Line :data="mergedData" :options="mergedOptions" />
 </template>
 
 <script setup>
@@ -42,43 +42,63 @@ const props = defineProps({
 const defaultOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  interaction: {
+    intersect: false,
+    mode: 'index'
+  },
   plugins: {
-    legend: {
-      display: false
-    },
+    legend: { display: false },
     tooltip: {
-      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+      backgroundColor: 'rgba(15, 23, 42, 0.95)',
       titleColor: '#fff',
       bodyColor: '#fff',
-      padding: 12,
-      cornerRadius: 8,
-      displayColors: false
+      titleFont: { family: "'Inter', sans-serif", size: 13, weight: 'bold' },
+      bodyFont: { family: "'Inter', sans-serif", size: 12 },
+      padding: 14,
+      cornerRadius: 12,
+      displayColors: true,
+      usePointStyle: true,
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+      borderWidth: 1,
+      boxPadding: 6,
+      // Subtle glow shadow via transparency and border
+      callbacks: {
+        labelColor: function(context) {
+          return {
+            borderColor: context.dataset.borderColor,
+            backgroundColor: context.dataset.borderColor,
+            borderWidth: 2,
+            borderRadius: 2,
+          }
+        }
+      }
     }
   },
   elements: {
     line: {
-      tension: 0.4, // smooth curves
-      borderWidth: 3
+      tension: 0.45,
+      borderWidth: 3,
+      capBezierPoints: true
     },
     point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 6
+      radius: 0, // hide by default
+      hitRadius: 20,
+      hoverRadius: 6,
+      hoverBorderWidth: 4,
+      hoverBackgroundColor: '#fff'
     }
   },
   scales: {
     y: {
       beginAtZero: true,
       grid: {
-        color: 'rgba(0, 0, 0, 0.05)',
+        display: false, // minimalist look
         drawBorder: false
       },
       ticks: {
-        color: '#64748b',
-        font: {
-          family: "'Inter', sans-serif",
-          size: 11
-        }
+        color: 'rgba(100, 116, 139, 0.5)',
+        maxTicksLimit: 5,
+        font: { family: "'Inter', sans-serif", size: 10 }
       }
     },
     x: {
@@ -87,15 +107,44 @@ const defaultOptions = {
         drawBorder: false
       },
       ticks: {
-        color: '#64748b',
-        font: {
-          family: "'Inter', sans-serif",
-          size: 11
-        }
+        color: 'rgba(100, 116, 139, 0.5)',
+        font: { family: "'Inter', sans-serif", size: 10 }
       }
     }
   }
 }
+
+// Function to create gradients for datasets
+const createGradient = (chart) => {
+  const { ctx, chartArea } = chart
+  if (!chartArea) return null
+  
+  const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top)
+  gradient.addColorStop(0, 'rgba(59, 130, 246, 0)')
+  gradient.addColorStop(1, 'rgba(59, 130, 246, 0.3)')
+  return gradient
+}
+
+const mergedData = computed(() => {
+  const data = JSON.parse(JSON.stringify(props.chartData))
+  if (data.datasets) {
+    data.datasets.forEach(ds => {
+      ds.fill = true
+      // We pass a function that Chart.js will call with the context
+      ds.backgroundColor = (context) => {
+        const chart = context.chart
+        const {ctx, chartArea} = chart
+        if (!chartArea) return null
+        const color = ds.borderColor || '#3b82f6'
+        const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top)
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 0)')
+        gradient.addColorStop(1, color.replace('1)', '0.2)').replace('rgb', 'rgba')) // soft variant
+        return gradient
+      }
+    })
+  }
+  return data
+})
 
 const mergedOptions = computed(() => {
   return { ...defaultOptions, ...props.chartOptions }

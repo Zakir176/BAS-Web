@@ -2,157 +2,120 @@
   <div class="report-page">
     <main class="main-content">
       <div class="container py-8">
-        <!-- Header Section -->
+        <!-- Premium Header -->
         <header class="page-header-v2">
-          <div class="header-left">
+          <div class="header-main">
             <span class="badge-v2">DATA & ANALYTICS</span>
             <h1>Attendance <span class="highlight">Intelligence</span></h1>
-            <p>Comprehensive records and performance insights.</p>
           </div>
           <div class="header-actions">
-            <Button variant="primary" @click="exportReport">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                />
+            <Button variant="secondary" size="sm" @click="exportReport" class="glass-btn">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" />
               </svg>
-              Export Report
+              <span>Export</span>
             </Button>
-            <Button variant="secondary" @click="refreshData">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fill-rule="evenodd"
-                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                  clip-rule="evenodd"
-                />
+            <Button variant="secondary" size="sm" @click="refreshData" class="glass-btn">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
               </svg>
-              Refresh
             </Button>
           </div>
         </header>
 
-        <!-- Filter Section -->
-        <section class="filter-section">
-          <Card class="filter-card">
-            <div class="filter-grid">
-              <div class="filter-item">
-                <label class="filter-label">Date Range</label>
-                <select v-model="filters.dateRange" class="filter-select">
-                  <option value="week">Last 7 Days</option>
-                  <option value="month">Last 30 Days</option>
-                  <option value="semester">This Semester</option>
-                  <option value="year">This Year</option>
-                  <option value="custom">Custom Range</option>
-                </select>
-              </div>
-
-              <div class="filter-item">
-                <label class="filter-label">Course</label>
-                <select v-model="filters.course" class="filter-select">
-                  <option value="all">All Courses</option>
-                  <option value="cs101">Computer Science 101</option>
-                  <option value="math201">Mathematics 201</option>
-                  <option value="phys101">Physics 101</option>
-                  <option value="chem101">Chemistry 101</option>
-                </select>
-              </div>
-
-              <div class="filter-item">
-                <label class="filter-label">Status</label>
-                <select v-model="filters.status" class="filter-select">
-                  <option value="all">All Status</option>
-                  <option value="present">Present Only</option>
-                  <option value="absent">Absent Only</option>
-                  <option value="late">Late Only</option>
-                </select>
-              </div>
-
-              <div class="filter-item">
-                <Button variant="primary" @click="applyFilters">Apply Filters</Button>
-              </div>
+        <!-- Horizontal High-Density Filter Bar -->
+        <section class="filter-toolbar glass-panel">
+          <div class="toolbar-items">
+            <div class="toolbar-item">
+              <label>Range</label>
+              <select v-model="filters.dateRange">
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+                <option value="semester">Semester</option>
+              </select>
             </div>
-          </Card>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-item">
+              <label>Course</label>
+              <select v-model="filters.course">
+                <option value="all">All Courses</option>
+                <option v-for="c in availableCourses" :key="c.id" :value="c.id">{{ c.name }}</option>
+              </select>
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-item">
+              <label>Status</label>
+              <select v-model="filters.status">
+                <option value="all">All Status</option>
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+              </select>
+            </div>
+          </div>
+          <button class="apply-toolbar-btn" @click="applyFilters">Update Analytics</button>
         </section>
 
-        <!-- Summary Cards -->
-        <section class="summary-section">
-          <div class="summary-grid">
-            <Card class="summary-card">
-              <div class="summary-icon total">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4z"
-                  />
-                  <path d="M16 8v8l4 4" />
-                </svg>
-              </div>
-              <div class="summary-content">
-                <div class="summary-number">{{ summaryStats.totalClasses }}</div>
-                <div class="summary-label">Total Classes</div>
-              </div>
-            </Card>
-
-            <Card class="summary-card">
-              <div class="summary-icon present">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2l4.586 4.586L26 6.172l2.828 2.828L28.586 16 26 18.586 23.172 26 16 28.586 13.414 26 6.172 23.172 3.344 16 5.414 13.414 8.828 6.172 16 2z"
-                  />
-                </svg>
-              </div>
-              <div class="summary-content">
-                <div class="summary-number">{{ summaryStats.present }}</div>
-                <div class="summary-label">Classes Attended</div>
-              </div>
-            </Card>
-
-            <Card class="summary-card">
-              <div class="summary-icon absent">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4zm-1 5v8h8v-2h-6V9h-2z"
-                  />
-                </svg>
-              </div>
-              <div class="summary-content">
-                <div class="summary-number">{{ summaryStats.absent }}</div>
-                <div class="summary-label">Classes Missed</div>
-              </div>
-            </Card>
-
-            <Card class="summary-card">
-              <div class="summary-icon percentage">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4z"
-                  />
-                  <path d="M16 8v8l6 3" />
-                </svg>
-              </div>
-              <div class="summary-content">
-                <div class="summary-number">{{ summaryStats.percentage }}%</div>
-                <div class="summary-label">Attendance Rate</div>
-              </div>
-            </Card>
+        <!-- Summary Tiles (High Density) -->
+        <section class="metrics-grid">
+          <div class="metric-tile glass-panel">
+            <div class="tile-icon blue"><span>📊</span></div>
+            <div class="tile-info">
+              <span class="tile-label">Total Classes</span>
+              <span class="tile-value">{{ summaryStats.totalClasses }}</span>
+            </div>
+          </div>
+          <div class="metric-tile glass-panel">
+            <div class="tile-icon emerald"><span>✅</span></div>
+            <div class="tile-info">
+              <span class="tile-label">Present</span>
+              <span class="tile-value">{{ summaryStats.present }}</span>
+            </div>
+          </div>
+          <div class="metric-tile glass-panel">
+            <div class="tile-icon amber"><span>❌</span></div>
+            <div class="tile-info">
+              <span class="tile-label">Absent</span>
+              <span class="tile-value">{{ summaryStats.absent }}</span>
+            </div>
+          </div>
+          <div class="metric-tile glass-panel highlight">
+            <div class="tile-icon indigo"><span>🎯</span></div>
+            <div class="tile-info">
+              <span class="tile-label">Rate</span>
+              <span class="tile-value">{{ summaryStats.percentage }}%</span>
+            </div>
           </div>
         </section>
 
-        <!-- Charts Section -->
-        <section class="charts-section">
-          <div class="charts-grid">
-            <Card class="chart-card">
-              <h3>Attendance Trend</h3>
-              <div class="chart-container">
-                <LineChart :chart-data="trendChartData" />
+        <!-- Analytics Visuals -->
+        <section class="analytics-grid">
+          <div class="visual-card glass-panel">
+            <div class="visual-header">
+              <h3>Attendance Trends</h3>
+              <div class="visual-actions">
+                <span class="trend-tag positive">↑ 12%</span>
               </div>
-            </Card>
+            </div>
+            <div class="chart-box">
+              <LineChart v-if="hasTrendData" :chart-data="trendChartData" />
+              <div v-else class="chart-skeleton">
+                <div class="skeleton-pulse"></div>
+                <p>Establishing baseline...</p>
+              </div>
+            </div>
+          </div>
 
-            <Card class="chart-card">
-              <h3>Course Distribution</h3>
-              <div class="chart-container">
-                <BarChart :chart-data="courseChartData" />
+          <div class="visual-card glass-panel">
+            <div class="visual-header">
+              <h3>Distribution</h3>
+            </div>
+            <div class="chart-box">
+              <BarChart v-if="hasCourseData" :chart-data="courseChartData" />
+              <div v-else class="chart-skeleton">
+                <div class="skeleton-pulse"></div>
+                <p>Waiting for course allocation...</p>
               </div>
-            </Card>
+            </div>
           </div>
         </section>
 
@@ -317,6 +280,20 @@ const filteredRecords = computed(() => {
 });
 
 // Chart.js Data Computations
+const hasTrendData = computed(() => {
+  return trendChartData.value.datasets[0].data.some(d => d > 0);
+});
+
+const hasCourseData = computed(() => {
+  return courseChartData.value.datasets[0].data.some(d => d > 0);
+});
+
+const availableCourses = ref([
+  { id: 'cs101', name: 'CS 101' },
+  { id: 'math201', name: 'MATH 201' },
+  { id: 'phys101', name: 'PHYS 101' }
+]);
+
 const trendChartData = computed(() => {
   // Aggregate recent attendance by date (past 7 distinct dates)
   const map = new Map()
@@ -344,8 +321,11 @@ const trendChartData = computed(() => {
       {
         label: 'Attendance %',
         data: dataPoints.length ? dataPoints : [0],
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: '#6366f1', // Indigo-500
+        borderWidth: 3,
+        pointBackgroundColor: '#6366f1',
+        pointBorderColor: '#fff',
+        pointHoverRadius: 6,
         fill: true,
       }
     ]
@@ -376,9 +356,9 @@ const courseChartData = computed(() => {
         label: 'Course Attendance %',
         data: dataPoints.length ? dataPoints : [0],
         backgroundColor: [
-          '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'
+          '#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'
         ],
-        borderRadius: 4
+        borderRadius: 8,
       }
     ]
   };
@@ -424,9 +404,6 @@ onMounted(() => {
 }
 
 .page-header-v2 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 3rem;
 }
 
@@ -648,46 +625,228 @@ onMounted(() => {
   color: var(--text-main);
 }
 
+/* === MEDIA .report-page {
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+.page-header-v2 {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.header-main h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0.25rem 0 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Horizontal Filter Toolbar */
+.filter-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme='dark'] .filter-toolbar {
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.toolbar-items {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.toolbar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toolbar-item label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.toolbar-item select {
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-light);
+}
+
+.apply-toolbar-btn {
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.apply-toolbar-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+/* Metrics Grid (High Density) */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-tile {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 16px;
+}
+
+.metric-tile.highlight {
+  border-left: 3px solid var(--primary);
+}
+
+.tile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.tile-icon.blue { background: rgba(59, 130, 246, 0.1); }
+.tile-icon.emerald { background: rgba(16, 185, 129, 0.1); }
+.tile-icon.amber { background: rgba(245, 158, 11, 0.1); }
+.tile-icon.indigo { background: rgba(99, 102, 241, 0.1); }
+
+.tile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.tile-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tile-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* Analytics Grid */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.visual-card {
+  padding: 1.5rem;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.visual-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.visual-header h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.trend-tag {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.trend-tag.positive {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.chart-box {
+  flex: 1;
+  min-height: 300px;
+}
+
+/* Skeleton Pulse */
+.chart-skeleton {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.skeleton-pulse {
+  width: 80%;
+  height: 200px;
+  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.05), transparent);
+  background-size: 200% 100%;
+  animation: pulse 1.5s infinite;
+  border-radius: 12px;
+}
+
+@keyframes pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (max-width: 1024px) {
+  .analytics-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 768px) {
-  .header-section {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .header-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .filter-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .records-header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .records-actions {
-    min-width: auto;
-    width: 100%;
-  }
-
-  .table-container {
-    font-size: 0.875rem;
-  }
-
-  .pagination {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .filter-toolbar { flex-direction: column; align-items: stretch; gap: 1rem; }
+  .toolbar-items { flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+  .toolbar-divider { display: none; }
 }
 </style>

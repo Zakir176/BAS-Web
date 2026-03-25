@@ -51,7 +51,7 @@ const props = defineProps({
 })
 
 const currentDate = ref(new Date())
-const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
 const monthYear = computed(() => {
   return currentDate.value.toLocaleString('default', { month: 'long', year: 'numeric' })
@@ -82,7 +82,8 @@ const calendarDays = computed(() => {
     days.push(formatDate(d, false))
   }
   
-  return days
+  // Filter out Sunday (0) and Saturday (6)
+  return days.filter(d => d.dayOfWeek !== 0 && d.dayOfWeek !== 6)
 })
 
 const formatDate = (date, isCurrentMonth) => {
@@ -91,7 +92,8 @@ const formatDate = (date, isCurrentMonth) => {
     day: date.getDate(),
     iso: date.toISOString().split('T')[0],
     isCurrentMonth,
-    isToday: date.toDateString() === today.toDateString()
+    isToday: date.toDateString() === today.toDateString(),
+    dayOfWeek: date.getDay()
   }
 }
 
@@ -154,7 +156,7 @@ const nextMonth = () => {
 
 .heatmap-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
 }
 
