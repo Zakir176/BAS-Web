@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { ref } from 'vue'
-import { useToast } from '@/composables/useToast'
+
+import { useToast } from '@/shared/composables/useToast'
 
 describe('useToast Composable', () => {
   beforeEach(() => {
@@ -156,7 +156,7 @@ describe('useToast Composable', () => {
   it('handles default toast type', () => {
     const { toasts, addToast } = useToast()
     
-    const toastId = addToast({
+    addToast({
       message: 'Default message'
     })
     
