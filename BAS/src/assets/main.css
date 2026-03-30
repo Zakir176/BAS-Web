@@ -1,28 +1,46 @@
 @import './base.css';
 
 :root {
-  /* Colors - Modern Blue Scale */
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-glow: rgba(59, 130, 246, 0.4);
+  /* Brand Colors */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-glow: rgba(37, 99, 235, 0.15);
+  --accent: #3b82f6;
   
-  --bg-main: #f3f6f9;
+  /* Surface / Backgrounds */
+  --bg-main: #f8fafc;
   --bg-card: #ffffff;
-  --bg-panel: #ffffff;
+  --bg-panel: rgba(255, 255, 255, 0.7);
+  --bg-modal: #ffffff;
+  --bg-pattern: radial-gradient(var(--border-medium) 1px, transparent 1px);
+  --bg-pattern-size: 24px 24px;
   
-  --text-main: #111827;
-  --text-muted: #6b7280;
+  /* Text Colors */
+  --text-main: #0f172a;
+  --text-muted: #475569;
   --text-inverse: #ffffff;
   
+  /* Status Colors */
   --success: #10b981;
-  --success-bg: #ecfdf5;
+  --success-hover: #059669;
+  --success-bg: #f0fdf4;
   --error: #ef4444;
   --error-bg: #fef2f2;
   --warning: #f59e0b;
   --warning-bg: #fffbeb;
+  --info: #3b82f6;
+  --info-bg: #eff6ff;
   
-  --border-light: #f3f4f6;
-  --border-medium: #e5e7eb;
+  /* Borders & Dividers */
+  --border-light: #f1f5f9;
+  --border-medium: #e2e8f0;
+  --border-focus: var(--primary);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   
   /* Radii */
   --radius-sm: 8px;
@@ -30,51 +48,39 @@
   --radius-lg: 24px;
   --radius-full: 9999px;
   
-  /* Shadows */
-  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --shadow-modal: 0 20px 50px -12px rgba(0, 0, 0, 0.15);
-  
   /* Transitions */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Light mode background pattern */
-  --bg-pattern: radial-gradient(#d1d5db 1px, transparent 1px);
-  --bg-pattern-size: 20px 20px;
+  --transition-fast: all 0.2s ease;
 }
 
 [data-theme="dark"] {
-  /* Background Layers - Deep navy with elevation */
-  --bg-main: #0a0e1a;
-  --bg-card: #151b2e;
-  --bg-panel: #1a2332;
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --bg-panel: rgba(30, 41, 59, 0.5);
+  --bg-modal: #1e293b;
+  --bg-pattern: radial-gradient(var(--border-medium) 1px, transparent 1px);
+  --bg-pattern-size: 24px 24px;
   
-  /* Text Colors - Soft whites for comfort */
-  --text-main: #e2e8f0;
+  --text-main: #f1f5f9;
   --text-muted: #94a3b8;
-  --text-inverse: #0a0e1a;
+  --text-inverse: #0f172a;
   
-  /* Borders - Subtle and refined */
-  --border-light: #1e293b;
-  --border-medium: #334155;
+  --border-light: #334155;
+  --border-medium: #475569;
+  --border-focus: var(--primary);
   
-  /* Primary Colors - Brighter for dark mode */
   --primary: #60a5fa;
-  --primary-hover: #3b82f6;
+  --primary-hover: #93c5fd;
   --primary-glow: rgba(96, 165, 250, 0.3);
   
-  /* Status Colors - Enhanced visibility */
-  --success: #34d399;
-  --success-bg: rgba(52, 211, 153, 0.15);
-  --error: #f87171;
-  --error-bg: rgba(248, 113, 113, 0.15);
-  --warning: #fbbf24;
-  --warning-bg: rgba(251, 191, 36, 0.15);
-  
-  /* Shadows - Colored for depth */
-  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(59, 130, 246, 0.1);
-  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(59, 130, 246, 0.15);
-  --shadow-modal: 0 20px 50px -12px rgba(0, 0, 0, 0.7), 0 10px 20px rgba(59, 130, 246, 0.2);
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.1);
+  --error: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.1);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --info: #3b82f6;
+  --info-bg: rgba(59, 130, 246, 0.1);
 }
 
 body {
@@ -119,7 +125,7 @@ body {
 .btn-primary:hover {
   background-color: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.23);
+  box-shadow: 0 6px 20px var(--primary-glow);
 }
 
 .btn-secondary {
@@ -131,6 +137,36 @@ body {
 .btn-secondary:hover {
   background-color: var(--bg-main);
   transform: translateY(-1px);
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
+}
+
+.btn-danger {
+  background-color: var(--error);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.3);
+}
+
+.btn-warning {
+  background-color: var(--warning);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.3);
+}
+
+.btn-white {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-medium);
+}
+
+[data-theme="dark"] .btn-white {
+  background-color: var(--border-light);
+  color: var(--text-main);
+  border-color: var(--border-medium);
 }
 
 .input {
@@ -216,9 +252,9 @@ body {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   transition: var(--transition-smooth);
 }
 

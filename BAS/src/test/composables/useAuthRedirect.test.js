@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { ref } from 'vue'
+
 
 // Mock sessionStorage
 const mockSessionStorage = {
@@ -40,7 +40,7 @@ vi.mock('vue-router', () => ({
 }))
 
 // Import after mocking
-import { useAuthRedirect } from '@/composables/useAuthRedirect'
+import { useAuthRedirect } from '@/shared/composables/useAuthRedirect'
 
 describe('useAuthRedirect Composable', () => {
   beforeEach(() => {
