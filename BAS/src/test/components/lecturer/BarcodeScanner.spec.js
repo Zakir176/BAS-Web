@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import BarcodeScanner from '@/components/lecturer/BarcodeScanner.vue'
+import BarcodeScanner from '@/features/lecturer/BarcodeScanner.vue'
 import Quagga from '@ericblade/quagga2'
 
 describe('BarcodeScanner.vue', () => {
