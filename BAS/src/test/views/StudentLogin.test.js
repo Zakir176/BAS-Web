@@ -100,7 +100,7 @@ const SimpleStudentLogin = {
 
 // Mock the useAuth composable
 const mockSignIn = vi.fn()
-vi.mock('@/composables/useAuth', () => ({
+vi.mock('@/shared/composables/useAuth', () => ({
   useAuth: () => ({
     signIn: mockSignIn,
     isLoading: ref(false)
@@ -112,7 +112,7 @@ const mockToast = {
   error: vi.fn(),
   success: vi.fn()
 }
-vi.mock('@/composables/useToast', () => ({
+vi.mock('@/shared/composables/useToast', () => ({
   useToast: () => ({
     toast: mockToast
   })

@@ -1,82 +1,92 @@
-# 🎓 Barcode Attendance System (BAS)
+# 🎓 BAS Pro: Digital Campus Infrastructure
 
-A modern, mobile-first web application for university attendance tracking. BAS allows lecturers to manage courses and sessions, while enabling students to track their attendance history and performance.
+> **Elevating Academic Operations to SaaS Standards.**  
+> A high-density, professional attendance management ecosystem built with **Vue 3**, **Supabase**, and the custom **`catv1`** design system.
 
-![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+---
 
-## ✨ Key Features
+## 💎 The "Pro" Experience
 
-### 👨‍🏫 Lecturer Portal
-- **Dashboard**: Real-time overview of active courses, student stats, and upcoming sessions.
-- **Barcode Scanner**: Integrated camera scanner (using `Quagga2`) for rapid student check-in.
-- **Session Management**: Create, manage, and "Complete" attendance sessions.
-- **Live Roster**: Watch attendance populate in real-time as students are scanned.
-- **Reports**: Export course data to CSV.
+### 🚀 Immersive Scanner HUD
+Engineered for both speed and operational depth.
+- **Web Operator Mode**: A futuristic, holographic HUD for classroom desktop environments. Features integrated GPS lock, radar-active scanning focus, and real-time log streams.
+- **Native Alignment**: 1:1 design parity with the `catv1` native mobile application.
+- **Intelligent Feedback**: Success toasts with granular "Undo" support and dual-card parity (Present vs. Absent) for real-time KPIs.
 
-### 👨‍🎓 Student Portal
-- **Personal Dashboard**: View attendance rates per course.
-- **History**: Full log of present/absent dates.
-- **Mobile Optimized**: Fully responsive interface with a native-like App Drawer navigation.
-- **Contact**: Quick actions to contact parents or faculty.
+### 💳 Digital ID Card "Pro"
+Transforming static student identification into an interactive digital asset.
+- **Glassmorphism**: Premium frosted-surface aesthetics with backdrop blur and depth.
+- **Holographic Security**: Dynamic shimmer-sweep and edge-glow animations.
+- **Meta-Data Badges**: High-density display of student level, status, and validity periods.
 
-### 🎨 UI/UX
-- **Glassmorphism**: Premium frosted-glass aesthetics on navigation and overlays.
-- **Dark Mode**: Fully supported system-wide dark theme.
-- **Responsive**: Mobile-first design ensures perfect usability on phones and tablets.
+### 👨‍🏫 Lecturer Command Center
+- **Metric Tiles**: Visual KPIs for attendance trends and course health.
+- **Live Roster**: A real-time, searchable operating table for classroom management.
+- **Global Activity**: Integrated institution-wide event tracking.
+
+---
+
+## 🎨 Design Language: `catv1`
+The portal utilizes the **`catv1`** theme architecture, providing a seamless transition between high-density operational views and modern minimalist aesthetics.
+
+- **Slate-Dark**: A deep, neutral slate base designed for focus and low-light environments.
+- **Slate-Light**: A clean, professional high-contrast version for administrative clarity.
+- **Semantic Variables**: Fully driven by a robust CSS variable system for instant skinning and brand alignment.
+
+---
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: Vue 3 (Composition API) + Vite
-- **Styling**: Tailwind CSS + Custom CSS Variables
-- **Backend/Auth**: Supabase (PostgreSQL, Auth, Realtime)
-- **State**: Vue Composables (`useAuth.js`)
-- **Scanning**: `@ericblade/quagga2`
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend** | [Vue 3](https://vuejs.org/) (Composition API) |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) + Custom HSL Tokens |
+| **Database** | [Supabase](https://supabase.com/) (PostgreSQL + Realtime) |
+| **Scanning** | [@ericblade/quagga2](https://github.com/ericblade/quagga2) |
+| **Deployment** | Vite + Vercel Optimized |
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v16+)
-- A Supabase project with `students`, `teachers`, `courses`, `sessions`, and `attendance` tables.
+- Node.js v18.0 or later
+- [Supabase Project](https://supabase.com/) with configured `attendance_logs`, `enrollments`, and `students` tables.
 
-### Installation
-
-1.  **Clone the repository**
-    ```sh
+### Quick Start
+1.  **Clone & Install**
+    ```bash
     git clone https://github.com/yourusername/bas-web.git
-    cd bas-web/BAS
-    ```
-
-2.  **Install dependencies**
-    ```sh
+    cd BAS
     npm install
     ```
 
-3.  **Environment Setup**
-    Create a `.env` file in the root directory:
-    ```env
-    VITE_SUPABASE_URL=your_supabase_project_url
-    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+2.  **Environment Configuration**
+    Create a `.env` file from the example:
+    ```bash
+    cp .env.example .env
+    # Add your Supabase keys to .env
     ```
 
-4.  **Run Locally**
-    ```sh
+3.  **Launch Dashboard**
+    ```bash
     npm run dev
     ```
 
-## 📂 Project Structure
+---
 
-- `src/components/common`: Shared UI (Navbar, Inputs, Modals).
-- `src/components/lecturer`: Dashboard widgets, Scanner, Create Modals.
-- `src/components/student`: Student-specific views and cards.
-- `src/views`: Top-level page views (Home, Dashboard, Login).
-- `src/composables`: Reusable logic (`useAuth`).
+## 📂 Architecture Overview
 
-## 🔍 Recent Updates
-- **Robust Scanning**: Refactored session detection to prevent database join errors.
-- **Session Completion**: Lecturers can now finalize sessions directly from the scanner.
-- **Mobile Experience**: Complete redesign of the mobile navigation drawer.
+```text
+src/
+├── components/
+│   ├── lecturer/     # Dashboard widgets, Immersive Scanner, Roster
+│   ├── student/      # Pro ID Card, Attendance History
+│   └── ui/           # Base components (Modals, Icons, Buttons)
+├── composables/      # Unified Auth & Database Logic (useAuth, useToast)
+└── views/            # High-density route containers
+```
 
 ---
-*Developed by Zakir*
+
+*Developed and Optimized by Zakir (Professional Edition)*
