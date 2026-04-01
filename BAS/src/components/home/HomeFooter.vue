@@ -14,17 +14,17 @@
             </p>
             <div class="brand-stats">
               <div class="mini-stat">
-                <Skeleton v-if="isLoading" width="40px" height="1.5rem" />
+                <BaseSkeleton v-if="isLoading" width="40px" height="1.5rem" />
                 <span v-else class="number">{{ stats.students || '0' }}</span>
                 <span class="label">Students</span>
               </div>
               <div class="mini-stat">
-                <Skeleton v-if="isLoading" width="40px" height="1.5rem" />
+                <BaseSkeleton v-if="isLoading" width="40px" height="1.5rem" />
                 <span v-else class="number">{{ stats.courses || '0' }}</span>
                 <span class="label">Courses</span>
               </div>
               <div class="mini-stat">
-                <Skeleton v-if="isLoading" width="40px" height="1.5rem" />
+                <BaseSkeleton v-if="isLoading" width="40px" height="1.5rem" />
                 <span v-else class="number">{{ stats.accuracy }}</span>
                 <span class="label">Accuracy</span>
               </div>
@@ -131,7 +131,7 @@
 </template>
 
 <script setup>
-import Skeleton from '@/components/ui/Skeleton.vue'
+import BaseSkeleton from '@/core/ui/BaseSkeleton.vue'
 
 defineProps({
   isLoading: { type: Boolean, default: true },
