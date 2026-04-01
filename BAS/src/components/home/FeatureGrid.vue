@@ -36,9 +36,9 @@
         <div class="features-mini-grid">
           <template v-if="isLoading">
             <article v-for="i in 4" :key="i" class="feature-mini-card">
-              <Skeleton width="40px" height="40px" shape="circle" style="margin-bottom: 1rem" />
-              <Skeleton width="60%" height="1.5rem" style="margin-bottom: 0.5rem" />
-              <Skeleton width="100%" height="3rem" />
+              <BaseSkeleton width="40px" height="40px" shape="circle" style="margin-bottom: 1rem" />
+              <BaseSkeleton width="60%" height="1.5rem" style="margin-bottom: 0.5rem" />
+              <BaseSkeleton width="100%" height="3rem" />
             </article>
           </template>
           <template v-else>
@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import Skeleton from '@/components/ui/Skeleton.vue'
+import BaseSkeleton from '@/core/ui/BaseSkeleton.vue'
 
 defineProps({
   isLoading: { type: Boolean, default: true }
