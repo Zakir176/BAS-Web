@@ -1,0 +1,620 @@
+<template>
+  <div class="live-attendance-status">
+    <!-- Connection Status -->
+    <div class="connection-indicator" :class="{ 'connected': isConnected, 'connecting': isConnecting, 'error': connectionError }">
+      <span class="status-dot"></span>
+      <span class="status-text">
+        {{ isConnected ? 'Live Updates' : isConnecting ? 'Connecting...' : connectionError || 'Offline' }}
+      </span>
+    </div>
+
+    <!-- Today's Sessions -->
+    <div class="sessions-container">
+      <h3>Today's Sessions</h3>
+      
+      <div v-if="todaySessions.length === 0" class="no-sessions">
+        <div class="empty-state">
+          <span class="empty-icon">📅</span>
+          <p>No sessions scheduled for today</p>
+        </div>
+      </div>
+
+      <div v-else class="sessions-grid">
+        <div 
+          v-for="session in todaySessions" 
+          :key="session.session_id"
+          class="session-card"
+          :class="{ 
+            'active': session.is_active,
+            'attended': session.attendance_status === 'Present',
+            'recently-updated': recentlyUpdatedSessions.has(session.session_id)
+          }"
+        >
+          <div class="session-header">
+            <div class="session-info">
+              <h4>{{ session.course_name }}</h4>
+              <p class="session-time">{{ formatSessionTime(session.session_time) }}</p>
+            </div>
+            <div class="session-status">
+              <span v-if="session.is_active" class="active-badge">
+                <span class="pulse-dot"></span>
+                ACTIVE
+              </span>
+              <span v-else-if="session.attendance_status" class="status-badge" :class="session.attendance_status.toLowerCase()">
+                {{ session.attendance_status }}
+              </span>
+              <span v-else class="status-badge pending">Pending</span>
+            </div>
+          </div>
+
+          <div class="session-details">
+            <div class="attendance-info">
+              <div v-if="session.attendance_time" class="attendance-time">
+                <span class="icon">🕐</span>
+                Marked at {{ formatTime(session.attendance_time) }}
+              </div>
+              <div v-if="session.attendance_method" class="attendance-method">
+                <span class="icon">{{ getMethodIcon(session.attendance_method) }}</span>
+                {{ session.attendance_method }}
+              </div>
+            </div>
+
+            <div v-if="session.is_active" class="live-indicator-small">
+              <span class="live-text">LIVE</span>
+              <span class="live-pulse"></span>
+            </div>
+          </div>
+
+          <!-- Real-time Update Notification -->
+          <div v-if="session.showNotification" class="update-notification">
+            <span class="notification-icon">🔄</span>
+            <span class="notification-text">{{ session.notificationText }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Statistics -->
+    <div class="stats-container">
+      <h3>Attendance Overview</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">{{ attendanceStats.present }}</div>
+          <div class="stat-label">Present</div>
+          <div class="stat-percentage">{{ attendanceStats.presentPercentage }}%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ attendanceStats.absent }}</div>
+          <div class="stat-label">Absent</div>
+          <div class="stat-percentage">{{ attendanceStats.absentPercentage }}%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ attendanceStats.total }}</div>
+          <div class="stat-label">Total Sessions</div>
+          <div class="stat-percentage">100%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connection Error -->
+    <div v-if="connectionError && !isConnecting" class="connection-error">
+      <div class="error-content">
+        <span class="error-icon">⚠️</span>
+        <div class="error-details">
+          <h4>Connection Lost</h4>
+          <p>{{ connectionError }}</p>
+          <BaseButton variant="secondary" size="sm" @click="reconnect">
+            Reconnect
+          </BaseButton>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useAuth } from '@/shared/composables/useAuth'
+import { useRealtime } from '@/shared/composables/useRealtime'
+import { supabase } from '@/core/api/supabase'
+import BaseButton from '@/core/ui/BaseButton.vue'
+
+const { user } = useAuth()
+const {
+  isConnected,
+  isConnecting,
+  connectionError,
+  subscribeToAttendance,
+  unsubscribe,
+  reconnect: reconnectRealtime
+} = useRealtime()
+
+// Local state
+const todaySessions = ref([])
+const attendanceStats = ref({
+  present: 0,
+  absent: 0,
+  total: 0,
+  presentPercentage: 0,
+  absentPercentage: 0
+})
+const recentlyUpdatedSessions = ref(new Set())
+
+// Fetch today's sessions
+const fetchTodaySessions = async () => {
+  if (!user.value) return
+
+  try {
+    const today = new Date().toISOString().split('T')[0]
+    
+    // In V2, we query sections the student is enrolled in
+    // Note: session_id in the UI will map to section_id
+    const { data, error } = await supabase
+      .from('enrollments')
+      .select(`
+        section_id,
+        sections(
+          id,
+          name,
+          courses(name),
+          attendance_logs(
+            status,
+            session_date,
+            method
+          )
+        )
+      `)
+      .eq('student_id', user.value.id) // Corrected: userStore should ensure user.id is student UUID
+
+    if (error) throw error
+
+    // Transform data to match existing UI structure
+    const processedSessions = (data || []).map(enrollment => {
+      const section = enrollment.sections
+      // Find log for TODAY
+      const log = section?.attendance_logs?.find(l => 
+        new Date(l.session_date).toISOString().split('T')[0] === today
+      )
+      
+      return {
+        session_id: section?.id,
+        course_name: section?.courses?.name || 'Unknown Course',
+        session_time: 'Scheduled', 
+        attendance_status: log?.status || null,
+        attendance_time: log?.session_date || null,
+        attendance_method: log?.method || null,
+        is_active: true, // Sections are generally active during the day
+        showNotification: false,
+        notificationText: ''
+      }
+    })
+
+    todaySessions.value = processedSessions
+    calculateStats()
+
+    // Subscribe to real-time updates for all enrolled sections today
+    processedSessions.forEach(session => {
+      subscribeToAttendance(session.session_id)
+    })
+
+  } catch (error) {
+    console.error('Failed to fetch sessions:', error)
+  }
+}
+
+// Calculate attendance statistics
+const calculateStats = () => {
+  const present = todaySessions.value.filter(s => s.attendance_status === 'Present').length
+  const absent = todaySessions.value.filter(s => s.attendance_status === 'Absent').length
+  const total = todaySessions.value.length
+
+  attendanceStats.value = {
+    present,
+    absent,
+    total,
+    presentPercentage: total > 0 ? Math.round((present / total) * 100) : 0,
+    absentPercentage: total > 0 ? Math.round((absent / total) * 100) : 0
+  }
+}
+
+// Format time helper
+const formatTime = (timestamp) => {
+  if (!timestamp) return ''
+  const date = new Date(timestamp)
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+
+// Format session time
+const formatSessionTime = (sessionTime) => {
+  if (!sessionTime) return ''
+  const [hours, minutes] = sessionTime.split(':')
+  const date = new Date()
+  date.setHours(parseInt(hours), parseInt(minutes))
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+
+// Get method icon
+const getMethodIcon = (method) => {
+  switch (method?.toLowerCase()) {
+    case 'barcode': return '📷'
+    case 'manual': return '✋'
+    case 'auto': return '🤖'
+    default: return '📝'
+  }
+}
+
+// Reconnect handler
+const reconnect = () => {
+  reconnectRealtime()
+  fetchTodaySessions()
+}
+
+// Watch for user changes
+watch(() => user.value, (newUser) => {
+  if (newUser) {
+    fetchTodaySessions()
+  }
+}, { immediate: true })
+
+// Cleanup on unmount
+onUnmounted(() => {
+  todaySessions.value.forEach(session => {
+    unsubscribe(`attendance:${session.session_id}`)
+  })
+})
+
+// Initialize on mount
+onMounted(() => {
+  fetchTodaySessions()
+})
+</script>
+
+<style scoped>
+.live-attendance-status {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.connection-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.connection-indicator.connected {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.connection-indicator.connecting {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+}
+
+.connection-indicator.error {
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid var(--error);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.connection-indicator.connected .status-dot {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.sessions-container h3,
+.stats-container h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
+
+.no-sessions {
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.sessions-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.session-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.session-card.active {
+  border-color: var(--primary);
+  background: var(--info-bg);
+}
+
+.session-card.attended {
+  border-color: var(--success);
+  background: var(--success-bg);
+}
+
+.session-card.recently-updated {
+  animation: highlightUpdate 2s ease-out;
+}
+
+@keyframes highlightUpdate {
+  0% {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 0.75rem;
+}
+
+.session-info h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.session-time {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.session-status {
+  display: flex;
+  align-items: center;
+}
+
+.active-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--primary);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-badge.present {
+  background: var(--success);
+  color: white;
+}
+
+.status-badge.absent {
+  background: var(--error);
+  color: white;
+}
+
+.status-badge.pending {
+  background: var(--border-medium);
+  color: var(--text-muted);
+}
+
+.session-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.attendance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.attendance-time,
+.attendance-method {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.icon {
+  font-size: 0.875rem;
+}
+
+.live-indicator-small {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.live-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.live-pulse {
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.update-notification {
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: var(--info-bg);
+  border: 1px solid var(--info);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.notification-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.notification-text {
+  font-size: 0.8rem;
+  color: var(--info);
+  font-weight: 500;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stats-container {
+  margin-top: 2rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.stat-percentage {
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.connection-error {
+  margin-top: 1.5rem;
+  background: var(--error-bg);
+  border: 1px solid var(--error);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.error-details h4 {
+  color: var(--error);
+  margin-bottom: 0.25rem;
+}
+
+.error-details p {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .live-attendance-status {
+    padding: 0.5rem;
+  }
+  
+  .session-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .session-details {
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
