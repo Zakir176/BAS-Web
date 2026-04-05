@@ -20,17 +20,17 @@
         
         <div class="hero-stats">
           <article class="stat-item">
-            <Skeleton v-if="isLoading" width="120px" height="3rem" />
+            <BaseSkeleton v-if="isLoading" width="120px" height="3rem" />
             <span v-else class="stat-number">{{ stats.students || '0' }}</span>
             <span class="stat-label">Active Students</span>
           </article>
           <article class="stat-item">
-            <Skeleton v-if="isLoading" width="120px" height="3rem" />
+            <BaseSkeleton v-if="isLoading" width="120px" height="3rem" />
             <span v-else class="stat-number">{{ stats.courses || '0' }}</span>
             <span class="stat-label">University Courses</span>
           </article>
           <article class="stat-item">
-            <Skeleton v-if="isLoading" width="120px" height="3rem" />
+            <BaseSkeleton v-if="isLoading" width="120px" height="3rem" />
             <span v-else class="stat-number">{{ stats.accuracy }}</span>
             <span class="stat-label">Accuracy Rate</span>
           </article>
@@ -39,23 +39,23 @@
         <div class="hero-actions">
           <template v-if="isAuthenticated">
             <div class="authenticated-action">
-              <Button variant="primary" size="lg" @click="$emit('dashboard')" class="dashboard-btn">
+              <BaseButton variant="primary" size="lg" @click="$emit('dashboard')" class="dashboard-btn">
                 <span class="icon">🚀</span>
                 Enter Your Dashboard
-              </Button>
+              </BaseButton>
               <p class="welcome-back">Welcome back! Access your classes and records instantly.</p>
             </div>
           </template>
           <template v-else>
             <div class="primary-actions">
-              <Button variant="primary" size="lg" @click="$emit('student-login')" class="student-btn">
+              <BaseButton variant="primary" size="lg" @click="$emit('student-login')" class="student-btn">
                 <span class="icon">👤</span>
                 Student Portal
-              </Button>
-              <Button variant="secondary" size="lg" @click="$emit('lecturer-login')" class="lecturer-btn">
+              </BaseButton>
+              <BaseButton variant="secondary" size="lg" @click="$emit('lecturer-login')" class="lecturer-btn">
                 <span class="icon">👨‍🏫</span>
                 Lecturer Portal
-              </Button>
+              </BaseButton>
             </div>
             <nav class="secondary-actions">
               <router-link to="/student-signup" class="action-link">
@@ -75,8 +75,8 @@
 </template>
 
 <script setup>
-import Button from '@/components/ui/Button.vue'
-import Skeleton from '@/components/ui/Skeleton.vue'
+import BaseButton from '@/core/ui/BaseButton.vue'
+import BaseSkeleton from '@/core/ui/BaseSkeleton.vue'
 
 defineProps({
   scrollY: { type: Number, default: 0 },

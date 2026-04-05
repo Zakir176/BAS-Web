@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
+import { expect, vi } from 'vitest'
 
 // Test utilities for the CAT application
 

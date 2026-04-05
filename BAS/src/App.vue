@@ -1,13 +1,13 @@
 <script setup>
 import { onMounted } from 'vue'
-import { useTheme } from '@/composables/useTheme'
-import { useAuth } from '@/composables/useAuth'
-import ToastContainer from '@/components/ui/ToastContainer.vue'
-import Navbar from '@/components/common/Navbar.vue'
+import { useTheme } from '@/shared/composables/useTheme'
+import { useAuth } from '@/shared/composables/useAuth'
+import ToastContainer from '@/core/ui/ToastContainer.vue'
+import AppNavbar from '@/shared/components/AppNavbar.vue'
 import { Analytics } from '@vercel/analytics/vue'
 
 // Initialize theme and auth systems
-const { theme, toggleTheme, updateTheme } = useTheme()
+const { updateTheme } = useTheme()
 const { initialize } = useAuth()
 
 onMounted(async () => {
@@ -24,7 +24,7 @@ onMounted(async () => {
 <template>
   <div id="app">
     <Analytics />
-    <Navbar />
+    <AppNavbar />
     <div class="app-content-wrapper">
       <router-view />
     </div>
@@ -51,8 +51,9 @@ body {
 
 .app-content-wrapper {
   flex: 1;
-  padding-top: 72px; /* To prevent content from being hidden behind the fixed navbar */
+  padding-top: 96px; /* Optimized gap for the 1rem-offset floating pill */
   display: flex;
   flex-direction: column;
+  transition: padding 0.4s ease;
 }
 </style>

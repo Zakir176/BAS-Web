@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { supabase } from '@/supabase'
+import { supabase } from '@/core/api/supabase'
 
 export const useUserStore = defineStore('user', () => {
     // STATE
@@ -37,11 +37,11 @@ export const useUserStore = defineStore('user', () => {
         try {
             // Role is now set directly on the user object, no need to guess
             const currentRole = user.value.role || 'student'
-            const table = currentRole === 'lecturer' ? 'teachers' : 'students'
+            const table = currentRole === 'lecturer' ? 'lecturers' : 'students'
 
             // Determine the correct ID column and value based on the table
-            const idColumn = table === 'teachers' ? 'teacher_id' : 'email'
-            const idValue = table === 'teachers' ? user.value.id : user.value.email
+            const idColumn = table === 'lecturers' ? 'id' : 'email'
+            const idValue = table === 'lecturers' ? user.value.id : user.value.email
 
             const { data, error: fetchError } = await supabase
                 .from(table)
@@ -54,6 +54,15 @@ export const useUserStore = defineStore('user', () => {
             profile.value = data
         } catch (err) {
             handleError(err, 'Error fetching profile.')
+            // FALLBACK: If 403, create a mock profile so the UI doesn't break
+            if (err.status === 403 || err.code === '42501') {
+                console.warn("Using mock profile due to permission error.");
+                profile.value = {
+                    full_name: user.value.user_metadata?.full_name || user.value.email.split('@')[0],
+                    email: user.value.email,
+                    role: user.value.role
+                }
+            }
         } finally {
             isLoading.value = false
         }

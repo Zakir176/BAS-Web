@@ -4,11 +4,11 @@
       <div class="cta-inner">
         <h2 class="cta-title">Ready to modernize your classroom?</h2>
         <div class="cta-btns" v-if="!isAuthenticated">
-          <Button variant="primary" size="lg" @click="$emit('student-signup')">Get Started as Student</Button>
-          <Button variant="secondary" size="lg" @click="$emit('lecturer-signup')">Get Started as Lecturer</Button>
+          <BaseButton variant="primary" size="lg" @click="$emit('student-signup')">Get Started as Student</BaseButton>
+          <BaseButton variant="secondary" size="lg" @click="$emit('lecturer-signup')">Get Started as Lecturer</BaseButton>
         </div>
         <div class="cta-btns" v-else>
-          <Button variant="primary" size="lg" @click="$emit('dashboard')">Return to Dashboard</Button>
+          <BaseButton variant="primary" size="lg" @click="$emit('dashboard')">Return to Dashboard</BaseButton>
         </div>
       </div>
     </div>
@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import Button from '@/components/ui/Button.vue'
+import BaseButton from '@/core/ui/BaseButton.vue'
 
 defineProps({
   isAuthenticated: { type: Boolean, default: false }

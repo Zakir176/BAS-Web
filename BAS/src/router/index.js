@@ -1,27 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuth } from '@/composables/useAuth'
-import { useAuthRedirect } from '@/composables/useAuthRedirect'
-import { watch } from 'vue'
+import { useAuth } from '@/shared/composables/useAuth'
+import { useAuthRedirect } from '@/shared/composables/useAuthRedirect'
 
-import Home from '../views/Home.vue'
-import LecturerLogin from '../views/LecturerLogin.vue'
-import LecturerSignup from '../views/LecturerSignup.vue'
-import StudentLogin from '../views/StudentLogin.vue'
-import StudentSignup from '../views/StudentSignup.vue'
-import StudentHomepage from '../views/StudentHomepage.vue'
+import AppHome from '@/shared/views/AppHome.vue'
+import LecturerLogin from '@/features/lecturer/LecturerLogin.vue'
+import LecturerSignup from '@/features/lecturer/LecturerSignup.vue'
+import StudentLogin from '@/features/student/StudentLogin.vue'
+import StudentSignup from '@/features/student/StudentSignup.vue'
+import StudentHomepage from '@/features/student/StudentHomepage.vue'
 
-import ReportPage from '../views/ReportPage.vue'
-import LecturerDashboard from '../views/LecturerDashboard.vue'
-import DebugLogin from '../views/DebugLogin.vue'
-import ToastDemo from '../views/ToastDemo.vue'
-import PrivacyPolicy from '../views/PrivacyPolicy.vue'
-import TermsOfService from '../views/TermsOfService.vue'
+import ReportPage from '@/features/lecturer/ReportPage.vue'
+import LecturerDashboard from '@/features/lecturer/LecturerDashboard.vue'
+import PrivacyPolicy from '@/shared/views/PrivacyPolicy.vue'
+import TermsOfService from '@/shared/views/TermsOfService.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'AppHome',
+    component: AppHome,
     meta: { requiresAuth: false }
   },
   {
@@ -41,18 +38,6 @@ const routes = [
     name: 'LecturerDashboard',
     component: LecturerDashboard,
     meta: { requiresAuth: true, role: 'lecturer' }
-  },
-  {
-    path: '/debug-login',
-    name: 'DebugLogin',
-    component: DebugLogin,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/toast-demo',
-    name: 'ToastDemo',
-    component: ToastDemo,
-    meta: { requiresAuth: false }
   },
   {
     path: '/student-login',
@@ -98,13 +83,13 @@ const routes = [
   {
     path: '/forgot-password',
     name: 'ForgotPassword',
-    component: () => import('../views/ForgotPassword.vue'),
+    component: () => import('@/shared/views/ForgotPassword.vue'),
     meta: { requiresAuth: false, requiresGuest: true }
   },
   {
     path: '/reset-password',
     name: 'ResetPassword',
-    component: () => import('../views/ResetPassword.vue'),
+    component: () => import('@/shared/views/ResetPassword.vue'),
     meta: { requiresAuth: false } // Supabase handles auth state during reset link callback
   },
   {
@@ -144,7 +129,7 @@ router.beforeEach(async (to, from, next) => {
       return // Don't call next() as we're redirecting
     }
     
-    return next({ name: 'Home' })
+    return next({ name: 'AppHome' })
   }
 
   if (requiresGuest && isAuthenticated.value) {
@@ -159,7 +144,7 @@ router.beforeEach(async (to, from, next) => {
     if (userRole === 'student') {
       return next({ name: 'StudentHomepage' })
     }
-    return next({ name: 'Home' })
+    return next({ name: 'AppHome' })
   }
 
   if (requiresAuth && requiredRole) {
@@ -173,11 +158,11 @@ router.beforeEach(async (to, from, next) => {
 
     if (isLecturerRoute && !isUserLecturer) {
       console.warn(`Role mismatch: User with role '${userRole}' tried to access '${to.path}' which requires '${requiredRole}'`)
-      return next({ name: 'Home' })
+      return next({ name: 'AppHome' })
     }
     if (!isLecturerRoute && userRole !== requiredRole) {
       console.warn(`Role mismatch: User with role '${userRole}' tried to access '${to.path}' which requires '${requiredRole}'`)
-      return next({ name: 'Home' })
+      return next({ name: 'AppHome' })
     }
 
     // Redirect to their respective dashboards if role mismatch
