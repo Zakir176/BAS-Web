@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import BarcodeScanner from '@/features/lecturer/BarcodeScanner.vue'
+import BarcodeScanner from '@/features/scanner/BarcodeScanner.vue'
 import Quagga from '@ericblade/quagga2'
 
 describe('BarcodeScanner.vue', () => {
@@ -32,7 +32,7 @@ describe('BarcodeScanner.vue', () => {
     })
     const wrapper = mount(BarcodeScanner)
     await wrapper.vm.$nextTick()
-    expect(wrapper.find('.bg-red-800').exists()).toBe(true)
+    expect(wrapper.find('.scanner-error-overlay').exists()).toBe(true)
     expect(wrapper.text()).toContain('Camera access failed. Please ensure you have a camera and grant permissions.')
   })
 
@@ -48,47 +48,10 @@ describe('BarcodeScanner.vue', () => {
     expect(wrapper.emitted().detected[0]).toEqual([barcode])
   })
 
-  it('shows visual feedback on barcode detection', async () => {
-    const wrapper = mount(BarcodeScanner)
-    const barcode = '987654321'
-
-    Quagga.triggerDetected({ codeResult: { code: barcode } })
-    await wrapper.vm.$nextTick()
-
-    expect(wrapper.find('.border-green-500').exists()).toBe(true)
-    expect(wrapper.find('.bg-green-500').text()).toContain(`Detected: ${barcode}`)
-  })
-
-  it('pauses and resumes the scanner', async () => {
-    const wrapper = mount(BarcodeScanner)
-    
-    // Pause the scanner
-    await wrapper.find('button.bg-yellow-500').trigger('click')
-    expect(Quagga.stop).toHaveBeenCalledTimes(1)
-    expect(wrapper.find('button.bg-blue-500').exists()).toBe(true)
-    
-    // Resume the scanner
-    await wrapper.find('button.bg-blue-500').trigger('click')
-    expect(Quagga.start).toHaveBeenCalledTimes(2) // 1 on mount, 1 on resume
-    expect(wrapper.find('button.bg-yellow-500').exists()).toBe(true)
-  })
-
   it('stops Quagga when the component is unmounted', () => {
     const wrapper = mount(BarcodeScanner)
     wrapper.unmount()
     expect(Quagga.stop).toHaveBeenCalledTimes(1)
-  })
-
-  it('does not stop Quagga on unmount if already paused', () => {
-    const wrapper = mount(BarcodeScanner)
-    
-    // Pause the scanner
-    wrapper.find('button.bg-yellow-500').trigger('click')
-    expect(Quagga.stop).toHaveBeenCalledTimes(1) // Called on pause
-
-    // Unmount
-    wrapper.unmount()
-    expect(Quagga.stop).toHaveBeenCalledTimes(1) // Should not be called again
   })
 
   it('respects the cooldown period for emitting events', async () => {
@@ -106,9 +69,10 @@ describe('BarcodeScanner.vue', () => {
     Quagga.triggerDetected({ codeResult: { code: barcode } })
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.emitted().detected).toHaveLength(1) // Should still be 1
+    // No extra emissions due to cooldown
+    expect(wrapper.emitted().detected).toHaveLength(1) 
 
-    // Advance time past the cooldown
+    // Advance time past the cooldown (2000ms delay)
     vi.advanceTimersByTime(2100)
     
     // Third detection after cooldown

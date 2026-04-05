@@ -55,7 +55,7 @@ vi.mock('vue-router', () => ({
     query: {},
     name: 'home',
   }),
-  createRouter: vi.fn(),
+  createRouter: vi.fn(() => ({ install: vi.fn() })),
   createWebHistory: vi.fn(),
   RouterView: { template: '<div></div>' },
   RouterLink: { template: '<a><slot></slot></a>' },
