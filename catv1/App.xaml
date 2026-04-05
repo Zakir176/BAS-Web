@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Application
     x:Class="catv1.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -14,6 +14,14 @@
             <converters:StatusColorConverter x:Key="StatusColorConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToInverseTextColorConverter x:Key="BoolToInverseTextColorConverter" />
+            <converters:GreaterThanZeroConverter x:Key="GreaterThanZero" />
+            <converters:EqualToZeroConverter x:Key="EqualToZero" />
+            <converters:NotEqualToZeroConverter x:Key="NotEqualToZero" />
+            <converters:PercentageToWidthConverter x:Key="PercentageToWidth" />
+            <converters:InvertedBooleanConverter x:Key="InvertedBoolean" />
+            <converters:BooleanToStringConverter x:Key="BooleanToString" />
+            <converters:BooleanToColorConverter x:Key="BooleanToColor" />
+            <converters:EqualToStringConverter x:Key="EqualToString" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
