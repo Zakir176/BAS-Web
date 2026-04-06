@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import Toast from '@/core/ui/Toast.vue'
+import Toast from '@/core/ui/BaseToast.vue'
 
 // Mock Heroicons
 vi.mock('@heroicons/vue/24/outline', () => ({
