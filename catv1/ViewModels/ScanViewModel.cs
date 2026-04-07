@@ -167,7 +167,7 @@ public class ScanViewModel : BaseViewModel
         {
             foreach (var result in results)
             {
-                var student = Roster.FirstOrDefault(s => s.StudentId == result.Value);
+                var student = Roster.FirstOrDefault(s => s.StudentNumber == result.Value);
                 if (student != null && !student.IsPresent)
                 {
                     OnMarkStudent(student);
@@ -181,18 +181,18 @@ public class ScanViewModel : BaseViewModel
     {
         Roster =
             [
-                new Student { Id="2024-001", FirstName="John", LastName="Doe", StudentId="210001" },
-                new Student { Id="2024-002", FirstName="Jane", LastName="Smith", StudentId="210002" },
-                new Student { Id="2024-003", FirstName="Michael", LastName="Brown", StudentId="210003" },
-                new Student { Id="2024-004", FirstName="Sarah", LastName="Johnson", StudentId="210004" },
-                new Student { Id="2024-005", FirstName="David", LastName="Wilson", StudentId="210005" },
-                new Student { Id="2024-006", FirstName="Emily", LastName="Davis", StudentId="210006" },
-                new Student { Id="2024-007", FirstName="James", LastName="Miller", StudentId="210007" },
-                new Student { Id="2024-008", FirstName="Olivia", LastName="Taylor", StudentId="210008" },
-                new Student { Id="2024-009", FirstName="Robert", LastName="Anderson", StudentId="210009" },
-                new Student { Id="2024-010", FirstName="Sophia", LastName="Thomas", StudentId="210010" },
-                new Student { Id="2024-011", FirstName="William", LastName="Jackson", StudentId="210011" },
-                new Student { Id="2024-012", FirstName="Isabella", LastName="White", StudentId="210012" }
+                new Student { FullName="John Doe", StudentNumber="210001", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Jane Smith", StudentNumber="210002", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Michael Brown", StudentNumber="210003", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Sarah Johnson", StudentNumber="210004", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="David Wilson", StudentNumber="210005", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Emily Davis", StudentNumber="210006", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="James Miller", StudentNumber="210007", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Olivia Taylor", StudentNumber="210008", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Robert Anderson", StudentNumber="210009", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Sophia Thomas", StudentNumber="210010", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="William Jackson", StudentNumber="210011", Id = Guid.NewGuid().ToString() },
+                new Student { FullName="Isabella White", StudentNumber="210012", Id = Guid.NewGuid().ToString() }
             ];
     }
 }
