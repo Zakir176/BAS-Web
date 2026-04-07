@@ -7,13 +7,14 @@ namespace catv1.Models;
 [Table("lecturers")]
 public class LecturerProfile : BaseModel
 {
-    [PrimaryKey("id", false)]
+    [PrimaryKey("id", true)]
+    [Column("id")]
     [JsonProperty("id")]
     public string Id { get; set; } = string.Empty; //Supabase Auth UUID
 
     [Column("registration_id")]
     [JsonProperty("registration_id")]
-    public string RegistrationId { get; set; } = string.Empty;
+    public string? RegistrationId { get; set; }
 
     [Column("full_name")]
     [JsonProperty("full_name")]
