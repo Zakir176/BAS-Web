@@ -220,6 +220,7 @@ describe('useAuthRedirect Composable', () => {
 
   it('handles sessionStorage parsing errors gracefully', () => {
     const { restoreIntendedDestination, intendedDestination } = useAuthRedirect()
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     
     // Mock invalid JSON
     mockSessionStorage.getItem.mockReturnValue('invalid json')
@@ -228,6 +229,7 @@ describe('useAuthRedirect Composable', () => {
     
     expect(intendedDestination.value).toBe(null)
     expect(mockSessionStorage.removeItem).toHaveBeenCalledWith('authRedirect')
+    consoleSpy.mockRestore()
   })
 
   it('does not save login pages as intended destinations', () => {
