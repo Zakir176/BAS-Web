@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using catv1.Models;
 
 namespace catv1.ViewModels;
 
@@ -8,11 +9,8 @@ public class LoginViewModel : BaseViewModel
     private bool _isRememberMe;
     private bool _isPassword;
     private string _emailText = string.Empty;
-    private string _idText = string.Empty;
     private string _passwordText = string.Empty;
     private string _welcomeTitle = string.Empty;
-    private string _idFieldLabel = string.Empty;
-    private string _idPlaceholder = string.Empty;
     private Color _studentBtnBgColor = Colors.Transparent;
     private Color _studentBtnTextColor = Colors.Transparent;
     private Color _lecturerBtnBgColor = Colors.Transparent;
@@ -33,7 +31,7 @@ public class LoginViewModel : BaseViewModel
         IsRememberMe = Preferences.Get(KeyRememberMe, false);
         if (IsRememberMe)
         {
-            IdText = Preferences.Get(KeySavedUserId, string.Empty);
+            EmailText = Preferences.Get(KeySavedUserId, string.Empty);
         }
 
         UpdateUIState();
@@ -66,12 +64,6 @@ public class LoginViewModel : BaseViewModel
         set => SetProperty(ref _isRememberMe, value);
     }
 
-    // Binding for Entry ID
-    public string IdText
-    {
-        get => _idText;
-        set => SetProperty(ref _idText, value);
-    }
 
     // Binding for Entry Password
     public string PasswordText
@@ -94,17 +86,6 @@ public class LoginViewModel : BaseViewModel
         set => SetProperty(ref _welcomeTitle, value);
     }
 
-    public string IdFieldLabel
-    {
-        get => _idFieldLabel;
-        set => SetProperty(ref _idFieldLabel, value);
-    }
-
-    public string IdPlaceholder
-    {
-        get => _idPlaceholder;
-        set => SetProperty(ref _idPlaceholder, value);
-    }
 
     public Color StudentBtnBgColor
     {
@@ -167,8 +148,6 @@ public class LoginViewModel : BaseViewModel
             LecturerBtnTextColor = Color.FromArgb("#64748B"); // Gray
 
             WelcomeTitle = "Student Login";
-            IdFieldLabel = "STUDENT ID (SIN)";
-            IdPlaceholder = "e.g. 210984";
         }
         else
         {
@@ -179,8 +158,6 @@ public class LoginViewModel : BaseViewModel
             StudentBtnTextColor = Color.FromArgb("#64748B"); // Gray
 
             WelcomeTitle = "Lecturer Login";
-            IdFieldLabel = "LECTURER ID";
-            IdPlaceholder = "e.g. L00123";
         }
     }
 
@@ -192,11 +169,6 @@ public class LoginViewModel : BaseViewModel
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(IdText))
-        {
-            await Shell.Current.DisplayAlertAsync("Error", "Please enter your ID.", "OK");
-            return;
-        }
 
         if (string.IsNullOrWhiteSpace(PasswordText))
         {
@@ -211,10 +183,34 @@ public class LoginViewModel : BaseViewModel
             var session = await _supabase.Auth.SignInWithPassword(EmailText, PasswordText);
             if (session != null)
             {
+                // Verify that the profile exists in the database
+                bool profileExists = false;
+                if (_isStudent)
+                {
+                    var response = await _supabase.From<Student>()
+                        .Where(x => x.Email == EmailText)
+                        .Get();
+                    profileExists = response.Models.Any();
+                }
+                else
+                {
+                    var response = await _supabase.From<LecturerProfile>()
+                        .Where(x => x.Email == EmailText)
+                        .Get();
+                    profileExists = response.Models.Any();
+                }
+
+                if (!profileExists)
+                {
+                    await _supabase.Auth.SignOut();
+                    await Shell.Current.DisplayAlertAsync("Login Error", "Your account was authenticated, but no profile was found. Please register again or contact support.", "OK");
+                    return;
+                }
+
                 if (IsRememberMe)
                 {
                     Preferences.Set(KeyRememberMe, true);
-                    Preferences.Set(KeySavedUserId, IdText);
+                    Preferences.Set(KeySavedUserId, EmailText); // Save Email instead of ID
                 }
                 else
                 {
