@@ -43,4 +43,7 @@ public class BaseViewModel : INotifyPropertyChanged
         OnPropertyChanged(propertyName);
         return true;
     }
+
+    public string CurrentDateDisplay => DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+    public string CurrentMonthDisplay => DateTime.Now.ToString("MMMM yyyy");
 }
