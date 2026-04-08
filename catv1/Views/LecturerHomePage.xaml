@@ -3,113 +3,227 @@
     x:Class="catv1.Views.LecturerHomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:catv1.ViewModels"
     Title="Lecturer Dashboard"
-    BackgroundColor="#0F172A">
+    BackgroundColor="#0F172A"
+    Shell.NavBarIsVisible="False">
+
     <Grid>
-        <!--  Background Image  -->
-        <Image
-            Aspect="AspectFill"
-            Opacity="0.2"
+        <!-- Background Image and Overlay -->
+        <Image 
+            Aspect="AspectFill" 
+            Opacity="0.15" 
             Source="Resources/Images/lecture_room.png" />
-        <BoxView BackgroundColor="#0F172A" Opacity="0.5" />
+        <BoxView BackgroundColor="#0F172A" Opacity="0.6" />
 
         <Grid RowDefinitions="Auto, *">
-            <!--  Header  -->
-            <Grid Padding="20,20,20,10" ColumnDefinitions="*, Auto">
-                <Label
-                    Style="{StaticResource LabelHeader}"
-                    Text="Lecturer Dashboard"
-                    VerticalOptions="Center" />
-                <ImageButton
-                    Grid.Column="1"
-                    BackgroundColor="#1E293B"
-                    Clicked="OnLogoutClicked"
-                    CornerRadius="20"
-                    HeightRequest="40"
-                    WidthRequest="40">
-                    <ImageButton.Source>
-                        <FontImageSource
-                            FontFamily="Arial"
-                            Glyph="🚪"
-                            Size="20"
-                            Color="#EF4444" />
-                    </ImageButton.Source>
-                </ImageButton>
+            <!-- Header Section -->
+            <Grid Padding="20,40,20,10" ColumnDefinitions="Auto, *, Auto">
+                <Border
+                    HeightRequest="45"
+                    WidthRequest="45"
+                    StrokeShape="RoundRectangle 22.5"
+                    StrokeThickness="0"
+                    BackgroundColor="#1E293B">
+                    <Label Text="{Binding Initials}" 
+                           TextColor="White" 
+                           FontAttributes="Bold" 
+                           FontSize="16" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"/>
+                </Border>
+                
+                <HorizontalStackLayout Grid.Column="2" Spacing="15" VerticalOptions="Center">
+                    <Label Text="☀️" FontSize="22" VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ThemeToggleCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="📥" FontSize="22" VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NotificationsCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="🚪" FontSize="22" VerticalOptions="Center" Margin="5,0,0,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLogoutClicked" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
             </Grid>
 
             <ScrollView Grid.Row="1">
-                <VerticalStackLayout Padding="20" Spacing="20">
-                    <!--  Stats Section  -->
-                    <Border Style="{StaticResource GlassCard}">
-                        <VerticalStackLayout Spacing="15">
-                            <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
-                                <Label FontSize="40" Text="👨‍🏫" />
-                                <VerticalStackLayout VerticalOptions="Center">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="22"
-                                        Text="{Binding Name}"
-                                        TextColor="White" />
-                                    <Label Style="{StaticResource LabelCaption}" Text="{Binding Department}" />
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
+                <VerticalStackLayout Padding="20" Spacing="25" IsClippedToBounds="False">
+                    <!-- Refresh Control (Simplified) -->
+                    <Button Text="Refresh Data" Command="{Binding RefreshCommand}" 
+                            BackgroundColor="Transparent" TextColor="#3B82F6" 
+                            FontSize="12" HorizontalOptions="End" Margin="0,-20,0,0"/>
 
-                            <BoxView HeightRequest="1" Color="#1F2937" />
+                    <!-- Welcome Text -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label FontSize="28" FontAttributes="Bold">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Welcome back, " TextColor="White" />
+                                    <Span Text="{Binding Name, FallbackValue='Lecturer Steezy'}" TextColor="#3B82F6" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label Text="{Binding SessionCountSubtitle}" 
+                               TextColor="#94A3B8" 
+                               FontSize="14" />
+                    </VerticalStackLayout>
 
-                            <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
-                                <VerticalStackLayout Spacing="5">
-                                    <Label Style="{StaticResource LabelCaption}" Text="AVG ATTENDANCE" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="24"
-                                        Text="88%"
-                                        TextColor="{StaticResource AttendanceBlue}" />
+                    <!-- Action Buttons -->
+                    <VerticalStackLayout Spacing="12">
+                        <Button Text="+ New Session" 
+                                Command="{Binding NewSessionCommand}"
+                                BackgroundColor="#3B82F6" 
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                HeightRequest="56"
+                                CornerRadius="16" />
+                        
+                        <Button Text="[||] Start Scanning" 
+                                Command="{Binding StartScanningCommand}"
+                                BackgroundColor="White" 
+                                TextColor="#0F172A"
+                                FontAttributes="Bold"
+                                HeightRequest="56"
+                                CornerRadius="16" />
+
+                        <Button Text="New Course" 
+                                Command="{Binding NewCourseCommand}"
+                                BackgroundColor="#1E293B" 
+                                TextColor="#3B82F6"
+                                BorderColor="#334155"
+                                BorderWidth="1"
+                                FontAttributes="Bold"
+                                HeightRequest="56"
+                                CornerRadius="16" />
+                    </VerticalStackLayout>
+
+                    <!-- Stats Cards -->
+                    <VerticalStackLayout Spacing="15">
+                        <Border Style="{StaticResource StatCard}">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="TOTAL COURSES" Style="{StaticResource LabelCaption}" />
+                                    <Label Text="{Binding TotalCourses}" FontSize="28" FontAttributes="Bold" TextColor="White" />
                                 </VerticalStackLayout>
-                                <VerticalStackLayout Grid.Column="1" Spacing="5">
-                                    <Label Style="{StaticResource LabelCaption}" Text="ACTIVE CLASSES" />
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="24"
-                                        Text="4"
-                                        TextColor="{StaticResource SuccessGreen}" />
-                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Text="🎓" FontSize="24" Opacity="0.5" VerticalOptions="Center" />
                             </Grid>
-                        </VerticalStackLayout>
-                    </Border>
+                        </Border>
 
-                    <!--  Quick Actions  -->
-                    <Label
-                        FontAttributes="Bold"
-                        Text="Quick Actions"
-                        TextColor="#64748B" />
+                        <Border Style="{StaticResource StatCard}">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="ENROLLED STUDENTS" Style="{StaticResource LabelCaption}" />
+                                    <Label Text="{Binding EnrolledStudents}" FontSize="28" FontAttributes="Bold" TextColor="White" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Text="👥" FontSize="24" Opacity="0.5" VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
 
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
-                        <Button
-                            BackgroundColor="#3B82F6"
-                            CornerRadius="15"
-                            Text="Start Session"
-                            TextColor="White" />
-                        <Button
-                            Grid.Column="1"
-                            BackgroundColor="#1E293B"
-                            BorderColor="#334155"
-                            BorderWidth="1"
-                            CornerRadius="15"
-                            Text="View Reports"
-                            TextColor="White" />
-                    </Grid>
+                        <Border Style="{StaticResource StatCard}">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="AVG. ATTENDANCE" Style="{StaticResource LabelCaption}" />
+                                    <Label Text="{Binding AvgAttendance}" FontSize="28" FontAttributes="Bold" TextColor="#3B82F6" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Text="📈" FontSize="24" Opacity="0.5" VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
 
-                    <Label
-                        FontAttributes="Bold"
-                        Text="Recent Activity"
-                        TextColor="#64748B" />
+                    <!-- Course Attendance Overview (Chart) -->
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding HasCourses}">
+                        <Label Text="Course Attendance Overview" Style="{StaticResource LabelHeader}" />
+                        <Border Style="{StaticResource StatCard}">
+                            <CollectionView ItemsSource="{Binding CourseAttendanceData}" HeightRequest="200">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="0,5" ColumnDefinitions="80, *">
+                                            <Label Text="{Binding CourseName}" VerticalOptions="Center" FontSize="11" TextColor="White" Padding="0,0,10,0" LineBreakMode="TailTruncation" />
+                                            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                                                <Border BackgroundColor="{Binding Color}" HeightRequest="12" WidthRequest="{Binding BarWidth}" StrokeShape="RoundRectangle 6" StrokeThickness="0" />
+                                                <Label Text="{Binding AttendanceRate, StringFormat='{0:P0}'}" FontSize="10" TextColor="Gray" VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Border>
+                    </VerticalStackLayout>
 
-                    <Border Style="{StaticResource StatCard}">
-                        <Label
-                            HorizontalOptions="Center"
-                            Text="Class attendance will appear here"
-                            TextColor="Gray" />
-                    </Border>
+                    <!-- My Courses Section -->
+                    <VerticalStackLayout Spacing="15">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="My Courses" FontSize="20" FontAttributes="Bold" TextColor="White" />
+                            <Label Grid.Column="1" Text="See all" TextColor="#3B82F6" FontSize="14" VerticalOptions="Center" 
+                                   IsVisible="{Binding HasCourses}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SeeAllCoursesCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                        
+                        <Border Style="{StaticResource StatCard}" HeightRequest="200" IsVisible="{Binding HasNoCourses}">
+                             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
+                                <Label Text="📚" FontSize="40" HorizontalOptions="Center" />
+                                <Label Text="No Courses Created" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" />
+                                <Label Text="You haven't added any courses yet." TextColor="#94A3B8" HorizontalOptions="Center" />
+                                <Button Text="Create Course" 
+                                        Command="{Binding CreateCourseCommand}"
+                                        BackgroundColor="#3B82F6" 
+                                        CornerRadius="10" 
+                                        HeightRequest="40" />
+                             </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Session Roster Section -->
+                    <VerticalStackLayout Spacing="15">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="Active Session Roster" Style="{StaticResource LabelHeader}" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Ellipse Fill="{Binding IsSessionActive, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Tertiary'}" WidthRequest="8" HeightRequest="8" VerticalOptions="Center" />
+                                    <Label Text="{Binding IsSessionActive, Converter={StaticResource BooleanToString}, ConverterParameter='Disconnected|Live'}" FontSize="12" TextColor="#94A3B8" />
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding ActiveSessionStats}" FontSize="12" TextColor="#94A3B8" />
+                            </HorizontalStackLayout>
+                        </Grid>
+
+                        <Border Style="{StaticResource StatCard}" MinHeightRequest="180">
+                            <Grid>
+                                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15" IsVisible="{Binding IsSessionActive, Converter={StaticResource InvertedBoolean}}">
+                                    <Label Text="📷" FontSize="40" HorizontalOptions="Center" />
+                                    <Label Text="No Active Session" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" />
+                                    <Label Text="Roster visibility is only available during an active session." 
+                                           TextColor="#94A3B8" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+
+                                <CollectionView ItemsSource="{Binding ActiveSessionStudents}" IsVisible="{Binding IsSessionActive}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Padding="0,10" ColumnDefinitions="*, Auto">
+                                                <VerticalStackLayout Spacing="2">
+                                                    <Label Text="{Binding FullName}" FontAttributes="Bold" TextColor="White" />
+                                                    <Label Text="{Binding ScanTime, StringFormat='At {0:hh:mm tt}'}" FontSize="10" TextColor="Gray" IsVisible="{Binding IsPresent}" />
+                                                    <Label Text="Not present yet" FontSize="10" TextColor="#EF4444" IsVisible="{Binding IsPresent, Converter={StaticResource InvertedBoolean}}" />
+                                                </VerticalStackLayout>
+                                                <Label Grid.Column="1" Text="{Binding IsPresent, Converter={StaticResource BooleanToString}, ConverterParameter='✕|✓'}" 
+                                                       TextColor="{Binding IsPresent, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Tertiary'}"
+                                                       FontSize="18" VerticalOptions="Center" FontAttributes="Bold" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>
