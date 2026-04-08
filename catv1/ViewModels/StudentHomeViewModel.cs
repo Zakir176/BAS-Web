@@ -3,6 +3,13 @@ using catv1.Models;
 
 namespace catv1.ViewModels;
 
+public class CalendarDay
+{
+    public int Day { get; set; }
+    public string Background { get; set; } = "#1F1F1F"; // Default dark
+    public string TextColor { get; set; } = "White";
+}
+
 public class StudentHomeViewModel : BaseViewModel
 {
     private readonly Supabase.Client _supabase;
@@ -53,20 +60,69 @@ public class StudentHomeViewModel : BaseViewModel
     public string AttendanceDisplay => $"{AttendancePercentage:P0}";
 
     public ObservableCollection<ActivityLog> RecentActivity { get; set; }
+    public ObservableCollection<CalendarDay> CalendarDays { get; }
+    public ObservableCollection<ScheduleItem> TodaySchedule { get; set; }
 
-    public ObservableCollection<int> CalendarDays { get; }
+    private string _streakStatus = "Active";
+    public string StreakStatus
+    {
+        get => _streakStatus;
+        set => SetProperty(ref _streakStatus, value);
+    }
+
+    private double _streakProgress = 0.7;
+    public double StreakProgress
+    {
+        get => _streakProgress;
+        set => SetProperty(ref _streakProgress, value);
+    }
+
+    private int _daysPresent = 2;
+    public int DaysPresent
+    {
+        get => _daysPresent;
+        set => SetProperty(ref _daysPresent, value);
+    }
+
+    private int _daysAbsent = 0;
+    public int DaysAbsent
+    {
+        get => _daysAbsent;
+        set => SetProperty(ref _daysAbsent, value);
+    }
+
+    public Command ShowIdCardCommand { get; }
+    public Command ViewReportsCommand { get; }
+    public Command NotificationsCommand { get; }
+    public Command SettingsCommand { get; }
 
     public StudentHomeViewModel(Supabase.Client supabase)
     {
         _supabase = supabase;
         RecentActivity = [];
         CalendarDays = [];
+        TodaySchedule = [];
 
-        // Dummy Calendar Data
-        for (int i = 1; i <= 30; i++)
+        ShowIdCardCommand = new Command(async () => await OnShowIdCard());
+        ViewReportsCommand = new Command(async () => await OnViewReports());
+        NotificationsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Notifications", "No new notifications.", "OK"));
+        SettingsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Settings", "Settings feature coming soon!", "OK"));
+
+        // Simple Calendar Range
+        for (int i = 1; i <= 31; i++)
         {
-            CalendarDays.Add(i);
+            CalendarDays.Add(new CalendarDay { Day = i, Background = "#1E293B" });
         }
+    }
+
+    private async Task OnShowIdCard()
+    {
+        await Shell.Current.DisplayAlertAsync("ID Card", "Digital ID feature coming soon!", "OK");
+    }
+
+    private async Task OnViewReports()
+    {
+        await Shell.Current.GoToAsync("//student/history");
     }
 
     public async Task LoadDataAsync()
@@ -80,36 +136,134 @@ public class StudentHomeViewModel : BaseViewModel
             var user = _supabase.Auth.CurrentUser;
             if (user == null) return;
 
-            // Fetch Student Profile
-            // Assumption: students table has a column 'id' that matches user.Id or some lookup
-            // For now, fetching by email or assuming the Id in students matches user identity
-            var studentResponse = await _supabase.From<Student>()
-                .Where(s => s.Id == user.Id) // Adjust if mapping is different
-                .Single();
+            System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Fetching profile for user: {user.Id}");
+            var studentResponse = (await _supabase.From<Student>()
+                .Where(s => s.Id == user.Id)
+                .Get()).Models.FirstOrDefault();
 
-            if (studentResponse != null)
+            if (studentResponse == null)
             {
-                Name = studentResponse.Name;
-                Id = studentResponse.StudentId; // Display SIN
-                ClassName = studentResponse.Department;
+                System.Diagnostics.Debug.WriteLine("[StudentDashboard] ERROR: Profile not found!");
+                IsBusy = false;
+                return;
             }
 
-            // Fetch Recent Activity for THIS student
-            var logsResponse = await _supabase.From<ActivityLog>()
+            Name = studentResponse.FullName;
+            Id = studentResponse.StudentNumber; // Display Student Number
+            
+            // Fetch Department Name
+            if (!string.IsNullOrEmpty(studentResponse.DepartmentId))
+            {
+                var deptResponse = (await _supabase.From<Department>()
+                    .Where(d => d.Id == studentResponse.DepartmentId)
+                    .Get()).Models.FirstOrDefault();
+                
+                if (deptResponse != null)
+                {
+                    ClassName = deptResponse.Name;
+                }
+                else
+                {
+                    ClassName = "Unknown Department";
+                }
+            }
+
+            // Fetch ALL Attendance Logs for Stats and Streak
+            var allLogsResponse = await _supabase.From<ActivityLog>()
                 .Where(l => l.StudentId == user.Id)
-                .Order("date_time", Supabase.Postgrest.Constants.Ordering.Descending)
-                .Limit(5)
+                .Order("session_date", Supabase.Postgrest.Constants.Ordering.Descending)
                 .Get();
 
+            var allLogs = allLogsResponse.Models;
+
+            // Update Heatmap
+            CalendarDays.Clear();
+            for (int i = 1; i <= 31; i++)
+            {
+                var bg = "#1E293B";
+                var logForDay = allLogs.FirstOrDefault(l => l.DateTime.Day == i && l.DateTime.Month == DateTime.Now.Month);
+                if (logForDay != null)
+                {
+                    bg = logForDay.Status switch
+                    {
+                        "Present" => "#10B981",
+                        "Absent" => "#EF4444",
+                        "Late" => "#F59E0B",
+                        "Excused" => "#6366F1",
+                        _ => "#1E293B"
+                    };
+                }
+                CalendarDays.Add(new CalendarDay { Day = i, Background = bg });
+            }
+
+            // Update Recent Activity
             RecentActivity.Clear();
-            foreach (var log in logsResponse.Models)
+            foreach (var log in allLogs.Take(5))
             {
                 RecentActivity.Add(log);
             }
 
-            // Calculate attendance dummy for now or fetch stats
-            AttendancePercentage = 0.95;
-            AbsencesCount = 2;
+            // Calculate Stats
+            if (allLogs.Any())
+            {
+                DaysPresent = allLogs.Count(l => l.Status == "Present" || l.Status == "Late");
+                DaysAbsent = allLogs.Count(l => l.Status == "Absent");
+                AbsencesCount = DaysAbsent;
+                AttendancePercentage = (double)DaysPresent / allLogs.Count;
+
+                // Calculate Streak
+                int streak = 0;
+                foreach (var log in allLogs)
+                {
+                    if (log.Status == "Present" || log.Status == "Late")
+                        streak++;
+                    else if (log.Status == "Absent")
+                        break; // Streak broken
+                }
+                StreakStatus = streak > 0 ? "Active" : "None";
+                StreakProgress = Math.Min(streak / 10.0, 1.0); // Simple progress visualization
+            }
+            else
+            {
+                DaysPresent = 0;
+                DaysAbsent = 0;
+                AbsencesCount = 0;
+                AttendancePercentage = 0;
+                StreakStatus = "None";
+                StreakProgress = 0;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Profile found: {studentResponse.FullName}. Fetching schedule...");
+            // Fetch Enrollments and Sections for Schedule
+            TodaySchedule.Clear();
+            var enrollmentsResponse = await _supabase.From<Enrollment>()
+                .Where(e => e.StudentId == user.Id)
+                .Get();
+
+            foreach (var enrollment in enrollmentsResponse.Models)
+            {
+                var sectionResponse = (await _supabase.From<Section>()
+                    .Where(s => s.Id == enrollment.SectionId)
+                    .Get()).Models.FirstOrDefault();
+
+                if (sectionResponse != null)
+                {
+                    var courseResponse = (await _supabase.From<Course>()
+                        .Where(c => c.Id == sectionResponse.CourseId)
+                        .Get()).Models.FirstOrDefault();
+
+                    if (courseResponse != null)
+                    {
+                        TodaySchedule.Add(new ScheduleItem
+                        {
+                            Subject = courseResponse.Name,
+                            Time = "Scheduled", // Placeholder until session times are in DB
+                            Room = sectionResponse.Name,
+                            Status = "Active"
+                        });
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {

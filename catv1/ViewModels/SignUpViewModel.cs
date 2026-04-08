@@ -6,8 +6,7 @@ namespace catv1.ViewModels;
 
 public class SignUpViewModel : BaseViewModel
 {
-    private string _firstName = string.Empty;
-    private string _lastName = string.Empty;
+    private string _fullName = string.Empty;
     private string _email = string.Empty;
     private string _id = string.Empty;
     private string _department = string.Empty;
@@ -16,16 +15,10 @@ public class SignUpViewModel : BaseViewModel
     private bool _isStudent = true;
     private bool _isPassword = true;
 
-    public string FirstName
+    public string FullName
     {
-        get => _firstName;
-        set => SetProperty(ref _firstName, value);
-    }
-
-    public string LastName
-    {
-        get => _lastName;
-        set => SetProperty(ref _lastName, value);
+        get => _fullName;
+        set => SetProperty(ref _fullName, value);
     }
 
     public string Email
@@ -83,10 +76,10 @@ public class SignUpViewModel : BaseViewModel
 
     public string SignUpTitle => IsStudent ? "Student Registration" : "Lecturer Registration";
     public string IdFieldLabel => IsStudent ? "STUDENT ID (SIN)" : "LECTURER ID";
-    public string IdPlaceholder => IsStudent ? "e.g. 210984" : "e.g. L00123";
+    public string IdPlaceholder => IsStudent ? "e.g. 24000001" : "e.g. L00123";
 
     public string DeptFieldLabel => IsStudent ? "CLASS SECTION" : "DEPARTMENT";
-    public string DeptPlaceholder => IsStudent ? "CS101" : "e.g. Computer Science";
+    public string DeptPlaceholder => IsStudent ? "CS" : "e.g. Computer Science";
 
     public Color StudentBtnBgColor => IsStudent ? Color.FromArgb("#3B82F6") : Colors.Transparent;
     public Color LecturerBtnBgColor => IsLecturer ? Color.FromArgb("#3B82F6") : Colors.Transparent;
@@ -101,6 +94,7 @@ public class SignUpViewModel : BaseViewModel
 
     public ICommand StudentCommand { get; }
     public ICommand LecturerCommand { get; }
+    public ICommand SetRoleCommand { get; }
     public ICommand SignUpCommand { get; }
     public ICommand LoginCommand { get; }
     public ICommand TogglePasswordCommand { get; }
@@ -113,6 +107,7 @@ public class SignUpViewModel : BaseViewModel
 
         StudentCommand = new Command(() => IsStudent = true);
         LecturerCommand = new Command(() => IsStudent = false);
+        SetRoleCommand = new Command<string>(role => IsStudent = role == "Student");
         SignUpCommand = new Command(OnSignUpClicked);
         LoginCommand = new Command(OnLoginClicked);
         TogglePasswordCommand = new Command(() => IsPassword = !IsPassword);
@@ -122,9 +117,9 @@ public class SignUpViewModel : BaseViewModel
     {
         if (IsBusy) return;
 
-        if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
+        if (string.IsNullOrWhiteSpace(FullName))
         {
-            await Shell.Current.DisplayAlertAsync("Error", "Please enter your first and last name.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your full name.", "OK");
             return;
         }
 
@@ -134,9 +129,9 @@ public class SignUpViewModel : BaseViewModel
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(Id))
+        if (IsStudent && string.IsNullOrWhiteSpace(Id))
         {
-            await Shell.Current.DisplayAlertAsync("Error", $"Please enter your {(IsStudent ? "Student ID" : "Registration ID")}.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Please enter your Student ID.", "OK");
             return;
         }
 
@@ -162,15 +157,32 @@ public class SignUpViewModel : BaseViewModel
         {
             IsBusy = true;
 
+            // 1. Pre-signup checks (Check public tables first)
+            var alreadyExists = await CheckExistingUser(Email, Id, IsStudent);
+            if (alreadyExists) return;
+
+            // Resolve Department ID from Name (since UI uses string Entry)
+            var resolvedDeptId = await ResolveDepartmentId(Department);
+            if (string.IsNullOrEmpty(resolvedDeptId))
+            {
+                await Shell.Current.DisplayAlertAsync("Error", $"Department/Section '{Department}' not found. Please enter a valid name.", "OK");
+                return;
+            }
+
+            var userData = new Dictionary<string, object>
+            {
+                { "full_name", FullName },
+                { "role", IsStudent ? "student" : "lecturer" }
+            };
+
+            if (IsStudent)
+            {
+                userData.Add("student_number", Id);
+            }
+
             var options = new SignUpOptions
             {
-                Data = new Dictionary<string, object>
-                {
-                    { "first_name", FirstName },
-                    { "last_name", LastName },
-                    { "student_id", Id },
-                    { "role", IsStudent ? "student" : "lecturer" }
-                }
+                Data = userData
             };
 
             var session = await _supabase.Auth.SignUp(Email, Password, options);
@@ -181,13 +193,15 @@ public class SignUpViewModel : BaseViewModel
                 {
                     var student = new Student
                     {
-                        Id = session.User.Id,
-                        StudentId = Id,
-                        FirstName = FirstName,
-                        LastName = LastName,
+                        Id = session.User.Id, // Ensure we use the Auth ID if possible, or let DB generate
+                        StudentNumber = Id,
+                        FullName = FullName,
+                        DepartmentId = resolvedDeptId,
                         Email = Email,
-                        Department = Department,
-                        IsPresent = false
+                        QrCode = Id,
+                        Phone = "",
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
                     };
                     await _supabase.From<Student>().Insert(student);
                 }
@@ -196,11 +210,10 @@ public class SignUpViewModel : BaseViewModel
                     var lecturerProfile = new LecturerProfile
                     {
                         Id = session.User.Id,
-                        RegistrationId = Id,
-                        FirstName = FirstName,
-                        LastName = LastName,
+                        RegistrationId = null, // ID is now DB-generated
+                        FullName = FullName,
                         Email = Email,
-                        Department = Department
+                        DepartmentId = resolvedDeptId
                     };
                     await _supabase.From<LecturerProfile>().Insert(lecturerProfile);
                 }
@@ -211,11 +224,80 @@ public class SignUpViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Registration Error", ex.Message, "OK");
+            if (ex.Message.Contains("User already exists"))
+            {
+                await Shell.Current.DisplayAlertAsync("Registration Error", 
+                    "An account with this email already exists. " +
+                    "If you previously tried to sign up and it failed, please try logging in or use a different email.", "OK");
+            }
+            else
+            {
+                await Shell.Current.DisplayAlertAsync("Registration Error", ex.Message, "OK");
+            }
         }
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private async Task<bool> CheckExistingUser(string email, string id, bool isStudent)
+    {
+        try
+        {
+            // Check both tables for email (since email must be unique across app)
+            var lecturerWithEmail = await _supabase.From<LecturerProfile>().Where(x => x.Email == email).Get();
+            if (lecturerWithEmail.Models.Any())
+            {
+                await Shell.Current.DisplayAlertAsync("Error", "This email is already registered as a lecturer.", "OK");
+                return true;
+            }
+
+            var studentWithEmail = await _supabase.From<Student>().Where(x => x.Email == email).Get();
+            if (studentWithEmail.Models.Any())
+            {
+                await Shell.Current.DisplayAlertAsync("Error", "This email is already registered as a student.", "OK");
+                return true;
+            }
+
+            // Check specific ID uniqueness
+            if (isStudent)
+            {
+                var studentWithId = await _supabase.From<Student>().Where(x => x.StudentNumber == id).Get();
+                if (studentWithId.Models.Any())
+                {
+                    await Shell.Current.DisplayAlertAsync("Error", "This Student ID is already in use.", "OK");
+                    return true;
+                }
+            }
+            else
+            {
+                // No longer checking RegistrationId as it's not provided by user
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Pre-signup check failed: {ex.Message}");
+            return false; // Proceed anyway if check fails, Auth will catch it
+        }
+    }
+
+    private async Task<string?> ResolveDepartmentId(string deptName)
+    {
+        try
+        {
+            var response = await _supabase.From<Department>()
+                .Where(x => x.Name == deptName)
+                .Get();
+
+            var dept = response.Models.FirstOrDefault();
+            return dept?.Id;
+        }
+        catch
+        {
+            return null;
         }
     }
 
