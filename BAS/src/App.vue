@@ -3,7 +3,7 @@ import { onMounted } from 'vue'
 import { useTheme } from '@/shared/composables/useTheme'
 import { useAuth } from '@/shared/composables/useAuth'
 import ToastContainer from '@/core/ui/ToastContainer.vue'
-import AppNavbar from '@/shared/components/AppNavbar.vue'
+import AppNavbar from '@/core/ui/navigation/AppNavbar.vue'
 import { Analytics } from '@vercel/analytics/vue'
 
 // Initialize theme and auth systems
@@ -11,13 +11,10 @@ const { updateTheme } = useTheme()
 const { initialize } = useAuth()
 
 onMounted(async () => {
-  console.log('App: Component mounted, initializing...')
   updateTheme()
-  console.log('App: Theme updated')
   if (initialize) {
     await initialize()
   }
-  console.log('App: Auth initialization finished')
 })
 </script>
 

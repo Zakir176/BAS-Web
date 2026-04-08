@@ -37,11 +37,11 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/core/api/supabase'
 import { useAuth } from '@/shared/composables/useAuth'
-import HeroSection from '@/components/home/HeroSection.vue'
-import FeatureGrid from '@/components/home/FeatureGrid.vue'
-import WorkflowSteps from '@/components/home/WorkflowSteps.vue'
-import CTASection from '@/components/home/CTASection.vue'
-import HomeFooter from '@/components/home/HomeFooter.vue'
+import HeroSection from './HeroSection.vue'
+import FeatureGrid from './FeatureGrid.vue'
+import WorkflowSteps from './WorkflowSteps.vue'
+import CTASection from './CTASection.vue'
+import HomeFooter from './HomeFooter.vue'
 
 const router = useRouter()
 const { isAuthenticated, user, role } = useAuth()

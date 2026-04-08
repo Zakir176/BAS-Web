@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '@/shared/composables/useAuth'
 import { useAuthRedirect } from '@/shared/composables/useAuthRedirect'
 
-import AppHome from '@/shared/views/AppHome.vue'
+import AppHome from '@/features/home/AppHome.vue'
 import LecturerLogin from '@/features/lecturer/LecturerLogin.vue'
 import LecturerSignup from '@/features/lecturer/LecturerSignup.vue'
 import StudentLogin from '@/features/student/StudentLogin.vue'
@@ -11,8 +11,8 @@ import StudentHomepage from '@/features/student/StudentHomepage.vue'
 
 import ReportPage from '@/features/lecturer/ReportPage.vue'
 import LecturerDashboard from '@/features/lecturer/LecturerDashboard.vue'
-import PrivacyPolicy from '@/shared/views/PrivacyPolicy.vue'
-import TermsOfService from '@/shared/views/TermsOfService.vue'
+import PrivacyPolicy from '@/features/legal/PrivacyPolicy.vue'
+import TermsOfService from '@/features/legal/TermsOfService.vue'
 
 const routes = [
   {
@@ -83,13 +83,13 @@ const routes = [
   {
     path: '/forgot-password',
     name: 'ForgotPassword',
-    component: () => import('@/shared/views/ForgotPassword.vue'),
+    component: () => import('@/features/auth/ForgotPassword.vue'),
     meta: { requiresAuth: false, requiresGuest: true }
   },
   {
     path: '/reset-password',
     name: 'ResetPassword',
-    component: () => import('@/shared/views/ResetPassword.vue'),
+    component: () => import('@/features/auth/ResetPassword.vue'),
     meta: { requiresAuth: false } // Supabase handles auth state during reset link callback
   },
   {
