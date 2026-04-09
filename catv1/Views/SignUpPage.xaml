@@ -90,32 +90,28 @@
 
                         <!--  Input Fields  -->
                         <VerticalStackLayout Spacing="16">
-                            <!--  Name Fields  -->
-                            <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
-                                <Border
-                                    Padding="16,0"
-                                    BackgroundColor="{StaticResource Surface}"
-                                    HeightRequest="56"
-                                    Stroke="{StaticResource GlassBorder}"
-                                    StrokeShape="RoundRectangle 16">
-                                    <Entry
-                                        Placeholder="First Name"
-                                        Text="{Binding FirstName}"
+                            <!--  Name Field  -->
+                            <Border
+                                Padding="16,0"
+                                BackgroundColor="{StaticResource Surface}"
+                                HeightRequest="56"
+                                Stroke="{StaticResource GlassBorder}"
+                                StrokeShape="RoundRectangle 16">
+                                <Grid ColumnDefinitions="40, *">
+                                    <Label
+                                        FontSize="18"
+                                        HorizontalOptions="Center"
+                                        Text="👤"
+                                        TextColor="{StaticResource PrimaryLight}"
                                         VerticalOptions="Center" />
-                                </Border>
-                                <Border
-                                    Grid.Column="1"
-                                    Padding="16,0"
-                                    BackgroundColor="{StaticResource Surface}"
-                                    HeightRequest="56"
-                                    Stroke="{StaticResource GlassBorder}"
-                                    StrokeShape="RoundRectangle 16">
                                     <Entry
-                                        Placeholder="Last Name"
-                                        Text="{Binding LastName}"
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        Placeholder="Full Name"
+                                        Text="{Binding FullName}"
                                         VerticalOptions="Center" />
-                                </Border>
-                            </Grid>
+                                </Grid>
+                            </Border>
 
                             <!--  Email Field  -->
                             <Border
@@ -146,6 +142,7 @@
                                 Padding="16,0"
                                 BackgroundColor="{StaticResource Surface}"
                                 HeightRequest="56"
+                                IsVisible="{Binding IsStudent}"
                                 Stroke="{StaticResource GlassBorder}"
                                 StrokeShape="RoundRectangle 16">
                                 <Grid ColumnDefinitions="40, *">
@@ -252,6 +249,7 @@
                             <Button
                                 Command="{Binding SignUpCommand}"
                                 HeightRequest="56"
+                                IsEnabled="{Binding IsNotBusy}"
                                 Text="Create Account" />
 
                             <Label HorizontalOptions="Center" VerticalOptions="Center">
