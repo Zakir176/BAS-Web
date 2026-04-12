@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="catv1.Views.BarcodePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+    Title="Digital ID"
+    BackgroundColor="#0F172A"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <!-- Premium Background Gradient -->
+        <BoxView>
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0F172A" Offset="0" />
+                    <GradientStop Color="#1E293B" Offset="1" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <VerticalStackLayout Padding="30" Spacing="30">
+            <!-- Header -->
+            <Grid ColumnDefinitions="Auto, *">
+                <Button
+                    BackgroundColor="#1F2937"
+                    Clicked="OnBackClicked"
+                    CornerRadius="20"
+                    FontAttributes="Bold"
+                    HeightRequest="40"
+                    Text="⬅"
+                    TextColor="White"
+                    WidthRequest="40" />
+                <Label
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    FontSize="20"
+                    HorizontalOptions="Center"
+                    Text="Digital ID Card"
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Card UI -->
+            <Border
+                Padding="0"
+                BackgroundColor="#1E293B"
+                Stroke="{StaticResource GlassBorder}"
+                StrokeShape="RoundRectangle 28"
+                StrokeThickness="1">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,20" Opacity="0.5" Radius="40" />
+                </Border.Shadow>
+
+                <VerticalStackLayout>
+                    <!-- Card Top Branding -->
+                    <Grid
+                        Padding="20"
+                        BackgroundColor="#2563EB"
+                        ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Text="BAS UNIVERSITY"
+                                TextColor="White" />
+                            <Label
+                                FontSize="8"
+                                Text="EXCELLENCE IN INNOVATION"
+                                TextColor="#CCFFFFFF" />
+                        </VerticalStackLayout>
+                        <Border
+                            Grid.Column="1"
+                            Padding="8,2"
+                            BackgroundColor="#33FFFFFF"
+                            StrokeShape="RoundRectangle 6"
+                            StrokeThickness="0">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="10"
+                                Text="PRO"
+                                TextColor="White" />
+                        </Border>
+                    </Grid>
+
+                    <!-- Student Info -->
+                    <VerticalStackLayout Padding="20" Spacing="20">
+                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="20">
+                            <Border
+                                HeightRequest="100"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0"
+                                WidthRequest="80">
+                                <Image
+                                    Aspect="AspectFill"
+                                    Source="dotnet_bot.png" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Border
+                                    Padding="8,2"
+                                    BackgroundColor="#10B981"
+                                    HorizontalOptions="Start"
+                                    StrokeShape="RoundRectangle 4"
+                                    StrokeThickness="0">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="8"
+                                        Text="ACTIVE STUDENT"
+                                        TextColor="White" />
+                                </Border>
+                                <Label
+                                    Margin="0,5,0,0"
+                                    FontAttributes="Bold"
+                                    FontSize="24"
+                                    Text="{Binding Name}"
+                                    TextColor="White" />
+                                <Label
+                                    FontSize="12"
+                                    Text="UNDERGRADUATE"
+                                    TextColor="{StaticResource Primary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Line
+                            Stroke="#33FFFFFF"
+                            StrokeThickness="1"
+                            X2="400" />
+
+                        <!-- Barcode Area -->
+                        <VerticalStackLayout Spacing="10">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="10"
+                                HorizontalOptions="Center"
+                                Text="SECURE ACCESS BARCODE"
+                                TextColor="#66FFFFFF" />
+                            
+                            <Border
+                                Padding="15"
+                                BackgroundColor="White"
+                                HorizontalOptions="Center"
+                                StrokeShape="RoundRectangle 12"
+                                WidthRequest="250">
+                                <zxing:BarcodeGeneratorView
+                                    HeightRequest="60"
+                                    Value="{Binding StudentId}"
+                                    Format="Code128" />
+                            </Border>
+
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding StudentId}"
+                                TextColor="#66FFFFFF"
+                                CharacterSpacing="5" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Card Bottom -->
+                    <Grid Padding="20" BackgroundColor="#0F172A">
+                        <Label
+                            FontSize="8"
+                            HorizontalOptions="Center"
+                            Text="VALID THRU DEC 2026 • REGISTRAR VERIFIED"
+                            TextColor="#33FFFFFF" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Present this barcode to your lecturer&#10;for attendance verification"
+                TextColor="#66FFFFFF" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
