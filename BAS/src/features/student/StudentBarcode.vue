@@ -1,7 +1,7 @@
 <template>
-  <div class="physical-id-card-wrap">
+  <div class="physical-id-card-wrap" ref="cardWrapRef" @mousemove="handleMouseMove" @mouseleave="handleMouseLeave">
     
-    <div class="id-card-container js-tilt" :class="{ 'is-flipped': isFlipped }" @click="isFlipped = !isFlipped">
+    <div class="id-card-container js-tilt" ref="cardRef" :class="{ 'is-flipped': isFlipped }" @click="toggleFlip">
       <!-- FRONT OF CARD -->
       <div class="card-face card-front">
         <!-- Premium Effects Overlays -->
@@ -141,6 +141,39 @@ const props = defineProps({
 const { toast } = useToast()
 const barcodeRef = ref(null)
 const isFlipped = ref(false)
+const cardWrapRef = ref(null)
+const cardRef = ref(null)
+
+const toggleFlip = () => {
+  isFlipped.value = !isFlipped.value
+  if (cardRef.value) {
+    cardRef.value.style.setProperty('--rx', '0deg')
+    cardRef.value.style.setProperty('--ry', '0deg')
+  }
+}
+
+const handleMouseMove = (e) => {
+  if (!cardRef.value || isFlipped.value) return
+  const card = cardRef.value
+  const rect = card.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
+  const centerX = rect.width / 2
+  const centerY = rect.height / 2
+  
+  const rotateX = ((y - centerY) / centerY) * -12
+  const rotateY = ((x - centerX) / centerX) * 12
+  
+  card.style.setProperty('--rx', `${rotateX}deg`)
+  card.style.setProperty('--ry', `${rotateY}deg`)
+}
+
+const handleMouseLeave = () => {
+  if (!cardRef.value || isFlipped.value) return
+  const card = cardRef.value
+  card.style.setProperty('--rx', '0deg')
+  card.style.setProperty('--ry', '0deg')
+}
 
 const generateBarcode = () => {
   if (!barcodeRef.value || !props.studentId) return
@@ -187,12 +220,26 @@ watch(() => props.studentId, () => {
   width: 360px;
   height: 560px;
   position: relative;
-  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.1s ease-out; /* changed for smoother tilt tracking */
   transform-style: preserve-3d;
   cursor: pointer;
+  animation: card-bounce-enter 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28) backwards;
+  transform: perspective(2000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
 }
 
-.id-card-container.is-flipped { transform: rotateY(180deg); }
+.physical-id-card-wrap:hover .id-card-container:not(.is-flipped) {
+  transition: transform 0.1s ease-out;
+}
+
+@keyframes card-bounce-enter {
+  0% { transform: translateY(40px) scale(0.9) perspective(2000px) rotateX(0deg) rotateY(0deg); opacity: 0; }
+  100% { transform: translateY(0) scale(1) perspective(2000px) rotateX(0deg) rotateY(0deg); opacity: 1; }
+}
+
+.id-card-container.is-flipped { 
+  transform: perspective(2000px) rotateX(0deg) rotateY(180deg); 
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
 .card-face {
   position: absolute;
@@ -200,22 +247,24 @@ watch(() => props.studentId, () => {
   height: 100%;
   backface-visibility: hidden;
   border-radius: 28px;
-  box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: var(--bg-card);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 /* === FRONT OF CARD === */
 .card-front {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
   color: white;
 }
 
 [data-theme='light'] .card-front {
-  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(241, 245, 249, 0.85) 100%);
   color: #0f172a;
 }
 
@@ -384,7 +433,7 @@ watch(() => props.studentId, () => {
 .mini-hologram { width: 24px; height: 16px; background: linear-gradient(135deg, #a855f7, #3b82f6, #10b981); border-radius: 4px; opacity: 0.3; }
 
 /* === BACK OF CARD === */
-.card-back { transform: rotateY(180deg); background: linear-gradient(135deg, #020617 0%, #1e293b 100%); }
+.card-back { transform: rotateY(180deg); background: linear-gradient(135deg, rgba(2, 6, 23, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%); }
 
 .mag-stripe { width: 100%; height: 50px; background: #000; margin-top: 2.5rem; opacity: 0.8; }
 
