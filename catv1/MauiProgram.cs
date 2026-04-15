@@ -44,7 +44,7 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<StudentHomeViewModel>();
         builder.Services.AddTransient<HistoryViewModel>();
-        builder.Services.AddTransient<ScanViewModel>();
+        builder.Services.AddTransient<BarcodeViewModel>();
         builder.Services.AddTransient<SignUpViewModel>();
         builder.Services.AddTransient<LecturerHomeViewModel>();
 
@@ -52,6 +52,7 @@ public static class MauiProgram
         builder.Services.AddTransient<Views.LoginPage>();
         builder.Services.AddTransient<Views.StudentHomePage>();
         builder.Services.AddTransient<Views.HistoryPage>();
+        builder.Services.AddTransient<Views.BarcodePage>();
         builder.Services.AddTransient<Views.ScanPage>();
         builder.Services.AddTransient<Views.LecturerHomePage>();
         builder.Services.AddTransient<Views.SignUpPage>();
