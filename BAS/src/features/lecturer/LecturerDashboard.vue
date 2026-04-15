@@ -128,7 +128,7 @@ import ScannerInterface from '@/features/scanner/ScannerInterface.vue'
 const router = useRouter()
 const { user } = useAuth()
 const { toast } = useToast()
-const { initializeNotifications, showSessionStartNotification, showSessionEndNotification } = useRealtimeNotifications()
+const { initializeNotifications, showSessionStartNotification, showSessionEndNotification, showBarcodeScanNotification } = useRealtimeNotifications()
 
 const lecturerName = ref('')
 const isLoading = ref(true)
@@ -228,6 +228,7 @@ const handleBarcodeDetected = async (barcode) => {
     scanStatus.value = 'success'
     scannedCount.value++
     toast.success(`${studentName} marked as present!`)
+    showBarcodeScanNotification(studentName, activeSessionName.value)
     
     const index = activeRoster.value.findIndex(s => s.full_name === studentName)
     if (index !== -1) {
