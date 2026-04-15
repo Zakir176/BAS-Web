@@ -36,19 +36,25 @@
             <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
         </Tab>
         <Tab
-            Title="History"
+            Title="My Attendance"
             Icon="history_icon.png"
-            Route="historyTab">
-            <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="history" />
+            Route="studentHistoryTab">
+            <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="studentHistory" />
         </Tab>
     </TabBar>
     <!-- Lecturer -->
     <TabBar Route="lecturer">
         <Tab
-            Title="Class Management"
+            Title="Dashboard"
             Icon="class_icon.png"
             Route="lecturerDashboardTab">
             <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
+        </Tab>
+        <Tab
+            Title="Reports"
+            Icon="history_icon.png"
+            Route="reportsTab">
+            <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="reports" />
         </Tab>
         <Tab
             Title="Scan ID"

@@ -51,16 +51,18 @@
                         Stroke="{StaticResource GlassBorder}"
                         StrokeShape="RoundRectangle 16">
                         <Grid Padding="16,0" ColumnDefinitions="*, Auto">
-                            <Entry
-                                Placeholder="Class Name"
-                                Text="{Binding SelectedCourse}"
+                            <Picker
+                                Title="Select a Course"
+                                ItemsSource="{Binding Sections}"
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding SelectedSection}"
                                 VerticalOptions="Center" />
-                            <Label
+                            <ActivityIndicator
                                 Grid.Column="1"
-                                FontSize="18"
-                                Text="▼"
-                                TextColor="{StaticResource Gray400}"
-                                VerticalOptions="Center" />
+                                IsRunning="{Binding IsBusy}"
+                                HeightRequest="20"
+                                WidthRequest="20"
+                                Color="{StaticResource Primary}" />
                         </Grid>
                     </Border>
                 </VerticalStackLayout>
