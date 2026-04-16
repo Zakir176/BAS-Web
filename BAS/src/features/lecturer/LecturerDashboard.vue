@@ -106,6 +106,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/shared/composables/useAuth'
 import { useToast } from '@/shared/composables/useToast'
+import { useRealtimeNotifications } from '@/shared/composables/useRealtimeNotifications'
 import BaseButton from '@/core/ui/BaseButton.vue'
 import BaseModal from '@/core/ui/BaseModal.vue'
 
@@ -127,6 +128,7 @@ import ScannerInterface from '@/features/scanner/ScannerInterface.vue'
 const router = useRouter()
 const { user } = useAuth()
 const { toast } = useToast()
+const { initializeNotifications, showSessionStartNotification, showSessionEndNotification, showBarcodeScanNotification } = useRealtimeNotifications()
 
 const lecturerName = ref('')
 const isLoading = ref(true)
@@ -157,6 +159,10 @@ const handleCourseCreated = async () => { await fetchLecturerData() }
 const handleSessionCreated = async (session) => {
   activeSessionId.value = session.id
   activeSessionName.value = session.name
+  
+  const activeCourse = courses.value.find(c => c.id === session.course_id)
+  showSessionStartNotification(session.name, activeCourse ? activeCourse.name : 'Course')
+  
   await fetchLecturerData()
 }
 const showBarcodeScanner = () => { isScannerOpen.value = true }
@@ -177,6 +183,12 @@ const completeSession = async () => {
   isEndingSession.value = true
   try {
     toast.success('Session completed successfully')
+    
+    showSessionEndNotification(activeSessionName.value, 'Course', { 
+      present: presentCount.value, 
+      absent: activeRoster.value.length - presentCount.value 
+    })
+
     activeSessionId.value = null
     activeSessionName.value = ''
     activeRoster.value = []
@@ -216,6 +228,7 @@ const handleBarcodeDetected = async (barcode) => {
     scanStatus.value = 'success'
     scannedCount.value++
     toast.success(`${studentName} marked as present!`)
+    showBarcodeScanNotification(studentName, activeSessionName.value)
     
     const index = activeRoster.value.findIndex(s => s.full_name === studentName)
     if (index !== -1) {
@@ -300,7 +313,10 @@ const fetchLecturerData = async () => {
 const manageCourse = (id) => router.push(`/course/${id}`)
 const viewAllCourses = () => router.push('/courses')
 
-onMounted(fetchLecturerData)
+onMounted(() => {
+  initializeNotifications()
+  fetchLecturerData()
+})
 </script>
 
 <style scoped>
