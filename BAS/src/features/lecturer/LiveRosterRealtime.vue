@@ -150,6 +150,7 @@
 <script setup>
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { useRealtime } from '@/shared/composables/useRealtime'
+import { useRealtimeNotifications } from '@/shared/composables/useRealtimeNotifications'
 
 const props = defineProps({
   activeRoster: { type: Array, required: true },
@@ -174,6 +175,8 @@ const {
   unsubscribe,
   reconnect: reconnectRealtime
 } = useRealtime()
+
+const { showAttendanceNotification } = useRealtimeNotifications()
 
 // Local state
 const recentlyUpdatedStudents = ref(new Set())
@@ -241,6 +244,10 @@ const handleRealtimeUpdate = (studentId, isPresent) => {
   if (student) {
     updateNotificationText.value = `${student.full_name} marked ${isPresent ? 'present' : 'absent'}`
     showUpdateNotification.value = true
+    
+    // Trigger OS-level desktop notification
+    showAttendanceNotification(student.full_name, isPresent ? 'Present' : 'Absent', props.activeSessionName)
+    
     setTimeout(() => { showUpdateNotification.value = false }, 3000)
   }
   setTimeout(() => { recentlyUpdatedStudents.value.delete(studentId) }, 2000)
