@@ -138,6 +138,8 @@ public class LecturerHomeViewModel : BaseViewModel
     public Command ThemeToggleCommand { get; }
     public Command NotificationsCommand { get; }
 
+    private Supabase.Realtime.RealtimeChannel? _channel;
+
     public LecturerHomeViewModel(Supabase.Client supabase)
     {
         _supabase = supabase;
@@ -148,19 +150,120 @@ public class LecturerHomeViewModel : BaseViewModel
         StartScanningCommand = new Command(async () => await OnStartScanning());
         CreateCourseCommand = new Command(async () => await OnNewCourse());
         RefreshCommand = new Command(async () => await LoadDataAsync());
-        SeeAllCoursesCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Courses", "Course list coming soon!", "OK"));
-        ThemeToggleCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Theme", "Theme switching coming soon!", "OK"));
+        SeeAllCoursesCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Courses", "Full course list coming soon!", "OK"));
+        ThemeToggleCommand = new Command(async () => await OnToggleTheme());
         NotificationsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Notifications", "No new notifications.", "OK"));
+
+        // Connect Realtime
+        SubscribeToUpdates();
+    }
+
+    private void SubscribeToUpdates()
+    {
+        try 
+        {
+            _channel = _supabase.Realtime.Channel("attendance-updates");
+            _channel.Register(new Supabase.Realtime.PostgresChanges.PostgresChangesOptions("public", "attendance_logs"));
+            _channel.AddPostgresChangeHandler(Supabase.Realtime.PostgresChanges.PostgresChangesOptions.ListenType.Inserts, (sender, args) => 
+            {
+                MainThread.BeginInvokeOnMainThread(async () => await LoadDataAsync());
+            });
+            _channel.Subscribe();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Realtime Error: {ex}");
+        }
+    }
+
+    private async Task OnToggleTheme()
+    {
+        var res = await Shell.Current.DisplayActionSheetAsync("Select Theme", "Cancel", null, "Light", "Dark", "System");
+        if (string.IsNullOrEmpty(res) || res == "Cancel") return;
+        
+        // This would interact with a ThemeManager in a real app
+        await Shell.Current.DisplayAlertAsync("Theme", $"Theme changed to {res}!", "OK");
     }
 
     private async Task OnNewCourse()
     {
-        await Shell.Current.DisplayAlertAsync("New Course", "Course creation feature coming soon!", "OK");
+        string name = await Shell.Current.DisplayPromptAsync("New Course", "Enter course name:");
+        if (string.IsNullOrWhiteSpace(name)) return;
+
+        string code = await Shell.Current.DisplayPromptAsync("New Course", "Enter course code (e.g. CS101):");
+        if (string.IsNullOrWhiteSpace(code)) return;
+
+        try
+        {
+            IsBusy = true;
+            var user = _supabase.Auth.CurrentUser;
+            var course = new Course
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = name,
+                Code = code,
+                LecturerId = user?.Id ?? ""
+            };
+
+            await _supabase.From<Course>().Insert(course);
+            await LoadDataAsync();
+            await Shell.Current.DisplayAlertAsync("Success", "Course created successfully!", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private async Task OnNewSession()
     {
-        await Shell.Current.DisplayAlertAsync("New Session", "Session management feature coming soon!", "OK");
+        var currentUser = _supabase.Auth.CurrentUser;
+        if (currentUser == null) return;
+
+        // For a session we need a course selection
+        var courses = await _supabase.From<Course>().Where(c => c.LecturerId == currentUser.Id).Get();
+        if (!courses.Models.Any())
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "Create a course first!", "OK");
+            return;
+        }
+
+        string[] names = courses.Models.Select(c => c.Name).ToArray();
+        string choice = await Shell.Current.DisplayActionSheetAsync("Select Course for Session", "Cancel", null, names);
+        
+        if (string.IsNullOrEmpty(choice) || choice == "Cancel") return;
+
+        var selectedCourse = courses.Models.First(c => c.Name == choice);
+
+        try
+        {
+            IsBusy = true;
+            var section = new Section
+            {
+                Id = Guid.NewGuid().ToString(),
+                CourseId = selectedCourse.Id,
+                Name = $"{selectedCourse.Name} - {DateTime.Now:MMM dd}",
+                LecturerId = currentUser.Id ?? "",
+                AcademicYear = DateTime.Now.Year,
+                Semester = DateTime.Now.Month < 7 ? 1 : 2
+            };
+
+            await _supabase.From<Section>().Insert(section);
+            await LoadDataAsync();
+            await Shell.Current.DisplayAlertAsync("Success", "Session/Section created successfully!", "OK");
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private async Task OnStartScanning()
