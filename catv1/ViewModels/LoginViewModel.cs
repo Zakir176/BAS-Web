@@ -194,8 +194,16 @@ public class LoginViewModel : BaseViewModel
                 }
                 else
                 {
+                    var userId = session?.User?.Id;
+                    if (string.IsNullOrEmpty(userId))
+                    {
+                        await _supabase.Auth.SignOut();
+                        await Shell.Current.DisplayAlertAsync("Login Error", "Auth session is invalid. Please try again.", "OK");
+                        return;
+                    }
+
                     var response = await _supabase.From<LecturerProfile>()
-                        .Where(x => x.Email == EmailText)
+                        .Where(x => x.Id == userId)
                         .Get();
                     profileExists = response.Models.Any();
                 }
@@ -231,7 +239,8 @@ public class LoginViewModel : BaseViewModel
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Login Error: {ex}");
-            await Shell.Current.DisplayAlertAsync("Login Error", "Invalid credentials or connection error.", "OK");
+            var message = ex.Message ?? "Invalid credentials or connection error.";
+            await Shell.Current.DisplayAlertAsync("Login Error", message, "OK");
         }
         finally
         {
