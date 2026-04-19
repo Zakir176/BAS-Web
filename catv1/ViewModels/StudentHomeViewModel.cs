@@ -117,7 +117,12 @@ public class StudentHomeViewModel : BaseViewModel
 
     private async Task OnShowIdCard()
     {
-        await Shell.Current.DisplayAlertAsync("ID Card", "Digital ID feature coming soon!", "OK");
+        if (string.IsNullOrEmpty(Id))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "Student ID not found.", "OK");
+            return;
+        }
+        await Shell.Current.GoToAsync($"barcode?name={Uri.EscapeDataString(Name)}&id={Uri.EscapeDataString(Id)}");
     }
 
     private async Task OnViewReports()
