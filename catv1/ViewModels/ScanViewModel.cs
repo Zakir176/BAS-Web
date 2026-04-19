@@ -1,15 +1,18 @@
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using catv1.Models;
+using static Supabase.Postgrest.Constants;
 
 namespace catv1.ViewModels;
 
 public class ScanViewModel : BaseViewModel
 {
+    private readonly Supabase.Client _supabase;
     private bool _isSessionActive;
-    private string _selectedCourse = "Morning Biology";
+    private Section? _selectedSection;
     private DateTime _selectedDate = DateTime.Now;
     private ObservableCollection<Student> _roster = [];
+    private ObservableCollection<Section> _sections = [];
     private Student? _lastScannedStudent;
     private bool _showFeedback;
 
@@ -18,17 +21,20 @@ public class ScanViewModel : BaseViewModel
     public ICommand FinishSessionCommand { get; }
     public ICommand MarkStudentCommand { get; }
     public ICommand UndoScanCommand { get; }
+    public ICommand LoadSectionsCommand { get; }
 
-    public ScanViewModel()
+    public ScanViewModel(Supabase.Client supabase)
     {
+        _supabase = supabase;
         BackCommand = new Command(OnBackClicked);
-        StartSessionCommand = new Command(OnStartSession);
+        StartSessionCommand = new Command(OnStartSession, () => SelectedSection != null);
         FinishSessionCommand = new Command(OnFinishSession);
         MarkStudentCommand = new Command<Student>(OnMarkStudent);
         UndoScanCommand = new Command(OnUndoScan);
+        LoadSectionsCommand = new Command(async () => await LoadSectionsAsync());
 
-        // Mock Data setup
-        GenerateRoster();
+        // Initial Load
+        _ = LoadSectionsAsync();
     }
 
     public bool IsSessionActive
@@ -39,11 +45,26 @@ public class ScanViewModel : BaseViewModel
 
     public bool IsSetupVisible => !IsSessionActive;
 
-    public string SelectedCourse
+    public ObservableCollection<Section> Sections
     {
-        get => _selectedCourse;
-        set => SetProperty(ref _selectedCourse, value);
+        get => _sections;
+        set => SetProperty(ref _sections, value);
     }
+
+    public Section? SelectedSection
+    {
+        get => _selectedSection;
+        set 
+        {
+            if (SetProperty(ref _selectedSection, value))
+            {
+                OnPropertyChanged(nameof(SelectedCourse));
+                ((Command)StartSessionCommand).ChangeCanExecute();
+            }
+        }
+    }
+
+    public string SelectedCourse => SelectedSection?.Name ?? "Select a Class";
 
     public DateTime SelectedDate
     {
@@ -57,7 +78,7 @@ public class ScanViewModel : BaseViewModel
     }
 
     public string DateDisplay => SelectedDate.ToString("MMM dd, yyyy");
-    public string DayDisplay => SelectedDate.ToString("dddd");
+    public string DayDisplay => SelectedDate.ToString("dd ddd");
 
     public ObservableCollection<Student> Roster
     {
@@ -69,11 +90,9 @@ public class ScanViewModel : BaseViewModel
     public int AbsentCount => Roster?.Count(s => !s.IsPresent) ?? 0;
     public int TotalCount => Roster?.Count ?? 0;
 
-    // Progress Bars (0 to 1)
     public double PresentProgress => TotalCount > 0 ? (double)PresentCount / TotalCount : 0;
     public double AbsentProgress => TotalCount > 0 ? (double)AbsentCount / TotalCount : 0;
 
-    // Feedback Toast
     public bool ShowFeedback
     {
         get => _showFeedback;
@@ -86,11 +105,83 @@ public class ScanViewModel : BaseViewModel
         set => SetProperty(ref _lastScannedStudent, value);
     }
 
+    public async Task LoadSectionsAsync()
+    {
+        if (IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+            var user = _supabase.Auth.CurrentUser;
+            if (user == null) return;
+
+            var response = await _supabase.From<Section>()
+                .Where(x => x.LecturerId == user.Id)
+                .Get();
+
+            Sections.Clear();
+            foreach (var section in response.Models)
+            {
+                Sections.Add(section);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"LoadSections Error: {ex}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    public async Task LoadRosterAsync()
+    {
+        if (SelectedSection == null) return;
+        
+        try
+        {
+            IsBusy = true;
+            // 1. Fetch Enrollments
+            var enrollmentsResponse = await _supabase.From<Enrollment>()
+                .Where(e => e.SectionId == SelectedSection.Id)
+                .Get();
+            
+            var studentIds = enrollmentsResponse.Models.Select(e => e.StudentId).ToList();
+            if (!studentIds.Any())
+            {
+                Roster.Clear();
+                RefreshStats();
+                return;
+            }
+
+            // 2. Fetch Students
+            var studentsResponse = await _supabase.From<Student>()
+                .Filter("id", Operator.In, studentIds)
+                .Get();
+
+            Roster.Clear();
+            foreach (var student in studentsResponse.Models.OrderBy(s => s.FullName))
+            {
+                Roster.Add(student);
+            }
+            RefreshStats();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"LoadRoster Error: {ex}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
     private async void OnBackClicked()
     {
         if (IsSessionActive)
         {
-            bool confirm = await Shell.Current.DisplayAlertAsync("End Session?", "This will end the current scanning session.", "End Session", "Cancel");
+            bool confirm = await Shell.Current.DisplayAlertAsync("End Session?", "This will end the current scanning session without saving.", "Continue", "Cancel");
             if (!confirm) return;
             IsSessionActive = false;
             OnPropertyChanged(nameof(IsSetupVisible));
@@ -101,29 +192,63 @@ public class ScanViewModel : BaseViewModel
         }
     }
 
-    private void OnStartSession()
+    private async void OnStartSession()
     {
+        if (SelectedSection == null) return;
+        
+        await LoadRosterAsync();
         IsSessionActive = true;
         OnPropertyChanged(nameof(IsSetupVisible));
     }
 
     private async void OnFinishSession()
     {
-        // Here you would save the data to a backend
-        await Shell.Current.DisplayAlertAsync("Session Complete", $"Attendance marked for {SelectedCourse}.\nPresent: {PresentCount}\nAbsent: {AbsentCount}", "OK");
-        IsSessionActive = false;
-        OnPropertyChanged(nameof(IsSetupVisible));
+        if (Roster == null || !Roster.Any() || SelectedSection == null) return;
+
+        bool confirm = await Shell.Current.DisplayAlertAsync("Submit Attendance", $"Confirm attendance for {PresentCount} students?", "Submit", "Cancel");
+        if (!confirm) return;
+
+        try
+        {
+            IsBusy = true;
+            var logs = new List<ActivityLog>();
+            foreach (var student in Roster)
+            {
+                logs.Add(new ActivityLog
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    StudentId = student.Id,
+                    SectionId = SelectedSection.Id,
+                    Status = student.IsPresent ? "Present" : "Absent",
+                    DateTime = SelectedDate.Date.Add(DateTime.Now.TimeOfDay),
+                    IsVerified = student.IsPresent,
+                    IsExcused = false
+                });
+            }
+
+            await _supabase.From<ActivityLog>().Insert(logs);
+            
+            await Shell.Current.DisplayAlertAsync("Success", "Attendance has been synchronized with the database.", "OK");
+            IsSessionActive = false;
+            OnPropertyChanged(nameof(IsSetupVisible));
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", $"Failed to save attendance: {ex.Message}", "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private void OnMarkStudent(Student student)
     {
         if (student == null) return;
 
-        // Toggle
         student.IsPresent = !student.IsPresent;
         student.ScanTime = student.IsPresent ? DateTime.Now : null;
 
-        // Update stats
         RefreshStats();
 
         if (student.IsPresent)
@@ -131,12 +256,8 @@ public class ScanViewModel : BaseViewModel
             LastScannedStudent = student;
             ShowFeedback = true;
 
-            // Hide feedback after 3 seconds
-            Application.Current?.Dispatcher.StartTimer(TimeSpan.FromSeconds(3), () =>
-            {
-                ShowFeedback = false;
-                return false;
-            });
+            // Simple timer for feedback
+            Task.Delay(3000).ContinueWith(_ => MainThread.BeginInvokeOnMainThread(() => ShowFeedback = false));
         }
     }
 
@@ -155,13 +276,14 @@ public class ScanViewModel : BaseViewModel
     {
         OnPropertyChanged(nameof(PresentCount));
         OnPropertyChanged(nameof(AbsentCount));
+        OnPropertyChanged(nameof(TotalCount));
         OnPropertyChanged(nameof(PresentProgress));
         OnPropertyChanged(nameof(AbsentProgress));
     }
 
     public void OnBarcodeDetected(ZXing.Net.Maui.BarcodeResult[] results)
     {
-        if (results == null || results.Length == 0) return;
+        if (results == null || results.Length == 0 || IsBusy) return;
 
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -175,24 +297,5 @@ public class ScanViewModel : BaseViewModel
                 }
             }
         });
-    }
-
-    private void GenerateRoster()
-    {
-        Roster =
-            [
-                new Student { FullName="John Doe", StudentNumber="210001", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Jane Smith", StudentNumber="210002", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Michael Brown", StudentNumber="210003", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Sarah Johnson", StudentNumber="210004", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="David Wilson", StudentNumber="210005", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Emily Davis", StudentNumber="210006", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="James Miller", StudentNumber="210007", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Olivia Taylor", StudentNumber="210008", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Robert Anderson", StudentNumber="210009", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Sophia Thomas", StudentNumber="210010", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="William Jackson", StudentNumber="210011", Id = Guid.NewGuid().ToString() },
-                new Student { FullName="Isabella White", StudentNumber="210012", Id = Guid.NewGuid().ToString() }
-            ];
     }
 }
