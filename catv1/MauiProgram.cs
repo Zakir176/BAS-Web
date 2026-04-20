@@ -47,6 +47,7 @@ public static class MauiProgram
         builder.Services.AddTransient<BarcodeViewModel>();
         builder.Services.AddTransient<SignUpViewModel>();
         builder.Services.AddTransient<LecturerHomeViewModel>();
+        builder.Services.AddTransient<ScanViewModel>();
 
         // Pages
         builder.Services.AddTransient<Views.LoginPage>();
