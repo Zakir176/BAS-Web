@@ -14,6 +14,7 @@ public class CourseChartItem
 public class LecturerHomeViewModel : BaseViewModel
 {
     private readonly Supabase.Client _supabase;
+    private LecturerProfile? _profile;
 
     private string _name = "Lecturer";
     public string Name
@@ -202,7 +203,8 @@ public class LecturerHomeViewModel : BaseViewModel
                 Id = Guid.NewGuid().ToString(),
                 Name = name,
                 Code = code,
-                LecturerId = user?.Id ?? ""
+                LecturerId = user?.Id ?? "",
+                DepartmentId = _profile?.DepartmentId ?? ""
             };
 
             await _supabase.From<Course>().Insert(course);
@@ -283,24 +285,25 @@ public class LecturerHomeViewModel : BaseViewModel
             if (user == null) return;
 
             System.Diagnostics.Debug.WriteLine($"[LecturerDashboard] Fetching profile for user: {user.Id}");
-            var profileResponse = (await _supabase.From<LecturerProfile>()
+            _profile = (await _supabase.From<LecturerProfile>()
                 .Where(l => l.Id == user.Id)
                 .Get()).Models.FirstOrDefault();
 
-            if (profileResponse == null)
+            if (_profile == null)
             {
                 System.Diagnostics.Debug.WriteLine("[LecturerDashboard] ERROR: Profile not found!");
+                await Shell.Current.DisplayAlertAsync("Profile Error", "Lecturer profile not found. Please contact support.", "OK");
                 IsBusy = false;
                 return;
             }
 
-            Name = profileResponse.FullName;
+            Name = _profile.FullName;
                 
                 // Fetch Department Name
-                if (!string.IsNullOrEmpty(profileResponse.DepartmentId))
+                if (!string.IsNullOrEmpty(_profile.DepartmentId))
                 {
                     var deptResponse = (await _supabase.From<Department>()
-                        .Where(d => d.Id == profileResponse.DepartmentId)
+                        .Where(d => d.Id == _profile.DepartmentId)
                         .Get()).Models.FirstOrDefault();
                     
                     if (deptResponse != null)
@@ -312,19 +315,23 @@ public class LecturerHomeViewModel : BaseViewModel
                         Department = "Unknown Department";
                     }
                 }
+                else
+                {
+                    Department = "No Department Assigned";
+                }
 
                 // --- LIVE DATA FETCHING ---
 
-                System.Diagnostics.Debug.WriteLine($"[LecturerDashboard] Profile found: {profileResponse.FullName}. Fetching courses...");
+                System.Diagnostics.Debug.WriteLine($"[LecturerDashboard] Profile found: {_profile.FullName}. Fetching courses...");
                 var coursesResponse = await _supabase.From<Course>()
-                    .Where(c => c.LecturerId == profileResponse.Id)
+                    .Where(c => c.LecturerId == _profile.Id)
                     .Get();
                 TotalCourses = coursesResponse.Models.Count;
                 System.Diagnostics.Debug.WriteLine($"[LecturerDashboard] Found {TotalCourses} courses.");
 
                 // 2. Fetch Sections
                 var sectionsResponse = await _supabase.From<Section>()
-                    .Where(s => s.LecturerId == profileResponse.Id)
+                    .Where(s => s.LecturerId == _profile.Id)
                     .Get();
                 var sections = sectionsResponse.Models;
                 var sectionIds = sections.Select(s => s.Id).ToList();
