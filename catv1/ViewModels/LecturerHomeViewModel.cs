@@ -33,9 +33,18 @@ public class LecturerHomeViewModel : BaseViewModel
     {
         get
         {
-            if (string.IsNullOrEmpty(Name) || Name == "Lecturer") return "MU";
-            var parts = Name.Split(' ');
-            if (parts.Length >= 2) return $"{parts[0][0]}{parts[1][0]}".ToUpper();
+            if (string.IsNullOrWhiteSpace(Name) || Name == "Lecturer") return "MU";
+            
+            var parts = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 2) 
+            {
+                var firstInitial = parts[0].Length > 0 ? parts[0][0] : ' ';
+                var lastInitial = parts[parts.Length - 1].Length > 0 ? parts[parts.Length - 1][0] : ' ';
+                
+                if (firstInitial != ' ' && lastInitial != ' ')
+                    return $"{firstInitial}{lastInitial}".ToUpper();
+            }
+            
             return Name.Length >= 2 ? Name.Substring(0, 2).ToUpper() : "MU";
         }
     }
@@ -104,6 +113,7 @@ public class LecturerHomeViewModel : BaseViewModel
     }
 
     public ObservableCollection<CourseChartItem> CourseAttendanceData { get; set; } = new();
+    public ObservableCollection<Course> MyCourses { get; set; } = new();
     public ObservableCollection<Student> ActiveSessionStudents { get; set; } = new();
 
     private string _activeSessionName = "No Active Session";
@@ -138,6 +148,7 @@ public class LecturerHomeViewModel : BaseViewModel
     public Command SeeAllCoursesCommand { get; }
     public Command ThemeToggleCommand { get; }
     public Command NotificationsCommand { get; }
+    public Command LogoutCommand { get; }
 
     private Supabase.Realtime.RealtimeChannel? _channel;
 
@@ -154,9 +165,27 @@ public class LecturerHomeViewModel : BaseViewModel
         SeeAllCoursesCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Courses", "Full course list coming soon!", "OK"));
         ThemeToggleCommand = new Command(async () => await OnToggleTheme());
         NotificationsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Notifications", "No new notifications.", "OK"));
+        LogoutCommand = new Command(async () => await OnLogout());
 
         // Connect Realtime
         SubscribeToUpdates();
+    }
+
+    private async Task OnLogout()
+    {
+        bool confirm = await Shell.Current.DisplayAlertAsync("Logout", "Are you sure you want to log out?", "Yes", "No");
+        if (!confirm) return;
+
+        try 
+        {
+            await _supabase.Auth.SignOut();
+            await Shell.Current.GoToAsync("//login");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Logout Error: {ex}");
+            await Shell.Current.GoToAsync("//login"); // Go anyway
+        }
     }
 
     private void SubscribeToUpdates()
@@ -286,18 +315,19 @@ public class LecturerHomeViewModel : BaseViewModel
 
             System.Diagnostics.Debug.WriteLine($"[LecturerDashboard] Fetching profile for user: {user.Id}");
             _profile = (await _supabase.From<LecturerProfile>()
-                .Where(l => l.Id == user.Id)
+                .Filter("email", Supabase.Postgrest.Constants.Operator.ILike, user.Email)
                 .Get()).Models.FirstOrDefault();
 
             if (_profile == null)
             {
                 System.Diagnostics.Debug.WriteLine("[LecturerDashboard] ERROR: Profile not found!");
-                await Shell.Current.DisplayAlertAsync("Profile Error", "Lecturer profile not found. Please contact support.", "OK");
+                // Try to create a basic profile if missing? No, better alert.
+                await Shell.Current.DisplayAlertAsync("Profile Error", "Lecturer profile not found in database. Please ensure your account is correctly set up.", "OK");
                 IsBusy = false;
                 return;
             }
 
-            Name = _profile.FullName;
+            Name = _profile.FullName ?? "Lecturer";
                 
                 // Fetch Department Name
                 if (!string.IsNullOrEmpty(_profile.DepartmentId))
@@ -323,15 +353,31 @@ public class LecturerHomeViewModel : BaseViewModel
                 // --- LIVE DATA FETCHING ---
 
                 System.Diagnostics.Debug.WriteLine($"[LecturerDashboard] Profile found: {_profile.FullName}. Fetching courses...");
+                
+                // Use user.Id if _profile.Id seems inconsistent (Supabase Auth ID is preferred for consistency)
+                string? lookupId = !string.IsNullOrEmpty(_profile.Id) && _profile.Id.Length > 10 ? _profile.Id : user.Id;
+                
+                if (string.IsNullOrEmpty(lookupId)) 
+                {
+                    lookupId = user.Id; // Final fallback
+                }
+                
                 var coursesResponse = await _supabase.From<Course>()
-                    .Where(c => c.LecturerId == _profile.Id)
+                    .Where(c => c.LecturerId == lookupId)
                     .Get();
+                
                 TotalCourses = coursesResponse.Models.Count;
+                MyCourses.Clear();
+                foreach (var course in coursesResponse.Models)
+                {
+                    MyCourses.Add(course);
+                }
+                
                 System.Diagnostics.Debug.WriteLine($"[LecturerDashboard] Found {TotalCourses} courses.");
 
                 // 2. Fetch Sections
                 var sectionsResponse = await _supabase.From<Section>()
-                    .Where(s => s.LecturerId == _profile.Id)
+                    .Where(s => s.LecturerId == lookupId)
                     .Get();
                 var sections = sectionsResponse.Models;
                 var sectionIds = sections.Select(s => s.Id).ToList();
@@ -447,6 +493,7 @@ public class LecturerHomeViewModel : BaseViewModel
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"LoadData Error: {ex}");
+            await Shell.Current.DisplayAlertAsync("Data Error", "Unable to load dashboard data. Please check your connection.", "OK");
         }
         finally
         {
