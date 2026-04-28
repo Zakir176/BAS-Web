@@ -121,18 +121,18 @@ public class LoginViewModel : BaseViewModel
 
     private void OnStudentClicked()
     {
-        if (!_isStudent)
+        if (!IsStudent)
         {
-            _isStudent = true;
+            IsStudent = true;
             UpdateUIState();
         }
     }
 
     private void OnLecturerClicked()
     {
-        if (_isStudent)
+        if (IsStudent)
         {
-            _isStudent = false;
+            IsStudent = false;
             UpdateUIState();
         }
     }
@@ -159,18 +159,25 @@ public class LoginViewModel : BaseViewModel
 
             WelcomeTitle = "Lecturer Login";
         }
+        
+        // Ensure commands are updated if they depend on IsStudent
+        ((Command)LoginCommand).ChangeCanExecute();
     }
 
     private async Task OnLoginClicked()
     {
-        if (string.IsNullOrWhiteSpace(EmailText))
+        if (IsBusy) return;
+
+        var email = EmailText?.Trim();
+        var password = PasswordText?.Trim();
+
+        if (string.IsNullOrWhiteSpace(email))
         {
             await Shell.Current.DisplayAlertAsync("Error", "Please enter your email.", "OK");
             return;
         }
 
-
-        if (string.IsNullOrWhiteSpace(PasswordText))
+        if (string.IsNullOrWhiteSpace(password))
         {
             await Shell.Current.DisplayAlertAsync("Error", "Please enter your password.", "OK");
             return;
@@ -179,46 +186,57 @@ public class LoginViewModel : BaseViewModel
         try
         {
             IsBusy = true;
+            System.Diagnostics.Debug.WriteLine($"[Login] Attempting login for {email} (IsStudent: {IsStudent})");
+
             // Sign in with Email and Password
-            var session = await _supabase.Auth.SignInWithPassword(EmailText, PasswordText);
-            if (session != null)
+            var session = await _supabase.Auth.SignInWithPassword(email, password);
+            if (session != null && session.User != null)
             {
                 // Verify that the profile exists in the database
                 bool profileExists = false;
-                if (_isStudent)
+                string profileType = IsStudent ? "Student" : "Lecturer";
+                
+                if (IsStudent)
                 {
                     var response = await _supabase.From<Student>()
-                        .Where(x => x.Email == EmailText)
+                        .Filter("email", Supabase.Postgrest.Constants.Operator.ILike, email)
                         .Get();
-                    profileExists = response.Models.Any();
+                    profileExists = response.Models.Count > 0;
                 }
                 else
                 {
-                    var userId = session?.User?.Id;
-                    if (string.IsNullOrEmpty(userId))
-                    {
-                        await _supabase.Auth.SignOut();
-                        await Shell.Current.DisplayAlertAsync("Login Error", "Auth session is invalid. Please try again.", "OK");
-                        return;
-                    }
-
+                    var userId = session.User.Id;
+                    // First try by ID (most accurate if set correctly)
                     var response = await _supabase.From<LecturerProfile>()
                         .Where(x => x.Id == userId)
                         .Get();
-                    profileExists = response.Models.Any();
+                    
+                    profileExists = response.Models.Count > 0;
+
+                    // Fallback to Email if ID lookup failed (handles legacy/inconsistent records)
+                    if (!profileExists)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Login] ID lookup failed for lecturer {userId}, trying email {email}");
+                        var emailResponse = await _supabase.From<LecturerProfile>()
+                            .Filter("email", Supabase.Postgrest.Constants.Operator.ILike, email)
+                            .Get();
+                        profileExists = emailResponse.Models.Count > 0;
+                    }
                 }
 
                 if (!profileExists)
                 {
                     await _supabase.Auth.SignOut();
-                    await Shell.Current.DisplayAlertAsync("Login Error", "Your account was authenticated, but no profile was found. Please register again or contact support.", "OK");
+                    await Shell.Current.DisplayAlertAsync("Login Error", 
+                        $"Your account was authenticated, but no {profileType} profile was found for {email}.\n\n" +
+                        "If you are a lecturer, please ensure you selected the 'Lecturer' tab before logging in.", "OK");
                     return;
                 }
 
                 if (IsRememberMe)
                 {
                     Preferences.Set(KeyRememberMe, true);
-                    Preferences.Set(KeySavedUserId, EmailText); // Save Email instead of ID
+                    Preferences.Set(KeySavedUserId, email); 
                 }
                 else
                 {
@@ -226,20 +244,28 @@ public class LoginViewModel : BaseViewModel
                     Preferences.Remove(KeySavedUserId);
                 }
 
-                if (_isStudent)
+                if (IsStudent)
                 {
                     await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
                 }
                 else
                 {
+                    System.Diagnostics.Debug.WriteLine($"[Login] Navigating to lecturer dashboard...");
                     await Shell.Current.GoToAsync("//lecturer/lecturerDashboardTab/dashboard");
                 }
+            }
+            else
+            {
+                await Shell.Current.DisplayAlertAsync("Login Error", "Invalid email or password. Please try again.", "OK");
             }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Login Error: {ex}");
             var message = ex.Message ?? "Invalid credentials or connection error.";
+            if (message.Contains("Invalid login credentials"))
+                message = "Invalid email or password. Please try again.";
+            
             await Shell.Current.DisplayAlertAsync("Login Error", message, "OK");
         }
         finally
