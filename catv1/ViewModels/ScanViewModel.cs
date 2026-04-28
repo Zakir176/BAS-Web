@@ -281,19 +281,36 @@ public class ScanViewModel : BaseViewModel
         OnPropertyChanged(nameof(AbsentProgress));
     }
 
-    public void OnBarcodeDetected(ZXing.Net.Maui.BarcodeResult[] results)
+    public async void OnBarcodeDetected(ZXing.Net.Maui.BarcodeResult[] results)
     {
         if (results == null || results.Length == 0 || IsBusy) return;
 
-        MainThread.BeginInvokeOnMainThread(() =>
+        await MainThread.InvokeOnMainThreadAsync(async () =>
         {
             foreach (var result in results)
             {
-                var student = Roster.FirstOrDefault(s => s.StudentNumber == result.Value);
-                if (student != null && !student.IsPresent)
+                var barcodeValue = result.Value;
+                // Try matching by StudentNumber OR Id
+                var student = Roster.FirstOrDefault(s => s.StudentNumber == barcodeValue || s.Id == barcodeValue);
+                
+                if (student != null)
                 {
-                    OnMarkStudent(student);
-                    break;
+                    if (!student.IsPresent)
+                    {
+                        OnMarkStudent(student);
+                    }
+                    // If already present, we might want to show some feedback but not "re-mark"
+                    break; 
+                }
+                else
+                {
+                    // No match found in the roster
+                    System.Diagnostics.Debug.WriteLine($"[ScanPage] No student found matching barcode: {barcodeValue}");
+                    // Optionally show a temporary error toast or alert if it's the only result
+                    if (results.Length == 1)
+                    {
+                        await Shell.Current.DisplayAlertAsync("Scan Error", $"No student found with ID/Number: {barcodeValue}", "OK");
+                    }
                 }
             }
         });
