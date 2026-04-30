@@ -148,6 +148,14 @@ public class StudentHomeViewModel : BaseViewModel
 
             if (studentResponse == null)
             {
+                System.Diagnostics.Debug.WriteLine($"[StudentDashboard] ID lookup failed for student {user.Id}, trying email {user.Email}");
+                studentResponse = (await _supabase.From<Student>()
+                    .Filter("email", Supabase.Postgrest.Constants.Operator.ILike, user.Email)
+                    .Get()).Models.FirstOrDefault();
+            }
+
+            if (studentResponse == null)
+            {
                 System.Diagnostics.Debug.WriteLine("[StudentDashboard] ERROR: Profile not found!");
                 IsBusy = false;
                 return;
