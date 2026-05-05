@@ -99,7 +99,16 @@
                 Grid.Row="2"
                 Command="{Binding StartSessionCommand}"
                 HeightRequest="56"
-                Text="START SCANNING" />
+                Text="START SCANNING"
+                IsVisible="{Binding IsNotBusy}" />
+
+            <ActivityIndicator
+                Grid.Row="2"
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="{StaticResource Primary}"
+                HeightRequest="50"
+                HorizontalOptions="Center" />
         </Grid>
 
 
