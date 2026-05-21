@@ -34,9 +34,7 @@ public class LoginViewModel : BaseViewModel
             EmailText = Preferences.Get(KeySavedUserId, string.Empty);
         }
 
-        UpdateUIState();
-
-        // Initialize Commands
+        // Initialize Commands first to avoid NullReferenceException
         StudentCommand = new Command(OnStudentClicked);
         LecturerCommand = new Command(OnLecturerClicked);
         LoginCommand = new Command(async () => await OnLoginClicked());
@@ -44,6 +42,8 @@ public class LoginViewModel : BaseViewModel
         TogglePasswordCommand = new Command(OnTogglePasswordClicked);
         ForgotPasswordCommand = new Command(OnForgotPasswordClicked);
         RememberMeCommand = new Command(OnRememberMeClicked);
+
+        UpdateUIState();
     }
 
     public bool IsStudent
