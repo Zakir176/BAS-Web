@@ -294,7 +294,35 @@ public class LoginViewModel : BaseViewModel
 
     private async void OnForgotPasswordClicked()
     {
-        await Shell.Current.DisplayAlertAsync("Forgot Password", "Please contact your system administrator to reset your password.\n\nSupport: admin@university.edu", "OK");
+        var email = await Shell.Current.DisplayPromptAsync(
+            "Forgot Password",
+            "Enter your institutional email address and we'll send you a reset link.",
+            placeholder: "your@university.edu",
+            keyboard: Keyboard.Email);
+
+        if (string.IsNullOrWhiteSpace(email)) return;
+
+        try
+        {
+            IsBusy = true;
+            await _supabase.Auth.ResetPasswordForEmail(email.Trim());
+            await Shell.Current.DisplayAlertAsync(
+                "Reset Link Sent",
+                $"A password reset link has been sent to {email.Trim()}. Please check your inbox (and spam folder).",
+                "OK");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ForgotPassword] Error: {ex}");
+            await Shell.Current.DisplayAlertAsync(
+                "Error",
+                "Failed to send reset link. Please check the email address and try again.",
+                "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private void OnRememberMeClicked()
