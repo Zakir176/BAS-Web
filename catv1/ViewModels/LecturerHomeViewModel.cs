@@ -116,6 +116,67 @@ public class LecturerHomeViewModel : BaseViewModel
     public ObservableCollection<Course> MyCourses { get; set; } = new();
     public ObservableCollection<Student> ActiveSessionStudents { get; set; } = new();
 
+    // GAP 4: Roster search and filter
+    private string _rosterSearchText = string.Empty;
+    public string RosterSearchText
+    {
+        get => _rosterSearchText;
+        set
+        {
+            if (SetProperty(ref _rosterSearchText, value))
+                OnPropertyChanged(nameof(FilteredSessionStudents));
+        }
+    }
+
+    private string _rosterFilter = "All"; // "All" | "Present" | "Absent"
+    public string RosterFilter
+    {
+        get => _rosterFilter;
+        set
+        {
+            if (SetProperty(ref _rosterFilter, value))
+            {
+                OnPropertyChanged(nameof(FilteredSessionStudents));
+                OnPropertyChanged(nameof(IsFilterAll));
+                OnPropertyChanged(nameof(IsFilterPresent));
+                OnPropertyChanged(nameof(IsFilterAbsent));
+            }
+        }
+    }
+
+    public bool IsFilterAll => RosterFilter == "All";
+    public bool IsFilterPresent => RosterFilter == "Present";
+    public bool IsFilterAbsent => RosterFilter == "Absent";
+
+    public IEnumerable<Student> FilteredSessionStudents
+    {
+        get
+        {
+            var list = ActiveSessionStudents.AsEnumerable();
+
+            // Apply status filter
+            if (RosterFilter == "Present")
+                list = list.Where(s => s.IsPresent);
+            else if (RosterFilter == "Absent")
+                list = list.Where(s => !s.IsPresent);
+
+            // Apply search text
+            if (!string.IsNullOrWhiteSpace(RosterSearchText))
+            {
+                var q = RosterSearchText.ToLowerInvariant();
+                list = list.Where(s =>
+                    (s.FullName?.ToLowerInvariant().Contains(q) ?? false) ||
+                    (s.StudentNumber?.ToLowerInvariant().Contains(q) ?? false));
+            }
+
+            return list;
+        }
+    }
+
+    public Command FilterAllCommand { get; }
+    public Command FilterPresentCommand { get; }
+    public Command FilterAbsentCommand { get; }
+
     private string _activeSessionName = "No Active Session";
     public string ActiveSessionName
     {
@@ -166,6 +227,9 @@ public class LecturerHomeViewModel : BaseViewModel
         ThemeToggleCommand = new Command(async () => await OnToggleTheme());
         NotificationsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Notifications", "No new notifications.", "OK"));
         LogoutCommand = new Command(async () => await OnLogout());
+        FilterAllCommand = new Command(() => RosterFilter = "All");
+        FilterPresentCommand = new Command(() => RosterFilter = "Present");
+        FilterAbsentCommand = new Command(() => RosterFilter = "Absent");
 
         // Connect Realtime
         SubscribeToUpdates();
@@ -484,8 +548,10 @@ public class LecturerHomeViewModel : BaseViewModel
                     IsSessionActive = false;
                 }
 
-                // Update Session Subtitle (Mock logic for now as we don't have a schedule yet)
-                SessionCountSubtitle = $"You have {sections.Count()} sections active this semester";
+                // GAP 6: Update Session Subtitle to show today's count based on distinct sections in today's logs
+                var todaysLogs = logs.Where(l => l.DateTime.Date == DateTime.Today).ToList();
+                var todaysSessionCount = todaysLogs.Select(l => l.SectionId).Distinct().Count();
+                SessionCountSubtitle = $"You have {todaysSessionCount} session{(todaysSessionCount == 1 ? "" : "s")} today";
 
                 OnPropertyChanged(nameof(HasCourses));
                 OnPropertyChanged(nameof(HasNoCourses));
