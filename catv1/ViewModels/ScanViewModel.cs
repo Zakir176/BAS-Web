@@ -15,6 +15,15 @@ public class ScanViewModel : BaseViewModel
     private ObservableCollection<Section> _sections = [];
     private Student? _lastScannedStudent;
     private bool _showFeedback;
+    private string _scanFeedbackMessage = string.Empty;
+    private bool _isScanError;
+
+    // Debounce: track last processed barcode to prevent duplicate rapid scans (GAP 7)
+    private string _lastScannedBarcode = string.Empty;
+    private DateTime _lastScanTime = DateTime.MinValue;
+
+    // GAP 3: track which student IDs have already had an attendance_logs row written mid-session
+    private readonly HashSet<string> _writtenStudentIds = new();
 
     public ICommand BackCommand { get; }
     public ICommand StartSessionCommand { get; }
@@ -105,6 +114,26 @@ public class ScanViewModel : BaseViewModel
         set => SetProperty(ref _lastScannedStudent, value);
     }
 
+    /// <summary>Message shown in the feedback toast — may be success or error.</summary>
+    public string ScanFeedbackMessage
+    {
+        get => _scanFeedbackMessage;
+        set => SetProperty(ref _scanFeedbackMessage, value);
+    }
+
+    /// <summary>True when the feedback toast represents an error (red), false for success (green).</summary>
+    public bool IsScanError
+    {
+        get => _isScanError;
+        set
+        {
+            if (SetProperty(ref _isScanError, value))
+                OnPropertyChanged(nameof(IsNotScanError));
+        }
+    }
+
+    public bool IsNotScanError => !IsScanError;
+
     public async Task LoadSectionsAsync()
     {
         if (IsBusy) return;
@@ -157,7 +186,7 @@ public class ScanViewModel : BaseViewModel
 
             // 2. Fetch Students
             var studentsResponse = await _supabase.From<Student>()
-                .Filter("id", Operator.In, studentIds)
+                .Filter("id", Operator.In, studentIds.Cast<object>().ToList())
                 .Get();
 
             Roster.Clear();
@@ -197,6 +226,7 @@ public class ScanViewModel : BaseViewModel
         if (SelectedSection == null) return;
         
         await LoadRosterAsync();
+        _writtenStudentIds.Clear(); // reset mid-session write tracking
         IsSessionActive = true;
         OnPropertyChanged(nameof(IsSetupVisible));
     }
@@ -214,6 +244,9 @@ public class ScanViewModel : BaseViewModel
             var logs = new List<ActivityLog>();
             foreach (var student in Roster)
             {
+                // GAP 3: skip students whose log was already written mid-session
+                if (_writtenStudentIds.Contains(student.Id)) continue;
+
                 logs.Add(new ActivityLog
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -226,10 +259,12 @@ public class ScanViewModel : BaseViewModel
                 });
             }
 
-            await _supabase.From<ActivityLog>().Insert(logs);
+            if (logs.Any())
+                await _supabase.From<ActivityLog>().Insert(logs);
             
             await Shell.Current.DisplayAlertAsync("Success", "Attendance has been synchronized with the database.", "OK");
             IsSessionActive = false;
+            _writtenStudentIds.Clear();
             OnPropertyChanged(nameof(IsSetupVisible));
         }
         catch (Exception ex)
@@ -254,10 +289,48 @@ public class ScanViewModel : BaseViewModel
         if (student.IsPresent)
         {
             LastScannedStudent = student;
+            IsScanError = false;
+            ScanFeedbackMessage = $"{student.FullName} marked Present";
             ShowFeedback = true;
 
+            // GAP 3: write the attendance log immediately on mark, fire-and-forget
+            _ = WriteAttendanceLogAsync(student);
+
             // Simple timer for feedback
-            Task.Delay(3000).ContinueWith(_ => MainThread.BeginInvokeOnMainThread(() => ShowFeedback = false));
+            Task.Delay(3000).ContinueWith(_ => MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ShowFeedback = false;
+                ScanFeedbackMessage = string.Empty;
+            }));
+        }
+    }
+
+    /// <summary>Writes a single Present attendance_logs row immediately so the DB stays in sync mid-session (GAP 3).</summary>
+    private async Task WriteAttendanceLogAsync(Student student)
+    {
+        if (SelectedSection == null || _writtenStudentIds.Contains(student.Id)) return;
+
+        try
+        {
+            var log = new ActivityLog
+            {
+                Id = Guid.NewGuid().ToString(),
+                StudentId = student.Id,
+                SectionId = SelectedSection.Id,
+                Status = "Present",
+                DateTime = SelectedDate.Date.Add(DateTime.Now.TimeOfDay),
+                IsVerified = true,
+                IsExcused = false
+            };
+
+            await _supabase.From<ActivityLog>().Insert(log);
+            _writtenStudentIds.Add(student.Id);
+            System.Diagnostics.Debug.WriteLine($"[ScanPage] Attendance log written for {student.FullName}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ScanPage] Failed to write attendance log: {ex.Message}");
+            // Non-fatal: OnFinishSession will retry for this student since the ID won't be in _writtenStudentIds
         }
     }
 
@@ -287,32 +360,54 @@ public class ScanViewModel : BaseViewModel
 
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            foreach (var result in results)
+            var barcodeValue = results[0].Value?.Trim();
+            if (string.IsNullOrEmpty(barcodeValue)) return;
+
+            // GAP 7 — Debounce: ignore the same barcode within 1.5 seconds
+            if (barcodeValue == _lastScannedBarcode &&
+                (DateTime.Now - _lastScanTime).TotalMilliseconds < 1500)
             {
-                var barcodeValue = result.Value;
-                // Try matching by StudentNumber OR Id
-                var student = Roster.FirstOrDefault(s => s.StudentNumber == barcodeValue || s.Id == barcodeValue);
-                
-                if (student != null)
-                {
-                    if (!student.IsPresent)
-                    {
-                        OnMarkStudent(student);
-                    }
-                    // If already present, we might want to show some feedback but not "re-mark"
-                    break; 
-                }
-                else
-                {
-                    // No match found in the roster
-                    System.Diagnostics.Debug.WriteLine($"[ScanPage] No student found matching barcode: {barcodeValue}");
-                    // Optionally show a temporary error toast or alert if it's the only result
-                    if (results.Length == 1)
-                    {
-                        await Shell.Current.DisplayAlertAsync("Scan Error", $"No student found with ID/Number: {barcodeValue}", "OK");
-                    }
-                }
+                return;
             }
+
+            _lastScannedBarcode = barcodeValue;
+            _lastScanTime = DateTime.Now;
+
+            // Try matching by StudentNumber OR Id
+            var student = Roster.FirstOrDefault(s =>
+                s.StudentNumber == barcodeValue || s.Id == barcodeValue);
+
+            if (student != null)
+            {
+                if (!student.IsPresent)
+                {
+                    OnMarkStudent(student);
+                }
+                // Already marked — reset debounce so re-scanning after a period works
+            }
+            else
+            {
+                // GAP 2 — Show inline, non-blocking error feedback instead of alert
+                System.Diagnostics.Debug.WriteLine($"[ScanPage] No student found for barcode: {barcodeValue}");
+                ShowScanError($"No student found with ID: {barcodeValue}");
+            }
+
+            await Task.CompletedTask;
         });
+    }
+
+    /// <summary>Shows an inline error in the feedback toast — non-blocking, auto-clears after 3 s.</summary>
+    private void ShowScanError(string message)
+    {
+        IsScanError = true;
+        ScanFeedbackMessage = message;
+        ShowFeedback = true;
+
+        Task.Delay(3000).ContinueWith(_ => MainThread.BeginInvokeOnMainThread(() =>
+        {
+            ShowFeedback = false;
+            IsScanError = false;
+            ScanFeedbackMessage = string.Empty;
+        }));
     }
 }

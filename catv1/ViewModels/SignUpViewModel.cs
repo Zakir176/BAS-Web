@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using System.Collections.ObjectModel;
 using catv1.Models;
 using Supabase.Gotrue;
 
@@ -9,7 +10,7 @@ public class SignUpViewModel : BaseViewModel
     private string _fullName = string.Empty;
     private string _email = string.Empty;
     private string _id = string.Empty;
-    private string _department = string.Empty;
+    private Department? _selectedDepartment;
     private string _password = string.Empty;
     private string _confirmPassword = string.Empty;
     private bool _isStudent = true;
@@ -33,11 +34,13 @@ public class SignUpViewModel : BaseViewModel
         set => SetProperty(ref _id, value);
     }
 
-    public string Department
+    public Department? SelectedDepartment
     {
-        get => _department;
-        set => SetProperty(ref _department, value);
+        get => _selectedDepartment;
+        set => SetProperty(ref _selectedDepartment, value);
     }
+
+    public ObservableCollection<Department> Departments { get; } = new();
 
     public string Password
     {
@@ -111,6 +114,25 @@ public class SignUpViewModel : BaseViewModel
         SignUpCommand = new Command(OnSignUpClicked);
         LoginCommand = new Command(OnLoginClicked);
         TogglePasswordCommand = new Command(() => IsPassword = !IsPassword);
+
+        _ = LoadDepartmentsAsync();
+    }
+
+    private async Task LoadDepartmentsAsync()
+    {
+        try
+        {
+            var response = await _supabase.From<Department>().Get();
+            Departments.Clear();
+            foreach (var dept in response.Models)
+            {
+                Departments.Add(dept);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading departments: {ex.Message}");
+        }
     }
 
     private async void OnSignUpClicked()
@@ -135,9 +157,9 @@ public class SignUpViewModel : BaseViewModel
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(Department))
+        if (SelectedDepartment == null)
         {
-            await Shell.Current.DisplayAlertAsync("Error", $"Please enter your {(IsStudent ? "Class Section" : "Department")}.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", $"Please select a {(IsStudent ? "Class Section" : "Department")}.", "OK");
             return;
         }
 
@@ -160,14 +182,6 @@ public class SignUpViewModel : BaseViewModel
             // 1. Pre-signup checks (Check public tables first)
             var alreadyExists = await CheckExistingUser(Email, Id, IsStudent);
             if (alreadyExists) return;
-
-            // Resolve Department ID from Name (since UI uses string Entry)
-            var resolvedDeptId = await ResolveDepartmentId(Department);
-            if (string.IsNullOrEmpty(resolvedDeptId))
-            {
-                await Shell.Current.DisplayAlertAsync("Error", $"Department/Section '{Department}' not found. Please enter a valid name.", "OK");
-                return;
-            }
 
             var userData = new Dictionary<string, object>
             {
@@ -196,7 +210,7 @@ public class SignUpViewModel : BaseViewModel
                         Id = session.User.Id, // Ensure we use the Auth ID if possible, or let DB generate
                         StudentNumber = Id,
                         FullName = FullName,
-                        DepartmentId = resolvedDeptId,
+                        DepartmentId = SelectedDepartment.Id,
                         Email = Email,
                         QrCode = Id,
                         Phone = "",
@@ -213,7 +227,7 @@ public class SignUpViewModel : BaseViewModel
                         RegistrationId = null, // ID is now DB-generated
                         FullName = FullName,
                         Email = Email,
-                        DepartmentId = resolvedDeptId
+                        DepartmentId = SelectedDepartment.Id
                     };
                     await _supabase.From<LecturerProfile>().Insert(lecturerProfile);
                 }
@@ -281,23 +295,6 @@ public class SignUpViewModel : BaseViewModel
         {
             System.Diagnostics.Debug.WriteLine($"Pre-signup check failed: {ex.Message}");
             return false; // Proceed anyway if check fails, Auth will catch it
-        }
-    }
-
-    private async Task<string?> ResolveDepartmentId(string deptName)
-    {
-        try
-        {
-            var response = await _supabase.From<Department>()
-                .Where(x => x.Name == deptName)
-                .Get();
-
-            var dept = response.Models.FirstOrDefault();
-            return dept?.Id;
-        }
-        catch
-        {
-            return null;
         }
     }
 

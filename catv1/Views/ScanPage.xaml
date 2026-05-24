@@ -202,30 +202,35 @@
                         </Grid>
                     </Border>
 
-                    <!--  Toast  -->
+                    <!--  Toast (success or error)  -->
                     <Border
                         Padding="16"
                         BackgroundColor="{StaticResource Surface}"
                         IsVisible="{Binding ShowFeedback}"
-                        Stroke="{StaticResource Success}"
+                        Stroke="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}"
                         StrokeShape="RoundRectangle 16"
                         StrokeThickness="1">
                         <Grid ColumnDefinitions="Auto, *, Auto">
                             <Label
                                 FontSize="20"
-                                Text="✔"
-                                TextColor="{StaticResource Success}"
+                                Text="{Binding IsScanError, Converter={StaticResource BooleanToString}, ConverterParameter='✗|✔'}"
+                                TextColor="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}"
                                 VerticalOptions="Center" />
                             <VerticalStackLayout Grid.Column="1" Margin="12,0">
                                 <Label
                                     FontAttributes="Bold"
                                     Style="{StaticResource LabelCaption}"
-                                    Text="ATTENDANCE LOGGED"
-                                    TextColor="{StaticResource Success}" />
+                                    Text="{Binding IsScanError, Converter={StaticResource BooleanToString}, ConverterParameter='SCAN ERROR|ATTENDANCE LOGGED'}"
+                                    TextColor="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}" />
                                 <Label
                                     FontSize="14"
-                                    Style="{StaticResource LabelHeader}"
-                                    Text="{Binding LastScannedStudent.Name, StringFormat='{0} marked Present'}" />
+                                    Style="{StaticResource LabelHeader}">
+                                    <Label.Text>
+                                        <MultiBinding StringFormat="{}{0}">
+                                            <Binding Path="ScanFeedbackMessage" />
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
                             </VerticalStackLayout>
                             <Button
                                 Grid.Column="2"
@@ -234,10 +239,12 @@
                                 CornerRadius="16"
                                 FontSize="12"
                                 HeightRequest="32"
+                                IsVisible="{Binding IsNotScanError}"
                                 Text="Undo"
                                 TextColor="White" />
                         </Grid>
                     </Border>
+
 
                     <!--  Stats Cards  -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="16">

@@ -119,7 +119,7 @@ public class HistoryViewModel : BaseViewModel
             }
 
             // 3. Get Students and Logs
-            var studentsResponse = await _supabase.From<Student>().Filter("id", Operator.In, studentIds).Get();
+            var studentsResponse = await _supabase.From<Student>().Filter("id", Operator.In, studentIds.Cast<object>().ToList()).Get();
             var logsResponse = await _supabase.From<ActivityLog>().Where(l => l.SectionId == section.Id).Get();
             
             var allStudents = studentsResponse.Models;

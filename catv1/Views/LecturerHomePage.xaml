@@ -223,6 +223,48 @@
                             </HorizontalStackLayout>
                         </Grid>
 
+                        <!-- GAP 4: Search bar -->
+                        <SearchBar
+                            x:Name="rosterSearch"
+                            Text="{Binding RosterSearchText}"
+                            Placeholder="Search students..."
+                            BackgroundColor="#1E293B"
+                            PlaceholderColor="#64748B"
+                            TextColor="White"
+                            CancelButtonColor="#3B82F6"
+                            IsVisible="{Binding IsSessionActive}" />
+
+                        <!-- GAP 4: Filter tabs -->
+                        <HorizontalStackLayout Spacing="8" IsVisible="{Binding IsSessionActive}">
+                            <Button Text="ALL"
+                                    Command="{Binding FilterAllCommand}"
+                                    FontSize="11"
+                                    FontAttributes="Bold"
+                                    HeightRequest="32"
+                                    Padding="12,0"
+                                    CornerRadius="16"
+                                    BackgroundColor="{Binding IsFilterAll, Converter={StaticResource BooleanToColor}, ConverterParameter='Primary|Surface'}"
+                                    TextColor="{Binding IsFilterAll, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
+                            <Button Text="PRESENT"
+                                    Command="{Binding FilterPresentCommand}"
+                                    FontSize="11"
+                                    FontAttributes="Bold"
+                                    HeightRequest="32"
+                                    Padding="12,0"
+                                    CornerRadius="16"
+                                    BackgroundColor="{Binding IsFilterPresent, Converter={StaticResource BooleanToColor}, ConverterParameter='Tertiary|Surface'}"
+                                    TextColor="{Binding IsFilterPresent, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
+                            <Button Text="ABSENT"
+                                    Command="{Binding FilterAbsentCommand}"
+                                    FontSize="11"
+                                    FontAttributes="Bold"
+                                    HeightRequest="32"
+                                    Padding="12,0"
+                                    CornerRadius="16"
+                                    BackgroundColor="{Binding IsFilterAbsent, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Surface'}"
+                                    TextColor="{Binding IsFilterAbsent, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
+                        </HorizontalStackLayout>
+
                         <Border Style="{StaticResource StatCard}" MinHeightRequest="180">
                             <Grid>
                                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15" IsVisible="{Binding IsSessionActive, Converter={StaticResource InvertedBoolean}}">
@@ -232,7 +274,7 @@
                                            TextColor="#94A3B8" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                                 </VerticalStackLayout>
 
-                                <CollectionView ItemsSource="{Binding ActiveSessionStudents}" IsVisible="{Binding IsSessionActive}">
+                                <CollectionView ItemsSource="{Binding FilteredSessionStudents}" IsVisible="{Binding IsSessionActive}">
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Padding="0,10" ColumnDefinitions="*, Auto">
@@ -251,6 +293,7 @@
                             </Grid>
                         </Border>
                     </VerticalStackLayout>
+
 
                 </VerticalStackLayout>
             </ScrollView>
