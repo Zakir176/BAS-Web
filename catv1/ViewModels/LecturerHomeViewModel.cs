@@ -446,19 +446,21 @@ public class LecturerHomeViewModel : BaseViewModel
                 var sections = sectionsResponse.Models;
                 var sectionIds = sections.Select(s => s.Id).ToList();
 
+                var logs = new List<ActivityLog>();
+
                 if (sectionIds.Any())
                 {
                     // 3. Fetch Enrollments for unique student count
                     var enrollmentsResponse = await _supabase.From<Enrollment>()
-                        .Filter("section_id", Supabase.Postgrest.Constants.Operator.In, sectionIds)
+                        .Filter("section_id", Supabase.Postgrest.Constants.Operator.In, sectionIds.Cast<object>().ToList())
                         .Get();
                     EnrolledStudents = enrollmentsResponse.Models.Select(e => e.StudentId).Distinct().Count();
 
                     // 4. Fetch Attendance Logs for avg. attendance
                     var logsResponse = await _supabase.From<ActivityLog>()
-                        .Filter("section_id", Supabase.Postgrest.Constants.Operator.In, sectionIds)
+                        .Filter("section_id", Supabase.Postgrest.Constants.Operator.In, sectionIds.Cast<object>().ToList())
                         .Get();
-                    var logs = logsResponse.Models;
+                    logs = logsResponse.Models;
 
                     if (logs.Any())
                     {
@@ -521,7 +523,7 @@ public class LecturerHomeViewModel : BaseViewModel
                         if (enrolledIds.Any())
                         {
                             var studentsResponse = await _supabase.From<Student>()
-                                .Filter("id", Supabase.Postgrest.Constants.Operator.In, enrolledIds)
+                                .Filter("id", Supabase.Postgrest.Constants.Operator.In, enrolledIds.Cast<object>().ToList())
                                 .Get();
                             
                             foreach (var student in studentsResponse.Models)

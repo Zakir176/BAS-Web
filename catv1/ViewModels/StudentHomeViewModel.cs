@@ -96,6 +96,8 @@ public class StudentHomeViewModel : BaseViewModel
     public Command NotificationsCommand { get; }
     public Command SettingsCommand { get; }
 
+    private Supabase.Realtime.RealtimeChannel? _channel;
+
     public StudentHomeViewModel(Supabase.Client supabase)
     {
         _supabase = supabase;
@@ -285,6 +287,48 @@ public class StudentHomeViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    public void SubscribeToUpdates()
+    {
+        try
+        {
+            if (_channel != null) return; // Already subscribed
+
+            var user = _supabase.Auth.CurrentUser;
+            if (user == null) return;
+
+            _channel = _supabase.Realtime.Channel($"student-attendance-{user.Id}");
+            var options = new Supabase.Realtime.PostgresChanges.PostgresChangesOptions("public", "attendance_logs");
+            
+            _channel.Register(options);
+            _channel.AddPostgresChangeHandler(Supabase.Realtime.PostgresChanges.PostgresChangesOptions.ListenType.Inserts, (sender, args) =>
+            {
+                System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Realtime insert received, reloading data...");
+                MainThread.BeginInvokeOnMainThread(async () => await LoadDataAsync());
+            });
+            _channel.Subscribe();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Realtime Error: {ex}");
+        }
+    }
+
+    public void UnsubscribeFromUpdates()
+    {
+        try
+        {
+            if (_channel != null)
+            {
+                _channel.Unsubscribe();
+                _channel = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Realtime Unsubscribe Error: {ex}");
         }
     }
 }

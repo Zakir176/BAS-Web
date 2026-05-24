@@ -16,6 +16,16 @@ public partial class StudentHomePage : ContentPage
         if (BindingContext is StudentHomeViewModel vm)
         {
             await vm.LoadDataAsync();
+            vm.SubscribeToUpdates();
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        if (BindingContext is StudentHomeViewModel vm)
+        {
+            vm.UnsubscribeFromUpdates();
         }
     }
 

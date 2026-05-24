@@ -161,7 +161,7 @@
                                 </Grid>
                             </Border>
 
-                            <!--  Department/Class Field  -->
+                                <!--  Department/Class Field  -->
                             <Border
                                 Padding="16,0"
                                 BackgroundColor="{StaticResource Surface}"
@@ -175,11 +175,14 @@
                                         Text="🏛"
                                         TextColor="{StaticResource PrimaryLight}"
                                         VerticalOptions="Center" />
-                                    <Entry
+                                    <!-- GAP 8: Replaced free-text Entry with Picker -->
+                                    <Picker
                                         Grid.Column="1"
                                         Margin="8,0,0,0"
-                                        Placeholder="{Binding DeptPlaceholder}"
-                                        Text="{Binding Department}"
+                                        Title="{Binding DeptPlaceholder}"
+                                        ItemsSource="{Binding Departments}"
+                                        ItemDisplayBinding="{Binding Name}"
+                                        SelectedItem="{Binding SelectedDepartment}"
                                         VerticalOptions="Center" />
                                 </Grid>
                             </Border>
