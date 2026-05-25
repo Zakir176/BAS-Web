@@ -9,18 +9,18 @@
     Shell.NavBarIsVisible="False">
 
     <Grid>
-        <!-- Premium Background Gradient -->
+        <!--  Premium Background Gradient  -->
         <BoxView>
             <BoxView.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#0F172A" Offset="0" />
-                    <GradientStop Color="#1E293B" Offset="1" />
+                    <GradientStop Offset="0" Color="#0F172A" />
+                    <GradientStop Offset="1" Color="#1E293B" />
                 </LinearGradientBrush>
             </BoxView.Background>
         </BoxView>
 
         <VerticalStackLayout Padding="30" Spacing="30">
-            <!-- Header -->
+            <!--  Header  -->
             <Grid ColumnDefinitions="Auto, *">
                 <Button
                     BackgroundColor="#1F2937"
@@ -41,7 +41,7 @@
                     VerticalOptions="Center" />
             </Grid>
 
-            <!-- Card UI -->
+            <!--  Card UI  -->
             <Border
                 Padding="0"
                 BackgroundColor="#1E293B"
@@ -49,11 +49,15 @@
                 StrokeShape="RoundRectangle 28"
                 StrokeThickness="1">
                 <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,20" Opacity="0.5" Radius="40" />
+                    <Shadow
+                        Brush="Black"
+                        Opacity="0.5"
+                        Radius="40"
+                        Offset="0,20" />
                 </Border.Shadow>
 
                 <VerticalStackLayout>
-                    <!-- Card Top Branding -->
+                    <!--  Card Top Branding  -->
                     <Grid
                         Padding="20"
                         BackgroundColor="#2563EB"
@@ -83,7 +87,7 @@
                         </Border>
                     </Grid>
 
-                    <!-- Student Info -->
+                    <!--  Student Info  -->
                     <VerticalStackLayout Padding="20" Spacing="20">
                         <Grid ColumnDefinitions="Auto, *" ColumnSpacing="20">
                             <Border
@@ -91,9 +95,7 @@
                                 StrokeShape="RoundRectangle 16"
                                 StrokeThickness="0"
                                 WidthRequest="80">
-                                <Image
-                                    Aspect="AspectFill"
-                                    Source="dotnet_bot.png" />
+                                <Image Aspect="AspectFill" Source="dotnet_bot.png" />
                             </Border>
                             <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                                 <Border
@@ -105,7 +107,7 @@
                                     <Label
                                         FontAttributes="Bold"
                                         FontSize="8"
-                                        Text="ACTIVE STUDENT"
+                                        Text="ACTIVE STUDENTS"
                                         TextColor="White" />
                                 </Border>
                                 <Label
@@ -126,7 +128,7 @@
                             StrokeThickness="1"
                             X2="400" />
 
-                        <!-- Barcode Area -->
+                        <!--  Barcode Area  -->
                         <VerticalStackLayout Spacing="10">
                             <Label
                                 FontAttributes="Bold"
@@ -134,7 +136,7 @@
                                 HorizontalOptions="Center"
                                 Text="SECURE ACCESS BARCODE"
                                 TextColor="#66FFFFFF" />
-                            
+
                             <Border
                                 Padding="15"
                                 BackgroundColor="White"
@@ -142,22 +144,22 @@
                                 StrokeShape="RoundRectangle 12"
                                 WidthRequest="250">
                                 <zxing:BarcodeGeneratorView
+                                    Format="Code128"
                                     HeightRequest="60"
-                                    Value="{Binding StudentId}"
-                                    Format="Code128" />
+                                    Value="{Binding StudentId}" />
                             </Border>
 
                             <Label
+                                CharacterSpacing="5"
                                 FontAttributes="Bold"
                                 FontSize="16"
                                 HorizontalOptions="Center"
                                 Text="{Binding StudentId}"
-                                TextColor="#66FFFFFF"
-                                CharacterSpacing="5" />
+                                TextColor="#66FFFFFF" />
                         </VerticalStackLayout>
                     </VerticalStackLayout>
 
-                    <!-- Card Bottom -->
+                    <!--  Card Bottom  -->
                     <Grid Padding="20" BackgroundColor="#0F172A">
                         <Label
                             FontSize="8"
