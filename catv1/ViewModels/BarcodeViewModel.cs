@@ -10,7 +10,7 @@ public partial class BarcodeViewModel : BaseViewModel
     private string name = string.Empty;
 
     [ObservableProperty]
-    private string studentId = string.Empty;
+    private string studentId = "00000000";
 
     public BarcodeViewModel()
     {
