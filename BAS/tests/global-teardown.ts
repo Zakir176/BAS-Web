@@ -1,4 +1,6 @@
 import { FullConfig } from '@playwright/test';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * Global teardown for Playwright tests
@@ -46,9 +48,6 @@ async function cleanupTempFiles() {
   console.log('🗑️ Cleaning up temporary files...');
   
   // Clean up any temporary files created during testing
-  const fs = require('fs');
-  const path = require('path');
-  
   const tempDirs = ['test-results/temp', 'test-results/cache'];
   
   tempDirs.forEach(dir => {
