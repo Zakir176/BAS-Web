@@ -1,5 +1,6 @@
 import { chromium, FullConfig } from '@playwright/test';
 import path from 'path';
+import fs from 'fs';
 
 /**
  * Global setup for Playwright tests
@@ -9,7 +10,6 @@ async function globalSetup(config: FullConfig) {
   console.log('🚀 Starting Playwright global setup...');
   
   // Create necessary directories
-  const fs = require('fs');
   const directories = [
     'test-results/screenshots',
     'test-results/videos',
