@@ -9,48 +9,73 @@
     Shell.NavBarIsVisible="False">
 
     <Grid>
-        <!-- Background Image and Overlay -->
-        <Image 
-            Aspect="AspectFill" 
-            Opacity="0.15" 
+        <!--  Background Image and Overlay  -->
+        <Image
+            Aspect="AspectFill"
+            Opacity="0.15"
             Source="Resources/Images/lecture_room.png" />
         <BoxView BackgroundColor="#0F172A" Opacity="0.6" />
-        
-        <!-- Loading Overlay -->
-        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" IsVisible="{Binding IsBusy}">
-            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="#3B82F6" HeightRequest="50" WidthRequest="50" />
-            <Label Text="Loading Dashboard..." TextColor="White" Margin="0,10,0,0" HorizontalOptions="Center" />
+
+        <!--  Loading Overlay  -->
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center">
+            <ActivityIndicator
+                HeightRequest="50"
+                IsRunning="{Binding IsBusy}"
+                WidthRequest="50"
+                Color="#3B82F6" />
+            <Label
+                Margin="0,10,0,0"
+                HorizontalOptions="Center"
+                Text="Loading Dashboard..."
+                TextColor="White" />
         </VerticalStackLayout>
 
         <Grid RowDefinitions="Auto, *">
-            <!-- Header Section -->
+            <!--  Header Section  -->
             <Grid Padding="20,40,20,10" ColumnDefinitions="Auto, *, Auto">
                 <Border
+                    BackgroundColor="#1E293B"
                     HeightRequest="45"
-                    WidthRequest="45"
                     StrokeShape="RoundRectangle 22.5"
                     StrokeThickness="0"
-                    BackgroundColor="#1E293B">
-                    <Label Text="{Binding Initials}" 
-                           TextColor="White" 
-                           FontAttributes="Bold" 
-                           FontSize="16" 
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Center"/>
+                    WidthRequest="45">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HorizontalOptions="Center"
+                        Text="{Binding Initials}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
                 </Border>
-                
-                <HorizontalStackLayout Grid.Column="2" Spacing="15" VerticalOptions="Center">
-                    <Label Text="☀️" FontSize="22" VerticalOptions="Center">
+
+                <HorizontalStackLayout
+                    Grid.Column="2"
+                    Spacing="15"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="22"
+                        Text="☀️"
+                        VerticalOptions="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding ThemeToggleCommand}" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="📥" FontSize="22" VerticalOptions="Center">
+                    <Label
+                        FontSize="22"
+                        Text="📥"
+                        VerticalOptions="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding NotificationsCommand}" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="🚪" FontSize="22" VerticalOptions="Center" Margin="5,0,0,0">
+                    <Label
+                        Margin="5,0,0,0"
+                        FontSize="22"
+                        Text="🚪"
+                        VerticalOptions="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding LogoutCommand}" />
                         </Label.GestureRecognizers>
@@ -59,15 +84,23 @@
             </Grid>
 
             <ScrollView Grid.Row="1">
-                <VerticalStackLayout Padding="20" Spacing="25" IsClippedToBounds="False">
-                    <!-- Refresh Control (Simplified) -->
-                    <Button Text="Refresh Data" Command="{Binding RefreshCommand}" 
-                            BackgroundColor="Transparent" TextColor="#3B82F6" 
-                            FontSize="12" HorizontalOptions="End" Margin="0,-20,0,0"/>
+                <VerticalStackLayout
+                    Padding="20"
+                    IsClippedToBounds="False"
+                    Spacing="25">
+                    <!--  Refresh Control (Simplified)  -->
+                    <Button
+                        Margin="0,-20,0,0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding RefreshCommand}"
+                        FontSize="12"
+                        HorizontalOptions="End"
+                        Text="Refresh Data"
+                        TextColor="#3B82F6" />
 
-                    <!-- Welcome Text -->
+                    <!--  Welcome Text  -->
                     <VerticalStackLayout Spacing="5">
-                        <Label FontSize="28" FontAttributes="Bold">
+                        <Label FontAttributes="Bold" FontSize="28">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="Welcome back, " TextColor="White" />
@@ -75,85 +108,134 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        <Label Text="{Binding SessionCountSubtitle}" 
-                               TextColor="#94A3B8" 
-                               FontSize="14" />
+                        <Label
+                            FontSize="14"
+                            Text="{Binding SessionCountSubtitle}"
+                            TextColor="#94A3B8" />
                     </VerticalStackLayout>
 
-                    <!-- Action Buttons -->
+                    <!--  Action Buttons  -->
                     <VerticalStackLayout Spacing="12">
-                        <Button Text="+ New Session" 
-                                Command="{Binding NewSessionCommand}"
-                                BackgroundColor="#3B82F6" 
-                                TextColor="White"
-                                FontAttributes="Bold"
-                                HeightRequest="56"
-                                CornerRadius="16" />
-                        
-                        <Button Text="[||] Start Scanning" 
-                                Command="{Binding StartScanningCommand}"
-                                BackgroundColor="White" 
-                                TextColor="#0F172A"
-                                FontAttributes="Bold"
-                                HeightRequest="56"
-                                CornerRadius="16" />
+                        <Button
+                            BackgroundColor="#3B82F6"
+                            Command="{Binding NewSessionCommand}"
+                            CornerRadius="16"
+                            FontAttributes="Bold"
+                            HeightRequest="56"
+                            Text="+ New Session"
+                            TextColor="White" />
 
-                        <Button Text="New Course" 
-                                Command="{Binding NewCourseCommand}"
-                                BackgroundColor="#1E293B" 
-                                TextColor="#3B82F6"
-                                BorderColor="#334155"
-                                BorderWidth="1"
-                                FontAttributes="Bold"
-                                HeightRequest="56"
-                                CornerRadius="16" />
+                        <Button
+                            BackgroundColor="White"
+                            Command="{Binding StartScanningCommand}"
+                            CornerRadius="16"
+                            FontAttributes="Bold"
+                            HeightRequest="56"
+                            Text="[||] Start Scanning"
+                            TextColor="#0F172A" />
+
+                        <Button
+                            BackgroundColor="#1E293B"
+                            BorderColor="#334155"
+                            BorderWidth="1"
+                            Command="{Binding NewCourseCommand}"
+                            CornerRadius="16"
+                            FontAttributes="Bold"
+                            HeightRequest="56"
+                            Text="New Course"
+                            TextColor="#3B82F6" />
                     </VerticalStackLayout>
 
-                    <!-- Stats Cards -->
+                    <!--  Stats Cards  -->
                     <VerticalStackLayout Spacing="15">
                         <Border Style="{StaticResource StatCard}">
                             <Grid ColumnDefinitions="*, Auto">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="TOTAL COURSES" Style="{StaticResource LabelCaption}" />
-                                    <Label Text="{Binding TotalCourses}" FontSize="28" FontAttributes="Bold" TextColor="White" />
+                                    <Label Style="{StaticResource LabelCaption}" Text="TOTAL COURSES" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="28"
+                                        Text="{Binding TotalCourses}"
+                                        TextColor="White" />
                                 </VerticalStackLayout>
-                                <Label Grid.Column="1" Text="🎓" FontSize="24" Opacity="0.5" VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="24"
+                                    Opacity="0.5"
+                                    Text="🎓"
+                                    VerticalOptions="Center" />
                             </Grid>
                         </Border>
 
                         <Border Style="{StaticResource StatCard}">
                             <Grid ColumnDefinitions="*, Auto">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="ENROLLED STUDENTS" Style="{StaticResource LabelCaption}" />
-                                    <Label Text="{Binding EnrolledStudents}" FontSize="28" FontAttributes="Bold" TextColor="White" />
+                                    <Label Style="{StaticResource LabelCaption}" Text="ENROLLED STUDENTS" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="28"
+                                        Text="{Binding EnrolledStudents}"
+                                        TextColor="White" />
                                 </VerticalStackLayout>
-                                <Label Grid.Column="1" Text="👥" FontSize="24" Opacity="0.5" VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="24"
+                                    Opacity="0.5"
+                                    Text="👥"
+                                    VerticalOptions="Center" />
                             </Grid>
                         </Border>
 
                         <Border Style="{StaticResource StatCard}">
                             <Grid ColumnDefinitions="*, Auto">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="AVG. ATTENDANCE" Style="{StaticResource LabelCaption}" />
-                                    <Label Text="{Binding AvgAttendance}" FontSize="28" FontAttributes="Bold" TextColor="#3B82F6" />
+                                    <Label Style="{StaticResource LabelCaption}" Text="AVG. ATTENDANCE" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="28"
+                                        Text="{Binding AvgAttendance}"
+                                        TextColor="#3B82F6" />
                                 </VerticalStackLayout>
-                                <Label Grid.Column="1" Text="📈" FontSize="24" Opacity="0.5" VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    FontSize="24"
+                                    Opacity="0.5"
+                                    Text="📈"
+                                    VerticalOptions="Center" />
                             </Grid>
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- Course Attendance Overview (Chart) -->
-                    <VerticalStackLayout Spacing="15" IsVisible="{Binding HasCourses}">
-                        <Label Text="Course Attendance Overview" Style="{StaticResource LabelHeader}" />
+                    <!--  Course Attendance Overview (Chart)  -->
+                    <VerticalStackLayout IsVisible="{Binding HasCourses}" Spacing="15">
+                        <Label Style="{StaticResource LabelHeader}" Text="Course Attendance Overview" />
                         <Border Style="{StaticResource StatCard}">
-                            <CollectionView ItemsSource="{Binding CourseAttendanceData}" HeightRequest="200">
+                            <CollectionView HeightRequest="200" ItemsSource="{Binding CourseAttendanceData}">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Padding="0,5" ColumnDefinitions="80, *">
-                                            <Label Text="{Binding CourseName}" VerticalOptions="Center" FontSize="11" TextColor="White" Padding="0,0,10,0" LineBreakMode="TailTruncation" />
-                                            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
-                                                <Border BackgroundColor="{Binding Color}" HeightRequest="12" WidthRequest="{Binding BarWidth}" StrokeShape="RoundRectangle 6" StrokeThickness="0" />
-                                                <Label Text="{Binding AttendanceRate, StringFormat='{0:P0}'}" FontSize="10" TextColor="Gray" VerticalOptions="Center" />
+                                            <Label
+                                                Padding="0,0,10,0"
+                                                FontSize="11"
+                                                LineBreakMode="TailTruncation"
+                                                Text="{Binding CourseName}"
+                                                TextColor="White"
+                                                VerticalOptions="Center" />
+                                            <HorizontalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="10"
+                                                VerticalOptions="Center">
+                                                <Border
+                                                    BackgroundColor="{Binding Color}"
+                                                    HeightRequest="12"
+                                                    StrokeShape="RoundRectangle 6"
+                                                    StrokeThickness="0"
+                                                    WidthRequest="{Binding BarWidth}" />
+                                                <Label
+                                                    FontSize="10"
+                                                    Text="{Binding AttendanceRate, StringFormat='{0:P0}'}"
+                                                    TextColor="Gray"
+                                                    VerticalOptions="Center" />
                                             </HorizontalStackLayout>
                                         </Grid>
                                     </DataTemplate>
@@ -162,130 +244,220 @@
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- My Courses Section -->
+                    <!--  My Courses Section  -->
                     <VerticalStackLayout Spacing="15">
                         <Grid ColumnDefinitions="*, Auto">
-                            <Label Text="My Courses" FontSize="20" FontAttributes="Bold" TextColor="White" />
-                            <Label Grid.Column="1" Text="See all" TextColor="#3B82F6" FontSize="14" VerticalOptions="Center" 
-                                   IsVisible="{Binding HasCourses}">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="My Courses"
+                                TextColor="White" />
+                            <Label
+                                Grid.Column="1"
+                                FontSize="14"
+                                IsVisible="{Binding HasCourses}"
+                                Text="See all"
+                                TextColor="#3B82F6"
+                                VerticalOptions="Center">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding SeeAllCoursesCommand}" />
                                 </Label.GestureRecognizers>
                             </Label>
                         </Grid>
-                        
-                        <!-- NEW: Courses List -->
-                        <CollectionView ItemsSource="{Binding MyCourses}" IsVisible="{Binding HasCourses}">
+
+                        <!--  NEW: Courses List  -->
+                        <CollectionView IsVisible="{Binding HasCourses}" ItemsSource="{Binding MyCourses}">
                             <CollectionView.ItemsLayout>
-                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical" />
                             </CollectionView.ItemsLayout>
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Border Style="{StaticResource StatCard}">
                                         <Grid ColumnDefinitions="Auto, *, Auto">
-                                            <Border BackgroundColor="#1E293B" HeightRequest="40" WidthRequest="40" StrokeShape="RoundRectangle 8" StrokeThickness="0">
-                                                <Label Text="📚" HorizontalOptions="Center" VerticalOptions="Center" />
+                                            <Border
+                                                BackgroundColor="#1E293B"
+                                                HeightRequest="40"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0"
+                                                WidthRequest="40">
+                                                <Label
+                                                    HorizontalOptions="Center"
+                                                    Text="📚"
+                                                    VerticalOptions="Center" />
                                             </Border>
-                                            <VerticalStackLayout Grid.Column="1" Margin="15,0" VerticalOptions="Center">
-                                                <Label Text="{Binding Name}" FontAttributes="Bold" TextColor="White" />
-                                                <Label Text="{Binding Code}" FontSize="12" TextColor="#94A3B8" />
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Margin="15,0"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    Text="{Binding Name}"
+                                                    TextColor="White" />
+                                                <Label
+                                                    FontSize="12"
+                                                    Text="{Binding Code}"
+                                                    TextColor="#94A3B8" />
                                             </VerticalStackLayout>
-                                            <Label Grid.Column="2" Text="→" TextColor="#3B82F6" FontSize="20" VerticalOptions="Center" />
+                                            <Label
+                                                Grid.Column="2"
+                                                FontSize="20"
+                                                Text="→"
+                                                TextColor="#3B82F6"
+                                                VerticalOptions="Center" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
 
-                        <Border Style="{StaticResource StatCard}" HeightRequest="150" IsVisible="{Binding HasNoCourses}">
-                             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                                <Label Text="📚" FontSize="30" HorizontalOptions="Center" />
-                                <Label Text="No Courses Created" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" />
-                                <Button Text="Create Course" 
-                                        Command="{Binding CreateCourseCommand}"
-                                        BackgroundColor="#3B82F6" 
-                                        CornerRadius="10" 
-                                        HeightRequest="40" />
-                             </VerticalStackLayout>
+                        <Border
+                            HeightRequest="150"
+                            IsVisible="{Binding HasNoCourses}"
+                            Style="{StaticResource StatCard}">
+                            <VerticalStackLayout
+                                HorizontalOptions="Center"
+                                Spacing="10"
+                                VerticalOptions="Center">
+                                <Label
+                                    FontSize="30"
+                                    HorizontalOptions="Center"
+                                    Text="📚" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Center"
+                                    Text="No Courses Created"
+                                    TextColor="White" />
+                                <Button
+                                    BackgroundColor="#3B82F6"
+                                    Command="{Binding CreateCourseCommand}"
+                                    CornerRadius="10"
+                                    HeightRequest="40"
+                                    Text="Create Course" />
+                            </VerticalStackLayout>
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- Session Roster Section -->
+                    <!--  Session Roster Section  -->
                     <VerticalStackLayout Spacing="15">
                         <Grid ColumnDefinitions="*, Auto">
-                            <Label Text="Active Session Roster" Style="{StaticResource LabelHeader}" />
-                            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                            <Label Style="{StaticResource LabelHeader}" Text="Active Session Roster" />
+                            <HorizontalStackLayout
+                                Grid.Column="1"
+                                Spacing="10"
+                                VerticalOptions="Center">
                                 <HorizontalStackLayout Spacing="5">
-                                    <Ellipse Fill="{Binding IsSessionActive, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Tertiary'}" WidthRequest="8" HeightRequest="8" VerticalOptions="Center" />
-                                    <Label Text="{Binding IsSessionActive, Converter={StaticResource BooleanToString}, ConverterParameter='Disconnected|Live'}" FontSize="12" TextColor="#94A3B8" />
+                                    <Ellipse
+                                        Fill="{Binding IsSessionActive, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Tertiary'}"
+                                        HeightRequest="8"
+                                        VerticalOptions="Center"
+                                        WidthRequest="8" />
+                                    <Label
+                                        FontSize="12"
+                                        Text="{Binding IsSessionActive, Converter={StaticResource BooleanToString}, ConverterParameter='Disconnected|Live'}"
+                                        TextColor="#94A3B8" />
                                 </HorizontalStackLayout>
-                                <Label Text="{Binding ActiveSessionStats}" FontSize="12" TextColor="#94A3B8" />
+                                <Label
+                                    FontSize="12"
+                                    Text="{Binding ActiveSessionStats}"
+                                    TextColor="#94A3B8" />
                             </HorizontalStackLayout>
                         </Grid>
 
-                        <!-- GAP 4: Search bar -->
+                        <!--  GAP 4: Search bar  -->
                         <SearchBar
                             x:Name="rosterSearch"
-                            Text="{Binding RosterSearchText}"
-                            Placeholder="Search students..."
                             BackgroundColor="#1E293B"
-                            PlaceholderColor="#64748B"
-                            TextColor="White"
                             CancelButtonColor="#3B82F6"
-                            IsVisible="{Binding IsSessionActive}" />
+                            IsVisible="{Binding IsSessionActive}"
+                            Placeholder="Search students..."
+                            PlaceholderColor="#64748B"
+                            Text="{Binding RosterSearchText}"
+                            TextColor="White" />
 
-                        <!-- GAP 4: Filter tabs -->
-                        <HorizontalStackLayout Spacing="8" IsVisible="{Binding IsSessionActive}">
-                            <Button Text="ALL"
-                                    Command="{Binding FilterAllCommand}"
-                                    FontSize="11"
-                                    FontAttributes="Bold"
-                                    HeightRequest="32"
-                                    Padding="12,0"
-                                    CornerRadius="16"
-                                    BackgroundColor="{Binding IsFilterAll, Converter={StaticResource BooleanToColor}, ConverterParameter='Primary|Surface'}"
-                                    TextColor="{Binding IsFilterAll, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
-                            <Button Text="PRESENT"
-                                    Command="{Binding FilterPresentCommand}"
-                                    FontSize="11"
-                                    FontAttributes="Bold"
-                                    HeightRequest="32"
-                                    Padding="12,0"
-                                    CornerRadius="16"
-                                    BackgroundColor="{Binding IsFilterPresent, Converter={StaticResource BooleanToColor}, ConverterParameter='Tertiary|Surface'}"
-                                    TextColor="{Binding IsFilterPresent, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
-                            <Button Text="ABSENT"
-                                    Command="{Binding FilterAbsentCommand}"
-                                    FontSize="11"
-                                    FontAttributes="Bold"
-                                    HeightRequest="32"
-                                    Padding="12,0"
-                                    CornerRadius="16"
-                                    BackgroundColor="{Binding IsFilterAbsent, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Surface'}"
-                                    TextColor="{Binding IsFilterAbsent, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
+                        <!--  GAP 4: Filter tabs  -->
+                        <HorizontalStackLayout IsVisible="{Binding IsSessionActive}" Spacing="8">
+                            <Button
+                                Padding="12,0"
+                                BackgroundColor="{Binding IsFilterAll, Converter={StaticResource BooleanToColor}, ConverterParameter='Primary|Surface'}"
+                                Command="{Binding FilterAllCommand}"
+                                CornerRadius="16"
+                                FontAttributes="Bold"
+                                FontSize="11"
+                                HeightRequest="32"
+                                Text="ALL"
+                                TextColor="{Binding IsFilterAll, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
+                            <Button
+                                Padding="12,0"
+                                BackgroundColor="{Binding IsFilterPresent, Converter={StaticResource BooleanToColor}, ConverterParameter='Tertiary|Surface'}"
+                                Command="{Binding FilterPresentCommand}"
+                                CornerRadius="16"
+                                FontAttributes="Bold"
+                                FontSize="11"
+                                HeightRequest="32"
+                                Text="PRESENT"
+                                TextColor="{Binding IsFilterPresent, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
+                            <Button
+                                Padding="12,0"
+                                BackgroundColor="{Binding IsFilterAbsent, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Surface'}"
+                                Command="{Binding FilterAbsentCommand}"
+                                CornerRadius="16"
+                                FontAttributes="Bold"
+                                FontSize="11"
+                                HeightRequest="32"
+                                Text="ABSENT"
+                                TextColor="{Binding IsFilterAbsent, Converter={StaticResource BooleanToString}, ConverterParameter='White|#94A3B8'}" />
                         </HorizontalStackLayout>
 
-                        <Border Style="{StaticResource StatCard}" MinHeightRequest="180">
+                        <Border MinimumHeightRequest="180" Style="{StaticResource StatCard}">
                             <Grid>
-                                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15" IsVisible="{Binding IsSessionActive, Converter={StaticResource InvertedBoolean}}">
-                                    <Label Text="📷" FontSize="40" HorizontalOptions="Center" />
-                                    <Label Text="No Active Session" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" />
-                                    <Label Text="Roster visibility is only available during an active session." 
-                                           TextColor="#94A3B8" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                                <VerticalStackLayout
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding IsSessionActive, Converter={StaticResource InvertedBoolean}}"
+                                    Spacing="15"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontSize="40"
+                                        HorizontalOptions="Center"
+                                        Text="📷" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Text="No Active Session"
+                                        TextColor="White" />
+                                    <Label
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="Roster visibility is only available during an active session."
+                                        TextColor="#94A3B8" />
                                 </VerticalStackLayout>
 
-                                <CollectionView ItemsSource="{Binding FilteredSessionStudents}" IsVisible="{Binding IsSessionActive}">
+                                <CollectionView IsVisible="{Binding IsSessionActive}" ItemsSource="{Binding FilteredSessionStudents}">
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Padding="0,10" ColumnDefinitions="*, Auto">
                                                 <VerticalStackLayout Spacing="2">
-                                                    <Label Text="{Binding FullName}" FontAttributes="Bold" TextColor="White" />
-                                                    <Label Text="{Binding ScanTime, StringFormat='At {0:hh:mm tt}'}" FontSize="10" TextColor="Gray" IsVisible="{Binding IsPresent}" />
-                                                    <Label Text="Not present yet" FontSize="10" TextColor="#EF4444" IsVisible="{Binding IsPresent, Converter={StaticResource InvertedBoolean}}" />
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        Text="{Binding FullName}"
+                                                        TextColor="White" />
+                                                    <Label
+                                                        FontSize="10"
+                                                        IsVisible="{Binding IsPresent}"
+                                                        Text="{Binding ScanTime, StringFormat='At {0:hh:mm tt}'}"
+                                                        TextColor="Gray" />
+                                                    <Label
+                                                        FontSize="10"
+                                                        IsVisible="{Binding IsPresent, Converter={StaticResource InvertedBoolean}}"
+                                                        Text="Not present yet"
+                                                        TextColor="#EF4444" />
                                                 </VerticalStackLayout>
-                                                <Label Grid.Column="1" Text="{Binding IsPresent, Converter={StaticResource BooleanToString}, ConverterParameter='✕|✓'}" 
-                                                       TextColor="{Binding IsPresent, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Tertiary'}"
-                                                       FontSize="18" VerticalOptions="Center" FontAttributes="Bold" />
+                                                <Label
+                                                    Grid.Column="1"
+                                                    FontAttributes="Bold"
+                                                    FontSize="18"
+                                                    Text="{Binding IsPresent, Converter={StaticResource BooleanToString}, ConverterParameter='✕|✓'}"
+                                                    TextColor="{Binding IsPresent, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Tertiary'}"
+                                                    VerticalOptions="Center" />
                                             </Grid>
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
