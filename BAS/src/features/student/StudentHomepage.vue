@@ -70,11 +70,11 @@
           <div class="bento-card glass-panel flex-row items-center justify-between p-5 p-hover blue-glow col-span-2">
             <div class="kpi-info">
               <div class="kpi-label">Current Streak</div>
-              <div class="kpi-value">🔥 {{ attendanceStats.overall >= 80 ? 'Active' : 'Needs Repair' }}</div>
+              <div class="kpi-value">🔥 {{ attendanceStats.streak }} {{ attendanceStats.streak === 1 ? 'Session' : 'Sessions' }}</div>
             </div>
             <div class="kpi-visual">
               <div class="mini-bar-bg">
-                <div class="mini-bar-fill" :style="{ width: attendanceStats.overall + '%' }"></div>
+                <div class="mini-bar-fill" :style="{ width: Math.min((attendanceStats.streak / 10) * 100, 100) + '%' }"></div>
               </div>
             </div>
           </div>
@@ -231,11 +231,23 @@ const fetchStudentData = async () => {
     // Calculate Stats
     const total = logs.length;
     const presentCount = logs.filter((l) => l.status === "Present" || l.status === "present").length;
+    
+    // Dynamic Streak Calculation
+    let currentStreak = 0;
+    for (const log of logs) {
+      const status = log.status?.toLowerCase() || '';
+      if (status === 'present') {
+        currentStreak++;
+      } else {
+        break; // Streak broken
+      }
+    }
+
     attendanceStats.value = {
       overall: total > 0 ? Math.round((presentCount / total) * 100) : 0,
       present: presentCount,
       absent: total - presentCount,
-      streak: 0, 
+      streak: currentStreak, 
     };
   } catch (error) {
     console.error("Error fetching student data:", error);
