@@ -34,7 +34,7 @@ const routes = [
     meta: { requiresAuth: false, requiresGuest: true }
   },
   {
-    path: '/lecturer-dashboard',
+    path: '/lecturer-dashboard/:pathMatch(.*)*',
     name: 'LecturerDashboard',
     component: LecturerDashboard,
     meta: { requiresAuth: true, role: 'lecturer' }
@@ -52,7 +52,7 @@ const routes = [
     meta: { requiresAuth: false, requiresGuest: true }
   },
   {
-    path: '/student-homepage',
+    path: '/student-homepage/:pathMatch(.*)*',
     name: 'StudentHomepage',
     component: StudentHomepage,
     meta: { requiresAuth: true, role: 'student' }
@@ -125,7 +125,7 @@ router.beforeEach(async (to, from, next) => {
     
     // Save the intended destination before redirecting to login
     if (authRedirect.shouldRedirectToLogin(to)) {
-      authRedirect.redirectToLogin()
+      authRedirect.redirectToLogin(to.fullPath)
       return // Don't call next() as we're redirecting
     }
     
