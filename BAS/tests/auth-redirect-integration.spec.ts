@@ -12,6 +12,9 @@ test.describe('Authentication Redirect Integration Tests', () => {
     lecturerAuth = createLecturerAuthPage(page);
     helpers = createTestHelpers(page);
     
+    // Navigate to the app first to establish the origin
+    await page.goto('/');
+    
     // Clear any existing session storage
     await page.evaluate(() => {
       sessionStorage.clear();
