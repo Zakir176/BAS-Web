@@ -1,2 +1,1244 @@
-<testsuites id="" name="" tests="0" failures="0" skipped="0" errors="0" time="0.14026500000000033">
+<testsuites id="" name="" tests="297" failures="0" skipped="297" errors="0" time="0.8240430000000001">
+<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="11" failures="0" skipped="11" time="0" errors="0">
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="barcode-scanning.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="15" failures="0" skipped="15" time="0" errors="0">
+<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should access barcode scanner from dashboard" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should request camera permissions when opening scanner" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle successful barcode scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle invalid barcode scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle duplicate scans" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Session Management › should require active session for scanning" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Session Management › should work with active session" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera permission denial" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera errors gracefully" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Manual Entry Fallback › should provide manual entry option" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Real-time Updates › should update roster in real-time" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Error Handling › should handle network errors during scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Error Handling › should handle malformed barcode data" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Mobile Experience › should work on mobile devices" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Mobile Experience › should handle mobile camera properly" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="example.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="2" failures="0" skipped="2" time="0" errors="0">
+<testcase name="has title" classname="example.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="get started link" classname="example.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="improved-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="13" failures="0" skipped="13" time="0" errors="0">
+<testcase name="Lecturer Authentication - Improved Tests › should display lecturer login page with correct elements" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show error toast for incorrect credentials" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should allow successful lecturer login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should toggle password visibility" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle remember me checkbox" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show loading state during login attempt" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should clear form after failed login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle network errors gracefully" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should maintain session after login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should handle session timeout" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="improved-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="17" failures="0" skipped="17" time="0" errors="0">
+<testcase name="Student Authentication - Improved Tests › should display student login page with correct elements" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should show error for invalid credentials" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should allow successful student login" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should toggle password visibility" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should remember me checkbox functionality" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should navigate to forgot password page" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should navigate to lecturer login portal" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should display student signup page with correct elements" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show validation errors for empty fields" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show error for invalid email format" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show error for password mismatch" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should require terms acceptance" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should successfully submit valid signup form" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should navigate to login page from signup" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Flow Integration › should complete full signup to login flow" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="lecturer-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testcase name="Lecturer Login › should show error toast for incorrect login" classname="lecturer-login.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="migrated-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="22" failures="0" skipped="22" time="0" errors="0">
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should login successfully with valid credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show error toast for incorrect login credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show validation errors for empty form submission" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle form submission with Enter key" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should toggle password visibility" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle remember me checkbox functionality" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show loading state during login attempt" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should clear form after failed login" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should maintain session after login" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should handle session timeout" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle server errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle malformed response" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should be accessible via keyboard navigation" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should have proper accessibility attributes" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should support screen readers" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should handle touch interactions on mobile" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should load quickly" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should handle rapid form submissions" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Cross-Browser Compatibility › should work in different browsers" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="migrated-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="17" failures="0" skipped="17" time="0" errors="0">
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should allow a new student to sign up with robust locators" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show validation errors for empty signup form" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for invalid email format" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for password mismatch" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should require terms acceptance" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should login successfully with valid credentials" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show error for invalid credentials" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show validation errors for empty login form" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should toggle password visibility" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should handle remember me checkbox" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to forgot password page" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to lecturer login portal" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Complete Authentication Flow › should complete full signup to login flow" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle form submission with Enter key" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should clear form after failed login" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="student-signup-and-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testcase name="Student Signup and Login Flow › should allow a new student to sign up and then log in" classname="student-signup-and-login.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="11" failures="0" skipped="11" time="0" errors="0">
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="barcode-scanning.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="15" failures="0" skipped="15" time="0" errors="0">
+<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should access barcode scanner from dashboard" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should request camera permissions when opening scanner" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle successful barcode scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle invalid barcode scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle duplicate scans" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Session Management › should require active session for scanning" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Session Management › should work with active session" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera permission denial" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera errors gracefully" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Manual Entry Fallback › should provide manual entry option" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Real-time Updates › should update roster in real-time" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Error Handling › should handle network errors during scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Error Handling › should handle malformed barcode data" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Mobile Experience › should work on mobile devices" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Mobile Experience › should handle mobile camera properly" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="example.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="2" failures="0" skipped="2" time="0" errors="0">
+<testcase name="has title" classname="example.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="get started link" classname="example.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="improved-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="13" failures="0" skipped="13" time="0" errors="0">
+<testcase name="Lecturer Authentication - Improved Tests › should display lecturer login page with correct elements" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show error toast for incorrect credentials" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should allow successful lecturer login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should toggle password visibility" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle remember me checkbox" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show loading state during login attempt" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should clear form after failed login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle network errors gracefully" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should maintain session after login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should handle session timeout" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="improved-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="17" failures="0" skipped="17" time="0" errors="0">
+<testcase name="Student Authentication - Improved Tests › should display student login page with correct elements" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should show error for invalid credentials" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should allow successful student login" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should toggle password visibility" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should remember me checkbox functionality" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should navigate to forgot password page" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should navigate to lecturer login portal" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should display student signup page with correct elements" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show validation errors for empty fields" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show error for invalid email format" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show error for password mismatch" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should require terms acceptance" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should successfully submit valid signup form" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should navigate to login page from signup" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Flow Integration › should complete full signup to login flow" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="lecturer-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testcase name="Lecturer Login › should show error toast for incorrect login" classname="lecturer-login.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="migrated-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="22" failures="0" skipped="22" time="0" errors="0">
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should login successfully with valid credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show error toast for incorrect login credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show validation errors for empty form submission" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle form submission with Enter key" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should toggle password visibility" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle remember me checkbox functionality" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show loading state during login attempt" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should clear form after failed login" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should maintain session after login" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should handle session timeout" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle server errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle malformed response" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should be accessible via keyboard navigation" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should have proper accessibility attributes" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should support screen readers" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should handle touch interactions on mobile" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should load quickly" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should handle rapid form submissions" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Cross-Browser Compatibility › should work in different browsers" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="migrated-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="17" failures="0" skipped="17" time="0" errors="0">
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should allow a new student to sign up with robust locators" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show validation errors for empty signup form" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for invalid email format" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for password mismatch" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should require terms acceptance" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should login successfully with valid credentials" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show error for invalid credentials" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show validation errors for empty login form" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should toggle password visibility" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should handle remember me checkbox" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to forgot password page" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to lecturer login portal" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Complete Authentication Flow › should complete full signup to login flow" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle form submission with Enter key" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should clear form after failed login" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="student-signup-and-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testcase name="Student Signup and Login Flow › should allow a new student to sign up and then log in" classname="student-signup-and-login.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="11" failures="0" skipped="11" time="0" errors="0">
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="barcode-scanning.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="15" failures="0" skipped="15" time="0" errors="0">
+<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should access barcode scanner from dashboard" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should request camera permissions when opening scanner" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle successful barcode scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle invalid barcode scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Barcode Detection › should handle duplicate scans" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Session Management › should require active session for scanning" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Session Management › should work with active session" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera permission denial" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera errors gracefully" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Manual Entry Fallback › should provide manual entry option" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Real-time Updates › should update roster in real-time" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Error Handling › should handle network errors during scan" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Error Handling › should handle malformed barcode data" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Mobile Experience › should work on mobile devices" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Barcode Scanning Feature › Mobile Experience › should handle mobile camera properly" classname="barcode-scanning.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="example.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="2" failures="0" skipped="2" time="0" errors="0">
+<testcase name="has title" classname="example.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="get started link" classname="example.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="improved-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="13" failures="0" skipped="13" time="0" errors="0">
+<testcase name="Lecturer Authentication - Improved Tests › should display lecturer login page with correct elements" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show error toast for incorrect credentials" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should allow successful lecturer login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should toggle password visibility" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle remember me checkbox" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should show loading state during login attempt" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should clear form after failed login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Improved Tests › should handle network errors gracefully" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should maintain session after login" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Dashboard Access › should handle session timeout" classname="improved-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="improved-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="17" failures="0" skipped="17" time="0" errors="0">
+<testcase name="Student Authentication - Improved Tests › should display student login page with correct elements" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should show error for invalid credentials" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should allow successful student login" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should toggle password visibility" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should remember me checkbox functionality" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should navigate to forgot password page" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should navigate to lecturer login portal" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should display student signup page with correct elements" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show validation errors for empty fields" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show error for invalid email format" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should show error for password mismatch" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should require terms acceptance" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should successfully submit valid signup form" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Signup - Improved Tests › should navigate to login page from signup" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication Flow Integration › should complete full signup to login flow" classname="improved-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="lecturer-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testcase name="Lecturer Login › should show error toast for incorrect login" classname="lecturer-login.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="migrated-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="22" failures="0" skipped="22" time="0" errors="0">
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should login successfully with valid credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show error toast for incorrect login credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show validation errors for empty form submission" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle form submission with Enter key" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should toggle password visibility" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle remember me checkbox functionality" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show loading state during login attempt" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should clear form after failed login" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should maintain session after login" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should handle session timeout" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle server errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle malformed response" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should be accessible via keyboard navigation" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should have proper accessibility attributes" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should support screen readers" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should handle touch interactions on mobile" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should load quickly" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should handle rapid form submissions" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Cross-Browser Compatibility › should work in different browsers" classname="migrated-lecturer-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="migrated-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="17" failures="0" skipped="17" time="0" errors="0">
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should allow a new student to sign up with robust locators" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show validation errors for empty signup form" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for invalid email format" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for password mismatch" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should require terms acceptance" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should login successfully with valid credentials" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show error for invalid credentials" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show validation errors for empty login form" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should toggle password visibility" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should handle remember me checkbox" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to forgot password page" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to lecturer login portal" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Complete Authentication Flow › should complete full signup to login flow" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle form submission with Enter key" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should clear form after failed login" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Student Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-student-auth.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="student-signup-and-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testcase name="Student Signup and Login Flow › should allow a new student to sign up and then log in" classname="student-signup-and-login.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
 </testsuites>
