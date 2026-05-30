@@ -1,1244 +1,1192 @@
-<testsuites id="" name="" tests="297" failures="0" skipped="297" errors="0" time="0.8240430000000001">
-<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="11" failures="0" skipped="11" time="0" errors="0">
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testsuites id="" name="" tests="33" failures="30" skipped="0" errors="0" time="225.97841">
+<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-29T18:36:52.566Z" hostname="chromium" tests="11" failures="8" skipped="0" time="158.983" errors="0">
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="20.063">
+<failure message="auth-redirect-integration.spec.ts:26:5 should save intended destination and redirect after login" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:26:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login › Login and verify redirect 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Student Email', { exact: true }) to be visible
+
+
+       at utils\test-locators.ts:240
+
+      238 |    */
+      239 |   async safeFill(locator: Locator, value: string, timeout: number = 10000): Promise<void> {
+    > 240 |     await locator.waitFor({ state: 'visible', timeout });
+          |                   ^
+      241 |     await locator.scrollIntoViewIfNeeded();
+      242 |     await locator.clear();
+      243 |     await locator.fill(value);
+        at StudentAuthPage.safeFill (D:\code\GitHub\Personal\BAS-Web\BAS\tests\utils\test-locators.ts:240:19)
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:42:27
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:40:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="14.426">
+<failure message="auth-redirect-integration.spec.ts:54:5 should show return URL display on login page" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:54:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page › Verify return URL display 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.return-url-info')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('.return-url-info')
+
+
+      61 |         // Check if return URL info is displayed
+      62 |         const returnUrlInfo = page.locator('.return-url-info');
+    > 63 |         await expect(returnUrlInfo).toBeVisible();
+         |                                     ^
+      64 |         
+      65 |         // Check return URL text
+      66 |         const returnUrlPath = page.locator('.return-url-path');
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:63:37
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:60:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="24.594">
+<failure message="auth-redirect-integration.spec.ts:75:5 should handle multiple redirect attempts correctly" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:75:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly › Second redirect attempt without login 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.return-url-path')
+    Expected substring: "/student-homepage/reports"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for locator('.return-url-path')
+
+
+      85 |         // Should update to latest intended destination
+      86 |         const returnUrlPath = page.locator('.return-url-path');
+    > 87 |         await expect(returnUrlPath).toContainText('/student-homepage/reports');
+         |                                     ^
+      88 |       });
+      89 |     });
+      90 |   });
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:87:37
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:81:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="22.918">
+<failure message="auth-redirect-integration.spec.ts:93:5 should save intended destination and redirect after login" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:93:5 › Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login › Login and verify redirect 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Staff Email', { exact: true }) to be visible
+
+
+       at utils\test-locators.ts:240
+
+      238 |    */
+      239 |   async safeFill(locator: Locator, value: string, timeout: number = 10000): Promise<void> {
+    > 240 |     await locator.waitFor({ state: 'visible', timeout });
+          |                   ^
+      241 |     await locator.scrollIntoViewIfNeeded();
+      242 |     await locator.clear();
+      243 |     await locator.fill(value);
+        at LecturerAuthPage.safeFill (D:\code\GitHub\Personal\BAS-Web\BAS\tests\utils\test-locators.ts:240:19)
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:109:28
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:107:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="10.012">
+<failure message="auth-redirect-integration.spec.ts:121:5 should show return URL display on lecturer login page" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:121:5 › Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page › Verify return URL display 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.return-url-info')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('.return-url-info')
+
+
+      128 |         // Check if return URL info is displayed
+      129 |         const returnUrlInfo = page.locator('.return-url-info');
+    > 130 |         await expect(returnUrlInfo).toBeVisible();
+          |                                     ^
+      131 |         
+      132 |         // Check return URL text
+      133 |         const returnUrlPath = page.locator('.return-url-path');
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:130:37
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:127:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="3.863">
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="23.099">
+<failure message="auth-redirect-integration.spec.ts:165:5 should persist redirect data across page reloads" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:165:5 › Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads › Set up redirect scenario 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.return-url-path')
+    Expected substring: "/student-homepage/courses/advanced-math"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for locator('.return-url-path')
+
+
+      170 |         // Verify return URL is stored
+      171 |         const returnUrlPath = page.locator('.return-url-path');
+    > 172 |         await expect(returnUrlPath).toContainText('/student-homepage/courses/advanced-math');
+          |                                     ^
+      173 |       });
+      174 |
+      175 |       await test.step('Reload page and verify persistence', async () => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:172:37
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:166:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="5.378">
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="6.598">
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="11.759">
+<failure message="auth-redirect-integration.spec.ts:240:5 should handle malformed redirect data gracefully" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:240:5 › Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully › Verify graceful handling 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByLabel('Student Email', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByLabel('Student Email', { exact: true })
+
+
+      254 |         
+      255 |         // Should still be able to use login form
+    > 256 |         await expect(studentAuth.studentLoginEmail).toBeVisible();
+          |                                                     ^
+      257 |         await expect(studentAuth.studentLoginPassword).toBeVisible();
+      258 |       });
+      259 |     });
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:256:53
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:250:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="16.273">
+<failure message="auth-redirect-integration.spec.ts:263:5 should redirect to role-based default when no intended destination" type="FAILURE">
+<![CDATA[  [chromium] › auth-redirect-integration.spec.ts:263:5 › Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination › Login directly without intended destination 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Student Email', { exact: true }) to be visible
+
+
+       at utils\test-locators.ts:240
+
+      238 |    */
+      239 |   async safeFill(locator: Locator, value: string, timeout: number = 10000): Promise<void> {
+    > 240 |     await locator.waitFor({ state: 'visible', timeout });
+          |                   ^
+      241 |     await locator.scrollIntoViewIfNeeded();
+      242 |     await locator.clear();
+      243 |     await locator.fill(value);
+        at StudentAuthPage.safeFill (D:\code\GitHub\Personal\BAS-Web\BAS\tests\utils\test-locators.ts:240:19)
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:269:27
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:264:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
 </testsuite>
-<testsuite name="barcode-scanning.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="15" failures="0" skipped="15" time="0" errors="0">
-<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should access barcode scanner from dashboard" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-29T18:36:52.566Z" hostname="firefox" tests="11" failures="11" skipped="0" time="100.585" errors="0">
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="12.142">
+<failure message="auth-redirect-integration.spec.ts:26:5 should save intended destination and redirect after login" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:26:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should request camera permissions when opening scanner" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="7.539">
+<failure message="auth-redirect-integration.spec.ts:54:5 should show return URL display on login page" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:54:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle successful barcode scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="8.536">
+<failure message="auth-redirect-integration.spec.ts:75:5 should handle multiple redirect attempts correctly" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:75:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle invalid barcode scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="8.619">
+<failure message="auth-redirect-integration.spec.ts:93:5 should save intended destination and redirect after login" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:93:5 › Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle duplicate scans" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="8.274">
+<failure message="auth-redirect-integration.spec.ts:121:5 should show return URL display on lecturer login page" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:121:5 › Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Session Management › should require active session for scanning" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="9.555">
+<failure message="auth-redirect-integration.spec.ts:140:5 should redirect to correct login based on route" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:140:5 › Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Session Management › should work with active session" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="10.662">
+<failure message="auth-redirect-integration.spec.ts:165:5 should persist redirect data across page reloads" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:165:5 › Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera permission denial" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="8.783">
+<failure message="auth-redirect-integration.spec.ts:189:5 should expire redirect data after 30 minutes" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:189:5 › Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera errors gracefully" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="8.5">
+<failure message="auth-redirect-integration.spec.ts:220:5 should not save login pages as intended destinations" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:220:5 › Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--7af50-es-as-intended-destinations-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--7af50-es-as-intended-destinations-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--7af50-es-as-intended-destinations-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--7af50-es-as-intended-destinations-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--7af50-es-as-intended-destinations-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--7af50-es-as-intended-destinations-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Manual Entry Fallback › should provide manual entry option" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="7.76">
+<failure message="auth-redirect-integration.spec.ts:240:5 should handle malformed redirect data gracefully" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:240:5 › Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Barcode Scanning Feature › Real-time Updates › should update roster in real-time" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Error Handling › should handle network errors during scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Error Handling › should handle malformed barcode data" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Mobile Experience › should work on mobile devices" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Mobile Experience › should handle mobile camera properly" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
+<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="10.215">
+<failure message="auth-redirect-integration.spec.ts:263:5 should redirect to role-based default when no intended destination" type="FAILURE">
+<![CDATA[  [firefox] › auth-redirect-integration.spec.ts:263:5 › Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination 
+
+    Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-firefox\error-context.md]]
+]]>
+</system-out>
 </testcase>
 </testsuite>
-<testsuite name="example.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="2" failures="0" skipped="2" time="0" errors="0">
-<testcase name="has title" classname="example.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="get started link" classname="example.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="improved-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="13" failures="0" skipped="13" time="0" errors="0">
-<testcase name="Lecturer Authentication - Improved Tests › should display lecturer login page with correct elements" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show error toast for incorrect credentials" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should allow successful lecturer login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should toggle password visibility" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle remember me checkbox" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show loading state during login attempt" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should clear form after failed login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle network errors gracefully" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should maintain session after login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should handle session timeout" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="improved-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="17" failures="0" skipped="17" time="0" errors="0">
-<testcase name="Student Authentication - Improved Tests › should display student login page with correct elements" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should show error for invalid credentials" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should allow successful student login" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should toggle password visibility" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should remember me checkbox functionality" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should navigate to forgot password page" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should navigate to lecturer login portal" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should display student signup page with correct elements" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show validation errors for empty fields" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show error for invalid email format" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show error for password mismatch" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should require terms acceptance" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should successfully submit valid signup form" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should navigate to login page from signup" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Flow Integration › should complete full signup to login flow" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="lecturer-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
-<testcase name="Lecturer Login › should show error toast for incorrect login" classname="lecturer-login.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="migrated-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="22" failures="0" skipped="22" time="0" errors="0">
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should login successfully with valid credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show error toast for incorrect login credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show validation errors for empty form submission" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle form submission with Enter key" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should toggle password visibility" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle remember me checkbox functionality" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show loading state during login attempt" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should clear form after failed login" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should maintain session after login" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should handle session timeout" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle server errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle malformed response" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should be accessible via keyboard navigation" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should have proper accessibility attributes" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should support screen readers" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should handle touch interactions on mobile" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should load quickly" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should handle rapid form submissions" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Cross-Browser Compatibility › should work in different browsers" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="migrated-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="17" failures="0" skipped="17" time="0" errors="0">
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should allow a new student to sign up with robust locators" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show validation errors for empty signup form" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for invalid email format" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for password mismatch" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should require terms acceptance" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should login successfully with valid credentials" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show error for invalid credentials" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show validation errors for empty login form" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should toggle password visibility" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should handle remember me checkbox" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to forgot password page" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to lecturer login portal" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Complete Authentication Flow › should complete full signup to login flow" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle form submission with Enter key" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should clear form after failed login" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="student-signup-and-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
-<testcase name="Student Signup and Login Flow › should allow a new student to sign up and then log in" classname="student-signup-and-login.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="11" failures="0" skipped="11" time="0" errors="0">
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="barcode-scanning.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="15" failures="0" skipped="15" time="0" errors="0">
-<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should access barcode scanner from dashboard" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should request camera permissions when opening scanner" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle successful barcode scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle invalid barcode scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle duplicate scans" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Session Management › should require active session for scanning" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Session Management › should work with active session" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera permission denial" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera errors gracefully" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Manual Entry Fallback › should provide manual entry option" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Real-time Updates › should update roster in real-time" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Error Handling › should handle network errors during scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Error Handling › should handle malformed barcode data" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Mobile Experience › should work on mobile devices" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Mobile Experience › should handle mobile camera properly" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="example.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="2" failures="0" skipped="2" time="0" errors="0">
-<testcase name="has title" classname="example.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="get started link" classname="example.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="improved-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="13" failures="0" skipped="13" time="0" errors="0">
-<testcase name="Lecturer Authentication - Improved Tests › should display lecturer login page with correct elements" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show error toast for incorrect credentials" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should allow successful lecturer login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should toggle password visibility" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle remember me checkbox" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show loading state during login attempt" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should clear form after failed login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle network errors gracefully" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should maintain session after login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should handle session timeout" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="improved-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="17" failures="0" skipped="17" time="0" errors="0">
-<testcase name="Student Authentication - Improved Tests › should display student login page with correct elements" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should show error for invalid credentials" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should allow successful student login" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should toggle password visibility" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should remember me checkbox functionality" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should navigate to forgot password page" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should navigate to lecturer login portal" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should display student signup page with correct elements" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show validation errors for empty fields" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show error for invalid email format" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show error for password mismatch" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should require terms acceptance" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should successfully submit valid signup form" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should navigate to login page from signup" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Flow Integration › should complete full signup to login flow" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="lecturer-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
-<testcase name="Lecturer Login › should show error toast for incorrect login" classname="lecturer-login.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="migrated-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="22" failures="0" skipped="22" time="0" errors="0">
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should login successfully with valid credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show error toast for incorrect login credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show validation errors for empty form submission" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle form submission with Enter key" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should toggle password visibility" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle remember me checkbox functionality" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show loading state during login attempt" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should clear form after failed login" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should maintain session after login" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should handle session timeout" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle server errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle malformed response" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should be accessible via keyboard navigation" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should have proper accessibility attributes" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should support screen readers" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should handle touch interactions on mobile" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should load quickly" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should handle rapid form submissions" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Cross-Browser Compatibility › should work in different browsers" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="migrated-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="17" failures="0" skipped="17" time="0" errors="0">
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should allow a new student to sign up with robust locators" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show validation errors for empty signup form" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for invalid email format" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for password mismatch" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should require terms acceptance" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should login successfully with valid credentials" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show error for invalid credentials" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show validation errors for empty login form" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should toggle password visibility" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should handle remember me checkbox" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to forgot password page" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to lecturer login portal" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Complete Authentication Flow › should complete full signup to login flow" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle form submission with Enter key" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should clear form after failed login" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="student-signup-and-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
-<testcase name="Student Signup and Login Flow › should allow a new student to sign up and then log in" classname="student-signup-and-login.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="11" failures="0" skipped="11" time="0" errors="0">
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="barcode-scanning.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="15" failures="0" skipped="15" time="0" errors="0">
-<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should access barcode scanner from dashboard" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Scanner Access &amp; Setup › should request camera permissions when opening scanner" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle successful barcode scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle invalid barcode scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Barcode Detection › should handle duplicate scans" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Session Management › should require active session for scanning" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Session Management › should work with active session" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera permission denial" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Camera Integration › should handle camera errors gracefully" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Manual Entry Fallback › should provide manual entry option" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Real-time Updates › should update roster in real-time" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Error Handling › should handle network errors during scan" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Error Handling › should handle malformed barcode data" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Mobile Experience › should work on mobile devices" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Barcode Scanning Feature › Mobile Experience › should handle mobile camera properly" classname="barcode-scanning.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="example.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="2" failures="0" skipped="2" time="0" errors="0">
-<testcase name="has title" classname="example.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="get started link" classname="example.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="improved-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="13" failures="0" skipped="13" time="0" errors="0">
-<testcase name="Lecturer Authentication - Improved Tests › should display lecturer login page with correct elements" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show error toast for incorrect credentials" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should allow successful lecturer login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should toggle password visibility" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle remember me checkbox" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should show loading state during login attempt" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should clear form after failed login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Improved Tests › should handle network errors gracefully" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should maintain session after login" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Dashboard Access › should handle session timeout" classname="improved-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="improved-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="17" failures="0" skipped="17" time="0" errors="0">
-<testcase name="Student Authentication - Improved Tests › should display student login page with correct elements" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should show validation errors for empty form submission" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should show error for invalid credentials" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should allow successful student login" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should toggle password visibility" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should remember me checkbox functionality" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should navigate to forgot password page" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should navigate to lecturer login portal" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Improved Tests › should handle form submission with Enter key" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should display student signup page with correct elements" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show validation errors for empty fields" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show error for invalid email format" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should show error for password mismatch" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should require terms acceptance" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should successfully submit valid signup form" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Signup - Improved Tests › should navigate to login page from signup" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Authentication Flow Integration › should complete full signup to login flow" classname="improved-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="lecturer-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
-<testcase name="Lecturer Login › should show error toast for incorrect login" classname="lecturer-login.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="migrated-lecturer-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="22" failures="0" skipped="22" time="0" errors="0">
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should login successfully with valid credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show error toast for incorrect login credentials" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show validation errors for empty form submission" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle form submission with Enter key" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should toggle password visibility" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should handle remember me checkbox functionality" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should show loading state during login attempt" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Login Flow › should clear form after failed login" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should redirect unauthorized users from dashboard" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should maintain session after login" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Lecturer Dashboard Access › should handle session timeout" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle server errors gracefully" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle malformed response" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should be accessible via keyboard navigation" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should have proper accessibility attributes" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Accessibility &amp; Usability › should support screen readers" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should handle touch interactions on mobile" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should load quickly" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Performance &amp; Optimization › should handle rapid form submissions" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Lecturer Authentication - Migrated &amp; Enhanced › Cross-Browser Compatibility › should work in different browsers" classname="migrated-lecturer-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="migrated-student-auth.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="17" failures="0" skipped="17" time="0" errors="0">
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should allow a new student to sign up with robust locators" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show validation errors for empty signup form" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for invalid email format" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should show error for password mismatch" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Signup Flow › should require terms acceptance" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should login successfully with valid credentials" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show error for invalid credentials" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should show validation errors for empty login form" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should toggle password visibility" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should handle remember me checkbox" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to forgot password page" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Student Login Flow › should navigate to lecturer login portal" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Complete Authentication Flow › should complete full signup to login flow" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle network errors gracefully" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should handle form submission with Enter key" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Error Handling &amp; Edge Cases › should clear form after failed login" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-<testcase name="Student Authentication - Migrated &amp; Enhanced › Mobile Responsiveness › should work correctly on mobile devices" classname="migrated-student-auth.spec.ts" time="0">
-<skipped>
-</skipped>
-</testcase>
-</testsuite>
-<testsuite name="student-signup-and-login.spec.ts" timestamp="2026-05-27T19:16:43.640Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
-<testcase name="Student Signup and Login Flow › should allow a new student to sign up and then log in" classname="student-signup-and-login.spec.ts" time="0">
-<skipped>
-</skipped>
+<testsuite name="auth-redirect-integration.spec.ts" timestamp="2026-05-29T18:36:52.566Z" hostname="webkit" tests="11" failures="11" skipped="0" time="59.308" errors="0">
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="6.659">
+<failure message="auth-redirect-integration.spec.ts:26:5 should save intended destination and redirect after login" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:26:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should save intended destination and redirect after login 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5f214-on-and-redirect-after-login-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page" classname="auth-redirect-integration.spec.ts" time="8.147">
+<failure message="auth-redirect-integration.spec.ts:54:5 should show return URL display on login page" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:54:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should show return URL display on login page 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--cf6cf-n-URL-display-on-login-page-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly" classname="auth-redirect-integration.spec.ts" time="5.083">
+<failure message="auth-redirect-integration.spec.ts:75:5 should handle multiple redirect attempts correctly" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:75:5 › Authentication Redirect Integration Tests › Student Authentication Redirects › should handle multiple redirect attempts correctly 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--685a2-redirect-attempts-correctly-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login" classname="auth-redirect-integration.spec.ts" time="4.95">
+<failure message="auth-redirect-integration.spec.ts:93:5 should save intended destination and redirect after login" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:93:5 › Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should save intended destination and redirect after login 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--2d14e-on-and-redirect-after-login-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page" classname="auth-redirect-integration.spec.ts" time="4.645">
+<failure message="auth-redirect-integration.spec.ts:121:5 should show return URL display on lecturer login page" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:121:5 › Authentication Redirect Integration Tests › Lecturer Authentication Redirects › should show return URL display on lecturer login page 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--bb902-play-on-lecturer-login-page-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route" classname="auth-redirect-integration.spec.ts" time="5.108">
+<failure message="auth-redirect-integration.spec.ts:140:5 should redirect to correct login based on route" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:140:5 › Authentication Redirect Integration Tests › Cross-Role Redirects › should redirect to correct login based on route 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--6217b-orrect-login-based-on-route-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads" classname="auth-redirect-integration.spec.ts" time="5.086">
+<failure message="auth-redirect-integration.spec.ts:165:5 should persist redirect data across page reloads" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:165:5 › Authentication Redirect Integration Tests › Session Storage Persistence › should persist redirect data across page reloads 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--730b2-ct-data-across-page-reloads-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes" classname="auth-redirect-integration.spec.ts" time="4.49">
+<failure message="auth-redirect-integration.spec.ts:189:5 should expire redirect data after 30 minutes" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:189:5 › Authentication Redirect Integration Tests › Session Storage Persistence › should expire redirect data after 30 minutes 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--c92f8-irect-data-after-30-minutes-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations" classname="auth-redirect-integration.spec.ts" time="4.206">
+<failure message="auth-redirect-integration.spec.ts:220:5 should not save login pages as intended destinations" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:220:5 › Authentication Redirect Integration Tests › Edge Cases › should not save login pages as intended destinations 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--7af50-es-as-intended-destinations-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--7af50-es-as-intended-destinations-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--7af50-es-as-intended-destinations-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--7af50-es-as-intended-destinations-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully" classname="auth-redirect-integration.spec.ts" time="6.134">
+<failure message="auth-redirect-integration.spec.ts:240:5 should handle malformed redirect data gracefully" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:240:5 › Authentication Redirect Integration Tests › Edge Cases › should handle malformed redirect data gracefully 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--5174f-ed-redirect-data-gracefully-webkit\video.webm]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination" classname="auth-redirect-integration.spec.ts" time="4.8">
+<failure message="auth-redirect-integration.spec.ts:263:5 should redirect to role-based default when no intended destination" type="FAILURE">
+<![CDATA[  [webkit] › auth-redirect-integration.spec.ts:263:5 › Authentication Redirect Integration Tests › Default Redirects › should redirect to role-based default when no intended destination 
+
+    Error: page.goto: Could not connect to server
+    Call log:
+      - navigating to "http://localhost:5173/", waiting until "load"
+
+
+      14 |     
+      15 |     // Navigate to the app first to establish the origin
+    > 16 |     await page.goto('/');
+         |                ^
+      17 |     
+      18 |     // Clear any existing session storage
+      19 |     await page.evaluate(() => {
+        at D:\code\GitHub\Personal\BAS-Web\BAS\tests\auth-redirect-integration.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\auth-redirect-integration--57b50-hen-no-intended-destination-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\auth-redirect-integration--57b50-hen-no-intended-destination-webkit\video.webm]]
+]]>
+</system-out>
 </testcase>
 </testsuite>
 </testsuites>
