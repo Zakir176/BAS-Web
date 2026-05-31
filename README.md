@@ -105,4 +105,5 @@ The application will be available at the local address provided by Vite (e.g., `
         *   `supabase.js`: Configuration for the Supabase client.
         *   `views/`: Page-level components that correspond to specific routes.
 *   `docs/`: Contains UI design images and project documentation.
+    *   [Troubleshooting Guide](docs/TROUBLESHOOTING.md): Common fixes for scanner and connection issues.
 
