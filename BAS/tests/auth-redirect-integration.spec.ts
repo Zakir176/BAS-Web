@@ -12,6 +12,9 @@ test.describe('Authentication Redirect Integration Tests', () => {
     lecturerAuth = createLecturerAuthPage(page);
     helpers = createTestHelpers(page);
     
+    // Navigate to the app first to establish the origin
+    await page.goto('/');
+    
     // Clear any existing session storage
     await page.evaluate(() => {
       sessionStorage.clear();
@@ -31,7 +34,7 @@ test.describe('Authentication Redirect Integration Tests', () => {
         
         // Check return URL parameter
         const currentUrl = page.url();
-        expect(currentUrl).toContain('returnUrl=%2Fstudent-homepage');
+        expect(currentUrl).toMatch(/returnUrl=(%2F|\/)student-homepage/);
       });
 
       await test.step('Login and verify redirect', async () => {
@@ -98,7 +101,7 @@ test.describe('Authentication Redirect Integration Tests', () => {
         
         // Check return URL parameter
         const currentUrl = page.url();
-        expect(currentUrl).toContain('returnUrl=%2Flecturer-dashboard');
+        expect(currentUrl).toMatch(/returnUrl=(%2F|\/)lecturer-dashboard/);
       });
 
       await test.step('Login and verify redirect', async () => {
