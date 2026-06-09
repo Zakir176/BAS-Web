@@ -137,25 +137,52 @@
                                 Text="SECURE ACCESS BARCODE"
                                 TextColor="#66FFFFFF" />
 
-                            <Border
-                                Padding="15"
-                                BackgroundColor="White"
-                                HorizontalOptions="Center"
-                                StrokeShape="RoundRectangle 12"
-                                WidthRequest="250">
-                                <zxing:BarcodeGeneratorView
-                                    Format="Code128"
-                                    HeightRequest="60"
-                                    Value="{Binding StudentId}" />
-                            </Border>
+                            <VerticalStackLayout IsVisible="{Binding HasBarcode}" Spacing="10">
+                                <Border
+                                    Padding="15"
+                                    BackgroundColor="White"
+                                    HorizontalOptions="Center"
+                                    StrokeShape="RoundRectangle 12"
+                                    WidthRequest="250">
+                                    <zxing:BarcodeGeneratorView
+                                        Format="Code128"
+                                        HeightRequest="60"
+                                        Value="{Binding QrCodeValue}" />
+                                </Border>
 
-                            <Label
-                                CharacterSpacing="5"
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                HorizontalOptions="Center"
-                                Text="{Binding StudentId}"
-                                TextColor="#66FFFFFF" />
+                                <Label
+                                    CharacterSpacing="5"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding StudentId}"
+                                    TextColor="#66FFFFFF" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout IsVisible="{Binding HasNoBarcode}" Spacing="10">
+                                <Border
+                                    Padding="15"
+                                    BackgroundColor="#1E293B"
+                                    HorizontalOptions="Center"
+                                    StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="1"
+                                    WidthRequest="250"
+                                    HeightRequest="90">
+                                    <Label 
+                                        Text="No barcode linked yet."
+                                        TextColor="#94A3B8"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center" />
+                                </Border>
+
+                                <Label
+                                    CharacterSpacing="5"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    HorizontalOptions="Center"
+                                    Text="{Binding StudentId}"
+                                    TextColor="#66FFFFFF" />
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
 
