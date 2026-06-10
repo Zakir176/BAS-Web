@@ -135,13 +135,24 @@ public class HistoryViewModel : BaseViewModel
                 int presentCount = studentLogs.Count(l => l.Status == "Present" || l.Status == "Late");
                 int totalSessions = allLogs.Select(l => l.DateTime.Date).Distinct().Count() is var sessionCount && sessionCount == 0 ? 1 : sessionCount;
 
+                var parts = student.FullName?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+                string initials = "?";
+                if (parts.Length >= 2 && parts[0].Length > 0 && parts[^1].Length > 0)
+                    initials = $"{parts[0][0]}{parts[^1][0]}".ToUpper();
+                else if (student.FullName?.Length >= 2)
+                    initials = student.FullName.Substring(0, 2).ToUpper();
+
+                var colors = new[] { "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899" };
+                string assignedColor = colors[Math.Abs(student.Id.GetHashCode()) % colors.Length];
+
                 Students.Add(new StudentStat
                 {
                     Name = student.FullName,
                     Id = student.StudentNumber,
                     PresenceRate = (double)presentCount / totalSessions,
                     Absences = totalSessions - presentCount,
-                    Avatar = "dotnet_bot.png"
+                    Initials = initials,
+                    Color = assignedColor
                 });
 
                 totalPresent += presentCount;
