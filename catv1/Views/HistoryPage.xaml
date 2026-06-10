@@ -33,12 +33,13 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnBackClicked" />
                 </Border.GestureRecognizers>
-                <Label
-                    FontSize="18"
+                <Path
+                    Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"
+                    Fill="White"
                     HorizontalOptions="Center"
-                    Text="⬅"
-                    TextColor="White"
-                    VerticalOptions="Center" />
+                    VerticalOptions="Center"
+                    WidthRequest="20"
+                    HeightRequest="20" />
             </Border>
             <Label
                 Grid.Column="1"
@@ -46,11 +47,14 @@
                 Style="{StaticResource LabelHeader}"
                 Text="History Reports"
                 VerticalOptions="Center" />
-            <Label
+            <Path
                 Grid.Column="2"
-                FontSize="24"
-                Text="📊"
-                VerticalOptions="Center" />
+                Data="M7,10H12V22H7V10M14,2H19V22H14V2M0,16H5V22H0V16Z"
+                Fill="White"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="24"
+                HeightRequest="24" />
         </Grid>
 
         <!--  Filters  -->
@@ -170,7 +174,7 @@
                     Grid.Column="1"
                     FontAttributes="Bold"
                     Style="{StaticResource LabelCaption}"
-                    Text="32 STUDENTS"
+                    Text="{Binding Students.Count, StringFormat='{0} STUDENTS'}"
                     TextColor="{StaticResource Primary}"
                     VerticalOptions="Center" />
             </Grid>
@@ -189,12 +193,17 @@
                             StrokeShape="RoundRectangle 16">
                             <Grid ColumnDefinitions="Auto, *, Auto">
                                 <Border
-                                    BackgroundColor="{StaticResource Background}"
+                                    BackgroundColor="{Binding Color}"
                                     HeightRequest="44"
                                     Stroke="{StaticResource GlassBorder}"
                                     StrokeShape="RoundRectangle 22"
                                     WidthRequest="44">
-                                    <Image Aspect="AspectFill" Source="{Binding Avatar}" />
+                                    <Label 
+                                        Text="{Binding Initials}" 
+                                        TextColor="White" 
+                                        FontAttributes="Bold" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center" />
                                 </Border>
 
                                 <VerticalStackLayout
