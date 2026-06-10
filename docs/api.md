@@ -96,4 +96,7 @@ The application uses the Supabase Database to store and manage data. The followi
     *   `POST /attendance`: Creates a new attendance record.
     *   `PUT /attendance`: Updates an existing attendance record.
 
- |
+---
+
+## 🛠 Need Help?
+If you encounter errors or connectivity issues while interacting with the API, please refer to our [Troubleshooting Guide](./TROUBLESHOOTING.md).
