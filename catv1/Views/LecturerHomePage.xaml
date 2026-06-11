@@ -53,33 +53,56 @@
 
                 <HorizontalStackLayout
                     Grid.Column="2"
-                    Spacing="15"
+                    Spacing="18"
                     VerticalOptions="Center">
-                    <Label
-                        FontSize="22"
-                        Text="☀️"
-                        VerticalOptions="Center">
-                        <Label.GestureRecognizers>
+                    <!-- Theme Toggle -->
+                    <Border
+                        BackgroundColor="Transparent"
+                        HeightRequest="36"
+                        WidthRequest="36">
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding ThemeToggleCommand}" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label
-                        FontSize="22"
-                        Text="📥"
-                        VerticalOptions="Center">
-                        <Label.GestureRecognizers>
+                        </Border.GestureRecognizers>
+                        <Path
+                            Data="M12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z"
+                            Fill="#94A3B8"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="20"
+                            HeightRequest="20" />
+                    </Border>
+                    <!-- Notifications -->
+                    <Border
+                        BackgroundColor="Transparent"
+                        HeightRequest="36"
+                        WidthRequest="36">
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding NotificationsCommand}" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label
-                        Margin="5,0,0,0"
-                        FontSize="22"
-                        Text="🚪"
-                        VerticalOptions="Center">
-                        <Label.GestureRecognizers>
+                        </Border.GestureRecognizers>
+                        <Path
+                            Data="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"
+                            Fill="#94A3B8"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="20"
+                            HeightRequest="20" />
+                    </Border>
+                    <!-- Logout -->
+                    <Border
+                        BackgroundColor="Transparent"
+                        HeightRequest="36"
+                        WidthRequest="36">
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding LogoutCommand}" />
-                        </Label.GestureRecognizers>
-                    </Label>
+                        </Border.GestureRecognizers>
+                        <Path
+                            Data="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"
+                            Fill="#94A3B8"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="20"
+                            HeightRequest="20" />
+                    </Border>
                 </HorizontalStackLayout>
             </Grid>
 
@@ -131,7 +154,7 @@
                             CornerRadius="16"
                             FontAttributes="Bold"
                             HeightRequest="56"
-                            Text="[||] Start Scanning"
+                            Text="Start Scanning"
                             TextColor="#0F172A" />
 
                         <Button
@@ -158,12 +181,15 @@
                                         Text="{Binding TotalCourses}"
                                         TextColor="White" />
                                 </VerticalStackLayout>
-                                <Label
+                                <Path
                                     Grid.Column="1"
-                                    FontSize="24"
+                                    Data="M12,3L1,9L12,15L21,10.09V17H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z"
+                                    Fill="#3B82F6"
                                     Opacity="0.5"
-                                    Text="🎓"
-                                    VerticalOptions="Center" />
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="28"
+                                    HeightRequest="28" />
                             </Grid>
                         </Border>
 
@@ -177,12 +203,15 @@
                                         Text="{Binding EnrolledStudents}"
                                         TextColor="White" />
                                 </VerticalStackLayout>
-                                <Label
+                                <Path
                                     Grid.Column="1"
-                                    FontSize="24"
+                                    Data="M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 19.33,13 17,13M8,13C5.67,13 2,14.17 2,16.5V19H14V16.5C14,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M15,11A3,3 0 0,0 18,8A3,3 0 0,0 15,5A3,3 0 0,0 12,8A3,3 0 0,0 15,11Z"
+                                    Fill="#10B981"
                                     Opacity="0.5"
-                                    Text="👥"
-                                    VerticalOptions="Center" />
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="28"
+                                    HeightRequest="28" />
                             </Grid>
                         </Border>
 
@@ -196,12 +225,15 @@
                                         Text="{Binding AvgAttendance}"
                                         TextColor="#3B82F6" />
                                 </VerticalStackLayout>
-                                <Label
+                                <Path
                                     Grid.Column="1"
-                                    FontSize="24"
+                                    Data="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L19.71,9.71L22,12V6H16Z"
+                                    Fill="#F59E0B"
                                     Opacity="0.5"
-                                    Text="📈"
-                                    VerticalOptions="Center" />
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="28"
+                                    HeightRequest="28" />
                             </Grid>
                         </Border>
                     </VerticalStackLayout>
@@ -280,10 +312,13 @@
                                                 StrokeShape="RoundRectangle 8"
                                                 StrokeThickness="0"
                                                 WidthRequest="40">
-                                                <Label
+                                                <Path
+                                                    Data="M12,7V3H2V21H22V7H12M6,19H4V17H6V19M6,15H4V13H6V15M6,11H4V9H6V11M6,7H4V5H6V7M10,19H8V17H10V19M10,15H8V13H10V15M10,11H8V9H10V11M10,7H8V5H10V7M20,19H12V17H14V15H12V13H14V11H12V9H20V19M18,11H16V13H18V11M18,15H16V17H18V15Z"
+                                                    Fill="#94A3B8"
                                                     HorizontalOptions="Center"
-                                                    Text="📚"
-                                                    VerticalOptions="Center" />
+                                                    VerticalOptions="Center"
+                                                    WidthRequest="20"
+                                                    HeightRequest="20" />
                                             </Border>
                                             <VerticalStackLayout
                                                 Grid.Column="1"
@@ -298,12 +333,14 @@
                                                     Text="{Binding Code}"
                                                     TextColor="#94A3B8" />
                                             </VerticalStackLayout>
-                                            <Label
+                                            <Path
                                                 Grid.Column="2"
-                                                FontSize="20"
-                                                Text="→"
-                                                TextColor="#3B82F6"
-                                                VerticalOptions="Center" />
+                                                Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+                                                Fill="#3B82F6"
+                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center"
+                                                WidthRequest="20"
+                                                HeightRequest="20" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -318,10 +355,12 @@
                                 HorizontalOptions="Center"
                                 Spacing="10"
                                 VerticalOptions="Center">
-                                <Label
-                                    FontSize="30"
+                                <Path
+                                    Data="M12,7V3H2V21H22V7H12M6,19H4V17H6V19M6,15H4V13H6V15M6,11H4V9H6V11M6,7H4V5H6V7M10,19H8V17H10V19M10,15H8V13H10V15M10,11H8V9H10V11M10,7H8V5H10V7M20,19H12V17H14V15H12V13H14V11H12V9H20V19M18,11H16V13H18V11M18,15H16V17H18V15Z"
+                                    Fill="#94A3B8"
                                     HorizontalOptions="Center"
-                                    Text="📚" />
+                                    WidthRequest="40"
+                                    HeightRequest="40" />
                                 <Label
                                     FontAttributes="Bold"
                                     HorizontalOptions="Center"
@@ -415,10 +454,12 @@
                                     IsVisible="{Binding IsSessionActive, Converter={StaticResource InvertedBoolean}}"
                                     Spacing="15"
                                     VerticalOptions="Center">
-                                    <Label
-                                        FontSize="40"
+                                    <Path
+                                        Data="M6.76,4.84L5.34,3.42C3.23,5.07 1.80,7.46 1.55,10.2H3.55C3.80,8.00 5.06,6.10 6.76,4.84M20.45,10.2H22.45C22.19,7.46 20.77,5.07 18.65,3.42L17.24,4.84C18.94,6.10 20.19,8.00 20.45,10.2M18.96,11.45C18.96,7.75 16.94,4.76 13.5,3.96V3.2C13.5,2.24 12.74,1.46 11.78,1.46C10.82,1.46 10.06,2.24 10.06,3.2V3.96C6.62,4.76 4.6,7.75 4.6,11.45V17.45L2.6,19.45V20.45H20.96V19.45L18.96,17.45M11.78,23.45C12.89,23.45 13.78,22.55 13.78,21.45H9.78C9.78,22.55 10.68,23.45 11.78,23.45Z"
+                                        Fill="#94A3B8"
                                         HorizontalOptions="Center"
-                                        Text="📷" />
+                                        WidthRequest="44"
+                                        HeightRequest="44" />
                                     <Label
                                         FontAttributes="Bold"
                                         HorizontalOptions="Center"

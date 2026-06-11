@@ -284,6 +284,9 @@ public class LecturerHomeViewModel : BaseViewModel
         string name = await Shell.Current.DisplayPromptAsync("New Course", "Enter course name:");
         if (string.IsNullOrWhiteSpace(name)) return;
 
+        // Add a small delay to prevent the keyboard from disappearing between chained dialogs
+        await Task.Delay(300);
+
         string code = await Shell.Current.DisplayPromptAsync("New Course", "Enter course code (e.g. CS101):");
         if (string.IsNullOrWhiteSpace(code)) return;
 
