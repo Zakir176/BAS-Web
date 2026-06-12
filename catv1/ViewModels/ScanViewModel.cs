@@ -375,7 +375,7 @@ public class ScanViewModel : BaseViewModel
 
             // Try matching by StudentNumber OR Id
             var student = Roster.FirstOrDefault(s =>
-                s.StudentNumber == barcodeValue || s.Id == barcodeValue);
+                s.StudentNumber?.Trim() == barcodeValue || s.Id?.Trim() == barcodeValue);
 
             if (student != null)
             {
@@ -387,9 +387,30 @@ public class ScanViewModel : BaseViewModel
             }
             else
             {
-                // GAP 2 — Show inline, non-blocking error feedback instead of alert
-                System.Diagnostics.Debug.WriteLine($"[ScanPage] No student found for barcode: {barcodeValue}");
-                ShowScanError($"No student found with ID: {barcodeValue}");
+                // Verify if the student exists in the database to distinguish between "Not Enrolled" and "Invalid Barcode"
+                try
+                {
+                    var dbStudentResponse = await _supabase.From<Student>()
+                        .Where(s => s.StudentNumber == barcodeValue || s.Id == barcodeValue)
+                        .Get();
+
+                    var dbStudent = dbStudentResponse.Models.FirstOrDefault();
+                    if (dbStudent != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ScanPage] Student {dbStudent.FullName} ({barcodeValue}) found in DB but not in Roster. (Not Enrolled)");
+                        ShowScanError($"{dbStudent.FullName} is not enrolled in {SelectedCourse}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ScanPage] No student found for barcode: {barcodeValue}");
+                        ShowScanError($"No student found with ID: {barcodeValue}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ScanPage] Error querying student: {ex.Message}");
+                    ShowScanError($"Error verifying ID: {barcodeValue}");
+                }
             }
 
             await Task.CompletedTask;
