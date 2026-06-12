@@ -22,15 +22,23 @@
         <VerticalStackLayout Padding="30" Spacing="30">
             <!--  Header  -->
             <Grid ColumnDefinitions="Auto, *">
-                <Button
+                <Border
                     BackgroundColor="#1F2937"
-                    Clicked="OnBackClicked"
-                    CornerRadius="20"
-                    FontAttributes="Bold"
                     HeightRequest="40"
-                    Text="⬅"
-                    TextColor="White"
-                    WidthRequest="40" />
+                    StrokeShape="RoundRectangle 20"
+                    StrokeThickness="0"
+                    WidthRequest="40">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackClicked" />
+                    </Border.GestureRecognizers>
+                    <Path
+                        Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"
+                        Fill="White"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        WidthRequest="18"
+                        HeightRequest="18" />
+                </Border>
                 <Label
                     Grid.Column="1"
                     FontAttributes="Bold"
