@@ -39,9 +39,9 @@ public partial class StudentHomePage : ContentPage
     private async void OnHistoryClicked(object sender, EventArgs e)
     {
         // Navigate to the History Page
-        // We use "///" to ensure we switch tabs properly if it's in a TabBar
+        // We use "//" to ensure we switch tabs properly if it's in a TabBar
         // OR if you want to push it onto the stack:
-        await Shell.Current.GoToAsync("//student/historyTab/history");
+        await Shell.Current.GoToAsync("//student/studentHistoryTab/studentHistory");
     }
 
     private async void OnLogoutClicked(object sender, EventArgs e)

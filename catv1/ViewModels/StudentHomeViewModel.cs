@@ -28,6 +28,13 @@ public class StudentHomeViewModel : BaseViewModel
         set => SetProperty(ref _id, value);
     }
 
+    private string _qrCodeValue = string.Empty;
+    public string QrCodeValue
+    {
+        get => _qrCodeValue;
+        set => SetProperty(ref _qrCodeValue, value);
+    }
+
     private string _className = "---";
     public string ClassName
     {
@@ -110,10 +117,57 @@ public class StudentHomeViewModel : BaseViewModel
         NotificationsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Notifications", "No new notifications.", "OK"));
         SettingsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Settings", "Settings feature coming soon!", "OK"));
 
-        // Simple Calendar Range
-        for (int i = 1; i <= 31; i++)
+        PreviousMonthCommand = new Command(OnPreviousMonth);
+        NextMonthCommand = new Command(OnNextMonth);
+
+        GenerateCalendarDays();
+        SubscribeToUpdates();
+    }
+
+    private DateTime _currentCalendarDate = DateTime.Now;
+
+    public string CurrentMonthYear => _currentCalendarDate.ToString("MMMM yyyy");
+
+    public Command PreviousMonthCommand { get; }
+    public Command NextMonthCommand { get; }
+
+    private void OnPreviousMonth()
+    {
+        _currentCalendarDate = _currentCalendarDate.AddMonths(-1);
+        OnPropertyChanged(nameof(CurrentMonthYear));
+        GenerateCalendarDays();
+    }
+
+    private void OnNextMonth()
+    {
+        _currentCalendarDate = _currentCalendarDate.AddMonths(1);
+        OnPropertyChanged(nameof(CurrentMonthYear));
+        GenerateCalendarDays();
+    }
+
+    private List<ActivityLog> _cachedLogs = new();
+
+    private void GenerateCalendarDays()
+    {
+        CalendarDays.Clear();
+        int daysInMonth = DateTime.DaysInMonth(_currentCalendarDate.Year, _currentCalendarDate.Month);
+
+        for (int i = 1; i <= daysInMonth; i++)
         {
-            CalendarDays.Add(new CalendarDay { Day = i, Background = "#1E293B" });
+            var bg = "#1E293B";
+            var logForDay = _cachedLogs.FirstOrDefault(l => l.DateTime.Day == i && l.DateTime.Month == _currentCalendarDate.Month && l.DateTime.Year == _currentCalendarDate.Year);
+            if (logForDay != null)
+            {
+                bg = logForDay.Status switch
+                {
+                    "Present" => "#10B981",
+                    "Absent" => "#EF4444",
+                    "Late" => "#F59E0B",
+                    "Excused" => "#6366F1",
+                    _ => "#1E293B"
+                };
+            }
+            CalendarDays.Add(new CalendarDay { Day = i, Background = bg });
         }
     }
 
@@ -124,12 +178,12 @@ public class StudentHomeViewModel : BaseViewModel
             await Shell.Current.DisplayAlertAsync("Error", "Student ID not found.", "OK");
             return;
         }
-        await Shell.Current.GoToAsync($"barcode?name={Uri.EscapeDataString(Name)}&id={Uri.EscapeDataString(Id)}");
+        await Shell.Current.GoToAsync($"barcode?name={Uri.EscapeDataString(Name)}&id={Uri.EscapeDataString(Id)}&qrcode={Uri.EscapeDataString(QrCodeValue)}");
     }
 
     private async Task OnViewReports()
     {
-        await Shell.Current.GoToAsync("//student/history");
+        await Shell.Current.GoToAsync("//student/studentHistoryTab/studentHistory");
     }
 
     public async Task LoadDataAsync()
@@ -165,6 +219,7 @@ public class StudentHomeViewModel : BaseViewModel
 
             Name = studentResponse.FullName;
             Id = studentResponse.StudentNumber; // Display Student Number
+            QrCodeValue = studentResponse.QrCode ?? string.Empty;
             
             // Fetch Department Name
             if (!string.IsNullOrEmpty(studentResponse.DepartmentId))
@@ -190,26 +245,10 @@ public class StudentHomeViewModel : BaseViewModel
                 .Get();
 
             var allLogs = allLogsResponse.Models;
+            _cachedLogs = allLogs;
 
             // Update Heatmap
-            CalendarDays.Clear();
-            for (int i = 1; i <= 31; i++)
-            {
-                var bg = "#1E293B";
-                var logForDay = allLogs.FirstOrDefault(l => l.DateTime.Day == i && l.DateTime.Month == DateTime.Now.Month);
-                if (logForDay != null)
-                {
-                    bg = logForDay.Status switch
-                    {
-                        "Present" => "#10B981",
-                        "Absent" => "#EF4444",
-                        "Late" => "#F59E0B",
-                        "Excused" => "#6366F1",
-                        _ => "#1E293B"
-                    };
-                }
-                CalendarDays.Add(new CalendarDay { Day = i, Background = bg });
-            }
+            GenerateCalendarDays();
 
             // Update Recent Activity
             RecentActivity.Clear();
@@ -269,10 +308,11 @@ public class StudentHomeViewModel : BaseViewModel
 
                     if (courseResponse != null)
                     {
+                        var semesterLabel = sectionResponse.Semester == 1 ? "Semester 1" : "Semester 2";
                         TodaySchedule.Add(new ScheduleItem
                         {
                             Subject = courseResponse.Name,
-                            Time = "Scheduled", // Placeholder until session times are in DB
+                            Time = $"{semesterLabel}, {sectionResponse.AcademicYear}",
                             Room = sectionResponse.Name,
                             Status = "Active"
                         });
