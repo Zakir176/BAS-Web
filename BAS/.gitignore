@@ -128,3 +128,14 @@ pids
 .svelte-kit
 
 # End of https://www.gitignore.io/api/node
+
+# Test output dumps (Playwright / Vitest)
+test-results.json
+test-results.xml
+out-utf8.json
+
+# Log files
+build-errors.log
+
+# AI agent/tool reports
+.vade-report
