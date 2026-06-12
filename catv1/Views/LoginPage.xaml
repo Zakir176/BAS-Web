@@ -56,11 +56,13 @@
                             StrokeShape="RoundRectangle 30"
                             StrokeThickness="1"
                             WidthRequest="60">
-                            <Label
-                                FontSize="30"
+                            <Path
+                                Data="M12,3L1,9L12,15L21,10.09V17H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z"
+                                Fill="#3B82F6"
                                 HorizontalOptions="Center"
-                                Text="🎓"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center"
+                                WidthRequest="28"
+                                HeightRequest="28" />
                         </Border>
                         <Label
                             FontAttributes="Bold"
@@ -154,13 +156,13 @@
                                         StrokeShape="RoundRectangle 8"
                                         StrokeThickness="1">
                                         <Grid ColumnDefinitions="50, *">
-                                            <Label
-                                                FontFamily="Arial"
-                                                FontSize="18"
+                                            <Path
+                                                Data="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"
+                                                Fill="#64748B"
                                                 HorizontalOptions="Center"
-                                                Text="✉"
-                                                TextColor="#64748B"
-                                                VerticalOptions="Center" />
+                                                VerticalOptions="Center"
+                                                WidthRequest="18"
+                                                HeightRequest="18" />
                                             <Entry
                                                 Grid.Column="1"
                                                 Margin="0,0,10,0"
@@ -189,13 +191,13 @@
                                         StrokeShape="RoundRectangle 8"
                                         StrokeThickness="1">
                                         <Grid ColumnDefinitions="50, *, 50">
-                                            <Label
-                                                FontFamily="Arial"
-                                                FontSize="18"
+                                            <Path
+                                                Data="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"
+                                                Fill="#64748B"
                                                 HorizontalOptions="Center"
-                                                Text="🔒"
-                                                TextColor="#64748B"
-                                                VerticalOptions="Center" />
+                                                VerticalOptions="Center"
+                                                WidthRequest="18"
+                                                HeightRequest="18" />
                                             <Entry
                                                 x:Name="EntryPassword"
                                                 Grid.Column="1"
@@ -206,20 +208,22 @@
                                                 Text="{Binding PasswordText}"
                                                 TextColor="White"
                                                 VerticalOptions="Center" />
-                                            <Label
+                                            <Border
                                                 Grid.Column="2"
-                                                FontFamily="Arial"
-                                                FontSize="18"
+                                                BackgroundColor="Transparent"
                                                 HeightRequest="40"
-                                                HorizontalTextAlignment="Center"
-                                                Text="👁️"
-                                                TextColor="#64748B"
-                                                VerticalTextAlignment="Center"
                                                 WidthRequest="40">
-                                                <Label.GestureRecognizers>
+                                                <Border.GestureRecognizers>
                                                     <TapGestureRecognizer Command="{Binding TogglePasswordCommand}" />
-                                                </Label.GestureRecognizers>
-                                            </Label>
+                                                </Border.GestureRecognizers>
+                                                <Path
+                                                    Data="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"
+                                                    Fill="#64748B"
+                                                    HorizontalOptions="Center"
+                                                    VerticalOptions="Center"
+                                                    WidthRequest="18"
+                                                    HeightRequest="18" />
+                                            </Border>
                                         </Grid>
                                     </Border>
                                 </VerticalStackLayout>
