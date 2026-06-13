@@ -1,5 +1,4 @@
 # Dependencies
-/node_modules
 /BAS/node_modules
 
 # Log files
@@ -16,6 +15,10 @@ pnpm-debug.log*
 # Production
 /dist
 /build
+
+# .NET build artifacts (catv1)
+catv1/bin/
+catv1/obj/
 
 # IDEs
 .vscode/
