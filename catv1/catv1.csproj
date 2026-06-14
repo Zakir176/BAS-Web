@@ -39,6 +39,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	  <UserSecretsId>5929cff2-5002-4b71-aa94-49508cdc83b2</UserSecretsId>
 	  <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+	  <JavaMaximumHeapSize>512M</JavaMaximumHeapSize>
   </PropertyGroup>
 
 	<ItemGroup>
