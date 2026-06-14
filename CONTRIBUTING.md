@@ -15,7 +15,7 @@ To get started, you'll need to have Node.js and npm installed on your machine.
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/BAS-Web.git
+    git clone https://github.com/Zakir176/BAS-Web.git
     cd BAS-Web
     ```
 
@@ -32,8 +32,16 @@ To get started, you'll need to have Node.js and npm installed on your machine.
 
 4.  **Set up environment variables:**
     Create a `.env` file in the `BAS` directory by copying the `.env.example` file. Then, fill in the required Supabase URL and anonymous key.
+
     ```bash
+    # macOS / Linux
     cp .env.example .env
+
+    # Windows (Command Prompt)
+    copy .env.example .env
+
+    # Windows (PowerShell)
+    Copy-Item .env.example .env
     ```
 
 5.  **Run the development server:**
@@ -67,3 +75,11 @@ To lint your code, run the following command in the `BAS` directory:
 ```bash
 npm run lint
 ```
+
+### Style Guidelines
+
+*   Use `<script setup>` syntax for all Vue components.
+*   Keep components focused on a single responsibility.
+*   Place new feature components inside the appropriate `src/features/<feature-name>/` directory.
+*   Place reusable, stateless UI primitives in `src/core/ui/`.
+*   Business logic that touches Supabase should live in `src/services/` or `src/stores/`, not directly inside components.
