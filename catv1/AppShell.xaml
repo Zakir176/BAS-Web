@@ -31,14 +31,18 @@
     <TabBar Route="student">
         <Tab
             Title="Dashboard"
-            Icon="home_icon.png"
             Route="studentDashboardTab">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xe88a;" FontFamily="MaterialIcons" Size="24" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:StudentHomePage}" Route="home" />
         </Tab>
         <Tab
             Title="My Attendance"
-            Icon="history_icon.png"
             Route="studentHistoryTab">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xe889;" FontFamily="MaterialIcons" Size="24" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="studentHistory" />
         </Tab>
     </TabBar>
@@ -46,20 +50,26 @@
     <TabBar Route="lecturer">
         <Tab
             Title="Dashboard"
-            Icon="class_icon.png"
             Route="lecturerDashboardTab">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xe80c;" FontFamily="MaterialIcons" Size="24" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:LecturerHomePage}" Route="dashboard" />
         </Tab>
         <Tab
             Title="Reports"
-            Icon="history_icon.png"
             Route="reportsTab">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xe85c;" FontFamily="MaterialIcons" Size="24" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="reports" />
         </Tab>
         <Tab
             Title="Scan ID"
-            Icon="scan_icon.png"
             Route="scanTab">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf206;" FontFamily="MaterialIcons" Size="24" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:ScanPage}" Route="scan" />
         </Tab>
     </TabBar>
