@@ -17,6 +17,7 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
             });
 
         System.Diagnostics.Debug.WriteLine("CAT_LOG: Registering Services");
@@ -29,7 +30,8 @@ public static class MauiProgram
                 var client = new Supabase.Client(SupabaseConfig.Url, SupabaseConfig.Key, new Supabase.SupabaseOptions
                 {
                     AutoRefreshToken = true,
-                    AutoConnectRealtime = true
+                    AutoConnectRealtime = true,
+                    SessionHandler = new catv1.Services.MauiSessionHandler()
                 });
                 return client;
             }
