@@ -1,142 +1,207 @@
 # Component Documentation
 
-This document provides a detailed overview of the reusable Vue components used in the Barcode Attendance System (BAS).
+This document provides a reference for the Vue components in the Barcode Attendance System (BAS). Components are organized by layer: core UI primitives, feature-specific components, and layout/page sections.
 
-## UI Components
-
-### `Button.vue`
-
-*   **Description:** A versatile button component with different variants and sizes.
-*   **Props:**
-    *   `variant` (String): The button's style variant. Can be `primary`, `secondary`, `danger`, or `ghost`. Defaults to `primary`.
-    *   `size` (String): The button's size. Can be `sm`, `md`, or `lg`. Defaults to `md`.
-    *   `full-width` (Boolean): If `true`, the button will take up the full width of its container. Defaults to `false`.
-*   **Events:**
-    *   `click`: Emitted when the button is clicked.
-
-### `Card.vue`
-
-*   **Description:** A flexible card component for displaying content in a structured way.
-*   **Props:**
-    *   `padding` (String): The padding size of the card. Can be `none`, `sm`, `normal`, or `lg`. Defaults to `normal`.
-    *   `shadow` (String): The shadow depth of the card. Can be `none`, `sm`, `md`, or `lg`. Defaults to `sm`.
-    *   `rounded` (String): The border radius of the card. Can be `none`, `sm`, `md`, `lg`, or `xl`. Defaults to `md`.
-*   **Slots:**
-    *   `header`: For content to be placed in the card's header.
-    *   `default`: For the main content of the card.
-    *   `footer`: For content to be placed in the card's footer.
-
-### `Input.vue`
-
-*   **Description:** A standard input field component with a label, placeholder, and error message.
-*   **Props:**
-    *   `modelValue` (String, Number): The value of the input.
-    *   `label` (String): The label for the input.
-    *   `type` (String): The type of the input (e.g., 'text', 'password', 'email'). Defaults to `text`.
-    *   `placeholder` (String): The placeholder text for the input.
-    *   `required` (Boolean): If `true`, the input will be required. Defaults to `false`.
-    *   `disabled` (Boolean): If `true`, the input will be disabled. Defaults to `false`.
-    *   `error` (String): An error message to display below the input.
-*   **Events:**
-    *   `update:modelValue`: Emitted when the value of the input changes.
-    *   `blur`: Emitted when the input loses focus.
-    *   `focus`: Emitted when the input gains focus.
-
-### `Modal.vue`
-
-*   **Description:** A modal component for displaying content in a dialog box.
-*   **Props:**
-    *   `isOpen` (Boolean): If `true`, the modal will be open.
-*   **Events:**
-    *   `close`: Emitted when the modal is closed.
-*   **Slots:**
-    *   `header`: For the modal's header content.
-    *   `default`: For the modal's main content.
-    *   `footer`: For the modal's footer content.
-
-## Functional Components
-
-### `AttendanceCalendar.vue`
-
-*   **Description:** A component that displays a calendar with attendance data.
-*   **Props:**
-    *   `attendanceRecords` (Array): An array of attendance records to display on the calendar. Each record should have a `date` and `status` property.
-*   **Events:**
-    *   None
-*   **Slots:**
-    *   None
-
-### `BarcodeScanner.vue`
-
-*   **Description:** A component that uses the device's camera to scan barcodes.
-*   **Props:**
-    *   None
-*   **Events:**
-    *   `detected`: Emitted when a barcode is detected. The event payload is the decoded barcode data.
-*   **Slots:**
-    *   None
-
-### `CreateCourseModal.vue`
-
-*   **Description:** A modal component for creating a new course.
-*   **Props:**
-    *   `isOpen` (Boolean): If `true`, the modal will be open.
-*   **Events:**
-    *   `close`: Emitted when the modal is closed.
-    *   `courseCreated`: Emitted when a new course is created. The event payload is the newly created course object.
-*   **Slots:**
-    *   None
-
-### `CreateSessionModal.vue`
-
-*   **Description:** A modal component for creating a new session.
-*   **Props:**
-    *   `isOpen` (Boolean): If `true`, the modal will be open.
-*   **Events:**
-    *   `close`: Emitted when the modal is closed.
-    *   `sessionCreated`: Emitted when a new session is created. The event payload is the newly created session object.
-*   **Slots:**
-    *   None
-
-## Layout Components
-
-### `Cta.vue`
-
-*   **Description:** A call-to-action component that encourages users to sign up.
-*   **Props:**
-    *   None
-*   **Events:**
-    *   None
-*   **Slots:**
-    *   None
-
-### `HowItWorks.vue`
-
-*   **Description:** A component that explains how the barcode attendance system works.
-*   **Props:**
-    *   None
-*   **Events:**
-    *   None
-*   **Slots:**
-    *   None
-
-### `Navbar.vue`
-
-*   **Description:** The main navigation bar for the application.
-*   **Props:**
-    *   None
-*   **Events:**
-    *   None
-*   **Slots:**
-    *   None
-
-### `Testimonials.vue`
-
-*   **Description:** A component that displays testimonials from users.
-*   **Props:**
-    *   None
-*   **Events:**
-    *   None
-*   **Slots:**
-    *   None
 ---
+
+## Core UI Primitives
+
+These stateless, reusable components live in `src/core/ui/` and form the design system foundation. Import them globally (registered in `main.js`) or locally as needed.
+
+### `BaseButton.vue`
+
+A versatile button with semantic variants and three sizes.
+
+**Props:**
+
+| Prop | Type | Default | Options |
+|---|---|---|---|
+| `variant` | String | `'primary'` | `'primary'`, `'secondary'`, `'white'`, `'success'`, `'danger'`, `'warning'` |
+| `size` | String | `'md'` | `'sm'`, `'md'`, `'lg'` |
+| `disabled` | Boolean | `false` | — |
+| `fullWidth` | Boolean | `false` | — |
+
+**Events:** `click`
+
+**Slots:** `default` (button label/content)
+
+---
+
+### `BaseCard.vue`
+
+A flexible content container with configurable padding, shadow, and border-radius.
+
+**Props:**
+
+| Prop | Type | Default | Options |
+|---|---|---|---|
+| `padding` | String | `'normal'` | `'none'`, `'sm'`, `'normal'`, `'lg'` |
+| `shadow` | String | `'sm'` | `'none'`, `'sm'`, `'md'`, `'lg'` |
+| `rounded` | String | `'md'` | `'none'`, `'sm'`, `'md'`, `'lg'`, `'xl'` |
+
+**Slots:** `header`, `default` (body), `footer`
+
+---
+
+### `BaseInput.vue`
+
+A labelled input field with built-in error state display.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `modelValue` | String \| Number | `''` | Bound value (use `v-model`) |
+| `label` | String | `''` | Label text shown above the field |
+| `type` | String | `'text'` | Any valid HTML input type |
+| `placeholder` | String | `''` | Placeholder text |
+| `required` | Boolean | `false` | Appends `*` to label and sets `required` attribute |
+| `disabled` | Boolean | `false` | Greys out and disables the field |
+| `error` | String | `''` | Error message displayed below the field in red |
+
+**Events:** `update:modelValue`, `blur`, `focus`
+
+---
+
+### `BaseModal.vue`
+
+A dialog overlay with optional header, footer, and a transparent mode for camera/media content.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `isOpen` | Boolean | required | Controls visibility |
+| `title` | String | `'Modal Title'` | Heading shown in the header bar |
+| `hideHeader` | Boolean | `false` | Hides the header bar; shows a floating close button instead |
+| `hideFooter` | Boolean | `false` | Hides the footer bar |
+| `transparent` | Boolean | `false` | Removes background, shadow, and padding (used for scanner overlay) |
+
+**Events:** `close`
+
+**Slots:** `header`, `default` (body), `footer`
+
+---
+
+### `BaseToast.vue`
+
+A self-dismissing notification toast with a progress bar and hover-pause support. Managed via `ToastContainer.vue`.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `show` | Boolean | `false` | Controls visibility |
+| `type` | String | `'info'` | `'success'`, `'error'`, `'warning'`, `'info'` |
+| `title` | String | `''` | Bold heading line |
+| `message` | String | `''` | Secondary body text |
+| `duration` | Number | `5000` | Auto-dismiss delay in milliseconds. `0` = never dismiss |
+| `closable` | Boolean | `true` | Shows a close button |
+| `showProgress` | Boolean | `true` | Displays a shrinking progress bar |
+| `pauseOnHover` | Boolean | `true` | Pauses the auto-dismiss timer on hover |
+| `onClick` | Function | `null` | Optional callback when the toast body is clicked |
+
+**Events:** `close`
+
+---
+
+### `BaseSkeleton.vue`
+
+An animated shimmer placeholder for loading states.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `width` | String | `'100%'` | CSS width value |
+| `height` | String | `'1rem'` | CSS height value |
+| `shape` | String | `'rect'` | `'rect'` or `'circle'` |
+| `radius` | String | `null` | Overrides the default border-radius |
+
+---
+
+### `EmptyState.vue`
+
+A placeholder shown when a list or data set is empty.
+
+**Usage:** Provides a consistent empty-state UI across the app (icon + message). Check the component source for slot details.
+
+---
+
+## Feature Components
+
+### Auth (`src/features/auth/`)
+
+| Component | Description |
+|---|---|
+| `ForgotPassword.vue` | Form for requesting a password-reset email via Supabase Auth. |
+| `ResetPassword.vue` | Form for setting a new password after clicking the reset link. |
+
+---
+
+### Lecturer (`src/features/lecturer/`)
+
+| Component | Description |
+|---|---|
+| `LecturerDashboard.vue` | Main lecturer view. Fetches sections via `courseService` and renders `CourseGrid`, `DashboardStats`, and `RecentActivity`. |
+| `LecturerLogin.vue` | Login form for lecturers, validated with VeeValidate + Yup. |
+| `LecturerSignup.vue` | Registration form for new lecturer accounts. |
+| `CourseGrid.vue` | Displays the lecturer's sections as interactive cards with enrollment counts and attendance rates. |
+| `DashboardStats.vue` | Summary stat cards (total students, sessions, attendance rate) at the top of the lecturer dashboard. |
+| `CreateCourseModal.vue` | Modal form for creating a new course. Emits `courseCreated` with the new course object on success. |
+| `CreateSessionModal.vue` | Modal form for creating a new attendance session. Emits `sessionCreated` on success. |
+| `LiveRosterRealtime.vue` | Shows the live student roster for an active session. Subscribes to Supabase Realtime for instant presence updates. |
+| `RecentActivity.vue` | Timeline of the latest attendance events for the lecturer's sections. |
+| `ReportPage.vue` | Full attendance report view with filtering and Excel export via ExcelJS. |
+
+---
+
+### Student (`src/features/student/`)
+
+| Component | Description |
+|---|---|
+| `StudentHomepage.vue` | Main student dashboard. Shows attendance stats, heatmap, and recent activity. |
+| `StudentLogin.vue` | Login form for students, validated with VeeValidate + Yup. |
+| `StudentSignup.vue` | Registration form for new student accounts. |
+| `StudentBarcode.vue` | Displays the student's personal barcode (generated with JsBarcode) for scanning. |
+| `StudentProfileHeader.vue` | Header card showing the student's name, ID, and class section. |
+| `AttendanceCalendar.vue` | Heatmap calendar visualizing attendance patterns across the semester. |
+| `LiveAttendanceStatus.vue` | Real-time display of the student's current attendance status for an active session. |
+| `RecentActivity.vue` | Timeline of the student's own recent attendance activity. |
+
+**`AttendanceCalendar.vue` props:**
+
+| Prop | Type | Description |
+|---|---|---|
+| `attendanceRecords` | Array | Array of objects with `date` (ISO string) and `status` (`'Present'` \| `'Absent'`) properties. |
+
+---
+
+### Scanner (`src/features/scanner/`)
+
+| Component | Description |
+|---|---|
+| `BarcodeScanner.vue` | Low-level camera component. Initializes QuaggaJS, reads the live stream, and emits a `detected` event with the decoded barcode string. Has a 2-second cooldown between emissions to prevent duplicate scans. |
+| `ScannerInterface.vue` | Full scanner UI. Wraps `BarcodeScanner.vue`, handles section selection, calls `attendanceService.markByBarcode()`, and displays result feedback. |
+
+**`BarcodeScanner.vue` events:**
+
+| Event | Payload | Description |
+|---|---|---|
+| `detected` | `String` | The decoded barcode value, emitted at most once every 2 seconds. |
+
+**Supported barcode formats:** Code 128, EAN-13, EAN-8, Code 39, Codabar, UPC-A, UPC-E, Interleaved 2of5, Code 93.
+
+---
+
+### Home (`src/features/home/`)
+
+These are landing-page section components used in `AppHome.vue`. They are presentational and have no props.
+
+| Component | Description |
+|---|---|
+| `HeroSection.vue` | Full-width hero with headline, CTA buttons, and UI preview. |
+| `FeatureGrid.vue` | Grid of feature highlight cards. |
+| `WorkflowSteps.vue` | Step-by-step "How It Works" section. |
+| `CTASection.vue` | Bottom call-to-action banner. |
+| `HomeFooter.vue` | Page footer with links and branding. |
