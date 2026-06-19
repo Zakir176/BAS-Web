@@ -43,7 +43,7 @@
             <Tab.Icon>
                 <FontImageSource Glyph="&#xe889;" FontFamily="MaterialIcons" Size="24" />
             </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="studentHistory" />
+            <ShellContent ContentTemplate="{DataTemplate local:StudentHistoryPage}" Route="studentHistory" />
         </Tab>
     </TabBar>
     <!-- Lecturer -->
@@ -62,7 +62,7 @@
             <Tab.Icon>
                 <FontImageSource Glyph="&#xe85c;" FontFamily="MaterialIcons" Size="24" />
             </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate local:HistoryPage}" Route="reports" />
+            <ShellContent ContentTemplate="{DataTemplate local:LecturerReportsPage}" Route="reports" />
         </Tab>
         <Tab
             Title="Scan ID"
