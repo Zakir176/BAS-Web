@@ -1,6 +1,7 @@
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using catv1.Models;
+using catv1.Services;
 using Supabase.Gotrue;
 
 namespace catv1.ViewModels;
@@ -102,11 +103,13 @@ public class SignUpViewModel : BaseViewModel
     public ICommand LoginCommand { get; }
     public ICommand TogglePasswordCommand { get; }
 
-    private readonly Supabase.Client _supabase;
+    private readonly IAuthService _authService;
+    private readonly IProfileService _profileService;
 
-    public SignUpViewModel(Supabase.Client supabase)
+    public SignUpViewModel(IAuthService authService, IProfileService profileService)
     {
-        _supabase = supabase;
+        _authService = authService;
+        _profileService = profileService;
 
         StudentCommand = new Command(() => IsStudent = true);
         LecturerCommand = new Command(() => IsStudent = false);
@@ -122,9 +125,9 @@ public class SignUpViewModel : BaseViewModel
     {
         try
         {
-            var response = await _supabase.From<Department>().Get();
+            var departments = await _profileService.GetAllDepartmentsAsync();
             Departments.Clear();
-            foreach (var dept in response.Models)
+            foreach (var dept in departments)
             {
                 Departments.Add(dept);
             }
@@ -199,7 +202,7 @@ public class SignUpViewModel : BaseViewModel
                 Data = userData
             };
 
-            var session = await _supabase.Auth.SignUp(Email, Password, options);
+            var session = await _authService.SignUpAsync(Email, Password, userData);
 
             if (session?.User?.Id != null)
             {
@@ -217,7 +220,7 @@ public class SignUpViewModel : BaseViewModel
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     };
-                    await _supabase.From<Student>().Insert(student);
+                    await _profileService.InsertStudentAsync(student);
                 }
                 else
                 {
@@ -229,7 +232,7 @@ public class SignUpViewModel : BaseViewModel
                         Email = Email,
                         DepartmentId = SelectedDepartment.Id
                     };
-                    await _supabase.From<LecturerProfile>().Insert(lecturerProfile);
+                    await _profileService.InsertLecturerAsync(lecturerProfile);
                 }
 
                 await Shell.Current.DisplayAlertAsync("Success", "Account created successfully! Please login.", "OK");
@@ -260,15 +263,15 @@ public class SignUpViewModel : BaseViewModel
         try
         {
             // Check both tables for email (since email must be unique across app)
-            var lecturerWithEmail = await _supabase.From<LecturerProfile>().Where(x => x.Email == email).Get();
-            if (lecturerWithEmail.Models.Any())
+            var lecturerWithEmail = await _profileService.GetLecturerByEmailAsync(email);
+            if (lecturerWithEmail != null)
             {
                 await Shell.Current.DisplayAlertAsync("Error", "This email is already registered as a lecturer.", "OK");
                 return true;
             }
 
-            var studentWithEmail = await _supabase.From<Student>().Where(x => x.Email == email).Get();
-            if (studentWithEmail.Models.Any())
+            var studentWithEmail = await _profileService.GetStudentByEmailAsync(email);
+            if (studentWithEmail != null)
             {
                 await Shell.Current.DisplayAlertAsync("Error", "This email is already registered as a student.", "OK");
                 return true;
@@ -277,8 +280,8 @@ public class SignUpViewModel : BaseViewModel
             // Check specific ID uniqueness
             if (isStudent)
             {
-                var studentWithId = await _supabase.From<Student>().Where(x => x.StudentNumber == id).Get();
-                if (studentWithId.Models.Any())
+                var studentWithId = await _profileService.GetStudentByStudentNumberAsync(id);
+                if (studentWithId != null)
                 {
                     await Shell.Current.DisplayAlertAsync("Error", "This Student ID is already in use.", "OK");
                     return true;
@@ -303,3 +306,4 @@ public class SignUpViewModel : BaseViewModel
         await Shell.Current.GoToAsync("//login");
     }
 }
+
