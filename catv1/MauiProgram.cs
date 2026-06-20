@@ -1,6 +1,10 @@
 using Microsoft.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
+using Plugin.LocalNotification;
+using Plugin.Fingerprint.Abstractions;
+using Plugin.Fingerprint;
 using catv1.ViewModels;
+using catv1.Services;
 
 namespace catv1;
 
@@ -13,6 +17,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseBarcodeReader()
+            .UseLocalNotification()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -42,23 +47,39 @@ public static class MauiProgram
             }
         });
 
+        // Application Services
+        builder.Services.AddSingleton<IOfflineSyncService, OfflineSyncService>();
+        builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<ICourseService, CourseService>();
+        builder.Services.AddSingleton<IAttendanceService, AttendanceService>();
+        builder.Services.AddSingleton<IProfileService, ProfileService>();
+        builder.Services.AddSingleton<IFingerprint>(CrossFingerprint.Current);
+
         // ViewModels
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<StudentHomeViewModel>();
-        builder.Services.AddTransient<HistoryViewModel>();
         builder.Services.AddTransient<BarcodeViewModel>();
         builder.Services.AddTransient<SignUpViewModel>();
         builder.Services.AddTransient<LecturerHomeViewModel>();
+        builder.Services.AddTransient<LecturerReportsViewModel>();
+        builder.Services.AddTransient<StudentHistoryViewModel>();
+        builder.Services.AddTransient<SettingsViewModel>();
+        builder.Services.AddTransient<CourseListViewModel>();
+        builder.Services.AddTransient<NotificationsViewModel>();
         builder.Services.AddTransient<ScanViewModel>();
 
-        // Pages
+        // Views
         builder.Services.AddTransient<Views.LoginPage>();
+        builder.Services.AddTransient<Views.SignUpPage>();
         builder.Services.AddTransient<Views.StudentHomePage>();
-        builder.Services.AddTransient<Views.HistoryPage>();
+        builder.Services.AddTransient<Views.LecturerHomePage>();
+        builder.Services.AddTransient<Views.LecturerReportsPage>();
+        builder.Services.AddTransient<Views.StudentHistoryPage>();
+        builder.Services.AddTransient<Views.SettingsPage>();
+        builder.Services.AddTransient<Views.CourseListPage>();
+        builder.Services.AddTransient<Views.NotificationsPage>();
         builder.Services.AddTransient<Views.BarcodePage>();
         builder.Services.AddTransient<Views.ScanPage>();
-        builder.Services.AddTransient<Views.LecturerHomePage>();
-        builder.Services.AddTransient<Views.SignUpPage>();
 
         // Shell
         builder.Services.AddSingleton<AppShell>();
