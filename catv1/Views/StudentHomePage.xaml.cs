@@ -44,8 +44,5 @@ public partial class StudentHomePage : ContentPage
         await Shell.Current.GoToAsync("//student/studentHistoryTab/studentHistory");
     }
 
-    private async void OnLogoutClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("//login");
-    }
+
 }
