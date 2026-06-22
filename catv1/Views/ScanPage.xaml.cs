@@ -17,7 +17,36 @@ public partial class ScanPage : ContentPage
         };
     }
 
-    private void cameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Request camera permission at runtime (required on Android 6+)
+        var status = await Permissions.RequestAsync<Permissions.Camera>();
+        if (status != PermissionStatus.Granted)
+        {
+            await DisplayAlertAsync("Camera Permission",
+                "Camera access is required to scan student IDs. Please grant the permission in Settings.",
+                "OK");
+            return;
+        }
+
+        // Resume camera if a session is already active (e.g. navigated away and back)
+        if (BindingContext is ScanViewModel vm && vm.IsSessionActive)
+        {
+            cameraBarcodeReaderView.IsDetecting = true;
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        // Pause the camera when leaving the page to release the hardware resource
+        cameraBarcodeReaderView.IsDetecting = false;
+    }
+
+    private void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
     {
         if (BindingContext is ScanViewModel viewModel)
         {
