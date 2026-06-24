@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using catv1.Models;
+using catv1.Services;
 
 namespace catv1.ViewModels;
 
@@ -19,11 +20,15 @@ public class LoginViewModel : BaseViewModel
     private const string KeyRememberMe = "RememberMe";
     private const string KeySavedUserId = "SavedUserId";
 
-    private readonly Supabase.Client _supabase;
+    private readonly IAuthService _authService;
+    private readonly IProfileService _profileService;
+    private readonly Plugin.Fingerprint.Abstractions.IFingerprint _fingerprint;
 
-    public LoginViewModel(Supabase.Client supabase)
+    public LoginViewModel(IAuthService authService, IProfileService profileService, Plugin.Fingerprint.Abstractions.IFingerprint fingerprint)
     {
-        _supabase = supabase;
+        _authService = authService;
+        _profileService = profileService;
+        _fingerprint = fingerprint;
         // Initialize state
         _isStudent = true;
         _isPassword = true; // Default to hidden password
@@ -189,7 +194,7 @@ public class LoginViewModel : BaseViewModel
             System.Diagnostics.Debug.WriteLine($"[Login] Attempting login for {email} (IsStudent: {IsStudent})");
 
             // Sign in with Email and Password
-            var session = await _supabase.Auth.SignInWithPassword(email, password);
+            var session = await _authService.SignInAsync(email, password);
             if (session != null && session.User != null)
             {
                 // Verify that the profile exists in the database
@@ -198,35 +203,28 @@ public class LoginViewModel : BaseViewModel
                 
                 if (IsStudent)
                 {
-                    var response = await _supabase.From<Student>()
-                        .Filter("email", Supabase.Postgrest.Constants.Operator.ILike, email)
-                        .Get();
-                    profileExists = response.Models.Count > 0;
+                    var student = await _profileService.GetStudentByEmailAsync(email);
+                    profileExists = student != null;
                 }
                 else
                 {
                     var userId = session.User.Id;
                     // First try by ID (most accurate if set correctly)
-                    var response = await _supabase.From<LecturerProfile>()
-                        .Where(x => x.Id == userId)
-                        .Get();
-                    
-                    profileExists = response.Models.Count > 0;
+                    var lecturer = await _profileService.GetLecturerByIdAsync(userId ?? string.Empty);
+                    profileExists = lecturer != null;
 
                     // Fallback to Email if ID lookup failed (handles legacy/inconsistent records)
                     if (!profileExists)
                     {
                         System.Diagnostics.Debug.WriteLine($"[Login] ID lookup failed for lecturer {userId}, trying email {email}");
-                        var emailResponse = await _supabase.From<LecturerProfile>()
-                            .Filter("email", Supabase.Postgrest.Constants.Operator.ILike, email)
-                            .Get();
-                        profileExists = emailResponse.Models.Count > 0;
+                        var emailLecturer = await _profileService.GetLecturerByEmailAsync(email);
+                        profileExists = emailLecturer != null;
                     }
                 }
 
                 if (!profileExists)
                 {
-                    await _supabase.Auth.SignOut();
+                    await _authService.SignOutAsync();
                     await Shell.Current.DisplayAlertAsync("Login Error", 
                         $"Your account was authenticated, but no {profileType} profile was found for {email}.\n\n" +
                         "If you are a lecturer, please ensure you selected the 'Lecturer' tab before logging in.", "OK");
@@ -274,6 +272,78 @@ public class LoginViewModel : BaseViewModel
         }
     }
 
+    public async Task CheckAutoLoginAsync()
+    {
+        if (IsBusy) return;
+
+        // Initialize Supabase client to load session from SecureStorage
+        await _authService.InitializeAsync();
+
+        // Check if there is an active session from the session handler
+        if (_authService.CurrentSession != null && _authService.CurrentUser != null)
+        {
+            try
+            {
+                IsBusy = true;
+
+                // Biometric Check
+                var biometricEnabled = Preferences.Get("BiometricLoginEnabled", false);
+                if (biometricEnabled)
+                {
+                    var isAvailable = await _fingerprint.IsAvailableAsync();
+                    if (isAvailable)
+                    {
+                        var request = new Plugin.Fingerprint.Abstractions.AuthenticationRequestConfiguration("Login", "Please authenticate to continue");
+                        var result = await _fingerprint.AuthenticateAsync(request);
+                        if (!result.Authenticated)
+                        {
+                            System.Diagnostics.Debug.WriteLine("[AutoLogin] Biometric authentication failed or canceled.");
+                            await _authService.SignOutAsync();
+                            IsBusy = false;
+                            return;
+                        }
+                    }
+                }
+
+                var user = _authService.CurrentUser;
+                var email = user.Email;
+                System.Diagnostics.Debug.WriteLine($"[AutoLogin] Active session found for {email}");
+
+                // Determine user role (student or lecturer)
+                string role = "student";
+                if (user.UserMetadata != null && user.UserMetadata.ContainsKey("role"))
+                {
+                    role = user.UserMetadata["role"]?.ToString()?.ToLower() ?? "student";
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[AutoLogin] User role: {role}");
+
+                if (role == "lecturer")
+                {
+                    IsStudent = false;
+                    UpdateUIState();
+                    System.Diagnostics.Debug.WriteLine($"[AutoLogin] Auto-login routing to lecturer dashboard...");
+                    await Shell.Current.GoToAsync("//lecturer/lecturerDashboardTab/dashboard");
+                }
+                else
+                {
+                    IsStudent = true;
+                    UpdateUIState();
+                    System.Diagnostics.Debug.WriteLine($"[AutoLogin] Auto-login routing to student dashboard...");
+                    await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AutoLogin] Auto-login routing failed: {ex}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+    }
+
     private async void OnSignUpClicked()
     {
         try
@@ -305,7 +375,7 @@ public class LoginViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            await _supabase.Auth.ResetPasswordForEmail(email.Trim());
+            await _authService.ResetPasswordAsync(email.Trim());
             await Shell.Current.DisplayAlertAsync(
                 "Reset Link Sent",
                 $"A password reset link has been sent to {email.Trim()}. Please check your inbox (and spam folder).",
@@ -330,3 +400,4 @@ public class LoginViewModel : BaseViewModel
         IsRememberMe = !IsRememberMe;
     }
 }
+
