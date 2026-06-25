@@ -1,5 +1,8 @@
 using System.Collections.ObjectModel;
 using catv1.Models;
+using System.Linq;
+using Plugin.LocalNotification;
+using catv1.Services;
 
 namespace catv1.ViewModels;
 
@@ -12,7 +15,11 @@ public class CalendarDay
 
 public class StudentHomeViewModel : BaseViewModel
 {
-    private readonly Supabase.Client _supabase;
+    private readonly IAuthService _authService;
+    private readonly IProfileService _profileService;
+    private readonly ICourseService _courseService;
+    private readonly IAttendanceService _attendanceService;
+    private readonly Supabase.Client _supabase; // For Realtime only
 
     private string _name = "Loading...";
     public string Name
@@ -102,11 +109,16 @@ public class StudentHomeViewModel : BaseViewModel
     public Command ViewReportsCommand { get; }
     public Command NotificationsCommand { get; }
     public Command SettingsCommand { get; }
+    public Command LogoutCommand { get; }
 
     private Supabase.Realtime.RealtimeChannel? _channel;
 
-    public StudentHomeViewModel(Supabase.Client supabase)
+    public StudentHomeViewModel(IAuthService authService, IProfileService profileService, ICourseService courseService, IAttendanceService attendanceService, Supabase.Client supabase)
     {
+        _authService = authService;
+        _profileService = profileService;
+        _courseService = courseService;
+        _attendanceService = attendanceService;
         _supabase = supabase;
         RecentActivity = [];
         CalendarDays = [];
@@ -114,8 +126,9 @@ public class StudentHomeViewModel : BaseViewModel
 
         ShowIdCardCommand = new Command(async () => await OnShowIdCard());
         ViewReportsCommand = new Command(async () => await OnViewReports());
-        NotificationsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Notifications", "No new notifications.", "OK"));
-        SettingsCommand = new Command(async () => await Shell.Current.DisplayAlertAsync("Settings", "Settings feature coming soon!", "OK"));
+        NotificationsCommand = new Command(async () => await Shell.Current.GoToAsync("notifications"));
+        SettingsCommand = new Command(async () => await Shell.Current.GoToAsync("settings"));
+        LogoutCommand = new Command(async () => await OnLogout());
 
         PreviousMonthCommand = new Command(OnPreviousMonth);
         NextMonthCommand = new Command(OnNextMonth);
@@ -145,7 +158,7 @@ public class StudentHomeViewModel : BaseViewModel
         GenerateCalendarDays();
     }
 
-    private List<ActivityLog> _cachedLogs = new();
+    private List<ActivityLog> _cachedLogs = [];
 
     private void GenerateCalendarDays()
     {
@@ -181,9 +194,26 @@ public class StudentHomeViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"barcode?name={Uri.EscapeDataString(Name)}&id={Uri.EscapeDataString(Id)}&qrcode={Uri.EscapeDataString(QrCodeValue)}");
     }
 
-    private async Task OnViewReports()
+    private static async Task OnViewReports()
     {
         await Shell.Current.GoToAsync("//student/studentHistoryTab/studentHistory");
+    }
+
+    private async Task OnLogout()
+    {
+        bool confirm = await Shell.Current.DisplayAlertAsync("Logout", "Are you sure you want to log out?", "Yes", "No");
+        if (!confirm) return;
+
+        try
+        {
+            await _authService.SignOutAsync();
+            await Shell.Current.GoToAsync("//login");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Logout Error: {ex}");
+            await Shell.Current.GoToAsync("//login"); // Go anyway
+        }
     }
 
     public async Task LoadDataAsync()
@@ -194,20 +224,16 @@ public class StudentHomeViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var user = _supabase.Auth.CurrentUser;
+            var user = _authService.CurrentUser;
             if (user == null) return;
 
             System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Fetching profile for user: {user.Id}");
-            var studentResponse = (await _supabase.From<Student>()
-                .Where(s => s.Id == user.Id)
-                .Get()).Models.FirstOrDefault();
+            var studentResponse = await _profileService.GetStudentByIdAsync(user.Id ?? string.Empty);
 
-            if (studentResponse == null)
+            if (studentResponse == null && !string.IsNullOrEmpty(user.Email))
             {
                 System.Diagnostics.Debug.WriteLine($"[StudentDashboard] ID lookup failed for student {user.Id}, trying email {user.Email}");
-                studentResponse = (await _supabase.From<Student>()
-                    .Filter("email", Supabase.Postgrest.Constants.Operator.ILike, user.Email)
-                    .Get()).Models.FirstOrDefault();
+                studentResponse = await _profileService.GetStudentByEmailAsync(user.Email);
             }
 
             if (studentResponse == null)
@@ -220,14 +246,12 @@ public class StudentHomeViewModel : BaseViewModel
             Name = studentResponse.FullName;
             Id = studentResponse.StudentNumber; // Display Student Number
             QrCodeValue = studentResponse.QrCode ?? string.Empty;
-            
+
             // Fetch Department Name
             if (!string.IsNullOrEmpty(studentResponse.DepartmentId))
             {
-                var deptResponse = (await _supabase.From<Department>()
-                    .Where(d => d.Id == studentResponse.DepartmentId)
-                    .Get()).Models.FirstOrDefault();
-                
+                var deptResponse = await _profileService.GetDepartmentByIdAsync(studentResponse.DepartmentId);
+
                 if (deptResponse != null)
                 {
                     ClassName = deptResponse.Name;
@@ -239,12 +263,8 @@ public class StudentHomeViewModel : BaseViewModel
             }
 
             // Fetch ALL Attendance Logs for Stats and Streak
-            var allLogsResponse = await _supabase.From<ActivityLog>()
-                .Where(l => l.StudentId == user.Id)
-                .Order("session_date", Supabase.Postgrest.Constants.Ordering.Descending)
-                .Get();
+            var allLogs = await _attendanceService.GetStudentLogsAsync(user.Id ?? string.Empty);
 
-            var allLogs = allLogsResponse.Models;
             _cachedLogs = allLogs;
 
             // Update Heatmap
@@ -258,7 +278,7 @@ public class StudentHomeViewModel : BaseViewModel
             }
 
             // Calculate Stats
-            if (allLogs.Any())
+            if (allLogs.Count != 0)
             {
                 DaysPresent = allLogs.Count(l => l.Status == "Present" || l.Status == "Late");
                 DaysAbsent = allLogs.Count(l => l.Status == "Absent");
@@ -290,21 +310,15 @@ public class StudentHomeViewModel : BaseViewModel
             System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Profile found: {studentResponse.FullName}. Fetching schedule...");
             // Fetch Enrollments and Sections for Schedule
             TodaySchedule.Clear();
-            var enrollmentsResponse = await _supabase.From<Enrollment>()
-                .Where(e => e.StudentId == user.Id)
-                .Get();
+            var enrollments = await _courseService.GetEnrollmentsByStudentAsync(user.Id ?? string.Empty);
 
-            foreach (var enrollment in enrollmentsResponse.Models)
+            foreach (var enrollment in enrollments)
             {
-                var sectionResponse = (await _supabase.From<Section>()
-                    .Where(s => s.Id == enrollment.SectionId)
-                    .Get()).Models.FirstOrDefault();
+                var sectionResponse = await _courseService.GetSectionByIdAsync(enrollment.SectionId);
 
                 if (sectionResponse != null)
                 {
-                    var courseResponse = (await _supabase.From<Course>()
-                        .Where(c => c.Id == sectionResponse.CourseId)
-                        .Get()).Models.FirstOrDefault();
+                    var courseResponse = await _courseService.GetCourseByIdAsync(sectionResponse.CourseId);
 
                     if (courseResponse != null)
                     {
@@ -341,11 +355,21 @@ public class StudentHomeViewModel : BaseViewModel
 
             _channel = _supabase.Realtime.Channel($"student-attendance-{user.Id}");
             var options = new Supabase.Realtime.PostgresChanges.PostgresChangesOptions("public", "attendance_logs");
-            
+
             _channel.Register(options);
             _channel.AddPostgresChangeHandler(Supabase.Realtime.PostgresChanges.PostgresChangesOptions.ListenType.Inserts, (sender, args) =>
             {
                 System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Realtime insert received, reloading data...");
+
+                var request = new Plugin.LocalNotification.Core.Models.NotificationRequest
+                {
+                    NotificationId = 1337,
+                    Title = "Attendance Marked",
+                    Description = "Your attendance has just been recorded.",
+                    ReturningData = "Dummy Data" // Can be used when clicked
+                };
+                Plugin.LocalNotification.LocalNotificationCenter.Current.Show(request);
+
                 MainThread.BeginInvokeOnMainThread(async () => await LoadDataAsync());
             });
             _channel.Subscribe();
@@ -372,3 +396,4 @@ public class StudentHomeViewModel : BaseViewModel
         }
     }
 }
+
