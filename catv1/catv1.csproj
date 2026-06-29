@@ -40,6 +40,12 @@
 	  <UserSecretsId>5929cff2-5002-4b71-aa94-49508cdc83b2</UserSecretsId>
 	  <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 	  <JavaMaximumHeapSize>512M</JavaMaximumHeapSize>
+
+	  <!-- NU1903 + XA0141: Both warnings come from SQLitePCLRaw.lib.e_sqlite3.android (transitive via sqlite-net-pcl).
+	       Vulnerability GHSA-2m69-gcr7-jv3q affects ALL versions through 2.1.11 — no patched version exists.
+	       XA0141: libe_sqlite3.so lacks 16KB page alignment required by Android 16 (same unresolvable package).
+	       Suppressed via NoWarn until sqlite-net-pcl ships with an updated native SQLite library. -->
+	  <NoWarn>$(NoWarn);NU1903;XA0141</NoWarn>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -66,6 +72,7 @@
 		<PackageReference Include="Plugin.Fingerprint" Version="2.1.5" />
 		<PackageReference Include="Plugin.LocalNotification" Version="14.1.1" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+
 		<PackageReference Include="Supabase" Version="1.1.1" />
 		<PackageReference Include="ZXing.Net.Maui" Version="0.7.4" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.7.4" />
