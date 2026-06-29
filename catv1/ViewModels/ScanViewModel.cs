@@ -23,7 +23,7 @@ public class ScanViewModel : BaseViewModel
     private DateTime _lastScanTime = DateTime.MinValue;
 
     // GAP 3: track which student IDs have already had an attendance_logs row written mid-session
-    private readonly HashSet<string> _writtenStudentIds = new();
+    private readonly HashSet<string> _writtenStudentIds = [];
 
     public ICommand BackCommand { get; }
     public ICommand StartSessionCommand { get; }
@@ -63,7 +63,7 @@ public class ScanViewModel : BaseViewModel
     public Section? SelectedSection
     {
         get => _selectedSection;
-        set 
+        set
         {
             if (SetProperty(ref _selectedSection, value))
             {
@@ -167,7 +167,7 @@ public class ScanViewModel : BaseViewModel
     public async Task LoadRosterAsync()
     {
         if (SelectedSection == null) return;
-        
+
         try
         {
             IsBusy = true;
@@ -175,9 +175,9 @@ public class ScanViewModel : BaseViewModel
             var enrollmentsResponse = await _supabase.From<Enrollment>()
                 .Where(e => e.SectionId == SelectedSection.Id)
                 .Get();
-            
+
             var studentIds = enrollmentsResponse.Models.Select(e => e.StudentId).ToList();
-            if (!studentIds.Any())
+            if (studentIds.Count == 0)
             {
                 Roster.Clear();
                 RefreshStats();
@@ -224,7 +224,7 @@ public class ScanViewModel : BaseViewModel
     private async void OnStartSession()
     {
         if (SelectedSection == null) return;
-        
+
         await LoadRosterAsync();
         _writtenStudentIds.Clear(); // reset mid-session write tracking
         IsSessionActive = true;
@@ -233,7 +233,7 @@ public class ScanViewModel : BaseViewModel
 
     private async void OnFinishSession()
     {
-        if (Roster == null || !Roster.Any() || SelectedSection == null) return;
+        if (Roster == null || Roster.Count == 0 || SelectedSection == null) return;
 
         bool confirm = await Shell.Current.DisplayAlertAsync("Submit Attendance", $"Confirm attendance for {PresentCount} students?", "Submit", "Cancel");
         if (!confirm) return;
@@ -259,9 +259,9 @@ public class ScanViewModel : BaseViewModel
                 });
             }
 
-            if (logs.Any())
+            if (logs.Count > 0)
                 await _supabase.From<ActivityLog>().Insert(logs);
-            
+
             await Shell.Current.DisplayAlertAsync("Success", "Attendance has been synchronized with the database.", "OK");
             IsSessionActive = false;
             _writtenStudentIds.Clear();
@@ -360,12 +360,16 @@ public class ScanViewModel : BaseViewModel
 
         await MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            var barcodeValue = results[0].Value?.Trim();
+            // Normalize: strip ALL whitespace and control characters (\r, \n, tabs, etc.)
+            // Barcodes frequently emit trailing \r or \n which causes double-fire mismatches.
+            var raw = results[0].Value;
+            if (string.IsNullOrEmpty(raw)) return;
+            var barcodeValue = string.Concat(raw.Where(c => !char.IsControl(c) && !char.IsWhiteSpace(c)));
             if (string.IsNullOrEmpty(barcodeValue)) return;
 
-            // GAP 7 — Debounce: ignore the same barcode within 1.5 seconds
+            // GAP 7 — Debounce: ignore the same barcode within 2 seconds (normalized comparison)
             if (barcodeValue == _lastScannedBarcode &&
-                (DateTime.Now - _lastScanTime).TotalMilliseconds < 1500)
+                (DateTime.Now - _lastScanTime).TotalMilliseconds < 2000)
             {
                 return;
             }
@@ -373,9 +377,12 @@ public class ScanViewModel : BaseViewModel
             _lastScannedBarcode = barcodeValue;
             _lastScanTime = DateTime.Now;
 
-            // Try matching by StudentNumber OR Id
+            System.Diagnostics.Debug.WriteLine($"[ScanPage] Barcode read: '{barcodeValue}'");
+
+            // Match by StudentNumber or internal Id (barcodes encode StudentNumber)
             var student = Roster.FirstOrDefault(s =>
-                s.StudentNumber?.Trim() == barcodeValue || s.Id?.Trim() == barcodeValue);
+                s.StudentNumber?.Trim() == barcodeValue ||
+                s.Id?.Trim() == barcodeValue);
 
             if (student != null)
             {
