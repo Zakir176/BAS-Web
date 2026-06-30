@@ -15,11 +15,6 @@
     </ContentPage.Resources>
 
     <Grid>
-        <!--  Background Overlay for consistency (optional, camera might cover it)  -->
-        <Image
-            Aspect="AspectFill"
-            Opacity="0.1"
-            Source="Resources/Images/lecture_room.png" />
         <Grid
             Padding="30"
             IsVisible="{Binding IsSetupVisible}"
