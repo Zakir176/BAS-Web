@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="catv1.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:catv1.ViewModels"
+    Title="Settings"
+    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Background}}">
+
+    <Grid RowDefinitions="Auto, *">
+        <Grid Padding="24,20,24,10" ColumnDefinitions="Auto, *, Auto">
+            <Border
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Surface}}"
+                HeightRequest="40"
+                Stroke="{StaticResource GlassBorder}"
+                StrokeShape="RoundRectangle 20"
+                WidthRequest="40">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackClicked" />
+                </Border.GestureRecognizers>
+                <Label FontFamily="MaterialIcons" Text="&#xe5c4;" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark=White}" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Label
+                Grid.Column="1"
+                HorizontalOptions="Center"
+                Style="{StaticResource LabelHeader}"
+                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark=White}"
+                Text="Settings"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="1" Padding="24" Spacing="20">
+            <Border Style="{StaticResource StatCard}" BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Surface}}">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Account Preferences" Style="{StaticResource LabelHeader}" TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource Primary}}" />
+                    
+                    <Grid ColumnDefinitions="*, Auto" Margin="0,10,0,0">
+                        <Label Text="Biometric Login" VerticalOptions="Center" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark=White}" />
+                        <Switch Grid.Column="1" IsToggled="{Binding BiometricLoginEnabled}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, Auto" Margin="0,10,0,0">
+                        <Label Text="Dark Mode" VerticalOptions="Center" TextColor="{AppThemeBinding Light={StaticResource Black}, Dark=White}" />
+                        <Switch Grid.Column="1" IsToggled="{AppThemeBinding Light=False, Dark=True}" IsEnabled="False" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Button
+                Text="Logout"
+                Command="{Binding LogoutCommand}"
+                BackgroundColor="{StaticResource Error}"
+                TextColor="White"
+                CornerRadius="8"
+                HeightRequest="50"
+                Margin="0,20,0,0" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
