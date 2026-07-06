@@ -40,6 +40,7 @@
 	  <UserSecretsId>5929cff2-5002-4b71-aa94-49508cdc83b2</UserSecretsId>
 	  <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 	  <JavaMaximumHeapSize>512M</JavaMaximumHeapSize>
+	  <JavaSdkDirectory Condition="'$(JavaSdkDirectory)' == '' and Exists('C:\Program Files\Java\jdk-21+35')">C:\Program Files\Java\jdk-21+35</JavaSdkDirectory>
 
 	  <!-- NU1903 + XA0141: Both warnings come from SQLitePCLRaw.lib.e_sqlite3.android (transitive via sqlite-net-pcl).
 	       Vulnerability GHSA-2m69-gcr7-jv3q affects ALL versions through 2.1.11 — no patched version exists.
