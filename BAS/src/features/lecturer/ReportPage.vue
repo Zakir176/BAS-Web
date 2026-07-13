@@ -225,20 +225,29 @@ const fetchAttendanceData = async () => {
       return;
     }
 
-    // Fetch activity logs
-    const { data: logs, error } = await supabase
-      .from("activity_logs")
+    // Fetch student profile using email
+    const { data: profile, error: profileError } = await supabase
+      .from("students")
       .select("*")
-      .eq("student_id", user.id)
-      .order("date_time", { ascending: false });
+      .eq("email", user.email)
+      .maybeSingle();
+
+    if (profileError) throw profileError;
+
+    // Fetch attendance logs
+    const { data: logs, error } = await supabase
+      .from("attendance_logs")
+      .select("*, sections(name, courses(name))")
+      .eq("student_id", profile.id)
+      .order("session_date", { ascending: false });
 
     if (error) throw error;
 
     attendanceRecords.value = logs.map((log) => ({
       id: log.id,
-      date: new Date(log.date_time).toLocaleDateString(),
-      course: "General Attendance",
-      time: new Date(log.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      date: new Date(log.session_date).toLocaleDateString(),
+      course: log.sections?.courses?.name || log.sections?.name || "General Attendance",
+      time: new Date(log.session_date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       lecturer: "N/A",
       status: log.status || "Present",
     }));

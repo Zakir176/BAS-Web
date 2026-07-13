@@ -53,7 +53,8 @@ export const useUserStore = defineStore('user', () => {
 
             profile.value = data
         } catch (err) {
-            handleError(err, 'Error fetching profile.')
+            console.error('Error fetching profile.', err)
+            error.value = err?.message || 'Error fetching profile.'
             // FALLBACK: If 403, create a mock profile so the UI doesn't break
             if (err.status === 403 || err.code === '42501') {
                 console.warn("Using mock profile due to permission error.");
