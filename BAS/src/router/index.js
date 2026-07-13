@@ -62,7 +62,7 @@ const routes = [
     path: '/report-page',
     name: 'ReportPage',
     component: ReportPage,
-    meta: { requiresAuth: true, role: 'lecturer' }
+    meta: { requiresAuth: true, role: 'student' }
   },
   {
     path: '/privacy-policy',
