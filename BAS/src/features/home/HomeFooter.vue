@@ -39,7 +39,7 @@
             <li><router-link to="/lecturer-login">Lecturer Portal</router-link></li>
             <li><router-link to="/student-signup">Student Registration</router-link></li>
             <li><router-link to="/lecturer-signup">Lecturer Registration</router-link></li>
-            <li><router-link to="/report-page">Attendance Reports</router-link></li>
+
           </ul>
         </div>
         

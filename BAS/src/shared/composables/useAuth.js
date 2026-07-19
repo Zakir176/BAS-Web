@@ -183,16 +183,7 @@ export function useAuth() {
     }
   }
 
-  // Profile-related functions remain here as they are direct DB interactions
-  const getStudentProfile = async () => {
-    // ... implementation ...
-  }
-  const updateStudentProfile = async () => {
-    // ... implementation ...
-  }
-  const updateLecturerProfile = async () => {
-    // ... implementation ...
-  }
+
 
   return {
     // State and getters from store
@@ -214,8 +205,5 @@ export function useAuth() {
     updatePassword,
 
     // Profile functions
-    getStudentProfile,
-    updateStudentProfile,
-    updateLecturerProfile,
   }
 }
