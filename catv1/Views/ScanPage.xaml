@@ -153,7 +153,7 @@
                             <zxing:CameraBarcodeReaderView
                                 x:Name="cameraBarcodeReaderView"
                                 BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected"
-                                IsDetecting="{Binding IsSessionActive}"
+                                IsDetecting="False"
                                 IsTorchOn="False" />
 
                             <!--  Overlay Brackets  -->

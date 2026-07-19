@@ -31,11 +31,11 @@ public partial class ScanPage : ContentPage
             return;
         }
 
-        // Resume camera if a session is already active (e.g. navigated away and back)
-        if (BindingContext is ScanViewModel vm && vm.IsSessionActive)
-        {
-            cameraBarcodeReaderView.IsDetecting = true;
-        }
+        // Start the camera preview whenever the page is visible.
+        // The VM's OnBarcodeDetected ignores results when no session is active,
+        // so enabling the preview here is safe and prevents the black-frame issue
+        // that occurred when IsDetecting was bound to IsSessionActive via XAML.
+        cameraBarcodeReaderView.IsDetecting = true;
     }
 
     protected override void OnDisappearing()
