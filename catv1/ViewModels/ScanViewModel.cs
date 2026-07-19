@@ -356,6 +356,8 @@ public class ScanViewModel : BaseViewModel
 
     public async void OnBarcodeDetected(ZXing.Net.Maui.BarcodeResult[] results)
     {
+        // Camera runs even on the setup screen; ignore detections until a session is started.
+        if (!IsSessionActive) return;
         if (results == null || results.Length == 0 || IsBusy) return;
 
         await MainThread.InvokeOnMainThreadAsync(async () =>
