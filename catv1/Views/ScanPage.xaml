@@ -109,103 +109,211 @@
 
             <!--  Top Bar  -->
             <Grid
-                Padding="20"
+                Padding="16,14"
                 BackgroundColor="{StaticResource Surface}"
                 ColumnDefinitions="Auto, *, Auto">
+
+                <!--  Divider line at bottom  -->
+                <BoxView
+                    Grid.ColumnSpan="3"
+                    HeightRequest="1"
+                    BackgroundColor="{StaticResource GlassBorder}"
+                    VerticalOptions="End" />
+
                 <Border
-                    BackgroundColor="{StaticResource GlassSelection}"
-                    HeightRequest="40"
+                    BackgroundColor="#1F2937"
+                    HeightRequest="38"
                     Stroke="{StaticResource GlassBorder}"
-                    StrokeShape="RoundRectangle 20"
-                    WidthRequest="40">
+                    StrokeShape="RoundRectangle 19"
+                    WidthRequest="38">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding BackCommand}" />
                     </Border.GestureRecognizers>
-                    <Label FontFamily="MaterialIcons" Text="&#xe5c4;" TextColor="White" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label FontFamily="MaterialIcons" Text="&#xe5c4;" TextColor="{StaticResource Gray200}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Border>
 
-                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" HorizontalOptions="Center">
                     <Label
-                        FontSize="16"
+                        FontAttributes="Bold"
+                        FontSize="15"
                         HorizontalOptions="Center"
-                        Style="{StaticResource LabelHeader}"
+                        TextColor="White"
                         Text="{Binding SelectedCourse}" />
-                    <Label
-                        HorizontalOptions="Center"
-                        Style="{StaticResource LabelCaption}"
-                        Text="{Binding DateDisplay}" />
+                    <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label FontFamily="MaterialIcons" Text="&#xe916;" TextColor="{StaticResource Gray400}" FontSize="12" VerticalOptions="Center" />
+                        <Label
+                            HorizontalOptions="Center"
+                            Style="{StaticResource LabelCaption}"
+                            Text="{Binding DateDisplay}" />
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
 
-                <Label FontFamily="MaterialIcons" Text="&#xe8b8;" TextColor="{StaticResource Gray400}" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="2" />
+                <!--  Session timer / camera icon  -->
+                <Border
+                    Grid.Column="2"
+                    BackgroundColor="#1F2937"
+                    HeightRequest="38"
+                    Stroke="{StaticResource GlassBorder}"
+                    StrokeShape="RoundRectangle 19"
+                    WidthRequest="38">
+                    <Label FontFamily="MaterialIcons" Text="&#xe3b0;" TextColor="{StaticResource Primary}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
             </Grid>
 
             <!--  Camera & Stats  -->
             <ScrollView Grid.Row="1">
-                <VerticalStackLayout Padding="20" Spacing="24">
+                <VerticalStackLayout Padding="18" Spacing="16">
 
                     <!--  Camera Frame  -->
                     <Border
-                        HeightRequest="250"
-                        Stroke="{StaticResource Info}"
-                        StrokeShape="RoundRectangle 24"
-                        StrokeThickness="1.5">
+                        HeightRequest="260"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0"
+                        BackgroundColor="#0A0F1A">
+
                         <Grid>
+                            <!--  Live camera feed  -->
                             <zxing:CameraBarcodeReaderView
                                 x:Name="cameraBarcodeReaderView"
                                 BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected"
                                 IsDetecting="False"
                                 IsTorchOn="False" />
 
-                            <!--  Overlay Brackets  -->
+                            <!--  Dark vignette overlay  -->
                             <Border
-                                Margin="40"
-                                BackgroundColor="Transparent"
-                                HeightRequest="150"
-                                Stroke="{StaticResource Info}"
-                                StrokeShape="RoundRectangle 12"
-                                StrokeThickness="4"
-                                WidthRequest="200" />
+                                BackgroundColor="#55000000"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 20" />
 
+                            <!--  Corner brackets — top-left  -->
+                            <AbsoluteLayout>
+                                <!--  TL horizontal  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="None"
+                                         AbsoluteLayout.LayoutBounds="40,40,40,3"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+                                <!--  TL vertical  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="None"
+                                         AbsoluteLayout.LayoutBounds="40,40,3,40"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+
+                                <!--  TR horizontal  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="PositionProportional"
+                                         AbsoluteLayout.LayoutBounds="1,0,40,3"
+                                         Margin="0,40,-40,0"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+                                <!--  TR vertical  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="PositionProportional"
+                                         AbsoluteLayout.LayoutBounds="1,0,3,40"
+                                         Margin="0,40,0,0"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+
+                                <!--  BL horizontal  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="PositionProportional"
+                                         AbsoluteLayout.LayoutBounds="0,1,40,3"
+                                         Margin="40,0,0,-40"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+                                <!--  BL vertical  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="PositionProportional"
+                                         AbsoluteLayout.LayoutBounds="0,1,3,40"
+                                         Margin="40,0,0,0"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+
+                                <!--  BR horizontal  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="PositionProportional"
+                                         AbsoluteLayout.LayoutBounds="1,1,40,3"
+                                         Margin="0,0,-40,-40"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+                                <!--  BR vertical  -->
+                                <BoxView AbsoluteLayout.LayoutFlags="PositionProportional"
+                                         AbsoluteLayout.LayoutBounds="1,1,3,40"
+                                         Margin="0,0,0,-40"
+                                         BackgroundColor="{StaticResource Primary}"
+                                         CornerRadius="2" />
+
+                                <!--  Scan-line bar  -->
+                                <BoxView
+                                    x:Name="scanLine"
+                                    AbsoluteLayout.LayoutFlags="SizeProportional"
+                                    AbsoluteLayout.LayoutBounds="60,120,0.78,2"
+                                    BackgroundColor="{StaticResource Primary}"
+                                    Opacity="0.85"
+                                    CornerRadius="1" />
+                            </AbsoluteLayout>
+
+                            <!--  Status pill  -->
                             <Border
-                                Margin="0,0,0,20"
-                                Padding="16,8"
-                                BackgroundColor="#CC1E293B"
+                                Margin="0,0,0,16"
+                                Padding="14,7"
+                                BackgroundColor="#CC0F172A"
                                 HorizontalOptions="Center"
-                                Stroke="{StaticResource GlassBorder}"
+                                Stroke="{StaticResource Primary}"
                                 StrokeShape="RoundRectangle 20"
+                                StrokeThickness="1"
                                 VerticalOptions="End">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="12"
-                                    Text="SCANNING ACTIVE"
-                                    TextColor="{StaticResource Info}" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <!--  Pulsing dot  -->
+                                    <Ellipse
+                                        Fill="{StaticResource Primary}"
+                                        HeightRequest="7"
+                                        WidthRequest="7"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="11"
+                                        Text="SCANNING ACTIVE"
+                                        TextColor="{StaticResource Primary}"
+                                        VerticalOptions="Center"
+                                        CharacterSpacing="1.5" />
+                                </HorizontalStackLayout>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!--  Toast (success or error)  -->
                     <Border
-                        Padding="16"
+                        Padding="14,12"
                         BackgroundColor="{StaticResource Surface}"
                         IsVisible="{Binding ShowFeedback}"
                         Stroke="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}"
-                        StrokeShape="RoundRectangle 16"
-                        StrokeThickness="1">
-                        <Grid ColumnDefinitions="Auto, *, Auto">
-                            <Label
-                                FontSize="20"
-                                Text="{Binding IsScanError, Converter={StaticResource BooleanToString}, ConverterParameter='✗|✔'}"
-                                TextColor="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}"
+                        StrokeShape="RoundRectangle 14"
+                        StrokeThickness="1.5">
+                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12">
+                            <!--  Icon circle  -->
+                            <Border
+                                HeightRequest="38"
+                                WidthRequest="38"
+                                StrokeShape="RoundRectangle 19"
+                                StrokeThickness="0"
+                                BackgroundColor="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}"
+                                Opacity="0.15"
                                 VerticalOptions="Center" />
-                            <VerticalStackLayout Grid.Column="1" Margin="12,0">
+                            <Label
+                                FontFamily="MaterialIcons"
+                                FontSize="20"
+                                Text="{Binding IsScanError, Converter={StaticResource BooleanToString}, ConverterParameter='&#xe000;|&#xe86c;'}"
+                                TextColor="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Center"
+                                Margin="9,0,0,0" />
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                                 <Label
                                     FontAttributes="Bold"
-                                    Style="{StaticResource LabelCaption}"
+                                    FontSize="11"
+                                    CharacterSpacing="1"
                                     Text="{Binding IsScanError, Converter={StaticResource BooleanToString}, ConverterParameter='SCAN ERROR|ATTENDANCE LOGGED'}"
                                     TextColor="{Binding IsScanError, Converter={StaticResource BooleanToColor}, ConverterParameter='Error|Success'}" />
                                 <Label
                                     FontSize="14"
-                                    Style="{StaticResource LabelHeader}">
+                                    TextColor="White"
+                                    FontAttributes="Bold">
                                     <Label.Text>
                                         <MultiBinding StringFormat="{}{0}">
                                             <Binding Path="ScanFeedbackMessage" />
@@ -213,63 +321,75 @@
                                     </Label.Text>
                                 </Label>
                             </VerticalStackLayout>
+
                             <Button
                                 Grid.Column="2"
                                 BackgroundColor="{StaticResource GlassSelection}"
                                 Command="{Binding UndoScanCommand}"
-                                CornerRadius="16"
-                                FontSize="12"
-                                HeightRequest="32"
+                                CornerRadius="14"
+                                FontSize="11"
+                                HeightRequest="30"
+                                WidthRequest="52"
                                 IsVisible="{Binding IsNotScanError}"
-                                Text="Undo"
-                                TextColor="White" />
+                                Text="UNDO"
+                                TextColor="{StaticResource Gray200}" />
                         </Grid>
                     </Border>
 
 
                     <!--  Stats Cards  -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Border Style="{StaticResource StatCard}">
-                            <VerticalStackLayout Spacing="8">
-                                <Label Style="{StaticResource LabelCaption}" Text="PRESENT" />
-                                <HorizontalStackLayout Spacing="4">
+                            <VerticalStackLayout Spacing="10">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label FontFamily="MaterialIcons" Text="&#xe8d8;" FontSize="14" TextColor="{StaticResource Success}" VerticalOptions="Center" />
+                                    <Label Style="{StaticResource LabelCaption}" Text="PRESENT" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                     <Label
                                         FontAttributes="Bold"
-                                        FontSize="28"
+                                        FontSize="30"
                                         Text="{Binding PresentCount}"
                                         TextColor="{StaticResource Success}" />
                                     <Label
                                         Style="{StaticResource LabelCaption}"
                                         Text="{Binding TotalCount, StringFormat='/ {0}'}"
-                                        VerticalOptions="End" />
+                                        VerticalOptions="End"
+                                        Margin="0,0,0,4" />
                                 </HorizontalStackLayout>
                                 <ProgressBar Progress="{Binding PresentProgress}" ProgressColor="{StaticResource Success}" />
                             </VerticalStackLayout>
                         </Border>
-                        
+
                         <Border Grid.Column="1" Style="{StaticResource StatCard}">
-                            <VerticalStackLayout Spacing="8">
-                                <Label Style="{StaticResource LabelCaption}" Text="ABSENT" />
-                                <HorizontalStackLayout Spacing="4">
+                            <VerticalStackLayout Spacing="10">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label FontFamily="MaterialIcons" Text="&#xe5cd;" FontSize="14" TextColor="{StaticResource Error}" VerticalOptions="Center" />
+                                    <Label Style="{StaticResource LabelCaption}" Text="ABSENT" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
                                     <Label
                                         FontAttributes="Bold"
-                                        FontSize="28"
+                                        FontSize="30"
                                         Text="{Binding AbsentCount}"
                                         TextColor="{StaticResource Error}" />
                                     <Label
                                         Style="{StaticResource LabelCaption}"
                                         Text="{Binding TotalCount, StringFormat='/ {0}'}"
-                                        VerticalOptions="End" />
+                                        VerticalOptions="End"
+                                        Margin="0,0,0,4" />
                                 </HorizontalStackLayout>
                                 <ProgressBar Progress="{Binding AbsentProgress}" ProgressColor="{StaticResource Error}" />
                             </VerticalStackLayout>
                         </Border>
                     </Grid>
 
-                    <Label
-                        HorizontalOptions="Center"
-                        Style="{StaticResource LabelCaption}"
-                        Text="Scan history and manual override below" />
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                        <Label FontFamily="MaterialIcons" Text="&#xe5db;" FontSize="12" TextColor="{StaticResource Gray400}" VerticalOptions="Center" />
+                        <Label
+                            Style="{StaticResource LabelCaption}"
+                            Text="Scroll down to view roster &amp; override" />
+                    </HorizontalStackLayout>
 
                 </VerticalStackLayout>
             </ScrollView>
