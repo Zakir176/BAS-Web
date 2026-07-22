@@ -36,6 +36,9 @@ public partial class ScanPage : ContentPage
         // so enabling the preview here is safe and prevents the black-frame issue
         // that occurred when IsDetecting was bound to IsSessionActive via XAML.
         cameraBarcodeReaderView.IsDetecting = true;
+
+        // Animate the scan-line: bounce between -80 and +80 pixels (top → bottom of frame)
+        RunScanLineAnimation();
     }
 
     protected override void OnDisappearing()
@@ -44,6 +47,18 @@ public partial class ScanPage : ContentPage
 
         // Pause the camera when leaving the page to release the hardware resource
         cameraBarcodeReaderView.IsDetecting = false;
+
+        // Stop scan-line animation
+        scanLine.CancelAnimations();
+    }
+
+    private async void RunScanLineAnimation()
+    {
+        while (IsVisible)
+        {
+            await scanLine.TranslateTo(0, 80, 1500, Easing.SinInOut);
+            await scanLine.TranslateTo(0, -80, 1500, Easing.SinInOut);
+        }
     }
 
     private void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
