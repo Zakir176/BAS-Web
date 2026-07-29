@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD033 -->
-# Barcode Attendance System (BAS)
+# Barcode Attendance System (
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D?style=flat&logo=vue.js&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?style=flat&logo=vite&logoColor=white)
