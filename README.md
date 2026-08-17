@@ -14,9 +14,15 @@ A modern, reliable, and easy-to-use attendance management platform that transfor
 
 ## 🎨 Design & Interface
 
-The UI is designed to be modern, clean, and academic-friendly. It features a dual-theme system, allowing users to switch between a light and a dark mode for optimal viewing comfort. The interface is fully responsive and built with a focus on clear visual hierarchy and high readability.
+The UI is built with a professional, modern aesthetic suitable for academic institutions. It features:
 
-### Light Mode
+- **Glassmorphism Design:** Premium frosted-surface aesthetics with depth and visual hierarchy
+- **Dual-Theme System:** Seamlessly switch between light and dark modes for optimal viewing comfort
+- **Responsive Layout:** Fully responsive design from mobile devices to large desktop displays
+- **Accessibility:** Built with semantic HTML and accessibility best practices
+- **Custom Design Tokens:** HSL-based CSS variables for easy skinning and brand customization
+
+### 🌞 Light Mode
 
 | Home                                                                 | Student Login                                                                          | Lecturer Login                                                                           |
 | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -26,7 +32,7 @@ The UI is designed to be modern, clean, and academic-friendly. It features a dua
 | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | <img src="docs/ui/light_mode/student_homepage.png" alt="Student Homepage" width="300"/> | <img src="docs/ui/light_mode/report_page.png" alt="Report Page" width="300"/> |
 
-### Dark Mode
+### 🌙 Dark Mode
 
 | Home                                                                | Student Login                                                                         | Lecturer Login                                                                          |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -133,10 +139,28 @@ The UI is designed to be modern, clean, and academic-friendly. It features a dua
 The application will be available at `http://localhost:5173` (or the URL shown by Vite).
 
 ### Build for Production
+
 ```bash
-npm run build
-npm run preview  # Preview the production build locally
+npm run build      # Create optimized production build
+npm run preview    # Preview the production build locally
 ```
+
+## 📋 npm Scripts
+
+Quick reference for commonly used commands:
+
+| Command | Purpose |
+| :------ | :------- |
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Create optimized production build |
+| `npm run preview` | Preview production build locally |
+| `npm run test` | Run unit tests in watch mode |
+| `npm run test:run` | Run unit tests once (CI mode) |
+| `npm run test:ui` | Open interactive test UI dashboard |
+| `npm run test:coverage` | Generate test coverage report |
+| `npm run lint` | Check code style with ESLint |
+| `npm run lint:fix` | Auto-fix ESLint issues |
+| `npm run format` | Format code with Prettier |
 
 ## 🧪 Testing
 
@@ -272,13 +296,46 @@ BAS-Web/
 
 ## 📚 Documentation
 
-| Document | Description |
-| -------- | ----------- |
-| [API Reference](docs/api.md) | Supabase API wrappers and data layer |
-| [Component Docs](docs/components.md) | Reusable component reference |
-| [Deployment Guide](docs/DEPLOYMENT.md) | How to deploy to production |
-| [Troubleshooting Guide](docs/TROUBLESHOOTING.md) | Common fixes for scanner and connection issues |
+Comprehensive guides for different aspects of the project:
 
-## 📄 License
+| Document | Purpose |
+| :-------- | :------- |
+| [**API Reference**](docs/api.md) | Supabase integration, data models, and API client methods |
+| [**Component Guide**](docs/components.md) | Reusable components, props, events, and usage examples |
+| [**Design System**](BAS/DESIGN_SYSTEM.md) | UI components, design tokens, theming, and design language |
+| [**Deployment Guide**](docs/DEPLOYMENT.md) | Production deployment steps and environment configuration |
+| [**Troubleshooting**](docs/TROUBLESHOOTING.md) | Common issues, scanner problems, connection debugging |
+| [**Environment Setup**](BAS/ENVIRONMENT_SETUP.md) | Detailed environment configuration instructions |
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Whether you're reporting bugs, suggesting features, or submitting code, please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
+
+- How to fork and submit pull requests
+- Code style and standards
+- Testing requirements
+- Setting up your development environment
+
+## 🐛 Support & Issues
+
+- **Found a bug?** Please [open an issue](https://github.com/Zakir176/BAS-Web/issues) with a detailed description
+- **Have a feature request?** We'd love to hear your ideas
+- **Need help?** Check our [Troubleshooting Guide](docs/TROUBLESHOOTING.md) or ask in an issue
+
+## � Useful Resources
+
+### Documentation
+- [Vue.js 3 Guide](https://vuejs.org/guide/introduction.html) — Official Vue documentation
+- [Vite Documentation](https://vitejs.dev/guide/) — Fast frontend build tool
+- [Tailwind CSS Docs](https://tailwindcss.com/docs) — Utility-first CSS framework
+- [Supabase Docs](https://supabase.io/docs) — Backend and authentication
+- [Pinia Guide](https://pinia.vuejs.org/introduction.html) — State management for Vue
+- [Playwright Guide](https://playwright.dev/docs/intro) — Browser testing framework
+
+### Related Repositories
+- **Native Mobile App:** [catv1 (MAUI/C#)](catv1/) — Companion mobile application
+- **Project Board:** Check the Issues tab for planned features and known issues
+
+## �📄 License
 
 This project is licensed under the [MIT License](LICENSE).
