@@ -8,13 +8,21 @@
 ![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-6E9F18?style=flat&logo=vitest&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat)
 
-A modern, reliable, and easy-to-use barcode-based attendance system designed for universities. This project is the frontend implementation, built with Vue.js and designed to provide a clean, professional, and user-friendly interface for both students and lecturers.
+> 🎓 **Digital Campus Infrastructure** — A high-density, professional barcode-based attendance system designed for universities. Built with Vue.js 3, Supabase, and modern web technologies to provide a seamless experience for students and lecturers.
+
+A modern, reliable, and easy-to-use attendance management platform that transforms how academic institutions track class participation. This frontend implementation delivers a clean, professional, and user-friendly interface with real-time scanning, intelligent roster management, and comprehensive attendance analytics.
 
 ## 🎨 Design & Interface
 
-The UI is designed to be modern, clean, and academic-friendly. It features a dual-theme system, allowing users to switch between a light and a dark mode for optimal viewing comfort. The interface is fully responsive and built with a focus on clear visual hierarchy and high readability.
+The UI is built with a professional, modern aesthetic suitable for academic institutions. It features:
 
-### Light Mode
+- **Glassmorphism Design:** Premium frosted-surface aesthetics with depth and visual hierarchy
+- **Dual-Theme System:** Seamlessly switch between light and dark modes for optimal viewing comfort
+- **Responsive Layout:** Fully responsive design from mobile devices to large desktop displays
+- **Accessibility:** Built with semantic HTML and accessibility best practices
+- **Custom Design Tokens:** HSL-based CSS variables for easy skinning and brand customization
+
+### 🌞 Light Mode
 
 | Home                                                                 | Student Login                                                                          | Lecturer Login                                                                           |
 | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -24,7 +32,7 @@ The UI is designed to be modern, clean, and academic-friendly. It features a dua
 | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | <img src="docs/ui/light_mode/student_homepage.png" alt="Student Homepage" width="300"/> | <img src="docs/ui/light_mode/report_page.png" alt="Report Page" width="300"/> |
 
-### Dark Mode
+### 🌙 Dark Mode
 
 | Home                                                                | Student Login                                                                         | Lecturer Login                                                                          |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -35,66 +43,77 @@ The UI is designed to be modern, clean, and academic-friendly. It features a dua
 | <img src="docs/ui/dark_mode/student_homepage.png" alt="Student Homepage" width="300"/> | <img src="docs/ui/dark_mode/report_page.png" alt="Report Page" width="300"/> |
 
 
-## ✨ Features
+## ✨ Key Features
 
-* **Dual-Theme UI:** Seamlessly switch between Light and Dark modes.
-* **Distinct User Portals:** Separate login and dashboard experiences for Students and Lecturers.
-* **Lecturer Dashboard:** A comprehensive view for lecturers to manage their courses, view student information, and track attendance in real-time.
-    * **Course and Session Management:** Create, update, and manage courses and attendance sessions.
-    * **Barcode Scanning:** Utilize the device's camera to scan student ID barcodes for quick and efficient attendance marking.
-    * **Real-time Roster:** View a live roster of students for each session, with instant updates as attendance is taken.
-    * **Manual Attendance:** Manually mark students as present or absent.
-    * **Reporting:** Generate and export attendance reports in Excel format.
-* **Student Dashboard:** A personalized dashboard for students to monitor their attendance and academic standing.
-    * **Attendance Tracking:** View overall attendance statistics and a detailed history of attended and missed sessions.
-    * **Attendance Heatmap:** Visualize attendance patterns throughout the semester with an intuitive heatmap.
-    * **Recent Activity:** See a timeline of recent attendance activity.
-* **Authentication:** Secure authentication for both lecturers and students using Supabase Auth.
-* **Modern Tech Stack:** Built with Vue.js 3, Vite, and modern CSS for a fast and reliable experience.
+### 👨‍🎓 For Students
+- **Attendance Dashboard:** Personal attendance overview with real-time statistics
+- **Session Tracking:** View attended and missed sessions with timestamps
+- **Attendance Heatmap:** Visualize your attendance patterns throughout the semester
+- **Activity Timeline:** Monitor recent attendance events at a glance
+
+### 👨‍🏫 For Lecturers
+- **Course Management:** Create and manage courses with multiple sessions
+- **Real-Time Barcode Scanning:** Use your device camera to scan student barcodes instantly
+- **Live Roster:** Interactive, searchable roster with immediate attendance updates
+- **Manual Attendance:** Mark students present/absent when scanning isn't available
+- **Attendance Reports:** Generate and export attendance data in Excel format
+- **Analytics Dashboard:** Visual KPIs for attendance trends and course health
+
+### 🎨 UI/UX Excellence
+- **Dual-Theme System:** Seamless toggle between Light and Dark modes
+- **Glassmorphism Design:** Premium UI aesthetics with frosted-surface effects
+- **Fully Responsive:** Optimized for desktop, tablet, and mobile devices
+- **Accessibility First:** Built with semantic HTML and WCAG standards
+- **Professional Aesthetics:** Clean, modern interface designed for academic environments
+
+## 🎯 Quick Links
+
+| Resource | Description |
+| :------- | :---------- |
+| [🚀 Getting Started](#-getting-started) | Set up the project locally in minutes |
+| [🧪 Testing Guide](#-testing) | Learn about unit tests and E2E testing |
+| [📚 Documentation](docs/) | API reference, components, deployment, and troubleshooting |
+| [🎨 Design System](BAS/DESIGN_SYSTEM.md) | UI components and design language |
+| [📝 Contributing](CONTRIBUTING.md) | Guidelines for contributing to the project |
 
 ## 🛠 Tech Stack
 
-*   **Framework:** [Vue.js 3](https://vuejs.org/)
-*   **Build Tool:** [Vite](https://vitejs.dev/)
-*   **Backend:** [Supabase](https://supabase.io/)
-*   **Routing:** [Vue Router](https://router.vuejs.org/)
-*   **State Management:** [Pinia](https://pinia.vuejs.org/)
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) & CSS with Variables for Theming
-*   **Form Validation:** [VeeValidate](https://vee-validate.logaretm.com/) & [Yup](https://github.com/jquense/yup)
-*   **Charts:** [Chart.js](https://www.chartjs.org/) via [vue-chartjs](https://vue-chartjs.org/)
-*   **Barcode Scanning:** [QuaggaJS 2](https://github.com/ericblade/quagga2)
-*   **Barcode Generation:** [JsBarcode](https://github.com/lindell/JsBarcode)
-*   **Excel Export:** [ExcelJS](https://github.com/exceljs/exceljs)
-*   **Linting:** [ESLint](https://eslint.org/)
-*   **Unit Testing:** [Vitest](https://vitest.dev/) & [Vue Test Utils](https://test-utils.vuejs.org/)
-*   **E2E Testing:** [Playwright](https://playwright.dev/)
+| Category | Technology |
+| :------- | :---------- |
+| **Framework** | [Vue.js 3](https://vuejs.org/) (Composition API) + [Vite](https://vitejs.dev/) |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) + Custom HSL tokens for theming |
+| **State Management** | [Pinia](https://pinia.vuejs.org/) |
+| **Routing** | [Vue Router](https://router.vuejs.org/) with protected routes |
+| **Backend & Auth** | [Supabase](https://supabase.io/) (PostgreSQL + Realtime) |
+| **Form Validation** | [VeeValidate](https://vee-validate.logaretm.com/) + [Yup](https://github.com/jquense/yup) |
+| **Scanning** | [QuaggaJS 2](https://github.com/ericblade/quagga2) + [JsBarcode](https://github.com/lindell/JsBarcode) |
+| **Data Export** | [ExcelJS](https://github.com/exceljs/exceljs) |
+| **Charts & Visualization** | [Chart.js](https://www.chartjs.org/) via [vue-chartjs](https://vue-chartjs.org/) |
+| **Testing** | [Vitest](https://vitest.dev/) + [Vue Test Utils](https://test-utils.vuejs.org/) (Unit) |
+| **E2E Testing** | [Playwright](https://playwright.dev/) |
+| **Code Quality** | [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) |
 
 ## 🚀 Getting Started
 
-To get the frontend running locally, follow these steps:
+### Prerequisites
+- **Node.js** `^20.19.0` or `>=22.12.0`
+- **npm** or **yarn** package manager
+- A [Supabase](https://supabase.io/) project with authentication enabled
 
-1. **Clone the repository:**
+### Installation
+
+1. **Clone and navigate to the repository:**
     ```bash
     git clone https://github.com/Zakir176/BAS-Web.git
-    cd BAS-Web
+    cd BAS-Web/BAS
     ```
 
-2. **Navigate to the project directory:**
-    The Vue.js project is located in the `BAS` sub-directory.
-    ```bash
-    cd BAS
-    ```
-
-3. **Install dependencies:**
+2. **Install dependencies:**
     ```bash
     npm install
     ```
 
-    > **Node version:** Requires Node `^20.19.0` or `>=22.12.0`.
-
-4. **Set up environment variables:**
-    Create a `.env` file in the `BAS` directory by copying the example file. Then, fill in the required Supabase URL and anonymous key.
-
+3. **Configure environment variables:**
     ```bash
     # macOS / Linux
     cp .env.example .env
@@ -106,107 +125,217 @@ To get the frontend running locally, follow these steps:
     Copy-Item .env.example .env
     ```
 
-    Open `.env` and set:
+    Then edit `.env` with your Supabase credentials:
     ```env
-    VITE_SUPABASE_URL=your_supabase_project_url
-    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    VITE_SUPABASE_URL=https://your-project.supabase.co
+    VITE_SUPABASE_ANON_KEY=your-anon-key
     ```
 
-5. **Run the development server:**
+4. **Start the development server:**
     ```bash
     npm run dev
     ```
 
-The application will be available at the local address provided by Vite (e.g., `http://localhost:5173`).
+The application will be available at `http://localhost:5173` (or the URL shown by Vite).
+
+### Build for Production
+
+```bash
+npm run build      # Create optimized production build
+npm run preview    # Preview the production build locally
+```
+
+## 📋 npm Scripts
+
+Quick reference for commonly used commands:
+
+| Command | Purpose |
+| :------ | :------- |
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Create optimized production build |
+| `npm run preview` | Preview production build locally |
+| `npm run test` | Run unit tests in watch mode |
+| `npm run test:run` | Run unit tests once (CI mode) |
+| `npm run test:ui` | Open interactive test UI dashboard |
+| `npm run test:coverage` | Generate test coverage report |
+| `npm run lint` | Check code style with ESLint |
+| `npm run lint:fix` | Auto-fix ESLint issues |
+| `npm run format` | Format code with Prettier |
 
 ## 🧪 Testing
 
-This project uses **Vitest** for unit/component tests and **Playwright** for end-to-end (E2E) integration tests.
+This project maintains high quality through comprehensive unit and end-to-end testing.
 
 ### Unit Tests (Vitest)
 
+Test individual components and business logic.
+
 ```bash
-# Run tests in watch mode
+# Run in watch mode (recommended for development)
 npm run test
 
-# Run tests once (CI mode)
+# Run once (CI mode)
 npm run test:run
 
-# Run with interactive UI
+# Interactive UI dashboard
 npm run test:ui
 
-# Run with coverage report
+# Generate coverage report
 npm run test:coverage
 ```
 
-Unit test files are co-located in `BAS/src/test/`.
+Test files are located in `BAS/src/test/` alongside their corresponding components.
 
 ### E2E Tests (Playwright)
+
+Test complete user workflows across the entire application.
 
 ```bash
 # Install Playwright browsers (first time only)
 npx playwright install
 
-# Run all E2E tests
+# Run all tests
 npx playwright test
 
+# Run tests in headed mode (watch browser)
+npx playwright test --headed
+
 # Run a specific test file
-npx playwright test tests/auth-redirect-integration.spec.ts
+npx playwright test tests/barcode-scanning.spec.ts
+
+# Run tests with debugging
+npx playwright test --debug
 ```
 
-E2E test files are located in `BAS/tests/`. Key test suites include:
+**Key Test Suites:**
+- `auth-redirect-integration.spec.ts` — Authentication flows and route protection
+- `improved-student-auth.spec.ts` — Student login/logout workflows
+- `improved-lecturer-auth.spec.ts` — Lecturer authentication
+- `barcode-scanning.spec.ts` — Scanner functionality and barcode detection
+- `student-signup-and-login.spec.ts` — Complete signup and login flow
 
-*   `auth-redirect-integration.spec.ts` — Auth flow and route guard integration
-*   `improved-student-auth.spec.ts` / `improved-lecturer-auth.spec.ts` — Login/logout flows
-*   `barcode-scanning.spec.ts` — Scanner functionality
+> **Requirements:** E2E tests need a running dev server and valid Supabase credentials. See [tests/global-setup.ts](BAS/tests/global-setup.ts) for configuration details.
 
-> **Note:** E2E tests require a running dev server and valid Supabase credentials in `.env`. See `tests/global-setup.ts` for setup details.
-
-## 📄 Project Structure
+## � Project Structure
 
 ```
 BAS-Web/
-├── BAS/                        # Vue.js application root
+├── BAS/                          # Vue.js Frontend Application
 │   ├── src/
-│   │   ├── assets/             # Global styles and static assets
-│   │   ├── components/         # Reusable Vue components
-│   │   ├── core/               # Core abstractions
-│   │   │   ├── api/            # Supabase API wrappers
-│   │   │   └── ui/             # Core UI primitives
-│   │   ├── features/           # Feature-based modules
-│   │   │   ├── auth/           # Authentication views & logic
-│   │   │   ├── home/           # Landing/home page
-│   │   │   ├── lecturer/       # Lecturer dashboard & components
-│   │   │   ├── scanner/        # Barcode scanner feature
-│   │   │   ├── student/        # Student dashboard & components
-│   │   │   └── legal/          # Terms, privacy, etc.
-│   │   ├── router/             # Vue Router config & navigation guards
-│   │   ├── services/           # Business logic / service layer
-│   │   ├── shared/             # Shared utilities and composables
-│   │   ├── stores/             # Pinia state stores
-│   │   ├── views/              # Page-level route components
-│   │   └── main.js             # App entry point
-│   └── tests/                  # Playwright E2E test suite
-│       ├── utils/              # Shared test helpers
-│       ├── global-setup.ts     # Test environment setup
-│       └── global-teardown.ts  # Test environment teardown
-└── docs/                       # Project documentation & UI screenshots
-    ├── ui/                     # UI screenshots (light & dark mode)
-    ├── api.md                  # API reference
-    ├── components.md           # Component documentation
-    ├── DEPLOYMENT.md           # Deployment guide
-    └── TROUBLESHOOTING.md      # Common issues & FAQ
+│   │   ├── App.vue              # Root Vue component
+│   │   ├── main.js              # Application entry point
+│   │   ├── assets/              # Global styles and static assets
+│   │   ├── components/          # Reusable UI components
+│   │   ├── core/                # Core application abstractions
+│   │   │   ├── api/             # Supabase API client wrappers
+│   │   │   └── ui/              # Core UI component library
+│   │   ├── features/            # Feature-based module directory
+│   │   │   ├── auth/            # Authentication views & composables
+│   │   │   ├── home/            # Landing page
+│   │   │   ├── lecturer/        # Lecturer dashboard & components
+│   │   │   ├── scanner/         # Barcode scanning feature
+│   │   │   ├── student/         # Student dashboard & views
+│   │   │   └── legal/           # Legal pages (terms, privacy)
+│   │   ├── router/              # Vue Router configuration & guards
+│   │   ├── services/            # Business logic layer
+│   │   ├── shared/              # Shared utilities and composables
+│   │   ├── stores/              # Pinia state management
+│   │   ├── views/               # Route-level page components
+│   │   └── test/                # Unit tests (co-located with src)
+│   ├── tests/                   # Playwright E2E test suite
+│   │   ├── *.spec.ts            # Test scenarios
+│   │   ├── utils/               # Test helpers and utilities
+│   │   ├── global-setup.ts      # Pre-test environment setup
+│   │   └── global-teardown.ts   # Post-test cleanup
+│   ├── migrations/              # Database migration scripts
+│   ├── public/                  # Static assets
+│   ├── index.html               # HTML entry point
+│   ├── vite.config.js           # Vite build configuration
+│   ├── playwright.config.ts     # Playwright test configuration
+│   ├── tailwind.config.js       # Tailwind CSS configuration
+│   ├── eslint.config.js         # ESLint rules
+│   ├── postcss.config.js        # PostCSS plugins
+│   ├── package.json             # Frontend dependencies
+│   ├── .env.example             # Environment variables template
+│   └── DESIGN_SYSTEM.md         # Component and design system docs
+│
+├── catv1/                       # .NET/C# Native Mobile App
+│   ├── catv1.csproj            # Project file
+│   ├── MauiProgram.cs          # MAUI app initialization
+│   ├── Services/               # Business logic services
+│   ├── Models/                 # Data models
+│   ├── ViewModels/            # MVVM view models
+│   ├── Views/                  # UI pages
+│   ├── Converters/            # Value converters
+│   ├── Resources/              # App resources (styles, images)
+│   └── Platforms/              # Platform-specific code
+│
+├── docs/                        # Project Documentation
+│   ├── api.md                  # API reference guide
+│   ├── components.md           # Component documentation
+│   ├── DEPLOYMENT.md           # Deployment instructions
+│   ├── TROUBLESHOOTING.md      # Common issues & solutions
+│   ├── ui/                     # UI screenshots
+│   │   ├── light_mode/         # Light theme screenshots
+│   │   └── dark_mode/          # Dark theme screenshots
+│   └── sample/                 # Sample data and examples
+│
+├── README.md                    # Main project documentation (you are here)
+├── CONTRIBUTING.md             # Contribution guidelines
+├── catv1.sln                   # Visual Studio solution file
+└── LICENSE                     # MIT License
 ```
+
+### Key Directories Explained
+
+- **`features/`** — Feature-based module structure for better organization and scalability
+- **`stores/`** — Centralized state management using Pinia
+- **`services/`** — API calls and business logic separated from components
+- **`shared/`** — Composables and utilities reused across features
+- **`tests/`** — E2E tests with global setup/teardown for consistent test environments
 
 ## 📚 Documentation
 
-| Document | Description |
-| -------- | ----------- |
-| [API Reference](docs/api.md) | Supabase API wrappers and data layer |
-| [Component Docs](docs/components.md) | Reusable component reference |
-| [Deployment Guide](docs/DEPLOYMENT.md) | How to deploy to production |
-| [Troubleshooting Guide](docs/TROUBLESHOOTING.md) | Common fixes for scanner and connection issues |
+Comprehensive guides for different aspects of the project:
 
-## 📄 License
+| Document | Purpose |
+| :-------- | :------- |
+| [**API Reference**](docs/api.md) | Supabase integration, data models, and API client methods |
+| [**Component Guide**](docs/components.md) | Reusable components, props, events, and usage examples |
+| [**Design System**](BAS/DESIGN_SYSTEM.md) | UI components, design tokens, theming, and design language |
+| [**Deployment Guide**](docs/DEPLOYMENT.md) | Production deployment steps and environment configuration |
+| [**Troubleshooting**](docs/TROUBLESHOOTING.md) | Common issues, scanner problems, connection debugging |
+| [**Environment Setup**](BAS/ENVIRONMENT_SETUP.md) | Detailed environment configuration instructions |
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Whether you're reporting bugs, suggesting features, or submitting code, please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
+
+- How to fork and submit pull requests
+- Code style and standards
+- Testing requirements
+- Setting up your development environment
+
+## 🐛 Support & Issues
+
+- **Found a bug?** Please [open an issue](https://github.com/Zakir176/BAS-Web/issues) with a detailed description
+- **Have a feature request?** We'd love to hear your ideas
+- **Need help?** Check our [Troubleshooting Guide](docs/TROUBLESHOOTING.md) or ask in an issue
+
+## � Useful Resources
+
+### Documentation
+- [Vue.js 3 Guide](https://vuejs.org/guide/introduction.html) — Official Vue documentation
+- [Vite Documentation](https://vitejs.dev/guide/) — Fast frontend build tool
+- [Tailwind CSS Docs](https://tailwindcss.com/docs) — Utility-first CSS framework
+- [Supabase Docs](https://supabase.io/docs) — Backend and authentication
+- [Pinia Guide](https://pinia.vuejs.org/introduction.html) — State management for Vue
+- [Playwright Guide](https://playwright.dev/docs/intro) — Browser testing framework
+
+### Related Repositories
+- **Native Mobile App:** [catv1 (MAUI/C#)](catv1/) — Companion mobile application
+- **Project Board:** Check the Issues tab for planned features and known issues
+
+## �📄 License
 
 This project is licensed under the [MIT License](LICENSE).

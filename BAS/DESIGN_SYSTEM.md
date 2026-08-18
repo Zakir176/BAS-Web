@@ -4,7 +4,7 @@ The **`catv1`** design system is a high-density, semantic token-based styling fr
 
 ---
 
-## 🏛️ Theme Core Logic
+## 🏛️ Theme Logic
 The system uses **HSL (Hue, Saturation, Lightness)** tokens to ensure perfect harmony across components. Accessibility and contrast are prioritized, with deep support for **Slate-Dark** (Primary Operating Mode) and **Slate-Light** (Administrative Mode).
 
 ### 🌑 Slate-Dark (Primary)
