@@ -174,7 +174,9 @@ public class LoginViewModel : BaseViewModel
         if (IsBusy) return;
 
         var email = EmailText?.Trim();
-        var password = PasswordText?.Trim();
+        // SEC-003: Do NOT trim the password — passwords with leading/trailing spaces
+        // are valid and trimming would silently break login for those users.
+        var password = PasswordText;
 
         if (string.IsNullOrWhiteSpace(email))
         {
@@ -309,27 +311,53 @@ public class LoginViewModel : BaseViewModel
                 var email = user.Email;
                 System.Diagnostics.Debug.WriteLine($"[AutoLogin] Active session found for {email}");
 
-                // Determine user role (student or lecturer)
-                string role = "student";
+                // Determine claimed role from JWT metadata
+                string claimedRole = "student";
                 if (user.UserMetadata != null && user.UserMetadata.ContainsKey("role"))
                 {
-                    role = user.UserMetadata["role"]?.ToString()?.ToLower() ?? "student";
+                    claimedRole = user.UserMetadata["role"]?.ToString()?.ToLower() ?? "student";
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[AutoLogin] User role: {role}");
+                System.Diagnostics.Debug.WriteLine($"[AutoLogin] Claimed role from JWT: {claimedRole}");
 
-                if (role == "lecturer")
+                // SEC-002: Verify the claimed role against the database — JWT metadata alone
+                // cannot be trusted since it can be manipulated client-side. We confirm a
+                // matching profile row exists before routing.
+                if (claimedRole == "lecturer")
                 {
+                    var lecturer = await _profileService.GetLecturerByIdAsync(user.Id ?? string.Empty);
+                    if (lecturer == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[AutoLogin] Lecturer profile not found in DB — aborting auto-login.");
+                        await _authService.SignOutAsync();
+                        await Shell.Current.DisplayAlertAsync("Session Error",
+                            "Your session could not be verified. Please log in again.", "OK");
+                        IsBusy = false;
+                        return;
+                    }
                     IsStudent = false;
                     UpdateUIState();
-                    System.Diagnostics.Debug.WriteLine($"[AutoLogin] Auto-login routing to lecturer dashboard...");
+                    System.Diagnostics.Debug.WriteLine("[AutoLogin] Lecturer profile verified — routing to lecturer dashboard.");
                     await Shell.Current.GoToAsync("//lecturer/lecturerDashboardTab/dashboard");
                 }
                 else
                 {
+                    var student = await _profileService.GetStudentByIdAsync(user.Id ?? string.Empty);
+                    if (student == null && !string.IsNullOrEmpty(email))
+                        student = await _profileService.GetStudentByEmailAsync(email);
+
+                    if (student == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[AutoLogin] Student profile not found in DB — aborting auto-login.");
+                        await _authService.SignOutAsync();
+                        await Shell.Current.DisplayAlertAsync("Session Error",
+                            "Your session could not be verified. Please log in again.", "OK");
+                        IsBusy = false;
+                        return;
+                    }
                     IsStudent = true;
                     UpdateUIState();
-                    System.Diagnostics.Debug.WriteLine($"[AutoLogin] Auto-login routing to student dashboard...");
+                    System.Diagnostics.Debug.WriteLine("[AutoLogin] Student profile verified — routing to student dashboard.");
                     await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
                 }
             }
