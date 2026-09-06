@@ -334,14 +334,44 @@ public class ScanViewModel : BaseViewModel
         }
     }
 
-    private void OnUndoScan()
+    private async void OnUndoScan()
     {
-        if (LastScannedStudent != null)
+        if (LastScannedStudent == null) return;
+
+        var studentToUndo = LastScannedStudent;
+
+        // Revert in-memory state immediately so the UI updates
+        studentToUndo.IsPresent = false;
+        studentToUndo.ScanTime = null;
+        ShowFeedback = false;
+        RefreshStats();
+
+        // SEC-006: The mid-session DB write in WriteAttendanceLogAsync already persisted
+        // a "Present" row. We must delete it here so the undo is reflected in the database.
+        // Without this, the row survives even though the UI shows the student as absent.
+        if (_writtenStudentIds.Contains(studentToUndo.Id))
         {
-            LastScannedStudent.IsPresent = false;
-            LastScannedStudent.ScanTime = null;
-            ShowFeedback = false;
-            RefreshStats();
+            _ = DeleteAttendanceLogAsync(studentToUndo);
+        }
+    }
+
+    /// <summary>Deletes the mid-session attendance_logs row for a student when their scan is undone (SEC-006).</summary>
+    private async Task DeleteAttendanceLogAsync(Student student)
+    {
+        try
+        {
+            await _supabase.From<ActivityLog>()
+                .Where(l => l.StudentId == student.Id && l.SectionId == SelectedSection!.Id)
+                .Delete();
+
+            // Remove from the written set so OnFinishSession will write the correct final status
+            _writtenStudentIds.Remove(student.Id);
+            System.Diagnostics.Debug.WriteLine($"[ScanPage] Undo: deleted attendance log for {student.FullName}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ScanPage] Undo: failed to delete attendance log: {ex.Message}");
+            // Non-fatal: OnFinishSession will still mark the student Absent since IsPresent = false
         }
     }
 
@@ -381,8 +411,12 @@ public class ScanViewModel : BaseViewModel
 
             System.Diagnostics.Debug.WriteLine($"[ScanPage] Barcode read: '{barcodeValue}'");
 
-            // Match by StudentNumber or internal Id (barcodes encode StudentNumber)
+            // SEC-005: Match by the per-student UUID stored in qr_code, NOT the plain
+            // StudentNumber which is guessable and visible in the UI. Existing students
+            // registered before this fix will have their StudentNumber as QrCode —
+            // we keep that as a fallback until they re-register or a migration is run.
             var student = Roster.FirstOrDefault(s =>
+                (!string.IsNullOrEmpty(s.QrCode) && s.QrCode.Trim() == barcodeValue) ||
                 s.StudentNumber?.Trim() == barcodeValue ||
                 s.Id?.Trim() == barcodeValue);
 
@@ -400,7 +434,7 @@ public class ScanViewModel : BaseViewModel
                 try
                 {
                     var dbStudentResponse = await _supabase.From<Student>()
-                        .Where(s => s.StudentNumber == barcodeValue || s.Id == barcodeValue)
+                        .Where(s => s.QrCode == barcodeValue || s.StudentNumber == barcodeValue || s.Id == barcodeValue)
                         .Get();
 
                     var dbStudent = dbStudentResponse.Models.FirstOrDefault();
