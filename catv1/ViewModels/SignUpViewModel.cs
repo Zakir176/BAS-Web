@@ -178,6 +178,21 @@ public class SignUpViewModel : BaseViewModel
             return;
         }
 
+        // SEC-004: Enforce minimum password strength before sending to the server.
+        // Supabase minimum is 6 chars; we require 8 + at least one digit + one letter.
+        if (Password.Length < 8)
+        {
+            await Shell.Current.DisplayAlertAsync("Weak Password",
+                "Password must be at least 8 characters long.", "OK");
+            return;
+        }
+        if (!Password.Any(char.IsLetter) || !Password.Any(char.IsDigit))
+        {
+            await Shell.Current.DisplayAlertAsync("Weak Password",
+                "Password must contain at least one letter and one number.", "OK");
+            return;
+        }
+
         try
         {
             IsBusy = true;
@@ -210,12 +225,15 @@ public class SignUpViewModel : BaseViewModel
                 {
                     var student = new Student
                     {
-                        Id = session.User.Id, // Ensure we use the Auth ID if possible, or let DB generate
+                        Id = session.User.Id,
                         StudentNumber = Id,
                         FullName = FullName,
                         DepartmentId = SelectedDepartment.Id,
                         Email = Email,
-                        QrCode = Id,
+                        // SEC-005: QR code is a random UUID, NOT the student number.
+                        // Sequential numbers (e.g. 24000001) are trivially guessable and
+                        // can be screen-captured, making them forgeable attendance tokens.
+                        QrCode = Guid.NewGuid().ToString(),
                         Phone = "",
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
