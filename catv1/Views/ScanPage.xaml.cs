@@ -79,9 +79,9 @@ public partial class ScanPage : ContentPage
         {
             while (!ct.IsCancellationRequested)
             {
-                await scanLine.TranslateTo(0, 80, 1500, Easing.SinInOut);
+                await scanLine.TranslateToAsync(0, 80, 1500, Easing.SinInOut);
                 if (ct.IsCancellationRequested) break;
-                await scanLine.TranslateTo(0, -80, 1500, Easing.SinInOut);
+                await scanLine.TranslateToAsync(0, -80, 1500, Easing.SinInOut);
             }
         }
         catch (TaskCanceledException) { }
