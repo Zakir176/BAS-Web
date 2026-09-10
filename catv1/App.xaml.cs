@@ -54,6 +54,15 @@ public partial class App : Application
     {
         base.OnStart();
         System.Diagnostics.Debug.WriteLine("CAT_LOG: App OnStart");
+
+        // DES-002: Restore the user's saved theme preference
+        var savedTheme = Preferences.Get("AppTheme", "System");
+        UserAppTheme = savedTheme switch
+        {
+            "Light" => AppTheme.Light,
+            "Dark"  => AppTheme.Dark,
+            _       => AppTheme.Unspecified
+        };
     }
 
     /*protected override Window CreateWindow(IActivationState? activationState)
