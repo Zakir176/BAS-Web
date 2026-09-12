@@ -14,7 +14,9 @@ public class MauiSessionHandler : IGotrueSessionPersistence<Session>
         try
         {
             var json = JsonConvert.SerializeObject(session);
-            SecureStorage.Default.SetAsync(SessionKey, json).Wait();
+            // SEC-007: Use GetAwaiter().GetResult() instead of .Wait() to avoid
+            // AggregateException wrapping and reduce deadlock risk on the MAUI main thread.
+            SecureStorage.Default.SetAsync(SessionKey, json).GetAwaiter().GetResult();
             System.Diagnostics.Debug.WriteLine("[MauiSessionHandler] Session successfully saved.");
         }
         catch (Exception ex)
