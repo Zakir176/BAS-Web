@@ -17,6 +17,10 @@ public class LoginViewModel : BaseViewModel
     private Color _lecturerBtnBgColor = Colors.Transparent;
     private Color _lecturerBtnTextColor = Colors.Transparent;
 
+    // SEC-009: Brute-force throttling — exponential backoff after 3 failures
+    private int _failedLoginAttempts;
+    private DateTime _lockoutUntil = DateTime.MinValue;
+
     private const string KeyRememberMe = "RememberMe";
     private const string KeySavedUserId = "SavedUserId";
 
@@ -173,6 +177,17 @@ public class LoginViewModel : BaseViewModel
     {
         if (IsBusy) return;
 
+        // SEC-009: Enforce lockout before doing anything else
+        if (DateTime.Now < _lockoutUntil)
+        {
+            var secondsLeft = (int)Math.Ceiling((_lockoutUntil - DateTime.Now).TotalSeconds);
+            await Shell.Current.DisplayAlertAsync(
+                "Too Many Attempts",
+                $"Too many failed login attempts. Please wait {secondsLeft} second{(secondsLeft == 1 ? "" : "s")} before trying again.",
+                "OK");
+            return;
+        }
+
         var email = EmailText?.Trim();
         // SEC-003: Do NOT trim the password — passwords with leading/trailing spaces
         // are valid and trimming would silently break login for those users.
@@ -244,6 +259,10 @@ public class LoginViewModel : BaseViewModel
                     Preferences.Remove(KeySavedUserId);
                 }
 
+                // SEC-009: Successful login — reset the failure counter
+                _failedLoginAttempts = 0;
+                _lockoutUntil = DateTime.MinValue;
+
                 if (IsStudent)
                 {
                     await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
@@ -256,7 +275,22 @@ public class LoginViewModel : BaseViewModel
             }
             else
             {
-                await Shell.Current.DisplayAlertAsync("Login Error", "Invalid email or password. Please try again.", "OK");
+                // SEC-009: Count this as a failure and apply exponential backoff after 3 tries
+                _failedLoginAttempts++;
+                if (_failedLoginAttempts >= 3)
+                {
+                    // 1s, 2s, 4s, 8s ... capped at 30s
+                    var delaySeconds = Math.Min(30, (int)Math.Pow(2, _failedLoginAttempts - 3));
+                    _lockoutUntil = DateTime.Now.AddSeconds(delaySeconds);
+                    await Shell.Current.DisplayAlertAsync(
+                        "Login Error",
+                        $"Invalid email or password. Too many attempts — please wait {delaySeconds} second{(delaySeconds == 1 ? "" : "s")} before trying again.",
+                        "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlertAsync("Login Error", "Invalid email or password. Please try again.", "OK");
+                }
             }
         }
         catch (Exception ex)
@@ -264,8 +298,17 @@ public class LoginViewModel : BaseViewModel
             System.Diagnostics.Debug.WriteLine($"Login Error: {ex}");
             var message = ex.Message ?? "Invalid credentials or connection error.";
             if (message.Contains("Invalid login credentials"))
+            {
+                // SEC-009: Also count auth exceptions as failures
+                _failedLoginAttempts++;
+                if (_failedLoginAttempts >= 3)
+                {
+                    var delaySeconds = Math.Min(30, (int)Math.Pow(2, _failedLoginAttempts - 3));
+                    _lockoutUntil = DateTime.Now.AddSeconds(delaySeconds);
+                }
                 message = "Invalid email or password. Please try again.";
-            
+            }
+
             await Shell.Current.DisplayAlertAsync("Login Error", message, "OK");
         }
         finally
