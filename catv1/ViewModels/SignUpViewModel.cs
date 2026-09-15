@@ -314,8 +314,14 @@ public class SignUpViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
+            // SEC-008: Do NOT silently proceed on failure — a network error could allow
+            // duplicate registrations to slip through. Surface the error and block signup.
             System.Diagnostics.Debug.WriteLine($"Pre-signup check failed: {ex.Message}");
-            return false; // Proceed anyway if check fails, Auth will catch it
+            await Shell.Current.DisplayAlertAsync(
+                "Connection Error",
+                "Could not verify your details — please check your connection and try again.",
+                "OK");
+            return true; // Treat a failed check as a block to prevent duplicate records
         }
     }
 
