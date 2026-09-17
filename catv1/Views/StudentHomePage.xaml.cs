@@ -29,12 +29,8 @@ public partial class StudentHomePage : ContentPage
         }
     }
 
-    private async void OnShowIdClicked(object sender, EventArgs e)
-    {
-        // For now, just show a pop-up. 
-        // Later, this could navigate to a full-screen QR code page.
-        await DisplayAlertAsync("Digital ID", "Showing ID for Student #210984...", "Close");
-    }
+    // DES-001: Removed orphaned OnShowIdClicked handler that showed hardcoded ID #210984.
+    // ShowIdCardCommand in the ViewModel handles the correct navigation.
 
     private async void OnHistoryClicked(object sender, EventArgs e)
     {
