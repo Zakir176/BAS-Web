@@ -48,6 +48,16 @@ public class CourseService : ICourseService
         return response.Models.FirstOrDefault();
     }
 
+    public async Task<List<Section>> GetSectionsByIdsAsync(List<string> sectionIds)
+    {
+        // DES-004: Batch fetch — avoids N individual GetSectionByIdAsync calls
+        if (sectionIds == null || sectionIds.Count == 0) return [];
+        var response = await _supabase.From<Section>()
+            .Filter("id", Supabase.Postgrest.Constants.Operator.In, sectionIds.Cast<object>().ToList())
+            .Get();
+        return response.Models;
+    }
+
     public async Task InsertSectionAsync(Section section)
     {
         await _supabase.From<Section>().Insert(section);
@@ -73,5 +83,15 @@ public class CourseService : ICourseService
     {
         var response = await _supabase.From<Course>().Where(c => c.Id == courseId).Get();
         return response.Models.FirstOrDefault();
+    }
+
+    public async Task<List<Course>> GetCoursesByIdsAsync(List<string> courseIds)
+    {
+        // DES-004: Batch fetch — avoids N individual GetCourseByIdAsync calls
+        if (courseIds == null || courseIds.Count == 0) return [];
+        var response = await _supabase.From<Course>()
+            .Filter("id", Supabase.Postgrest.Constants.Operator.In, courseIds.Cast<object>().ToList())
+            .Get();
+        return response.Models;
     }
 }
