@@ -348,6 +348,20 @@ public class LoginViewModel : BaseViewModel
                             return;
                         }
                     }
+                    else
+                    {
+                        // SEC-012: Biometric hardware unavailable (sensor disabled, no enrollment, emulator, etc.).
+                        // Silently proceeding would allow bypassing biometric auth by disabling the sensor.
+                        // Require password re-entry instead.
+                        System.Diagnostics.Debug.WriteLine("[AutoLogin] Biometrics unavailable — requiring password login.");
+                        await _authService.SignOutAsync();
+                        await Shell.Current.DisplayAlertAsync(
+                            "Authentication Required",
+                            "Biometric login is enabled but the sensor is unavailable on this device. Please sign in with your password.",
+                            "OK");
+                        IsBusy = false;
+                        return;
+                    }
                 }
 
                 var user = _authService.CurrentUser;
