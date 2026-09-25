@@ -42,7 +42,9 @@ public class MauiSessionHandler : IGotrueSessionPersistence<Session>
     {
         try
         {
-            var json = SecureStorage.Default.GetAsync(SessionKey).Result;
+            // SEC-H1: Use GetAwaiter().GetResult() — consistent with SaveSession (SEC-007) and avoids
+            // AggregateException wrapping + deadlock risk on Android's synchronization context.
+            var json = SecureStorage.Default.GetAsync(SessionKey).GetAwaiter().GetResult();
             if (string.IsNullOrEmpty(json))
             {
                 System.Diagnostics.Debug.WriteLine("[MauiSessionHandler] No session found in SecureStorage.");
