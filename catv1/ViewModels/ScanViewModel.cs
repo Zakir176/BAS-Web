@@ -384,8 +384,16 @@ public class ScanViewModel : BaseViewModel
     {
         try
         {
+            // SEC-M3: Scope the delete to the current session's date so that undoing a scan
+            // in a repeat/makeup class does not destroy historical rows from prior sessions
+            // for the same student-section combination.
+            var sessionStart = SelectedDate.Date.ToString("yyyy-MM-dd");
+            var sessionEnd   = SelectedDate.Date.AddDays(1).ToString("yyyy-MM-dd");
             await _supabase.From<ActivityLog>()
-                .Where(l => l.StudentId == student.Id && l.SectionId == SelectedSection!.Id)
+                .Filter("student_id",   Operator.Equals,             student.Id)
+                .Filter("section_id",   Operator.Equals,             SelectedSection!.Id)
+                .Filter("session_date", Operator.GreaterThanOrEqual,  sessionStart)
+                .Filter("session_date", Operator.LessThan,            sessionEnd)
                 .Delete();
 
             // Remove from the written set so OnFinishSession will write the correct final status
