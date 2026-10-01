@@ -17,12 +17,16 @@ public class LoginViewModel : BaseViewModel
     private Color _lecturerBtnBgColor = Colors.Transparent;
     private Color _lecturerBtnTextColor = Colors.Transparent;
 
-    // SEC-009: Brute-force throttling — exponential backoff after 3 failures
+    // SEC-009: Brute-force throttling — exponential backoff after 3 failures.
+    // SEC-M2: State is persisted to Preferences so the lockout survives navigating away
+    // and back (LoginViewModel is Transient, so each navigation creates a fresh instance).
     private int _failedLoginAttempts;
     private DateTime _lockoutUntil = DateTime.MinValue;
 
     private const string KeyRememberMe = "RememberMe";
     private const string KeySavedUserId = "SavedUserId";
+    private const string KeyFailedAttempts = "FailedLoginAttempts";
+    private const string KeyLockoutUntil = "LockoutUntilTicks";
 
     private readonly IAuthService _authService;
     private readonly IProfileService _profileService;
@@ -51,6 +55,11 @@ public class LoginViewModel : BaseViewModel
         TogglePasswordCommand = new Command(OnTogglePasswordClicked);
         ForgotPasswordCommand = new Command(OnForgotPasswordClicked);
         RememberMeCommand = new Command(OnRememberMeClicked);
+
+        // SEC-M2: Restore persisted lockout state so brute-force limits survive navigation.
+        _failedLoginAttempts = Preferences.Get(KeyFailedAttempts, 0);
+        var lockoutTicks = Preferences.Get(KeyLockoutUntil, DateTime.MinValue.Ticks);
+        _lockoutUntil = new DateTime(lockoutTicks, DateTimeKind.Local);
 
         UpdateUIState();
     }
@@ -259,9 +268,11 @@ public class LoginViewModel : BaseViewModel
                     Preferences.Remove(KeySavedUserId);
                 }
 
-                // SEC-009: Successful login — reset the failure counter
+                // SEC-009: Successful login — reset the failure counter and clear persisted lockout.
                 _failedLoginAttempts = 0;
                 _lockoutUntil = DateTime.MinValue;
+                Preferences.Remove(KeyFailedAttempts);
+                Preferences.Remove(KeyLockoutUntil);
 
                 if (IsStudent)
                 {
@@ -275,13 +286,16 @@ public class LoginViewModel : BaseViewModel
             }
             else
             {
-                // SEC-009: Count this as a failure and apply exponential backoff after 3 tries
+                // SEC-009: Count this as a failure and apply exponential backoff after 3 tries.
+                // SEC-M2: Persist updated state immediately so the lockout survives re-navigation.
                 _failedLoginAttempts++;
+                Preferences.Set(KeyFailedAttempts, _failedLoginAttempts);
                 if (_failedLoginAttempts >= 3)
                 {
                     // 1s, 2s, 4s, 8s ... capped at 30s
                     var delaySeconds = Math.Min(30, (int)Math.Pow(2, _failedLoginAttempts - 3));
                     _lockoutUntil = DateTime.Now.AddSeconds(delaySeconds);
+                    Preferences.Set(KeyLockoutUntil, _lockoutUntil.Ticks);
                     await Shell.Current.DisplayAlertAsync(
                         "Login Error",
                         $"Invalid email or password. Too many attempts — please wait {delaySeconds} second{(delaySeconds == 1 ? "" : "s")} before trying again.",
@@ -299,12 +313,15 @@ public class LoginViewModel : BaseViewModel
             var message = ex.Message ?? "Invalid credentials or connection error.";
             if (message.Contains("Invalid login credentials"))
             {
-                // SEC-009: Also count auth exceptions as failures
+                // SEC-009: Also count auth exceptions as failures.
+                // SEC-M2: Persist updated state immediately.
                 _failedLoginAttempts++;
+                Preferences.Set(KeyFailedAttempts, _failedLoginAttempts);
                 if (_failedLoginAttempts >= 3)
                 {
                     var delaySeconds = Math.Min(30, (int)Math.Pow(2, _failedLoginAttempts - 3));
                     _lockoutUntil = DateTime.Now.AddSeconds(delaySeconds);
+                    Preferences.Set(KeyLockoutUntil, _lockoutUntil.Ticks);
                 }
                 message = "Invalid email or password. Please try again.";
             }

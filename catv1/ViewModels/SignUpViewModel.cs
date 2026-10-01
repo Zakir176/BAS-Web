@@ -280,18 +280,21 @@ public class SignUpViewModel : BaseViewModel
     {
         try
         {
-            // Check both tables for email (since email must be unique across app)
+            // Check both tables for email (email must be unique across app).
+            // SEC-H2: Use a single generic message regardless of which table matched — revealing
+            // whether the email belongs to a lecturer or student is a user-enumeration oracle for
+            // unauthenticated callers.
             var lecturerWithEmail = await _profileService.GetLecturerByEmailAsync(email);
             if (lecturerWithEmail != null)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "This email is already registered as a lecturer.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "This email is already registered. Please log in instead.", "OK");
                 return true;
             }
 
             var studentWithEmail = await _profileService.GetStudentByEmailAsync(email);
             if (studentWithEmail != null)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "This email is already registered as a student.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "This email is already registered. Please log in instead.", "OK");
                 return true;
             }
 
