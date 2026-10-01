@@ -66,7 +66,7 @@ public static class MauiProgram
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<CourseListViewModel>();
         builder.Services.AddTransient<NotificationsViewModel>();
-        builder.Services.AddTransient<ScanViewModel>();
+        builder.Services.AddSingleton<ScanViewModel>(); // Singleton so session persists across navigation
 
         // Views
         builder.Services.AddTransient<Views.LoginPage>();
@@ -79,7 +79,7 @@ public static class MauiProgram
         builder.Services.AddTransient<Views.CourseListPage>();
         builder.Services.AddTransient<Views.NotificationsPage>();
         builder.Services.AddTransient<Views.BarcodePage>();
-        builder.Services.AddTransient<Views.ScanPage>();
+        builder.Services.AddSingleton<Views.ScanPage>(); // Singleton to retain camera surface + session state
 
         // Shell
         builder.Services.AddSingleton<AppShell>();

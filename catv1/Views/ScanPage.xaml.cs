@@ -5,6 +5,9 @@ namespace catv1.Views;
 
 public partial class ScanPage : ContentPage
 {
+    private CancellationTokenSource? _scanLineCts;
+    private bool _permissionGranted;
+
     public ScanPage(ScanViewModel viewModel)
     {
         InitializeComponent();
@@ -21,44 +24,67 @@ public partial class ScanPage : ContentPage
     {
         base.OnAppearing();
 
-        // Request camera permission at runtime (required on Android 6+)
-        var status = await Permissions.RequestAsync<Permissions.Camera>();
-        if (status != PermissionStatus.Granted)
+        // Cancel any previous animation loop
+        _scanLineCts?.Cancel();
+        _scanLineCts = new CancellationTokenSource();
+
+        // Delay permission request + camera start so the Android activity window
+        // is fully focused and the permission dialog will actually be shown.
+        // Without this delay, RequestAsync silently returns Denied on most devices.
+        await Task.Delay(350);
+
+        // Guard: page might have disappeared during the delay (e.g. rapid back press)
+        if (!IsVisible) return;
+
+        if (!_permissionGranted)
         {
-            await DisplayAlertAsync("Camera Permission",
-                "Camera access is required to scan student IDs. Please grant the permission in Settings.",
-                "OK");
-            return;
+            var status = await Permissions.RequestAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
+            {
+                await DisplayAlertAsync(
+                    "Camera Permission",
+                    "Camera access is required to scan student IDs. Please enable it in your device Settings.",
+                    "OK");
+                return;
+            }
+            _permissionGranted = true;
         }
 
-        // Start the camera preview whenever the page is visible.
-        // The VM's OnBarcodeDetected ignores results when no session is active,
-        // so enabling the preview here is safe and prevents the black-frame issue
-        // that occurred when IsDetecting was bound to IsSessionActive via XAML.
+        // Brief additional pause so ZXing's native camera surface is ready to accept
+        // IsDetecting = true. Without this the preview stays black on many Android devices.
+        await Task.Delay(150);
+        if (!IsVisible) return;
+
         cameraBarcodeReaderView.IsDetecting = true;
 
-        // Animate the scan-line: bounce between -80 and +80 pixels (top → bottom of frame)
-        RunScanLineAnimation();
+        // Start scan-line animation (tied to the current appearance cycle)
+        _ = RunScanLineAnimationAsync(_scanLineCts.Token);
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
 
-        // Pause the camera when leaving the page to release the hardware resource
-        cameraBarcodeReaderView.IsDetecting = false;
-
-        // Stop scan-line animation
+        // Stop animation loop cleanly
+        _scanLineCts?.Cancel();
         scanLine.CancelAnimations();
+
+        // Release the camera hardware
+        cameraBarcodeReaderView.IsDetecting = false;
     }
 
-    private async void RunScanLineAnimation()
+    private async Task RunScanLineAnimationAsync(CancellationToken ct)
     {
-        while (IsVisible)
+        try
         {
-            await scanLine.TranslateTo(0, 80, 1500, Easing.SinInOut);
-            await scanLine.TranslateTo(0, -80, 1500, Easing.SinInOut);
+            while (!ct.IsCancellationRequested)
+            {
+                await scanLine.TranslateTo(0, 80, 1500, Easing.SinInOut);
+                if (ct.IsCancellationRequested) break;
+                await scanLine.TranslateTo(0, -80, 1500, Easing.SinInOut);
+            }
         }
+        catch (TaskCanceledException) { }
     }
 
     private void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
