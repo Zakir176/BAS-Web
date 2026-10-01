@@ -17,6 +17,10 @@ public class LoginViewModel : BaseViewModel
     private Color _lecturerBtnBgColor = Colors.Transparent;
     private Color _lecturerBtnTextColor = Colors.Transparent;
 
+    // SEC-009: Brute-force throttling — exponential backoff after 3 failures
+    private int _failedLoginAttempts;
+    private DateTime _lockoutUntil = DateTime.MinValue;
+
     private const string KeyRememberMe = "RememberMe";
     private const string KeySavedUserId = "SavedUserId";
 
@@ -173,8 +177,21 @@ public class LoginViewModel : BaseViewModel
     {
         if (IsBusy) return;
 
+        // SEC-009: Enforce lockout before doing anything else
+        if (DateTime.Now < _lockoutUntil)
+        {
+            var secondsLeft = (int)Math.Ceiling((_lockoutUntil - DateTime.Now).TotalSeconds);
+            await Shell.Current.DisplayAlertAsync(
+                "Too Many Attempts",
+                $"Too many failed login attempts. Please wait {secondsLeft} second{(secondsLeft == 1 ? "" : "s")} before trying again.",
+                "OK");
+            return;
+        }
+
         var email = EmailText?.Trim();
-        var password = PasswordText?.Trim();
+        // SEC-003: Do NOT trim the password — passwords with leading/trailing spaces
+        // are valid and trimming would silently break login for those users.
+        var password = PasswordText;
 
         if (string.IsNullOrWhiteSpace(email))
         {
@@ -242,6 +259,10 @@ public class LoginViewModel : BaseViewModel
                     Preferences.Remove(KeySavedUserId);
                 }
 
+                // SEC-009: Successful login — reset the failure counter
+                _failedLoginAttempts = 0;
+                _lockoutUntil = DateTime.MinValue;
+
                 if (IsStudent)
                 {
                     await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
@@ -254,7 +275,22 @@ public class LoginViewModel : BaseViewModel
             }
             else
             {
-                await Shell.Current.DisplayAlertAsync("Login Error", "Invalid email or password. Please try again.", "OK");
+                // SEC-009: Count this as a failure and apply exponential backoff after 3 tries
+                _failedLoginAttempts++;
+                if (_failedLoginAttempts >= 3)
+                {
+                    // 1s, 2s, 4s, 8s ... capped at 30s
+                    var delaySeconds = Math.Min(30, (int)Math.Pow(2, _failedLoginAttempts - 3));
+                    _lockoutUntil = DateTime.Now.AddSeconds(delaySeconds);
+                    await Shell.Current.DisplayAlertAsync(
+                        "Login Error",
+                        $"Invalid email or password. Too many attempts — please wait {delaySeconds} second{(delaySeconds == 1 ? "" : "s")} before trying again.",
+                        "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlertAsync("Login Error", "Invalid email or password. Please try again.", "OK");
+                }
             }
         }
         catch (Exception ex)
@@ -262,8 +298,17 @@ public class LoginViewModel : BaseViewModel
             System.Diagnostics.Debug.WriteLine($"Login Error: {ex}");
             var message = ex.Message ?? "Invalid credentials or connection error.";
             if (message.Contains("Invalid login credentials"))
+            {
+                // SEC-009: Also count auth exceptions as failures
+                _failedLoginAttempts++;
+                if (_failedLoginAttempts >= 3)
+                {
+                    var delaySeconds = Math.Min(30, (int)Math.Pow(2, _failedLoginAttempts - 3));
+                    _lockoutUntil = DateTime.Now.AddSeconds(delaySeconds);
+                }
                 message = "Invalid email or password. Please try again.";
-            
+            }
+
             await Shell.Current.DisplayAlertAsync("Login Error", message, "OK");
         }
         finally
@@ -309,27 +354,53 @@ public class LoginViewModel : BaseViewModel
                 var email = user.Email;
                 System.Diagnostics.Debug.WriteLine($"[AutoLogin] Active session found for {email}");
 
-                // Determine user role (student or lecturer)
-                string role = "student";
+                // Determine claimed role from JWT metadata
+                string claimedRole = "student";
                 if (user.UserMetadata != null && user.UserMetadata.ContainsKey("role"))
                 {
-                    role = user.UserMetadata["role"]?.ToString()?.ToLower() ?? "student";
+                    claimedRole = user.UserMetadata["role"]?.ToString()?.ToLower() ?? "student";
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[AutoLogin] User role: {role}");
+                System.Diagnostics.Debug.WriteLine($"[AutoLogin] Claimed role from JWT: {claimedRole}");
 
-                if (role == "lecturer")
+                // SEC-002: Verify the claimed role against the database — JWT metadata alone
+                // cannot be trusted since it can be manipulated client-side. We confirm a
+                // matching profile row exists before routing.
+                if (claimedRole == "lecturer")
                 {
+                    var lecturer = await _profileService.GetLecturerByIdAsync(user.Id ?? string.Empty);
+                    if (lecturer == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[AutoLogin] Lecturer profile not found in DB — aborting auto-login.");
+                        await _authService.SignOutAsync();
+                        await Shell.Current.DisplayAlertAsync("Session Error",
+                            "Your session could not be verified. Please log in again.", "OK");
+                        IsBusy = false;
+                        return;
+                    }
                     IsStudent = false;
                     UpdateUIState();
-                    System.Diagnostics.Debug.WriteLine($"[AutoLogin] Auto-login routing to lecturer dashboard...");
+                    System.Diagnostics.Debug.WriteLine("[AutoLogin] Lecturer profile verified — routing to lecturer dashboard.");
                     await Shell.Current.GoToAsync("//lecturer/lecturerDashboardTab/dashboard");
                 }
                 else
                 {
+                    var student = await _profileService.GetStudentByIdAsync(user.Id ?? string.Empty);
+                    if (student == null && !string.IsNullOrEmpty(email))
+                        student = await _profileService.GetStudentByEmailAsync(email);
+
+                    if (student == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[AutoLogin] Student profile not found in DB — aborting auto-login.");
+                        await _authService.SignOutAsync();
+                        await Shell.Current.DisplayAlertAsync("Session Error",
+                            "Your session could not be verified. Please log in again.", "OK");
+                        IsBusy = false;
+                        return;
+                    }
                     IsStudent = true;
                     UpdateUIState();
-                    System.Diagnostics.Debug.WriteLine($"[AutoLogin] Auto-login routing to student dashboard...");
+                    System.Diagnostics.Debug.WriteLine("[AutoLogin] Student profile verified — routing to student dashboard.");
                     await Shell.Current.GoToAsync("//student/studentDashboardTab/home");
                 }
             }

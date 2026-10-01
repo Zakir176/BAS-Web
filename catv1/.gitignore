@@ -3,6 +3,11 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# -------------------------
+# App Secrets (NEVER commit)
+# -------------------------
+Secrets.cs
+
 # dotenv files
 .env
 

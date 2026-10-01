@@ -63,7 +63,10 @@ public class AttendanceService : IAttendanceService
                     DateTime = offlineLog.DateTime
                 };
 
-                await _supabase.From<ActivityLog>().Insert(log);
+                // SEC-011: Use Upsert instead of Insert to prevent duplicate rows when
+                // a log was partially written before the connection dropped. The pre-generated
+                // GUID Id acts as the deduplication key — existing rows are updated in place.
+                await _supabase.From<ActivityLog>().Upsert(log);
                 await _offlineSync.MarkAsSyncedAsync(offlineLog.Id);
             }
             catch (Exception ex)

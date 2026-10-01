@@ -285,8 +285,20 @@ public class LecturerHomeViewModel : BaseViewModel
         var res = await Shell.Current.DisplayActionSheetAsync("Select Theme", "Cancel", null, "Light", "Dark", "System");
         if (string.IsNullOrEmpty(res) || res == "Cancel") return;
 
-        // This would interact with a ThemeManager in a real app
-        await Shell.Current.DisplayAlertAsync("Theme", $"Theme changed to {res}!", "OK");
+        // DES-002: Apply the selected theme — previously this was a no-op that only showed an alert.
+        var theme = res switch
+        {
+            "Light"  => AppTheme.Light,
+            "Dark"   => AppTheme.Dark,
+            _        => AppTheme.Unspecified  // "System"
+        };
+
+        if (Application.Current != null)
+        {
+            Application.Current.UserAppTheme = theme;
+            // Persist across restarts
+            Preferences.Set("AppTheme", res);
+        }
     }
 
     private async Task OnNewCourse()

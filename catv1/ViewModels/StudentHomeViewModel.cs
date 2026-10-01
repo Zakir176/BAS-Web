@@ -354,12 +354,19 @@ public class StudentHomeViewModel : BaseViewModel
             if (user == null) return;
 
             _channel = _supabase.Realtime.Channel($"student-attendance-{user.Id}");
-            var options = new Supabase.Realtime.PostgresChanges.PostgresChangesOptions("public", "attendance_logs");
+
+            // SEC-010: Filter server-side to only receive inserts for THIS student.
+            // Without this filter, every attendance_logs insert for any student fires
+            // this notification, which is incorrect and leaks session info.
+            var options = new Supabase.Realtime.PostgresChanges.PostgresChangesOptions(
+                "public",
+                "attendance_logs",
+                filter: $"student_id=eq.{user.Id}");
 
             _channel.Register(options);
             _channel.AddPostgresChangeHandler(Supabase.Realtime.PostgresChanges.PostgresChangesOptions.ListenType.Inserts, (sender, args) =>
             {
-                System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Realtime insert received, reloading data...");
+                System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Realtime insert received for student {user.Id}, reloading data...");
 
                 var request = new Plugin.LocalNotification.Core.Models.NotificationRequest
                 {
