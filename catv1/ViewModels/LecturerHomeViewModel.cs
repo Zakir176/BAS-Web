@@ -6,10 +6,18 @@ namespace catv1.ViewModels;
 
 public class CourseChartItem
 {
+    /// <summary>
+    /// DES-007: Named constant replaces the bare magic number 200.
+    /// This should match the fixed width of the bar-chart container in the XAML
+    /// (e.g. WidthRequest="200" on the parent StackLayout/Grid).
+    /// To make this fully responsive, bind the container width via a converter instead.
+    /// </summary>
+    public const double MaxBarWidth = 200;
+
     public string CourseName { get; set; } = string.Empty;
     public double AttendanceRate { get; set; }
     public string Color { get; set; } = "#3B82F6";
-    public double BarWidth => AttendanceRate * 200; // Max width constant for UI
+    public double BarWidth => AttendanceRate * MaxBarWidth;
 }
 
 public class LecturerHomeViewModel : BaseViewModel
@@ -303,14 +311,35 @@ public class LecturerHomeViewModel : BaseViewModel
 
     private async Task OnNewCourse()
     {
-        string name = await Shell.Current.DisplayPromptAsync("New Course", "Enter course name:");
-        if (string.IsNullOrWhiteSpace(name)) return;
+        // DES-008: Validate name length (3–60 chars) and code format (2–8 alphanumeric).
+        // Previously any non-empty string was accepted, allowing 1-char names and invalid codes.
+        string name;
+        while (true)
+        {
+            name = await Shell.Current.DisplayPromptAsync("New Course", "Enter course name (3–60 characters):");
+            if (string.IsNullOrWhiteSpace(name)) return;
+            name = name.Trim();
+            if (name.Length >= 3 && name.Length <= 60) break;
+            await Shell.Current.DisplayAlertAsync(
+                "Invalid Name",
+                "Course name must be between 3 and 60 characters.",
+                "OK");
+        }
 
-        // Add a small delay to prevent the keyboard from disappearing between chained dialogs
-        await Task.Delay(300);
+        await Task.Delay(300); // Prevent keyboard flicker between chained dialogs
 
-        string code = await Shell.Current.DisplayPromptAsync("New Course", "Enter course code (e.g. CS101):");
-        if (string.IsNullOrWhiteSpace(code)) return;
+        string code;
+        while (true)
+        {
+            code = await Shell.Current.DisplayPromptAsync("New Course", "Enter course code (2–8 alphanumeric, e.g. CS101):");
+            if (string.IsNullOrWhiteSpace(code)) return;
+            code = code.Trim().ToUpper();
+            if (System.Text.RegularExpressions.Regex.IsMatch(code, @"^[A-Z0-9]{2,8}$")) break;
+            await Shell.Current.DisplayAlertAsync(
+                "Invalid Code",
+                "Course code must be 2–8 characters and contain only letters and numbers (e.g. CS101, MATH2).",
+                "OK");
+        }
 
         try
         {
@@ -319,13 +348,13 @@ public class LecturerHomeViewModel : BaseViewModel
 
             // --- Duplicate check: prevent creating the same course code twice ---
             string lecturerId = user != null ? user.Id ?? string.Empty : string.Empty;
-            var existing = await _courseService.GetCourseByCodeAsync(code.Trim(), lecturerId);
+            var existing = await _courseService.GetCourseByCodeAsync(code, lecturerId);
 
             if (existing != null)
             {
                 await Shell.Current.DisplayAlertAsync(
                     "Course Already Exists",
-                    $"A course with code '{code.Trim().ToUpper()}' already exists. Please use a unique course code.",
+                    $"A course with code '{code}' already exists. Please use a unique course code.",
                     "OK");
                 return;
             }
@@ -333,8 +362,8 @@ public class LecturerHomeViewModel : BaseViewModel
             var course = new Course
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = name.Trim(),
-                Code = code.Trim().ToUpper(),
+                Name = name,
+                Code = code,
                 LecturerId = user?.Id ?? "",
                 DepartmentId = _profile?.DepartmentId ?? ""
             };

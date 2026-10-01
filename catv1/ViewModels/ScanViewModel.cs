@@ -231,6 +231,30 @@ public class ScanViewModel : BaseViewModel
         OnPropertyChanged(nameof(IsSetupVisible));
     }
 
+    /// <summary>
+    /// DES-006: Called from ScanPage.OnAppearing when the VM is a singleton.
+    /// Clears any stale state left from a previous, abandoned setup so the
+    /// page always starts clean when no session is currently running.
+    /// Safe to call even when a session IS active — it does nothing in that case.
+    /// </summary>
+    public void ResetIfIdle()
+    {
+        if (IsSessionActive) return; // mid-session — preserve everything
+
+        Roster.Clear();
+        SelectedSection = null;
+        SelectedDate = DateTime.Now;
+        _lastScannedBarcode = string.Empty;
+        _lastScanTime = DateTime.MinValue;
+        _writtenStudentIds.Clear();
+        LastScannedStudent = null;
+        ShowFeedback = false;
+        ScanFeedbackMessage = string.Empty;
+        IsScanError = false;
+        RefreshStats();
+        System.Diagnostics.Debug.WriteLine("[ScanViewModel] ResetIfIdle: state cleared.");
+    }
+
     private async void OnFinishSession()
     {
         if (Roster == null || Roster.Count == 0 || SelectedSection == null) return;

@@ -168,16 +168,19 @@ public class StudentHomeViewModel : BaseViewModel
         for (int i = 1; i <= daysInMonth; i++)
         {
             var bg = "#1E293B";
-            var logForDay = _cachedLogs.FirstOrDefault(l => l.DateTime.Day == i && l.DateTime.Month == _currentCalendarDate.Month && l.DateTime.Year == _currentCalendarDate.Year);
+            // DES-003: Use full Date equality instead of separate Day/Month/Year fields.
+            // The old comparison was a latent bug when _cachedLogs spanned multiple years.
+            var targetDate = new DateTime(_currentCalendarDate.Year, _currentCalendarDate.Month, i).Date;
+            var logForDay = _cachedLogs.FirstOrDefault(l => l.DateTime.Date == targetDate);
             if (logForDay != null)
             {
                 bg = logForDay.Status switch
                 {
                     "Present" => "#10B981",
-                    "Absent" => "#EF4444",
-                    "Late" => "#F59E0B",
+                    "Absent"  => "#EF4444",
+                    "Late"    => "#F59E0B",
                     "Excused" => "#6366F1",
-                    _ => "#1E293B"
+                    _         => "#1E293B"
                 };
             }
             CalendarDays.Add(new CalendarDay { Day = i, Background = bg });
@@ -285,9 +288,17 @@ public class StudentHomeViewModel : BaseViewModel
                 AbsencesCount = DaysAbsent;
                 AttendancePercentage = (double)DaysPresent / allLogs.Count;
 
-                // Calculate Streak
+                // DES-005: Deduplicate by date before calculating the streak.
+                // Multi-section logs on the same day would each increment the counter
+                // independently, inflating the streak value.
+                var distinctDayLogs = allLogs
+                    .GroupBy(l => l.DateTime.Date)
+                    .Select(g => g.OrderByDescending(l => l.DateTime).First())
+                    .OrderByDescending(l => l.DateTime.Date)
+                    .ToList();
+
                 int streak = 0;
-                foreach (var log in allLogs)
+                foreach (var log in distinctDayLogs)
                 {
                     if (log.Status == "Present" || log.Status == "Late")
                         streak++;
@@ -295,7 +306,7 @@ public class StudentHomeViewModel : BaseViewModel
                         break; // Streak broken
                 }
                 StreakStatus = streak > 0 ? "Active" : "None";
-                StreakProgress = Math.Min(streak / 10.0, 1.0); // Simple progress visualization
+                StreakProgress = Math.Min(streak / 10.0, 1.0);
             }
             else
             {
@@ -308,29 +319,37 @@ public class StudentHomeViewModel : BaseViewModel
             }
 
             System.Diagnostics.Debug.WriteLine($"[StudentDashboard] Profile found: {studentResponse.FullName}. Fetching schedule...");
-            // Fetch Enrollments and Sections for Schedule
+            // DES-004: Replaced N+1 serial query loop with two batch requests.
+            // Old approach: 1 + (2 × N) DB calls for N enrollments.
+            // New approach: always 3 DB calls regardless of enrollment count.
             TodaySchedule.Clear();
             var enrollments = await _courseService.GetEnrollmentsByStudentAsync(user.Id ?? string.Empty);
 
-            foreach (var enrollment in enrollments)
+            if (enrollments.Count > 0)
             {
-                var sectionResponse = await _courseService.GetSectionByIdAsync(enrollment.SectionId);
+                var sectionIds = enrollments.Select(e => e.SectionId).Distinct().ToList();
+                var sections   = await _courseService.GetSectionsByIdsAsync(sectionIds);
 
-                if (sectionResponse != null)
+                var courseIds  = sections.Select(s => s.CourseId).Distinct().ToList();
+                var courses    = await _courseService.GetCoursesByIdsAsync(courseIds);
+
+                // Build lookup dictionaries for O(1) access
+                var sectionMap = sections.ToDictionary(s => s.Id);
+                var courseMap  = courses.ToDictionary(c => c.Id);
+
+                foreach (var enrollment in enrollments)
                 {
-                    var courseResponse = await _courseService.GetCourseByIdAsync(sectionResponse.CourseId);
+                    if (!sectionMap.TryGetValue(enrollment.SectionId, out var section)) continue;
+                    if (!courseMap.TryGetValue(section.CourseId,      out var course))  continue;
 
-                    if (courseResponse != null)
+                    var semesterLabel = section.Semester == 1 ? "Semester 1" : "Semester 2";
+                    TodaySchedule.Add(new ScheduleItem
                     {
-                        var semesterLabel = sectionResponse.Semester == 1 ? "Semester 1" : "Semester 2";
-                        TodaySchedule.Add(new ScheduleItem
-                        {
-                            Subject = courseResponse.Name,
-                            Time = $"{semesterLabel}, {sectionResponse.AcademicYear}",
-                            Room = sectionResponse.Name,
-                            Status = "Active"
-                        });
-                    }
+                        Subject = course.Name,
+                        Time    = $"{semesterLabel}, {section.AcademicYear}",
+                        Room    = section.Name,
+                        Status  = "Active"
+                    });
                 }
             }
         }

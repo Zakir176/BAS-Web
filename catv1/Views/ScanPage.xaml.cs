@@ -24,6 +24,11 @@ public partial class ScanPage : ContentPage
     {
         base.OnAppearing();
 
+        // DES-006: Clear stale singleton state when no session is running.
+        // Safe to call unconditionally — it's a no-op while a session is active.
+        if (BindingContext is ScanViewModel vm)
+            vm.ResetIfIdle();
+
         // Cancel any previous animation loop
         _scanLineCts?.Cancel();
         _scanLineCts = new CancellationTokenSource();

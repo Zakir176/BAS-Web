@@ -11,8 +11,10 @@ public interface ICourseService
     
     Task<List<Section>> GetSectionsByLecturerAsync(string lecturerId);
     Task<Section?> GetSectionByIdAsync(string sectionId);
+    Task<List<Section>> GetSectionsByIdsAsync(List<string> sectionIds); // DES-004: batch fetch
     Task InsertSectionAsync(Section section);
     Task<List<Enrollment>> GetEnrollmentsByStudentAsync(string studentId);
     Task<List<Enrollment>> GetEnrollmentsBySectionsAsync(List<string> sectionIds);
     Task<Course?> GetCourseByIdAsync(string courseId);
+    Task<List<Course>> GetCoursesByIdsAsync(List<string> courseIds); // DES-004: batch fetch
 }
